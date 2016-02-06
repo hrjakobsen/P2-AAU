@@ -56,7 +56,7 @@ namespace ImageEncoding
 
 
             int EncoderCounter = 0;
-            byte OriginalMask = 0xFC /* Grabs 1111 1100 */
+            byte OriginalMask = 0xFC; /* Grabs 1111 1100 */
             byte[] ExtractMasks = new byte[] { 0xC0, 0x30, 0xC, 0x3}; /* 1100 0000, 0011 0000, 0000 1100, 0000 0011 */
             byte R, G, B;
             
