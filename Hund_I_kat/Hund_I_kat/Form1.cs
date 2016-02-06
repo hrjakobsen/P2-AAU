@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WindowsFormsApplication1 {
     public partial class Form1:Form {
         private Bitmap vesselImg, plainImg, cryptoImg;
-        private bool vessel = false, plain = false;
+        private bool vessel, plain;
 
         public Form1() {
             InitializeComponent();
@@ -31,11 +26,8 @@ namespace WindowsFormsApplication1 {
 
         private void encrypt_Click(object sender, EventArgs e) {
             cryptoImg = new Bitmap(vesselImg.Width, vesselImg.Height);
-            progressBar.Value = 0;
-            progressBar.Maximum = vesselImg.Height;
 
-            copyVessel();
-            encryptPlain();
+            EncryptPlain();
 
             picCrypto.Image = cryptoImg;
             btnDecrypt.Enabled = true;
@@ -44,10 +36,8 @@ namespace WindowsFormsApplication1 {
 
         private void decrypt_Click(object sender, EventArgs e) {
             plainImg = new Bitmap(cryptoImg.Width / 2, cryptoImg.Height / 2);
-            progressBar.Value = 0;
-            progressBar.Maximum = plainImg.Height;
 
-            decryptCrypto();
+            DecryptCrypto();
 
             picPlain.Image = plainImg;
             plainImg.Save(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\decrypted.bmp");
@@ -80,67 +70,67 @@ namespace WindowsFormsApplication1 {
             btnDecrypt.Enabled = true;
         }
 
-        private void copyVessel() {
+        private void EncryptPlain() {
+            Color[] plainFlattened = new Color[plainImg.Height * plainImg.Width];
+            progressBar.Maximum = 2 * vesselImg.Height + plainImg.Height;
+            progressBar.Value = 0;
+
+            /* Copy vessel image to crypto image */
             for (int y = 0; y < vesselImg.Height; y++) {
+                progressBar.PerformStep();
                 for (int x = 0; x < vesselImg.Width; x++) {
-                    cryptoImg.SetPixel(x, y, copyToVessel(vesselImg.GetPixel(x, y)));
+                    cryptoImg.SetPixel(x, y, removeLeastSignificant(vesselImg.GetPixel(x, y)));
                 }
             }
-        }
 
-        private void encryptPlain() {
-            Color[] plainPixels = new Color[plainImg.Height * plainImg.Width];
-
+            /* Flatten plain image */
             for (int y = 0; y < plainImg.Height; y++) {
+                progressBar.PerformStep();
                 for (int x = 0; x < plainImg.Width; x++) {
-                    plainPixels[y*plainImg.Width + x] = plainImg.GetPixel(x, y);
+                    plainFlattened[y*plainImg.Width + x] = plainImg.GetPixel(x, y);
                 }
             }
 
-            int plainPixelsCounter = 0;
+            int plainFlattenedPos = 0;
 
+            /* Insert flattened plain image into crypto image */
             for (int y = 0; y < vesselImg.Height; y++) {
                 progressBar.PerformStep();
                 for (int x = 0; x < vesselImg.Width; x += 4) {
                     for (int plainBytePos = 0; plainBytePos < 4; plainBytePos++) {
-                        cryptoImg.SetPixel(x + plainBytePos, y, addCol(cryptoImg.GetPixel(x + plainBytePos, y), plainPixels[plainPixelsCounter], plainBytePos));
+                        cryptoImg.SetPixel(x + plainBytePos, y, addCol(cryptoImg.GetPixel(x + plainBytePos, y), plainFlattened[plainFlattenedPos], plainBytePos));
                     }
-                    plainPixelsCounter++;
+                    plainFlattenedPos++;
                 }
             }
         }
 
-        private Color copyToVessel(Color vesselCol) {
-            byte maskvessel = 0xFC;
-            Color cryptoCol = new Color();
-            byte R, G, B;
+        private Color removeLeastSignificant(Color vesselCol) {
+            const byte maskvessel = 0xFC;
 
-            R = (byte)(vesselCol.R & maskvessel);
-            G = (byte)(vesselCol.G & maskvessel);
-            B = (byte)(vesselCol.B & maskvessel);
-
-            cryptoCol = Color.FromArgb(R, G, B);
-
-            return cryptoCol;
+            byte r = (byte)(vesselCol.R & maskvessel);
+            byte g = (byte)(vesselCol.G & maskvessel);
+            byte b = (byte)(vesselCol.B & maskvessel);
+            
+            return Color.FromArgb(r, g, b); ;
         }
 
         private Color addCol(Color vesselCol, Color plainCol, int plainBytePos) {
-            byte[] maskplain = new byte[] { 0x3, 0xC, 0x30, 0xC0 };
-            Color cryptoCol = new Color();
-            byte R, G, B;
+            byte[] maskplain = { 0x3, 0xC, 0x30, 0xC0 };
 
-            R = (byte)((byte)((plainCol.R & maskplain[plainBytePos]) >> (plainBytePos * 2)) + vesselCol.R);
-            G = (byte)((byte)((plainCol.G & maskplain[plainBytePos]) >> (plainBytePos * 2)) + vesselCol.G);
-            B = (byte)((byte)((plainCol.B & maskplain[plainBytePos]) >> (plainBytePos * 2)) + vesselCol.B);
-
-            cryptoCol = Color.FromArgb(R, G, B);
-
-            return cryptoCol;
+            byte r = (byte)((byte)((plainCol.R & maskplain[plainBytePos]) >> (plainBytePos * 2)) + vesselCol.R);
+            byte g = (byte)((byte)((plainCol.G & maskplain[plainBytePos]) >> (plainBytePos * 2)) + vesselCol.G);
+            byte b = (byte)((byte)((plainCol.B & maskplain[plainBytePos]) >> (plainBytePos * 2)) + vesselCol.B);
+            
+            return Color.FromArgb(r, g, b);
         }
 
-        private void decryptCrypto() {            
+        private void DecryptCrypto() {            
             Color[] cryptoPixel = new Color[cryptoImg.Height * cryptoImg.Width];
             int cryptoPixelsCounter = 0;
+
+            progressBar.Maximum = plainImg.Height;
+            progressBar.Value = 0;
 
             for (int y = 0; y < cryptoImg.Height; y++) {
                 for (int x = 0; x < cryptoImg.Width; x++) {
@@ -159,21 +149,17 @@ namespace WindowsFormsApplication1 {
         }
 
         private Color combineColors(Color c1, Color c2, Color c3, Color c4) {
-            byte maskplain = 0x3;
-            Color plainCol = new Color();
-            byte R, G, B;
+            const byte maskplain = 0x3;
 
-            R = (byte)((byte)(c1.R & maskplain) << 6);
-            R += (byte)((byte)(c2.R & maskplain) << 4);
-            R += (byte)((byte)(c3.R & maskplain) << 2);
-            R += (byte)(c4.R & maskplain);
+            byte r = (byte)((byte)(c1.R & maskplain) << 6);
+            r += (byte)((byte)(c2.R & maskplain) << 4);
+            r += (byte)((byte)(c3.R & maskplain) << 2);
+            r += (byte)(c4.R & maskplain);
             
-            G = (byte)((byte)((byte)(c1.G & maskplain) << 6) + (byte)((byte)(c2.G & maskplain) << 4) + (byte)((byte)(c3.G & maskplain) << 2) + ((byte)(c4.G & maskplain)));
-            B = (byte)((byte)((byte)(c1.B & maskplain) << 6) + (byte)((byte)(c2.B & maskplain) << 4) + (byte)((byte)(c3.B & maskplain) << 2) + ((byte)(c4.B & maskplain)));
+            byte g = (byte)((byte)((byte)(c1.G & maskplain) << 6) + (byte)((byte)(c2.G & maskplain) << 4) + (byte)((byte)(c3.G & maskplain) << 2) + (byte)(c4.G & maskplain));
+            byte b = (byte)((byte)((byte)(c1.B & maskplain) << 6) + (byte)((byte)(c2.B & maskplain) << 4) + (byte)((byte)(c3.B & maskplain) << 2) + (byte)(c4.B & maskplain));
 
-            plainCol = Color.FromArgb(R, G, B);
-
-            return plainCol;
+            return Color.FromArgb(r, g, b);
         }
     }
 }
