@@ -42,11 +42,12 @@
             // 
             // getFileVessel
             // 
+            this.getFileVessel.FileName = "Select an image to be the vessel";
             this.getFileVessel.FileOk += new System.ComponentModel.CancelEventHandler(this.getFileVessel_FileOk);
             // 
             // getFilePlain
             // 
-            this.getFilePlain.FileName = "Select an image with half the width and height of the vessel image";
+            this.getFilePlain.FileName = "Select an image with half the width and height and width of the vessel image";
             this.getFilePlain.FileOk += new System.ComponentModel.CancelEventHandler(this.getFilePlain_FileOk);
             // 
             // picVessel
@@ -133,6 +134,7 @@
             // 
             // getFileCrypto
             // 
+            this.getFileCrypto.FileName = "Select an encrypted photo to extract a photo from";
             this.getFileCrypto.FileOk += new System.ComponentModel.CancelEventHandler(this.getFileCrypto_FileOk);
             // 
             // progressBar
