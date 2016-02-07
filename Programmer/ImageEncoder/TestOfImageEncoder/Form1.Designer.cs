@@ -99,10 +99,12 @@
             // 
             // SaveEncoded
             // 
+            this.SaveEncoded.DefaultExt = "bmp";
             this.SaveEncoded.FileOk += new System.ComponentModel.CancelEventHandler(this.SaveEncoded_FileOk);
             // 
             // SaveExtracted
             // 
+            this.SaveExtracted.DefaultExt = "bmp";
             this.SaveExtracted.FileOk += new System.ComponentModel.CancelEventHandler(this.SaveExtracted_FileOk);
             // 
             // Form1

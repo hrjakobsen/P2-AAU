@@ -81,7 +81,7 @@ namespace ImageEncoding
 
             for (int i = 0; i < ImageToConvert.Height; i++) {
                 for (int j = 0; j < ImageToConvert.Width; j++) {
-                    Arr[i * ImageToConvert.Height + j] = ImageToConvert.GetPixel(j, i);
+                    Arr[i * ImageToConvert.Width + j] = ImageToConvert.GetPixel(j, i);
                 }
             }
 
