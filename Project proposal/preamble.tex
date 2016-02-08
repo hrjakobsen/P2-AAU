@@ -1,0 +1,35 @@
+\usepackage{graphicx,hyperref,amsmath,bm,url}
+\usepackage[numbers]{natbib}
+\usepackage{microtype,todonotes}
+\usepackage[danish]{babel}
+\usepackage{a4}
+\usepackage[compact,small]{titlesec}
+\usepackage[utf8]{inputenc}
+\clubpenalty = 10000
+\widowpenalty = 10000
+\usepackage[T1]{fontenc}
+\graphicspath{ {../Billeder/} }
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{shapes}
+
+\makeatletter
+\newdimen\@myBoxHeight%
+\newdimen\@myBoxDepth%
+\newdimen\@myBoxWidth%
+\newdimen\@myBoxSize%
+\newcommand{\SquareBox}[2][]{%
+    \settoheight{\@myBoxHeight}{#2}% Record height of box
+    \settodepth{\@myBoxDepth}{#2}% Record depth of box
+    \settowidth{\@myBoxWidth}{#2}% Record width of box
+    \pgfmathsetlength{\@myBoxSize}{max(\@myBoxWidth,(\@myBoxHeight+\@myBoxDepth))}%
+    \tikz \node [shape=rectangle, shape aspect=1,draw=red,inner sep=2\pgflinewidth, minimum size=\@myBoxSize,#1] {#2};%
+}%
+\makeatother
+\newcommand*{\captionsource}[2]{%
+  \caption[{#1}]{%
+    #1%
+    \\\hspace{\linewidth}%
+    \textbf{Kilde:} #2%
+  }%
+}
