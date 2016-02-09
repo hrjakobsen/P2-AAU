@@ -1,0 +1,53 @@
+\documentclass[a4paper,12pt,hidelinks]{article}
+\usepackage[pdftex]{graphicx} 
+\usepackage{type1cm}
+\usepackage{a4}
+\usepackage{lastpage}
+\input{preamble.tex}
+\usepackage[ddmmyyyy]{datetime}
+
+\newcommand{\group}{DAT2-A423}
+
+\setcounter{secnumdepth}{4}
+
+\begin{document}
+	\title{Project Proposal}
+	\author{\group}
+	\maketitle	
+	\section*{The Problem in Context}
+No matter if you are an activist, a politician, or a terrorist, there is often a need to send messages in a way that makes them difficult for others to read. Typically this involves some form of encryption of varying strength, but any form of encrypted text or other data can arouse suspicion. What if it was possible to send this data in a way where interceptors would not even know that a secret message was conveyed? 
+
+Steganography is the art of concealing messages within some form of non-concealed information, this or the message does not necessarily have to be text, it could also be other media, such as images, sound, or videos.
+
+There are several problems related to steganography in the modern world of information technology. 
+
+Steganography can be implemented by anyone, no matter their intention. This raises the ethical question, of whether such a system for concealing information should be developed. Free access to information regarding the use of systems like these, could be helpful in the fight against terrorism and other criminal activities that could benefit from concealing messages. If anyone who had the interest also had the ability to research and understand the algorithms used to conceal information, they might also be able to reverse engineer some of the systems used by those with malicious intent.
+
+Sharing messages on social media sites has become the norm. Therefore it is only natural that a modern form of steganography should be able to work on these platforms. The main problem with them is that most information that passes through these sites is filtered and compressed in a way that makes it difficult for the hidden message to make it to the other side.
+
+	\section*{Relation to Computer Science}
+This project, requires working with groups from other studies. The fact that a software solution needs to be developed in parallel with other teams, means that the use of object-oriented programming becomes essential. This is primarily due to the vastness of the project, which requires separate modules to communicate. Encapsulation of data becomes especially important, when other teams are dependent on the input and output of the developed modules.
+	
+Saving data is an integral part of digital steganography. Knowing how each file format stores information is essential in manipulating the data stream when concealing a message, in form of either text or other media. 
+It is also fundamental to the project to understand how social networking sites compress media uploaded by users.
+
+An understanding of algorithmics will allow proper implementation of relevant algorithms, though will also make it possible to design new algorithms to conceal data. Discrete mathematics provides the means of calculating the complexity of the aforementioned algorithms through big-O notation.
+
+	\section*{Steganography in Use}
+To further increase our knowledge of steganography in relation to social media, we made an attempt at concealing a picture inside another picture using the least significant bit method. This was relatively simple to achieve. A problem arose, when trying to actively use the program to send the vessel images to other people via social media sites such as Facebook, Imgur and Instagram. All of these services compress their images in ways that garbles the concealed picture. Twitter, however, uses a compression that preserves the pixels in the image, allowing the concealed image to be retrieved without complications.
+
+	\section*{Initiating Problem}
+What obstacles arise when attempting to send hidden data across social media and which algorithms can be used to circumvent these?
+
+	\section*{Fulfilment of the Curriculum}
+Being able to create a model that can be used in relation to the development of a programme is an essential part of the P2 project. 
+
+By developing a well-structured C\# programme of substantial size, we will be able to understand and use the syntax of an object oriented programming language, per the curriculum.
+
+To find out if the programme fulfils the requirements of the problem we will perform a number of systematic tests.
+
+Additionally, we are going to be able to describe, reflect upon, and analyse the experiences we have attained through our problem orientated learning. This is strengthened by working with students across studies.
+
+ 
+
+\end{document} 
