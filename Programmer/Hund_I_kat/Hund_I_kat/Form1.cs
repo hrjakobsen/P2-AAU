@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace WindowsFormsApplication1 {
@@ -31,7 +32,7 @@ namespace WindowsFormsApplication1 {
 
             picCrypto.Image = cryptoImg;
             btnDecrypt.Enabled = true;
-            cryptoImg.Save(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\encrypted.png");
+            cryptoImg.Save("./encrypted.jpg", ImageFormat.Jpeg);
         }
 
         private void decrypt_Click(object sender, EventArgs e) {
@@ -40,7 +41,7 @@ namespace WindowsFormsApplication1 {
             DecryptCrypto();
 
             picPlain.Image = plainImg;
-            plainImg.Save(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\decrypted.png");
+            plainImg.Save("./decrypted.jpg", ImageFormat.Jpeg);
         }
         
         private void getFileVessel_FileOk(object sender, CancelEventArgs e) {

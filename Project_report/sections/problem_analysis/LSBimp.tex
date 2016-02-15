@@ -1,0 +1,29 @@
+\section{LSB implementation}
+During the beginning of the project, to learn more and understand how this algorithm works, as well as see first-hand what social media sites re-encoded images, we created a small prototype of a programme, which is able to conceal an image within another image, using the LSB algorithm. 
+
+By storing the information we want concealed in the two least significant bits, we can keep a lot of the original information, and by only each pixel of the vessel image, by a maximum value of 3 (00000011 in $base_2$), the concealed image will almost be invisible to the naked eye.
+
+To do this, we had to make some restrictions on how big the vessel image had to be relatively to the to-be-concealed image. To not cause corruption and to ensure all information got saved, the vessel image has to be four times as tall as the hidden image, more specifically twice its height, and twice its width. It's width and height will also have to be divisible by four. Each pixel of the concealed image will be stored within four pixels of the vessel image, each masked differently, hence the vessel image has to be four times its size. We do this to get as much of the concealed image's information stored within the vessel as possible.
+
+To make both images easier to work with, we store each pixel's colour in a Color array, one for each image, and to store each pixel within the vessel, we mask them to turn every bit, except the two least significant ones which are left unchanged, into 0, then adding the resulting colour to the vessel.
+
+The result of concealing the below image to the right, within the image by its side, is the image below the two of them.
+
+\begin{figure}
+	\centering
+	\begin{minipage}{.45\linewidth}
+		\includegraphics[width=\linewidth]{sections/pictures/vessel.jpg}
+		\captionof{figure}{Vessel image}
+		\label{img1}
+	\end{minipage}
+	\hspace{.05\linewidth}
+	\begin{minipage}{.45\linewidth}
+		\includegraphics[width=\linewidth]{sections/pictures/concealed.jpg}
+		\captionof{figure}{Concealed image}
+		\label{img2}
+	\end{minipage}
+		\centering
+		\includegraphics[width=.97\textwidth]{sections/pictures/encrypted.jpg}
+		\captionof{figure}{Steganographical image}
+		\label{img3}
+\end{figure} 
