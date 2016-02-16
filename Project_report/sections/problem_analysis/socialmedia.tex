@@ -3,7 +3,6 @@
 \cite{Wang2005}
 \begin{table}[h!]
 \centering
-\label{my-label}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{|l|l|l|l|l|l|l|l|}
 \hline
@@ -21,4 +20,27 @@ Imgur          & jpg          & 3648x2432        & 2.33 MB    & jpg          & 3
 \end{tabular}
 }
 \caption{Social networks uses different levels of compression}
+\label{my-label}
+\end{table}
+
+\begin{table}[h!]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
+\hline
+               & \multicolumn{3}{c|}{Before compression}      & \multicolumn{3}{c|}{After compression}       &                    &                            \\ \hline
+Social Network & Image format & Image resolution & Image size & Image format & Image resolution & Image size & Euclidean distance & Possible to extract image? \\ \hline
+Facebook       & png          & 3648x2432        & 18.1 MB    & jpg          & 2048x1365        & 152 KB     & 5935.8907          & No                         \\ \hline
+               & png          & 1824x1216        & 5.08 MB    & jpg          & 1824x1216        & 142 KB     & 2773.7082          & No                         \\ \hline
+               & png          & 912x608          & 1.35 MB    & jpg          & 912x608          & 49 KB      & 1774.8134          & No                         \\ \hline
+Twitter        & png          & 3648x2432        & 18.1 MB    & png          & 1024x683         & 79.4 KB    & 9373.1348          & No                         \\ \hline
+               & png          & 1824x1216        & 5.08 MB    & png          & 1024x683         & 80.9 KB    & 4005.7118          & No                         \\ \hline
+               & png          & 912x608          & 1.35 MB    & png          & 912x608          & 1.02 MB    & 0                  & Yes                        \\ \hline
+Imgur          & png          & 3648x2432        & 18.1 MB    & jpg          & 3648x2432        & 419 KB     & 4227.2989          & No                         \\ \hline
+               & png          & 1824x1216        & 5.08 MB    & jpg          & 1824x1216        & 141 KB     & 2761.5206          & No                         \\ \hline
+               & png          & 912x608          & 1.35 MB    & png          & 912x608          & 1.35 MB    & 0                  & Yes                        \\ \hline
+\end{tabular}
+}
+\caption{My caption}
+\label{my-label}
 \end{table}
