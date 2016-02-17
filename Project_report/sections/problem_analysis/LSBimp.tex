@@ -2,7 +2,7 @@
 \label{sec:lsb-implementation}
 During the beginning of the project, to learn more and understand how this algorithm works, as well as see first-hand what social media sites re-encoded images, we created a small prototype of a programme, which is able to conceal an image within another image, using the LSB algorithm. 
 
-By storing the information we want concealed in the two least significant bits, we can keep a lot of the original information, and by only each pixel of the vessel image, by a maximum value of 3 (00000011 in $base_2$), the concealed image will almost be invisible to the naked eye.
+By storing the information we want concealed in the two least significant bits, we can keep a lot of the original information, and by only each pixel of the vessel image, by a maximum value of 3 or $00000011_2$, the concealed image will almost be invisible to the naked eye.
 
 To do this, we had to make some restrictions on how big the vessel image had to be relatively to the to-be-concealed image. To not cause corruption and to ensure all information got saved, the vessel image has to be four times as tall as the hidden image, more specifically twice its height, and twice its width. It's width and height will also have to be divisible by four. Each pixel of the concealed image will be stored within four pixels of the vessel image, each masked differently, hence the vessel image has to be four times its size. We do this to get as much of the concealed image's information stored within the vessel as possible.
 
