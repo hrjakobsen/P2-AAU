@@ -47,7 +47,8 @@
 % http://en.wikibooks.org/wiki/LaTeX/Colors
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % load a colour package
-\usepackage{xcolor}
+\usepackage[pdftex,dvipsnames]{xcolor}
+
 \definecolor{aaublue}{RGB}{33,26,82}% dark blue
 % The standard graphics inclusion package
 \usepackage{graphicx}
@@ -126,6 +127,8 @@
 % http://en.wikibooks.org/wiki/LaTeX/Bibliography_Management
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage[backend=bibtex,
+  natbib=true,
+  style=authoryear,
   bibencoding=utf8
   ]{biblatex}
 \addbibresource{sources/sources}
@@ -139,12 +142,13 @@
 % page number of the last page
 \usepackage{lastpage}
 % Add todo notes in the margin of the document
-\usepackage[
-%  disable, %turn off todonotes
-  colorinlistoftodos, %enable a coloured square in the list of todos
-  textwidth=\marginparwidth, %set the width of the todonotes
-  textsize=scriptsize, %size of the text in the todonotes
-  ]{todonotes}
+\usepackage{xargs}                      % Use more than one optional parameter in a new commands
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+\newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
+\newcommandx{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
+\newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Hyperlinks
