@@ -1,3 +1,4 @@
+% -*- root: ../DAT2-A423_Project_Report.tex -*-
 %  A simple AAU report template.
 %  2015-05-08 v. 1.2.0
 %  Copyright 2010-2015 by Jesper Kjær Nielsen <jkn@es.aau.dk>
@@ -161,8 +162,8 @@
 \hypersetup{%
 	pdfpagelabels=true,%
 	plainpages=false,%
-	pdfauthor={Author(s)},%
-	pdftitle={Title},%
+	pdfauthor={A423},%
+	pdftitle={Kan I gætte hvem jeg er},%
 	pdfsubject={Subject},%
 	bookmarksnumbered=true,%
 	colorlinks=false,%
@@ -176,3 +177,11 @@
 \usepackage{threeparttable}
 
 \usepackage{placeins}
+
+
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\floatname{algorithm}{Procedure}

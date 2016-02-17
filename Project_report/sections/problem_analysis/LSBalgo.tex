@@ -1,0 +1,41 @@
+% -*- root: ../../DAT2-A423_Project_Report.tex -*-
+\begin{algorithm}
+\caption{LSB}
+\label{alg1}
+\begin{algorithmic}
+\REQUIRE True-color images $V$ with size $M \times N$ and $C$ with size $M/2 \times N/2$
+\ENSURE True-color image $H$ of size $M \times N$ where $C$ is embedded in $V$
+\STATE{$ListV := \text{empty list of pixels}$}
+\STATE{$ListC := \text{empty list of pixels}$}
+
+\FOR {$y:=1$ \TO $y=N$}
+	\FOR {$x:=1$ \TO $x=M$}
+		\STATE{Add pixel $(x,y)$ from $V$ to $ListV$}
+	\ENDFOR
+\ENDFOR
+
+\FOR {$y:=1$ \TO $y=M/2$}
+	\FOR {$x:=1$ \TO $x=N/2$}
+		\STATE{Add pixel $(x,y)$ from $C$ to $ListC$}
+	\ENDFOR
+\ENDFOR
+
+\STATE{$k := 1$}
+\FOR {$i:=1$ \TO $i=N/2$}
+	\FOR {$j:=1$ \TO $j=4$}
+		\STATE{Replace the 7th bit in the R, G and B bytes in the $k$th element of ListV with the $(j\cdot 2 - 1)$th bit in the R, G and B bytes in the $i$th element in ListC}
+		\STATE{Replace the 8th bit in the R, G and B bytes in the $k$th element of ListV with the $(j\cdot 2)$th bit in the R, G and B bytes in the $i$th element in ListC}
+		\STATE{$k := k + 1$}
+	\ENDFOR
+\ENDFOR
+
+\STATE{$H:= \text{empty true-color image of size } M\times N$}
+\FOR{$y:= 1$ \TO $y=N$}
+	\FOR{$x:=1$ \TO $x=M$}
+		\STATE{Set R, G and B bytes in pixel $(x,y)$ in $H$ to be the R, G and B bytes in the $(y \cdot N + x)$th element of ListV}
+	\ENDFOR
+\ENDFOR
+
+\RETURN $H$
+\end{algorithmic}
+\end{algorithm}
