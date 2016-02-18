@@ -9,8 +9,8 @@ The large amount of users on the social network makes them an obvious platform f
 The same reasoning can be used for using the social networks for sharing embedded information using steganography. 
 By sharing information on the social networks, the information can quickly be distributed to all other activists, though by being embedded in something inconspicuous, avoids detection by the opponents of the cause.
 
-Most social networks rely on video, imaging and text as the main component in information sharing.
-Because of this, the following section will examine how social networks process the images uploaded to their site, and if it is possible to send embedded data through the social networks.
+Most social networks relies on video, imaging and text as the main component in information sharing.
+Because of this, the following section will examine how the social network process the images uploaded to their site, and if it is possible to send embedded data through the social networks.
 
 \section{Image Sharing on Social Networks}
 
@@ -20,7 +20,7 @@ To examine how much the compression algorithms distorted the images, the euclide
 The results using images saved with JPEG encoding can be seen in table \ref{tab:JPEG-compression}. 
 
 From the results we can clearly see that on JPEG images Twitter clearly compresses the file the most in terms of both file size and resolution.
-Combined, this results in a higher euclidean distance, as the image loses more information. 
+Combined this results in a higher euclidean distance, as the image loses more information. 
 On the other hand, the image sharing site Imgur changed nearly nothing in the uploaded JPEG image, and when downloaded again, all of the images reached an euclidean distance of 0, which means that the every pixel in the images were equal.
 
 \begin{threeparttable}[]
@@ -49,7 +49,7 @@ Imgur          & jpg          & 3648x2432        & 2.33 MB    & jpg          & 3
 \end{threeparttable}
 
 After the first initial tests of the compression systems used, the same test was run with images saved with PNG encoding.
-This time however, embedded in the images, using the least significant bit method described in section \ref{sec:lsb-implementation}, was a secret image. 
+This time however, embedded in the images using the least significant bit method described in section \ref{sec:lsb-implementation}, was a secret image. 
 The results from these tests are shown in table \ref{tab:PNG-compression}.
 From the result it is clear that being able to preserve all pixels, and with regards to the LSB method, all information is a rare occurrence when sharing images on social networking sites. In only two of the nine tested images the hidden image could be extracted. 
 These images were the lowest in both resolution and file size, which shows that there exists a threshold for when the social networks compresses the uploaded images. 
