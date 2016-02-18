@@ -2,10 +2,10 @@
 A common way of digitially hiding information within other information is using the least significant bit (LSB) of the vessel, which is to contain the information. 
 The LSB is the bit position of a binary integer, which gives it its unit value, since it is also the bit with the lowest bit weight in base-2: $2^0$.
 Using this bit is a very straightforward way of making it more difficult for interceptors to see the information, since changing it to a desired value has very little impact on the number actually stored in it.
-In a true-color image for example, each pixel contains three eight-bit long integers (bytes). Each of these carry information about the amount of red, green and blue colors in the pixel in question.
+In a true-colour image for example, each pixel contains three eight-bit long integers (bytes). Each of these carry information about the amount of red, green and blue colors in the pixel in question.
 Since it is stored in a byte there are 256 possible values for each color. Adjusting this value by one has a very little effect on the image as a whole. The difference is hardly noticeable by the human eye.
-Because digitally stored data is saved as binary numbers it is quite the obvious choice to use the LSB for storing a secret message. This, however, also makes it easier for the any interceptors to find the hidden information.
-This is a problem, because even though the human eye can not perceive the the faint differences in nuance created by changing the LSB in an image, computers can. 
+Because digitally stored data is saved as binary numbers it is quite the obvious choice to use the LSB for storing a secret message. This, however, also makes it easier for any interceptors to find the hidden information.
+This is a problem, because even though the human eye can not perceive the  faint differences in nuance created by changing the LSB in an image, computers can. 
 Relatively simple statistical analyses can be used on an image in a similar way to how frequency analysis is used in cryptography. 
-By comparing the frequency of certain colors in an image containing hidden information with an average value for an image of the same style will bring out any descrepancies in the stego image. 
-It might still be difficult to actually extract the information, but it is certainly not imposibble, and the communication channel is to be considered compromised.
+By comparing the frequency of certain colours in an image containing hidden information with an average value for an image of the same style, will bring out any discrepancies in the stego image. 
+It might still be difficult to actually extract the information, but it is certainly not impossible, and the communication channel is to be considered compromised.
