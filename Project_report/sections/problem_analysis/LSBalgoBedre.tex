@@ -3,18 +3,18 @@
 \caption{LSB}
 \label{alg1}
 \begin{algorithmic}
-\REQUIRE True-color images $v = \{v^0,v^1,v^2\ldots v^{NM}\}$ with size $M \times N$ and $c  = \{c^0,c^1,c^2\ldots c^{(NM)/2}\}$ where $c^{xN/2+y}$ is the pixel at location $(x,y)$
-\ENSURE True-color image $h  = \{h^0,h^1,h^2\ldots h^{NM}\}$ of size $M \times N$ and where $h^{xN+y}$ is the pixel at location $(x,y)$ and where $c$ is embedded in $v$
+\REQUIRE True-color images $v = \{v^1,v^2\ldots v^{NM}\}$ with size $M \times N$ and $c  = \{c^1,c^2\ldots c^{(NM)/4}\}$ where $c^{xN/2+y}$ is the pixel at location $(x,y)$
+\ENSURE True-color image $h  = \{h^1,h^2\ldots h^{NM}\}$ of size $M \times N$ and where $h^{xN+y}$ is the pixel at location $(x,y)$ and where $c$ is embedded in $v$
 
 \STATE{$k := 1$}
-\FOR {$i:=1$ \TO $i=N/2$}
+\FOR {$i:=1$ \TO $i=(NM)/4$}
 	\FOR {$j:=1$ \TO $j=4$}
 		\STATE{Set the first 6 bits in the R, G and B bytes $k$th element of $h$ to be the first 6 bits of the R, G and B bytes of the $k$th element of $v$}
 
 		\STATE{Set the 7th bit in the R, G and B bytes in the $k$th element of $h$ with the $(j\cdot 2 - 1)$th bit in the R, G and B bytes in the $i$th element in $c$}
 
 		\STATE{Set the 8th bit in the R, G and B bytes in the $k$th element of $h$ with the $(j\cdot 2)$th bit in the R, G and B bytes in the $i$th element in $c$}
-		
+
 		\STATE{$k := k + 1$}
 	\ENDFOR
 \ENDFOR
