@@ -19,7 +19,7 @@ After being uploaded, the compressed file was then again downloaded and examined
 To examine how much the compression algorithms distorted the images, the euclidean distance between the original image and the compressed version was calculated as described by Wang et. Al \citep{Wang2005}.
 The results using images saved with JPEG encoding can be seen in table \ref{tab:JPEG-compression}. 
 
-From the results we can clearly see that on JPEG images Twitter compresses the file the most in terms of both file size and resolution.
+From the results it can clearly be seen that on JPEG images Twitter compresses the file the most in terms of both file size and resolution.
 Combined, this results in a higher euclidean distance, as the image loses more information. 
 
 On the other hand, the image sharing site Imgur changed nearly nothing in the uploaded JPEG image, and when downloaded again, all of the images reached an euclidean distance of 0, which means that the every pixel in the images were equal.
@@ -55,7 +55,7 @@ This time however, embedded in the images, using the least significant bit metho
 The results from these tests are shown in table \ref{tab:PNG-compression}.
 From the result, it is clear that being able to preserve all pixels, with regards to the LSB method, all information is a rare occurrence when sharing images on social networking sites. In only two of the nine tested images the hidden image could be extracted. 
 These images were the lowest in both resolution and file size, which shows that there exists a threshold for when the social networks compress the uploaded images. 
-Below these thresholds we can use the both Twitter and Imgur to send data without it being compressed. In the tests conducted the highest amount transferred was $912\text{ pixels} \cdot 608\text{ pixels} \cdot 3\text{ bytes/pixel} \cdot 2\text{ bits/byte} = 3.327\cdot 10^6\text{ bits}$ which is enough to save $415,872$ characters using their ASCII value.\\ 
+Below these thresholds both Twitter and Imgur could be used to send data without it being compressed. In the tests conducted the highest amount transferred was $912\text{ pixels} \cdot 608\text{ pixels} \cdot 3\text{ bytes/pixel} \cdot 2\text{ bits/byte} = 3.327\cdot 10^6\text{ bits}$ which is enough to save $415,872$ characters using their ASCII value.\\ 
 
 
 \begin{threeparttable}[]
