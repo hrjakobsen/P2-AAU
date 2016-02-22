@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stego_Image_LSB", "Stego_Image_LSB\Stego_Image_LSB.csproj", "{76162CA9-0BFA-48F8-B624-5D903E6FC4DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestForm", "TestForm\TestForm.csproj", "{564D2890-232C-4C59-B98E-35787E373054}"
+	ProjectSection(ProjectDependencies) = postProject
+		{76162CA9-0BFA-48F8-B624-5D903E6FC4DD} = {76162CA9-0BFA-48F8-B624-5D903E6FC4DD}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{76162CA9-0BFA-48F8-B624-5D903E6FC4DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76162CA9-0BFA-48F8-B624-5D903E6FC4DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76162CA9-0BFA-48F8-B624-5D903E6FC4DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76162CA9-0BFA-48F8-B624-5D903E6FC4DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{564D2890-232C-4C59-B98E-35787E373054}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{564D2890-232C-4C59-B98E-35787E373054}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{564D2890-232C-4C59-B98E-35787E373054}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{564D2890-232C-4C59-B98E-35787E373054}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
