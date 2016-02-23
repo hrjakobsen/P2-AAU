@@ -1,6 +1,48 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
 
-\begin{tcolorbox}[breakable, enhanced, title = A Study of the JPEG image format\footnote{This section can be omitted without loss of continuity}, title filled]
-\section*{Damn}
-I should probably write something
-\end{tcolorbox}
+\begin{infobox}{\section[A Study of the JPEG file format]{A Study of the JPEG file format\footnotenomarker{This section may be omitted without loss of continuity}}}
+
+\section*{An Overview of JPEG}
+JPEG is an image format defined by the Joint Photographic Experts Group. 
+This type of image requires much more computing power to process, both in terms of encoding and decoding, compared to a much more simple format like Windows BMP, this will become more clear in the following sections. 
+A crucial thing to note about JPEG is that one of the things that allows the image to be compressed, is that the encoding process is lossless, which means that when saving an image to JPEG, you lose information about the individual pixels.
+
+\subsection*{JPEG as a file format}
+
+JPEG has a very comprehensive standard, which defines the inner workings of the JPEG compression. 
+What this standard does not describe however, is an actual file format \citep{Miano1999}. 
+The standard does not define how to encode images in a way, such that all JPEG encoders can decode the image. 
+An example of this is, that the standard does not define how colours are represented in the format, which means that one decoder could potentially use a RGB colour space while another one would use a RBG space, both systems are perfectly valid according to the JPEG standard.
+
+Without a way to ensure that all decoders would read an encoded image the same way, an image file isn't worth much. This is why the JPEG File Interchange Format specification \citep{JFIFSpecs} was developed by Eric Hamilton. JFIF defines a standard which all JPEG files must abide. This standard includes a definition of the colour being encoded in one or three channels. One channel if it is a monochrome image, and three channels if it is a true-colour image. If encoded in three channels, the colour space used is YCbCr, if only one channel is used only the luminance (Y) channel is used.
+
+The JFIF specification is what allows JPEG images to be as widespread as they are today, where JPEG are used by large services like Facebook to store and serve small images of reasonable quality.
+
+\subsection*{Dissection of a JPEG file}
+[Et eller andet introværk]
+\subsubsection*{The Colour-space}
+When describing colours in terms of computer science, we often use the colour space RGB, where each component corresponds to the intensity of the red, blue and green LEDs that make up a pixel on our screen. A colour in the YCbCr colour system is made up from the luminance (Y) which describes light intensity together with the blue-difference and the red-difference chroma components which together describes the actual colour.
+
+When converting from RGB to YCbCr we can use matrix multiplication, and find the Y, Cb and Cr components as a matrix product:
+
+$$\begin{bmatrix}
+	Y\\Cb\\Cr
+\end{bmatrix} = \begin{bmatrix}
+	0.299 & 0.587 & 0.144\\
+	-0.1687 & -0.3313 & 0.5\\
+	0.5 & -0.4187 & -0.0813
+\end{bmatrix}\begin{bmatrix}
+	R\\G\\B
+\end{bmatrix}$$
+
+Likewise, we can calculate the R, G and B components from the YCbCr colour space:
+
+$$\begin{bmatrix}
+	R\\G\\B
+\end{bmatrix} = \begin{bmatrix*}[l]
+	Y&+&1.402 &\cdot & (Cr-128)&\\
+	Y &-& 0.34414&\cdot &(Cb-128) &- &0.71414&\cdot&(Cr-128)\\
+	Y &+& 1.772&\cdot& (Cb-128)&
+\end{bmatrix*}$$
+
+\end{infobox}

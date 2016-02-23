@@ -208,3 +208,15 @@
 }
 
 \usepackage[most]{tcolorbox}
+
+\newenvironment{infobox}[2]
+{\begin{tcolorbox}[breakable, enhanced, before upper={\parindent15pt}, title = {#1}, title filled]}{\end{tcolorbox}}
+
+\usepackage{mathtools}
+
+\newcommand\footnotenomarker[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
