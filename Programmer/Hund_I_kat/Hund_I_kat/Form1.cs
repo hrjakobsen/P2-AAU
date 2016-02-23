@@ -6,15 +6,15 @@ using System.Windows.Forms;
 
 namespace WindowsFormsApplication1 {
     public partial class Form1:Form {
-        private Bitmap vesselImg, plainImg, cryptoImg;
-        private bool vessel, plain;
+        private Bitmap coverImg, plainImg, cryptoImg;
+        private bool cover, plain;
 
         public Form1() {
             InitializeComponent();
         }
 
-        private void loadVessel_Click(object sender, EventArgs e) {
-            getFileVessel.ShowDialog();
+        private void loadCover_Click(object sender, EventArgs e) {
+            getFileCover.ShowDialog();
         }
 
         private void loadPlain_Click(object sender, EventArgs e) {
@@ -26,7 +26,7 @@ namespace WindowsFormsApplication1 {
         }
 
         private void encrypt_Click(object sender, EventArgs e) {
-            cryptoImg = new Bitmap(vesselImg.Width, vesselImg.Height);
+            cryptoImg = new Bitmap(coverImg.Width, coverImg.Height);
 
             EncryptPlain();
 
@@ -44,31 +44,31 @@ namespace WindowsFormsApplication1 {
             plainImg.Save("./decrypted.jpg", ImageFormat.Jpeg);
         }
         
-        private void getFileVessel_FileOk(object sender, CancelEventArgs e) {
-            vesselImg = new Bitmap(getFileVessel.FileName);
-            if (plainImg == null || (plainImg.Width / 2 == vesselImg.Width && plainImg.Height / 2 == vesselImg.Height)) {
-                picVessel.Image = vesselImg;
+        private void getFileCover_FileOk(object sender, CancelEventArgs e) {
+            coverImg = new Bitmap(getFileCover.FileName);
+            if (plainImg == null || (plainImg.Width / 2 == coverImg.Width && plainImg.Height / 2 == coverImg.Height)) {
+                picCover.Image = coverImg;
 
-                vessel = true;
+                cover = true;
                 if (plain) {
                     btnEncrypt.Enabled = true;
                 }
             } else {
-                MessageBox.Show("The width and height of the vessel image must be exactly double of those of the plain image!");
+                MessageBox.Show("The width and height of the cover image must be exactly double of those of the plain image!");
             }
         }
 
         private void getFilePlain_FileOk(object sender, CancelEventArgs e) {
             plainImg = new Bitmap(getFilePlain.FileName);
-            if (vesselImg == null || (plainImg.Width * 2 == vesselImg.Width && plainImg.Height * 2 == vesselImg.Height)) {
+            if (coverImg == null || (plainImg.Width * 2 == coverImg.Width && plainImg.Height * 2 == coverImg.Height)) {
                 picPlain.Image = plainImg;
 
                 plain = true;
-                if (vessel) {
+                if (cover) {
                     btnEncrypt.Enabled = true;
                 }
             } else {
-                MessageBox.Show("The width and height of the plain image must be exactly half of those of the vessel image!");
+                MessageBox.Show("The width and height of the plain image must be exactly half of those of the cover image!");
             }
         }
 
@@ -80,34 +80,34 @@ namespace WindowsFormsApplication1 {
         }
 
         private void EncryptPlain() {
-            progressBar.Maximum = (int)(2.5*vesselImg.Height);
+            progressBar.Maximum = (int)(2.5*coverImg.Height);
             progressBar.Value = 0;
 
-            const byte vesselMask = 0xFC;
+            const byte coverMask = 0xFC;
             byte[] plainMasks = { 0xC0, 0x30, 0xC, 0x3 };
             int plainArrIndex = 0;
             
-            /* Flatten vessel image */
-            Color[] vesselArr = ImageToArray(vesselImg);
+            /* Flatten cover image */
+            Color[] coverArr = ImageToArray(coverImg);
             
             /* Flatten plain image */
             Color[] plainArr = ImageToArray(plainImg);
 
             /* Array for holding flattened crypto image */
-            Color[] cryptoArr = new Color[vesselImg.Width * vesselImg.Height];
+            Color[] cryptoArr = new Color[coverImg.Width * coverImg.Height];
             
-            for (int vesselArrIndex = 0; vesselArrIndex < vesselArr.Length; vesselArrIndex += 4) {
+            for (int coverArrIndex = 0; coverArrIndex < coverArr.Length; coverArrIndex += 4) {
                 for (int plainBytePos = 0; plainBytePos < 4; plainBytePos++) {
-                    byte r = (byte)((byte)(vesselArr[vesselArrIndex + plainBytePos].R & vesselMask) + ((byte)(plainArr[plainArrIndex].R & plainMasks[plainBytePos]) >> 2 * (3 - plainBytePos)));
-                    byte g = (byte)((byte)(vesselArr[vesselArrIndex + plainBytePos].G & vesselMask) + ((byte)(plainArr[plainArrIndex].G & plainMasks[plainBytePos]) >> 2 * (3 - plainBytePos)));
-                    byte b = (byte)((byte)(vesselArr[vesselArrIndex + plainBytePos].B & vesselMask) + ((byte)(plainArr[plainArrIndex].B & plainMasks[plainBytePos]) >> 2 * (3 - plainBytePos)));
+                    byte r = (byte)((byte)(coverArr[coverArrIndex + plainBytePos].R & coverMask) + ((byte)(plainArr[plainArrIndex].R & plainMasks[plainBytePos]) >> 2 * (3 - plainBytePos)));
+                    byte g = (byte)((byte)(coverArr[coverArrIndex + plainBytePos].G & coverMask) + ((byte)(plainArr[plainArrIndex].G & plainMasks[plainBytePos]) >> 2 * (3 - plainBytePos)));
+                    byte b = (byte)((byte)(coverArr[coverArrIndex + plainBytePos].B & coverMask) + ((byte)(plainArr[plainArrIndex].B & plainMasks[plainBytePos]) >> 2 * (3 - plainBytePos)));
 
-                    cryptoArr[vesselArrIndex + plainBytePos] = Color.FromArgb(r, g, b);
+                    cryptoArr[coverArrIndex + plainBytePos] = Color.FromArgb(r, g, b);
                 }
                 plainArrIndex++;
             }
 
-            cryptoImg = ArrayToImage(vesselImg.Width, vesselImg.Height, cryptoArr);
+            cryptoImg = ArrayToImage(coverImg.Width, coverImg.Height, cryptoArr);
         }
 
         private void DecryptCrypto() {
