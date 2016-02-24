@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 
 namespace Stegosaurus {
     public abstract class StegoImageBase : Steganography {

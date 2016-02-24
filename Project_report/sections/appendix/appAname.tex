@@ -1,12 +1,12 @@
-\chapter{Stego\_Image\_LSB}
-%\label{ch:appAlabel}
-\section*{BaseLSB}
-\lstinputlisting[label={code:BaseLSB}, caption={BaseLSB class. Both EncodeLSB and DecodeLSB inherit from it.}]{../Programmer/Stego_Image_LSB/Stego_Image_LSB/BaseLSB.cs}
-\section*{EncodeLSB}
-\lstinputlisting[label={code:EncodeLSB}, caption={EncodeLSB class. The Class which encodes an image into its cover image.}]{../Programmer/Stego_Image_LSB/Stego_Image_LSB/EncodeLSB.cs}
-\section*{DecodeLSB}
-\lstinputlisting[label={code:DecodeLSB}, caption={DecodeLSB class. The Class which decodes an image from the cover image.}]{../Programmer/Stego_Image_LSB/Stego_Image_LSB/DecodeLSB.cs}
+\chapter{Stegosaurus}
+\label{ch:appAlabel}
+\section*{Namespace}
+\lstinputlisting[label={code:namespaceStegosaurus}, caption={The Steganography namespace}]{../Programmer/Stegosaurus/Stegosaurus/Steganography.cs}
+\section*{Image base class}
+\lstinputlisting[label={code:imageBaseClass}, caption={The image base class. The steganographic image inherits from this. This parent class implements the image/array conversion methods}]{../Programmer/Stegosaurus/Stegosaurus/StegoImageBase.cs}
+\section*{Image class}
+\lstinputlisting[label={code:ImageClass}, caption={The class used for all three images. It implements the encode/decode methods}]{../Programmer/Stegosaurus/Stegosaurus/LeastSignificantBitImage.cs}
 \section*{Program}
-\lstinputlisting[label={code:Program}, caption={Where the program starts. It opens up the windows form, which allows users to encode/decode images.}]{../Programmer/Stego_Image_LSB/Stego_Image_LSB/Program.cs}
+\lstinputlisting[label={code:Program}, caption={Where the program starts. It opens up the windows form, which allows users to encode/decode images.}]{../Programmer/Stegosaurus/TestForm/Program.cs}
 \section*{Windows Form}
-\lstinputlisting[label={code:WindowsForms}, caption={The graphical user interface for the program}]{../Programmer/Stego_Image_LSB/TestForm/TestForm.cs}
+\lstinputlisting[label={code:WindowsForms}, caption={The graphical user interface for the program}]{../Programmer/Stegosaurus/TestForm/TestForm.cs}
