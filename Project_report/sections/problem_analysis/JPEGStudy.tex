@@ -44,5 +44,34 @@ $$\begin{bmatrix}
 	Y &-& 0.34414&\cdot &(Cb-128) &- &0.71414&\cdot&(Cr-128)\\
 	Y &+& 1.772&\cdot& (Cb-128)&
 \end{bmatrix*}$$
+\subsubsection*{Segments in a JPEG file}
+
+The JPEG standard defines that a JPEG file must be ordered in segments. These segments describes how 
+\begin{wraptable}{r}{5.5cm}
+\caption{A wrapped table going nicely inside the text.}\label{wrap-tab:1}
+\begin{tabular}{|p{2.5cm}|l|}
+\hline
+Marker & Identifier\\ \hline
+0xFFD8 & SOI\\ \hline
+0xFFC2 & SOF \\ \hline
+0xFFC4 & DHT\\ \hline
+0xFFD8 & DQT \\ \hline
+0xFFDA & SOS\\ \hline
+0xFFE$n$ \newline$(n = (0 \ldots 7))$ & APP$n$\\ \hline
+0xFFD9 & EOI\\ \hline 
+\end{tabular}
+\end{wraptable}
+
+
+\begin{centering}
+\tcbox[left=0mm,right=0mm,top=0mm,bottom=0mm,boxsep=0mm,
+toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Start of Image (SOI) Segment]{
+	 	\begin{tabular}{|l|l|l|}
+			Size in bytes & Value & Description \\ \hline \hline
+			2 bytes & 0xFFC9 & SOI marker\\ \hline
+		\end{tabular}
+}
+\end{centering}
+
 
 \end{infobox}
