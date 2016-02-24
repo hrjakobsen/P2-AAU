@@ -1,25 +1,48 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Stegosaurus {
-    class LeastSignificantBitImage : StegoImageBase {
+    public class LeastSignificantBitImage : StegoImageBase {
+        private Bitmap _coverImage;
         private Bitmap _messageImage;
         private Bitmap _stegoImage;
-        
+
+        public Bitmap CoverImage {
+            get { return _coverImage; }
+            set {
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+                if (MessageImage != null && (value.Width / 2 != MessageImage.Width || value.Height / 2 != MessageImage.Height)) {
+                    throw new ArgumentException(nameof(value), "The width and height of the cover image must be exactly double those of the message image!");
+                }
+                _coverImage = value;
+            }
+        }
+
         public Bitmap MessageImage {
             get { return _messageImage; }
-            set { _messageImage = value; }
+            set {
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+                if (CoverImage != null && (value.Width * 2 != CoverImage.Width || value.Height * 2 != CoverImage.Height)) {
+                    throw new ArgumentException(nameof(value), "The width and height of the message image must be exactly half those of the cover image!");
+                }
+                _messageImage = value;
+            }
         }
 
         public Bitmap StegoImage {
             get { return _stegoImage; }
-            set { _stegoImage = value; }
+            set {
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+                _stegoImage = value;
+            }
         }
-
+        
         public override void Encode() {
             const byte coverMask = 0xFC;
             byte[] messageMasks = { 0xC0, 0x30, 0xC, 0x3 };
@@ -50,10 +73,10 @@ namespace Stegosaurus {
 
         public override void Decode() {
             /* Flatten stego image */
-            Color[] stegoArr = ImageToArray(CoverImage);
+            Color[] stegoArr = ImageToArray(StegoImage);
 
-            /* Array for holding flattened plain image */
-            Color[] plainArr = new Color[CoverImage.Width / 2 * CoverImage.Height / 2];
+            /* Array for holding flattened message image */
+            Color[] plainArr = new Color[StegoImage.Width / 2 * StegoImage.Height / 2];
             const byte maskPlain = 0x3;
 
             for (int plainArrIndex = 0; plainArrIndex < plainArr.Length; plainArrIndex++) {
@@ -66,7 +89,7 @@ namespace Stegosaurus {
                 plainArr[plainArrIndex] = Color.FromArgb(r, g, b);
             }
 
-            MessageImage = ArrayToImage(CoverImage.Width / 2, CoverImage.Height / 2, plainArr);
+            MessageImage = ArrayToImage(StegoImage.Width / 2, StegoImage.Height / 2, plainArr);
         }
     }
 }

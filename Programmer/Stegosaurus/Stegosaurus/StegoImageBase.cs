@@ -1,19 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 
 namespace Stegosaurus {
-    abstract class StegoImageBase : Steganography {
-        private Bitmap _coverImage;
-
-        public Bitmap CoverImage {
-            get { return _coverImage; }
-            set { _coverImage = value; }
-        }
-
+    public abstract class StegoImageBase : Steganography {
         public abstract override void Encode();
         public abstract override void Decode();
 
