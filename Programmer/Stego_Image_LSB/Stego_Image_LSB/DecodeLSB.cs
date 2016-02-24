@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 
 namespace Stego_Image_LSB {
     public class DecodeLSB : BaseLSB {
