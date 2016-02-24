@@ -1,4 +1,4 @@
-﻿namespace JpegFromBook {
+namespace JpegFromBook {
     class DefaultTables {
         private static byte[] huffmanYDCCodeLengths = {
             0x00, 0x01, 0x05, 0x01, 0x01, 0x01, 0x01, 0x01,
