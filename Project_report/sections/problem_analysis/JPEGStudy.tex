@@ -2,7 +2,7 @@
 
 \begin{infobox}{\section[A Study of the JPEG file format]{A Study of the JPEG file format\footnotenomarker{This section may be omitted without loss of continuity}}}
 
-\section*{An Overview of JPEG}
+\subsection*{An Overview of JPEG}
 JPEG is an image format defined by the Joint Photographic Experts Group. 
 This type of image requires much more computing power to process, both in terms of encoding and decoding, compared to a much more simple format like Windows BMP, this will become more clear in the following sections. 
 A crucial thing to note about JPEG is that one of the things that allows the image to be compressed, is that the encoding process is lossless, which means that when saving an image to JPEG, you lose information about the individual pixels.
@@ -44,5 +44,99 @@ $$\begin{bmatrix}
 	Y &-& 0.34414&\cdot &(Cb-128) &- &0.71414&\cdot&(Cr-128)\\
 	Y &+& 1.772&\cdot& (Cb-128)&
 \end{bmatrix*}$$
+\subsubsection*{Segments in a JPEG file}
+\begin{wraptable}{r}{5.5cm}
+\caption{Most commonly used markers in JPEG files}
+\label{tab:markers}
+\begin{tabular}{|p{2.7cm}|l|}
+\hline
+Marker & Identifier\\ \hline
+0xFFD8 & SOI\\ \hline
+0xFFE$n$ \newline$(n = \{0 \ldots F\})$ & APP$n$\\ \hline
+0xFFD8 & DQT \\ \hline
+0xFFC0 & SOF \\ \hline
+0xFFC4 & DHT\\ \hline
+0xFFDA & SOS\\ \hline
+0xFFD9 & EOI\\ \hline 
+\end{tabular}
+\end{wraptable}
+
+The JPEG standard defines that a JPEG file must be ordered in segments. These segments are each indicator by a marker, and the most common segment markers are shown in table \ref{tab:markers}. Most of the markers are followed by 2 bytes of data describing the length of the following segment. Knowing the length makes it possible for a decoder to skip segments it does not know how to understand. 
+
+As is shown by table \ref{tab:markers}, all markers start with the byte 0xFF, there exists one special case, where 0xFF does not define a marker, and that case is if the following byte is 0x00. More on this later, when it is examined how image data is written to a file.
+
+\subsubsection*{The SOI and EOI markers}
+\begin{centering}
+\hspace{1.2cm}\tcbox[left=0mm,right=0mm,top=0mm,bottom=0mm,boxsep=0mm,
+toptitle=0.5mm,center title, nobeforeafter, bottomtitle=0.5mm,title=Start of Image (SOI) Segment]{
+	 	\begin{tabular}{|l|l|l|}
+			Size in bytes  & Description \\ \hline \hline
+			2 bytes  & SOI marker\\ \hline
+		\end{tabular}
+} \tcbox[left=0mm,right=0mm,top=0mm,bottom=0mm,boxsep=0mm,
+toptitle=0.5mm,center title, nobeforeafter,bottomtitle=0.5mm,title=End of Image (EOI) Segment]{
+	 	\begin{tabular}{|l|l|l|}
+			Size in bytes  & Description \\ \hline \hline
+			2 bytes  & EOI marker\\ \hline
+		\end{tabular}
+}
+\end{centering}\\
+The first marker a JPEG decoder meets in a JPEG file is the SOI (Start of Image) marker. The marker does not specify a length in the following bytes, since the segment only consists of the marker itself. Likewise, the last marker a decoder will meet is the EOI (End of Image) marker, which specifies that all data has been read from the image.
+
+\subsubsection*{The APP$n$ marker}
+\begin{centering}
+\tcbox[left=0mm,right=0mm,top=0mm,bottom=0mm,boxsep=0mm,
+toptitle=0.5mm,center title, bottomtitle=0.5mm,title=APP$n$ Segment]{
+	 	\begin{tabular}{|l|l|l|}
+			Size in bytes  & Description \\ \hline \hline
+			2 bytes  & APP$n$ marker\\ \hline
+			2 bytes & Segment length\\ \hline
+			variable & Application specific data
+		\end{tabular}
+}
+\end{centering}
+The JPEG standard defines the APP segments to be application specific data, which can be placed anywhere in the image file. Applications can then use these segments to store additional information about the image file. JIFF specifies that the APP$_0$ is used for identifying the file as a valid JFIF file, and that the APP$_0$ segment must be placed immediately after the SOI marker.
+
+By convention the APP$n$ segments use a null terminated string for identifying themselves. The JFIF APP segment as found in almost all JPEG files can be seen below.
+
+\begin{centering}
+\tcbox[left=0mm,right=0mm,top=0mm,bottom=0mm,boxsep=0mm,
+toptitle=0.5mm,center title, bottomtitle=0.5mm,title=JFIF APP$_0$ Segment, label={JFIFAPP0}]{
+
+	 	\begin{tabular}{|l|l|l|}
+			Size in bytes  & Value \\ \hline \hline
+			2 bytes  & APP$_0$ marker\\ \hline
+			2 bytes & Segment length\\ \hline
+			5 bytes & Null terminated string ``JIFF''\\ \hline
+			2 bytes & Major and minor version number\\ \hline
+			1 byte & Units for setting photo density\\ \hline
+			4 bytes & X-density and Y-density\\ \hline
+			2 bytes & Width and height of thumbnail image\\ \hline
+			variable & Thumbnail data saved in RGB colour space.\\ \hline
+		\end{tabular}
+}
+\end{centering}
+
+\subsubsection*{The DQT marker}
+\begin{centering}
+\tcbox[left=0mm,right=0mm,top=0mm,bottom=0mm,boxsep=0mm,
+toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Define Quantization Table Segment]{
+	 	\begin{tabular}{|l|l|l|}
+			Size in bytes  & Description \\ \hline \hline
+			2 byte  & DQT marker\\ \hline
+			4 bits & Quantization value size (0 = 1 byte, 1 = 2 bytes) \\ \hline
+			4 bits & Table identifier (0-3) \\ \hline
+			64 or 128 bytes & Unsigned quantization values\\ \hline
+		\end{tabular}
+}
+\end{centering}
+
+Quantization tables are what makes JPEG compression lossless. 
+After sampling, each MCU are split up into 8x8 chunks of data. 
+These data are then quantized using quantization tables. 
+Quantization is the process of dividing each value in the 8x8 block with a corresponding value in a quantization table. 
+The JPEG specification allows 4[SOURCE NEEDED, JEG ER IKKE SIKKER] quantization tables to be used, while JFIF limits it even further to 2 tables. 
+This means that two of our three channels have to share quantization tables. 
+As the retina in the eye are much more sensible to changes in the luminance channel, JFIF specifies that the luminance channel gets it own quantization table, while the chroma components must share a quantization table.
 
 \end{infobox}
