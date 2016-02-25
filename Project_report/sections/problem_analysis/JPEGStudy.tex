@@ -18,8 +18,11 @@ Without a way to ensure that all decoders would read an encoded image the same w
 
 The JFIF specification is what allows JPEG images to be as widespread as they are today, where JPEG are used by large services like Facebook to store and serve small images of reasonable quality.
 
-\subsection*{Dissection of a JPEG file}
 [Et eller andet introværk]
+
+\subsection*{The Process of Encoding a JFIF Image}
+When encoding a JFIF image, we start off with a Bitmap, that is, a two dimensional array of pixels each consisting of a R, G and B value. The first step is transforming those colour channels into the colour space used in JFIF images. 
+
 \subsubsection*{The Colour-space}
 When describing colours in terms of computer science, we often use the colour space RGB, where each component corresponds to the intensity of the red, blue and green LEDs that make up a pixel on our screen. A colour in the YCbCr colour system is made up from the luminance (Y) which describes light intensity together with the blue-difference and the red-difference chroma components which together describes the actual colour.
 
@@ -44,6 +47,42 @@ $$\begin{bmatrix}
 	Y &-& 0.34414&\cdot &(Cb-128) &- &0.71414&\cdot&(Cr-128)\\
 	Y &+& 1.772&\cdot& (Cb-128)&
 \end{bmatrix*}$$
+
+These values all range from 0 to 255, like the R, G and B values. However when we later will encode these values, it is much more efficient to have them centered around 0 instead, so that the values range from -128 to 127. To do this, we simple subtract 128 from each Y, Cb and Cr value. 
+
+\subsubsection*{Sampling}
+When looking at an image, the eye is much more sensitive to small changes in the luminance channels, than they are to changes in the chroma channels. Luckily, we can use this fact to compress our image even more in terms of filesize using a technique called sampling. 
+
+The JPEG standard allows each component to be sampled. This means that we can use sampling to scale each component individually. In reality, we calculate luminance for every pixel in the image, while only calculating the chroma channels for each 2x2 block. This gives us a sampling of 2x2 for the luminance component, while the chroma components have a sampling of 1x1. This means that for every 1 pixel in the x direction we calculate the chroma components, we calculate 2 luminance components, and the same with the y direction. Put in another way, we have 4 times as much information about the luminance component than of the chroma components.
+
+\begin{centering}
+\includegraphics[width=.4\linewidth]{lenaYchannel.png}
+\includegraphics[width=.2\linewidth]{lenaCbchannel.png}
+\includegraphics[width=.2\linewidth]{lenaCrchannel.png}
+\captionof{figure}{Y, Cb and Cr Channels of an Image}\label{fig:YCbCrChannels}
+\end{centering}
+
+\subsubsection*{Discrete Cosine Transform}
+After sampling the image, it must be split into blocks called MCU's. The default size of an MCU is 8x8 pixel, but it changes when sampling is used. In the section above, we used a sampling of 4:2:0 where the chroma channels where downscaled by 50\% in both directions. This means that when the sampling of 4:2:0 is used, we have a MCU of size 16x16 pixels.
+
+For each 8x8 block of pixels in our MCU's we perform DCT. The two dimensional DCT is given by:
+
+$$ G_{u,v} = c(u,v)\sum_{x=0}^{7}\sum_{y=0}^{7}g_{x,y}\cos{\left(\frac{(2x+1)u\pi}{16}\right)}\cos{\left(\frac{(2y+1)v\pi}{16}\right)} $$
+
+where:
+\begin{itemize}
+	\item $u$ is the horizontal spatial frequency 
+	\item $v$ is the vertical spatial frequency 
+	\item $c(u,v) = \begin{cases}\frac{1}{8} \quad \quad \quad \quad\text{if } u=v=0\\ 
+	                             0.17677 \quad \text{ if } u = 0 \text{ or } v = 0\\
+	                             \frac{1}{4} \quad \quad \quad \quad\text{otherwise}
+	                             \end{cases} $
+    \item $g_{x,y}$ is the value of pixel at coordinates $(x,y)$ 
+\end{itemize}
+
+\subsubsection*{Quantization}
+
+\subsection*{Dissection of a JPEG file}
 \subsubsection*{Segments in a JPEG file}
 \begin{wraptable}{r}{5.5cm}
 \caption{Most commonly used markers in JPEG files}
@@ -97,11 +136,11 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=APP$n$ Segment]{
 \end{centering}
 The JPEG standard defines the APP segments to be application specific data, which can be placed anywhere in the image file. Applications can then use these segments to store additional information about the image file. JFIF specifies that the APP$_0$ is used for identifying the file as a valid JFIF file, and that the APP$_0$ segment must be placed immediately after the SOI marker.
 
-By convention the APP$n$ segments use a null terminated string for identifying themselves. The JFIF APP segment as found in almost all JPEG files can be seen below.
+By convention the APP$n$ segments use a null terminated string for identifying themselves. The JFIF APP segment as found in almost all JPEG files can be seen in table \ref{JFIFAPP0}.
 
 \begin{centering}
 \tcbox[left=0mm,right=0mm,top=0mm,bottom=0mm,boxsep=0mm,
-toptitle=0.5mm,center title, bottomtitle=0.5mm,title=JFIF APP$_0$ Segment, label={JFIFAPP0}]{
+toptitle=0.5mm,center title, bottomtitle=0.5mm,title=JFIF APP$_0$ Segment]{
 
 	 	\begin{tabular}{|l|l|l|}
 			Size in bytes  & Value \\ \hline \hline
@@ -115,6 +154,8 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=JFIF APP$_0$ Segment, label
 			variable & Thumbnail data saved in RGB colour space.\\ \hline
 		\end{tabular}
 }
+
+	 	\captionof{table}{JFIF APP$_0$ Segment}\label{JFIFAPP0}
 \end{centering}
 
 \subsubsection*{The DQT marker}
@@ -131,12 +172,6 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Define Quantization Table S
 }
 \end{centering}
 
-Quantization tables are what makes JPEG compression lossy. 
-After sampling, each MCU are split up into 8x8 chunks of data. 
-These data are then quantized using quantization tables. 
-Quantization is the process of dividing each value in the 8x8 block with a corresponding value in a quantization table. 
-The JPEG specification allows 4[SOURCE NEEDED, JEG ER IKKE SIKKER] quantization tables to be used, while JFIF limits it even further to 2 tables. 
-This means that two of our three channels have to share quantization tables. 
-As the retina in the eye are much more sensible to changes in the luminance channel, JFIF specifies that the luminance channel gets it own quantization table, while the chroma components must share a quantization table.
+
 
 \end{infobox}
