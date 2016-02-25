@@ -95,7 +95,7 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=APP$n$ Segment]{
 		\end{tabular}
 }
 \end{centering}
-The JPEG standard defines the APP segments to be application specific data, which can be placed anywhere in the image file. Applications can then use these segments to store additional information about the image file. JIFF specifies that the APP$_0$ is used for identifying the file as a valid JFIF file, and that the APP$_0$ segment must be placed immediately after the SOI marker.
+The JPEG standard defines the APP segments to be application specific data, which can be placed anywhere in the image file. Applications can then use these segments to store additional information about the image file. JFIF specifies that the APP$_0$ is used for identifying the file as a valid JFIF file, and that the APP$_0$ segment must be placed immediately after the SOI marker.
 
 By convention the APP$n$ segments use a null terminated string for identifying themselves. The JFIF APP segment as found in almost all JPEG files can be seen below.
 
@@ -107,7 +107,7 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=JFIF APP$_0$ Segment, label
 			Size in bytes  & Value \\ \hline \hline
 			2 bytes  & APP$_0$ marker\\ \hline
 			2 bytes & Segment length\\ \hline
-			5 bytes & Null terminated string ``JIFF''\\ \hline
+			5 bytes & Null terminated string ``JFIF''\\ \hline
 			2 bytes & Major and minor version number\\ \hline
 			1 byte & Units for setting photo density\\ \hline
 			4 bytes & X-density and Y-density\\ \hline
@@ -131,7 +131,7 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Define Quantization Table S
 }
 \end{centering}
 
-Quantization tables are what makes JPEG compression lossless. 
+Quantization tables are what makes JPEG compression lossy. 
 After sampling, each MCU are split up into 8x8 chunks of data. 
 These data are then quantized using quantization tables. 
 Quantization is the process of dividing each value in the 8x8 block with a corresponding value in a quantization table. 
