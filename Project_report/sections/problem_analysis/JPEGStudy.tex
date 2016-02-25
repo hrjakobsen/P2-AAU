@@ -81,6 +81,45 @@ where:
 \end{itemize}
 
 \subsubsection*{Quantization}
+Quantization tables are what makes JPEG compression lossy. 
+After the DTC process, the quantization progress are performed on the resulting 8x8 block of values.  
+Quantization is the process of dividing each value in the 8x8 block with a corresponding value in a quantization table. 
+The JPEG specification allows 4[SOURCE NEEDED, JEG ER IKKE SIKKER] quantization tables to be used, while JFIF limits it even further to 2 tables. 
+This means that two of our three channels have to share quantization tables. 
+As the retina in the eye are much more sensible to changes in the luminance channel, JFIF specifies that the luminance channel gets it own quantization table, while the chroma components must share a quantization table.
+
+Although the JPEG standard does not force you to use default tables, they do provide some tables which has shown good results with their test images. The proposed quantization table for the image channels are shown below.
+
+\begin{centering}
+\hspace{-3mm}\tcbox[left=0mm,right=0mm,top=0mm,bottom=0mm,boxsep=0mm,
+toptitle=0.5mm,center title, bottomtitle=0.5mm,nobeforeafter,title=Proposed Quantization Table for Luminance Channel]{
+\small
+	 	\begin{tabular}{|c|c|c|c|c|c|c|c|}\hline
+			16 & 11 & 10 & 16 & 24 & 40 & 51 & 61 \\ \hline
+			12 & 12 & 14 & 19 & 26 & 58 & 60 & 55 \\ \hline
+			15 & 14 & 16 & 24 & 40 & 57 & 69 & 56 \\ \hline
+			14 & 17 & 22 & 29 & 51 & 87 & 80 & 62 \\ \hline
+			18 & 24 & 37 & 56 & 68 & 109 & 103 & 77 \\ \hline
+			24 & 35 & 55 & 64 & 81 & 104 & 113 & 92 \\ \hline
+			49 & 64 & 78 & 87 & 103 & 121 & 120 & 101 \\ \hline
+			72 & 92 & 95 & 98 & 112 & 100 & 103 & 99 \\ \hline
+		\end{tabular}
+}
+\tcbox[left=0mm,right=0mm,top=0mm,bottom=0mm,boxsep=0mm,
+toptitle=0.5mm,center title, nobeforeafter,bottomtitle=0.5mm,title=Proposed Quantization Table for Chroma Channels]{
+\small
+	 	\begin{tabular}{|c|c|c|c|c|c|c|c|}\hline
+			17 & 18 & 24 & 47 & 99 & 99 & 99 & 99\\ \hline
+			18 & 21 & 26 & 66 & 99 & 99 & 99 & 99\\ \hline
+			24 & 26 & 56 & 99 & 99 & 99 & 99 & 99\\ \hline
+			47 & 66 & 99 & 99 & 99 & 99 & 99 & 99\\ \hline
+			99 & 99 & 99 & 99 & 99 & 99 & 99 & 99\\ \hline
+			99 & 99 & 99 & 99 & 99 & 99 & 99 & 99\\ \hline
+			99 & 99 & 99 & 99 & 99 & 99 & 99 & 99\\ \hline
+			99 & 99 & 99 & 99 & 99 & 99 & 99 & 99\\ \hline
+		\end{tabular}
+}
+\end{centering}
 
 \subsection*{Dissection of a JPEG file}
 \subsubsection*{Segments in a JPEG file}
