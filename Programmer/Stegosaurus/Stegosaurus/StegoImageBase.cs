@@ -5,6 +5,7 @@ namespace Stegosaurus {
         public abstract override void Encode();
         public abstract override void Decode();
 
+        /* Converts a bitmap into an array row by row */
         protected static Color[] ImageToArray(Bitmap imgIn) {
             int height = imgIn.Height;
             int width = imgIn.Width;
@@ -18,6 +19,7 @@ namespace Stegosaurus {
             return arrOut;
         }
 
+        /* Converts an array into a bitmap */
         protected static Bitmap ArrayToImage(int width, int height, Color[] arrIn) {
             Bitmap imgOut = new Bitmap(width, height);
             int arrIndex = 0;

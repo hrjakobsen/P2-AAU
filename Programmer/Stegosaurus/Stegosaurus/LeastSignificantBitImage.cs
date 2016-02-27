@@ -7,6 +7,7 @@ namespace Stegosaurus {
         private Bitmap _messageImage;
         private Bitmap _stegoImage;
 
+        /* Setter for the CoverImage property checks the input */
         public Bitmap CoverImage {
             get { return _coverImage; }
             set {
@@ -20,6 +21,7 @@ namespace Stegosaurus {
             }
         }
 
+        /* Setter for the MessageImage property checks the input */
         public Bitmap MessageImage {
             get { return _messageImage; }
             set {
@@ -33,6 +35,7 @@ namespace Stegosaurus {
             }
         }
 
+        /* Setter for the StegoImage property checks the input */
         public Bitmap StegoImage {
             get { return _stegoImage; }
             set {
@@ -44,9 +47,11 @@ namespace Stegosaurus {
         }
         
         public override void Encode() {
+            int messageArrIndex = 0;
+
+            /* Used to mask the correct bits of the RGB channels */
             const byte coverMask = 0xFC;
             byte[] messageMasks = { 0xC0, 0x30, 0xC, 0x3 };
-            int messageArrIndex = 0;
 
             /* Flatten cover image */
             Color[] coverArr = ImageToArray(CoverImage);
@@ -57,6 +62,7 @@ namespace Stegosaurus {
             /* Array for holding the flattened decoded image */
             Color[] decodedArr = new Color[CoverImage.Width * CoverImage.Height];
 
+            /* WRITE SOMETHING HERE! */
             for (int coverArrIndex = 0; coverArrIndex < coverArr.Length; coverArrIndex += 4) {
                 for (int messageBytePos = 0; messageBytePos < 4; messageBytePos++) {
                     byte r = (byte)((byte)(coverArr[coverArrIndex + messageBytePos].R & coverMask) + ((byte)(messageArr[messageArrIndex].R & messageMasks[messageBytePos]) >> 2 * (3 - messageBytePos)));
@@ -68,6 +74,7 @@ namespace Stegosaurus {
                 messageArrIndex++;
             }
 
+            /* Convert the created array into a bitmap */
             StegoImage = ArrayToImage(CoverImage.Width, CoverImage.Height, decodedArr);
         }
 
@@ -79,6 +86,7 @@ namespace Stegosaurus {
             Color[] plainArr = new Color[StegoImage.Width / 2 * StegoImage.Height / 2];
             const byte maskPlain = 0x3;
 
+            /* WRITE SOMETHING HERE! */
             for (int plainArrIndex = 0; plainArrIndex < plainArr.Length; plainArrIndex++) {
                 byte r = 0, g = 0, b = 0;
                 for (int stegoBitPos = 0; stegoBitPos < 4; stegoBitPos++) {
@@ -89,6 +97,7 @@ namespace Stegosaurus {
                 plainArr[plainArrIndex] = Color.FromArgb(r, g, b);
             }
 
+            /* Convert the created array into a bitmap */
             MessageImage = ArrayToImage(StegoImage.Width / 2, StegoImage.Height / 2, plainArr);
         }
     }
