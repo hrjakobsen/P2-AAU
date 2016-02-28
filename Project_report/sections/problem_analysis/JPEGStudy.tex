@@ -121,6 +121,24 @@ toptitle=0.5mm,center title, nobeforeafter,bottomtitle=0.5mm,title=Proposed Quan
 }
 \end{centering}
 
+\subsection*{Zigzag-ordering} 
+Because of the quantization process, there is now a lot of zeroes in the lower-right corner of the 8x8 block of pixels. This feature can be utilized to compress the image data, but first the table must be ordered so that the zeroes are placed next to each other. 
+
+To do this, the 8x8 block of pixels are now read in a zigzag manner displayed on figure \ref{fig:zigzag}. By reading the block this way, you have a 64 dimensional vector with a lot of consecutive zeroes. 
+
+\begin{centering}
+\includegraphics[width=.5\textwidth]{figures/zigzagordering.png}
+\captionof{figure}{Zigzag-ordering of the 8x8 block of pixels}
+\label{fig:zigzag}
+\end{centering} 
+
+\subsection*{Encoding the vector}
+The first entry in the vector is called the DC coefficient, and will be encoded differently from the other 63. To encode the last 63 entries, run-length encoding (RLE) is used. Each value different from zero in the vector is represented as $(\text{Number of zeroes before this entry}, \text{Entry})$. Because of the many consecutive zeroes in the data, this allows a very compact encoding of the numbers. If at one point in the vector, only zeroes remains in the vector, we end the block with the EOB value (0,0). 
+
+There are some restrictions to this encoding, as only a nibble is used to represent the number of preceding zeroes, the maximum value we can denote is $F_{16}=15_{10}$. If there is more than 15 consecutive zeroes, we can encode 16 zeroes as (15,0), and by using multiple of these values, denote any number of consecutive zeroes. 
+
+\subsection*{Huffman coding}
+
 \subsection*{Dissection of a JPEG file}
 \subsubsection*{Segments in a JPEG file}
 \begin{wraptable}{r}{5.5cm}
@@ -203,7 +221,7 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=JFIF APP$_0$ Segment]{
 toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Define Quantization Table Segment]{
 	 	\begin{tabular}{|l|l|l|}
 			Size in bytes  & Description \\ \hline \hline
-			2 byte  & DQT marker\\ \hline
+			2 bytes  & DQT marker\\ \hline
 			4 bits & Quantization value size (0 = 1 byte, 1 = 2 bytes) \\ \hline
 			4 bits & Table identifier (0-3) \\ \hline
 			64 or 128 bytes & Unsigned quantization values\\ \hline
@@ -211,6 +229,76 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Define Quantization Table S
 }
 \end{centering}
 
+\subsubsection*{The DHT marker}
+\begin{centering}
+\tcbox[left=0mm,right=0mm,top=0mm,bottom=0mm,boxsep=0mm,
+toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Define Huffman Table Segment]{
+	 	\begin{tabular}{|l|l|l|}
+			Size in bytes  & Description \\ \hline \hline
+			2 bytes  & DHT marker\\ \hline
+			4 bits & Table class (0 = DC table, 1 = AC table) \\ \hline
+			4 bits & Table identifier (0 or 1) \\ \hline
+			16 bytes & A byte for the count of Huffman codes for each length 1-16\\ \hline
+			Variable & The one byte codes encoded by the Huffman Table\\ \hline
+		\end{tabular}
+}
+\end{centering}
+\subsubsection*{The SOF marker}
+\begin{centering}
+\tcbox[left=0mm,right=0mm,top=0mm,bottom=0mm,boxsep=0mm,
+toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Start of Frame Segment]{
+	 	\begin{tabular}{|l|l|l|}
+			Size in bytes  & Description \\ \hline \hline
+			2 bytes  & SOF marker\\ \hline
+			2 bytes & Image height \\ \hline
+			2 bytes & Image width \\ \hline
+			1 byte & Number of components\\ \hline
+		\end{tabular}
+}
+\end{centering}
+
+\begin{centering}
+\tcbox[left=0mm,right=0mm,top=0mm,bottom=0mm,boxsep=0mm,
+toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Component Segment]{
+	 	\begin{tabular}{|l|l|l|}
+			Size in bytes  & Description \\ \hline \hline
+			1 byte & Component identifier (1 = Y, 2 = Cb, 3 = Cr) \\ \hline
+			4 bits byte & Horizontal sampling \\ \hline
+			4 bits byte & Vertical sampling \\ \hline
+			1 byte & Quantization table identifier \\ \hline
+		\end{tabular}
+}
+\end{centering}
+
+\subsubsection*{The SOS marker}
+\begin{centering}
+\tcbox[left=0mm,right=0mm,top=0mm,bottom=0mm,boxsep=0mm,
+toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Start of Scan Segment]{
+	 	\begin{tabular}{|l|l|l|}
+			Size in bytes  & Description \\ \hline \hline
+			2 bytes  & SOS marker\\ \hline
+			1 byte & Number of components \\ \hline
+			2 $\cdot$ ``Number of components'' bytes & Scan component descriptor \\ \hline
+			1 byte & Spectral selection start\\ \hline
+			1 byte & Spectral selection end \\ \hline
+			1 byte & Successive approximation\\ \hline
+		\end{tabular}
+}
+\end{centering}
+
+\begin{centering}
+\tcbox[left=0mm,right=0mm,top=0mm,bottom=0mm,boxsep=0mm,
+toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Scan Component Descriptor Segment]{
+	 	\begin{tabular}{|l|l|l|}
+			Size in bytes  & Description \\ \hline \hline
+			1 byte & Component identifier \\ \hline
+			4 bits & DC Huffman Table identifier\\ \hline
+			4 bits & AC Huffman Table identifier\\ \hline
+		\end{tabular}
+}
+\end{centering}
+
+\subsubsection*{The scan data}
 
 
 \end{infobox}
