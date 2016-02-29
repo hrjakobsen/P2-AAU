@@ -184,7 +184,7 @@ Marker & Identifier\\ \hline
 \end{tabular}
 \end{wraptable}
 
-The JPEG standard defines that a JPEG file must be ordered in segments. These segments are each indicator by a marker, and the most common segment markers are shown in table \ref{tab:markers}. Most of the markers are followed by 2 bytes of data describing the length of the following segment. Knowing the length makes it possible for a decoder to skip segments it does not know how to understand. 
+The JPEG standard defines that a JPEG file must be ordered in segments. These segments are each indicated by a marker, and the most common segment markers are shown in table \ref{tab:markers}. Most of the markers are followed by 2 bytes of data describing the length of the following segment. Knowing the length makes it possible for a decoder to skip segments it does not know how to understand. 
 
 As is shown by table \ref{tab:markers}, all markers start with the byte 0xFF. There exists one special case, where 0xFF does not define a marker, and that case is if the following byte is 0x00. More on this later, when it is examined how image data is written to a file.
 
@@ -350,6 +350,6 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Scan Component Descriptor S
 \subsubsection*{The scan data}
 After the SOS segment, the scan data follows, which is the actual image information. The data is not preceded by any marker. This is where the Huffman coded data is written, and is the data that the image processors use for calculating the actual pixels colours.
 
-In the beginning of this section it was explained that the a marker with the name FF00 does not exist. The reason for this is that if the scan data must encode the byte $1111 1111_2=\text{FF}_{16}$ it cannot do so without it being read as a marker. Therefore the JPEG specification reads that two consecutive bytes $\text{FF}00$ must be read as $\text{FF}$ and not as a marker. 
+In the beginning of this section it was explained that a marker with the name FF00 does not exist. The reason for this is that if the scan data must encode the byte $1111 1111_2=\text{FF}_{16}$ it cannot do so without it being read as a marker. Therefore the JPEG specification reads that two consecutive bytes $\text{FF}00$ must be read as $\text{FF}$ and not as a marker. 
 
 \end{infobox}
