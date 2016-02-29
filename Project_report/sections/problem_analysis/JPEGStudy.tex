@@ -139,7 +139,7 @@ The DC coefficient is often large numbers, so it would be a waste of bits to wri
 There are some restrictions to this encoding, as only a nibble is used to represent the number of preceding zeroes, the maximum value we can denote is $F_{16}=15_{10}$. If there are more than 15 consecutive zeroes, we can encode 16 zeroes as (15,0), and by using multiple of these values, denote any number of consecutive zeroes. 
 
 \subsection*{Huffman coding}
-After the run-length encoding, the pairs must be written to the file, but before that can happen, the JPEG standards define even more compression of our data. Instead of storing the actual values from the vector, a category of the number, along with a bit representation is stored. 
+After the run-length encoding, the pairs must be written to the file, but before that can happen, the JPEG standard defines even more compression of our data. Instead of storing the actual values from the vector, a category of the number, along with a bit representation is stored. 
 
 A category of a number is the least amount of bits required to represent the number. The category of numbers in the range $[-32767, 32767]$ are shown in the table below.
 
