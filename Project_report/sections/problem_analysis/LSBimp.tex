@@ -16,38 +16,16 @@ We then mask the concealed image to only keep the information stored in two bits
 The result will be a slightly changed pixel by a value between 0 and 3 for the Red, Green and Blue channels. 
 The first pixel in the cover will contain the two most significant bits of the concealed image, the next will contain the third and fourth, and so on. This is illustrated in figure \ref{fig:hundigrafik}
 
-\begin{figure}
-		\centering
-		\includegraphics[width=0.2\textwidth]{figures/hundikatgrafik2.png}
-		\caption{Illustration of how the message is saved within its cover image. Full image can be seen in figure \ref{fig:hundigrafik2}, located after the bibliography}
-		\label{fig:hundigrafik}
-\end{figure}
+
 To get back the image information, we once again use the bitwise \& operator, to only keep the information within the least-significant bits of every pixel, then left-shift them accordingly and save this to a Colour array. Once every pixel has been read, the Colour array can be transformed into an image which looks just like the original.
 
-The result of concealing \ref{img2}, within \ref{img1}, can be seen in \ref{img3}
-
-\begin{figure}[]
+\begin{figure}
 	\centering
-	\begin{subfigure}[b]{.3\linewidth}
-		\includegraphics[width=\linewidth]{cover.jpg}
-		\captionof{figure}{Cover \\image}
-		\label{img1}
-	\end{subfigure}
-	\hspace{.02\linewidth}
-	\begin{subfigure}[b]{.15\linewidth}
-		\includegraphics[width=\linewidth]{message.jpg}
-		\captionof{figure}{Message image}
-		\label{img2}
-	\end{subfigure}
-	\hspace{.02\linewidth}
+	\includegraphics[width=1\textwidth]{figures/hundikatgrafik2.png}
+	\caption{Illustration of how the message is saved within its cover image. Full image can be seen in figure \ref{fig:hundigrafik2}, located after the bibliography}
+	\label{fig:hundigrafik}
+\end{figure}
 
-	\begin{subfigure}[b]{.3\linewidth}
-		\includegraphics[width=.97\textwidth]{stego.jpg}
-		\captionof{figure}{Steganographic image}
-		\label{img3}
-	\end{subfigure}
-	\caption{Hiding a picture within a picture}\label{LSBDemo}
-\end{figure} 
 
 
 \input{sections/problem_analysis/LSBalgoBedre.tex}
