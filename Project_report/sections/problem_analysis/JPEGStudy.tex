@@ -83,7 +83,7 @@ where:
 Quantization tables are what makes JPEG compression lossy. 
 After the DTC process, the quantization progress is performed on the resulting 8x8 block of values.  
 Quantization is the process of dividing each value in the 8x8 block with a corresponding value in a quantization table. 
-The JPEG specification allows 15[SOURCE NEEDED, JEG ER IKKE SIKKER] quantization tables to be used, while JFIF limits it even further to 2 tables. 
+The JPEG specification allows 4 quantization tables to be used, while JFIF limits it even further to 2 tables. 
 This means that two of our three channels have to share quantization tables. 
 As the retina in the eye are much more sensitive to changes in the luminance channel, JFIF specifies that the luminance channel gets its own quantization table, while the chroma components must share a quantization table.
 
@@ -132,7 +132,7 @@ To do this, the 8x8 block of pixels are now read in a zigzag manner displayed on
 \end{centering} 
 
 \subsection*{Encoding the vector}
-The first entry in the vector is called the DC coefficient, and will be encoded differently from the other 63. To encode the last 63 entries, run-length encoding (RLE) is used. Each value different from zero in the vector is represented as $(\text{Number of zeroes before this entry}, \text{Entry})$. Because of the many consecutive zeroes in the data, this allows a very compact encoding of the numbers. If at one point in the vector only zeroes remains in the vector, we end the block with the EOB value (0,0). 
+The first entry in the vector is called the DC coefficient, and will be encoded differently from the other 63. To encode the last 63 entries, run-length encoding (RLE) is used. Each value different from zero in the vector is represented as $(\text{Number of zeroes before this entry}, \text{Entry})$. Because of the many consecutive zeroes in the data, this allows a very compact encoding of the numbers. If at one point in the vector only zeroes remain, we end the block with the EOB value (0,0). 
 
 The DC coefficient is often large numbers, so it would be a waste of bits to write it in full to the file each time. Instead only the difference from the last DC coefficient is stored, so that smaller numbers need to be encoded. So when reading a JPEG file, a decoder must keep track of the last DC coefficient. The first coefficient encoded, of course, is the whole number.
 
@@ -249,6 +249,7 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Define Quantization Table S
 	 	\begin{tabular}{|l|l|l|}
 			Size in bytes  & Description \\ \hline \hline
 			2 bytes  & DQT marker\\ \hline
+			2 bytes & Segment length\\ \hline
 			4 bits & Quantization value size (0 = 1 byte, 1 = 2 bytes) \\ \hline
 			4 bits & Table identifier (0-1) \\ \hline
 			64 or 128 bytes & Unsigned quantization values\\ \hline
@@ -271,6 +272,7 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Define Huffman Table Segmen
 	 	\begin{tabular}{|l|l|l|}
 			Size in bytes  & Description \\ \hline \hline
 			2 bytes  & DHT marker\\ \hline
+			2 bytes & Segment length\\ \hline
 			4 bits & Table class (0 = DC table, 1 = AC table) \\ \hline
 			4 bits & Table identifier (0 or 1) \\ \hline
 			16 bytes & A byte for the count of Huffman codes for each length 1-16\\ \hline
@@ -292,6 +294,7 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Start of Frame Segment]{
 	 	\begin{tabular}{|l|l|l|}
 			Size in bytes  & Description \\ \hline \hline
 			2 bytes  & SOF marker\\ \hline
+			2 bytes & Segment length\\ \hline
 			2 bytes & Image height \\ \hline
 			2 bytes & Image width \\ \hline
 			1 byte & Number of components\\ \hline
@@ -311,8 +314,8 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Component Segment]{
 	 	\begin{tabular}{|l|l|l|}
 			Size in bytes  & Description \\ \hline \hline
 			1 byte & Component identifier (1 = Y, 2 = Cb, 3 = Cr) \\ \hline
-			4 bits byte & Horizontal sampling \\ \hline
-			4 bits byte & Verticalnyt hundikat billed/figur sampling \\ \hline
+			4 bits & Horizontal sampling \\ \hline
+			4 bits & Vertical sampling \\ \hline
 			1 byte & Quantization table identifier \\ \hline
 		\end{tabular}
 }
@@ -325,6 +328,7 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Start of Scan Segment]{
 	 	\begin{tabular}{|l|l|l|}
 			Size in bytes  & Description \\ \hline \hline
 			2 bytes  & SOS marker\\ \hline
+			2 bytes & Segment length\\ \hline
 			1 byte & Number of components \\ \hline
 			2 $\cdot$ ``Number of components'' bytes & Scan component descriptor \\ \hline
 			1 byte & Spectral selection start\\ \hline
