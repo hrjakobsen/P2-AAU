@@ -18,7 +18,6 @@ Without a way to ensure that all decoders would read an encoded image the same w
 
 The JFIF specification is what allows JPEG images to be as widespread as they are today, where JPEG are used by large services like Facebook to store and serve small images of reasonable quality.
 
-[Et eller andet introværk]
 
 \subsection*{The Process of Encoding a JFIF Image}
 When encoding a JFIF image, we start off with a Bitmap, that is, a two dimensional array of pixels each consisting of a R, G and B value. The first step is transforming those colour channels into the colour space used in JFIF images. 
@@ -84,7 +83,7 @@ where:
 Quantization tables are what makes JPEG compression lossy. 
 After the DTC process, the quantization progress are performed on the resulting 8x8 block of values.  
 Quantization is the process of dividing each value in the 8x8 block with a corresponding value in a quantization table. 
-The JPEG specification allows 4[SOURCE NEEDED, JEG ER IKKE SIKKER] quantization tables to be used, while JFIF limits it even further to 2 tables. 
+The JPEG specification allows 15[SOURCE NEEDED, JEG ER IKKE SIKKER] quantization tables to be used, while JFIF limits it even further to 2 tables. 
 This means that two of our three channels have to share quantization tables. 
 As the retina in the eye are much more sensible to changes in the luminance channel, JFIF specifies that the luminance channel gets it own quantization table, while the chroma components must share a quantization table.
 
@@ -135,11 +134,39 @@ To do this, the 8x8 block of pixels are now read in a zigzag manner displayed on
 \subsection*{Encoding the vector}
 The first entry in the vector is called the DC coefficient, and will be encoded differently from the other 63. To encode the last 63 entries, run-length encoding (RLE) is used. Each value different from zero in the vector is represented as $(\text{Number of zeroes before this entry}, \text{Entry})$. Because of the many consecutive zeroes in the data, this allows a very compact encoding of the numbers. If at one point in the vector, only zeroes remains in the vector, we end the block with the EOB value (0,0). 
 
+The DC coefficient is often large numbers, so it would be a waste of bits to write it in full to the file each time. Instead only the difference from the last DC coefficient is stored, so that smaller numbers needs to be encoded. So when reading a JPEG file, a decoder must keep track of the last DC coefficient. The first coefficient encoded, of course is the whole number.
+
 There are some restrictions to this encoding, as only a nibble is used to represent the number of preceding zeroes, the maximum value we can denote is $F_{16}=15_{10}$. If there is more than 15 consecutive zeroes, we can encode 16 zeroes as (15,0), and by using multiple of these values, denote any number of consecutive zeroes. 
 
 \subsection*{Huffman coding}
+After the run-length encoding, the pairs must be written to the file, but before that can happen, the JPEG standards defines even more compression of our data. Instead of storing the actual values from the vector, a category of the number, along with a bit representation is stored. 
+
+A category of a number is the least amount of bits required to represent the number. The category of numbers in the range $[-32767, 32767]$ are shown in the table below.
+
+\begin{centering}
+\resizebox{\textwidth}{!}{%
+	\begin{tabular}{|c|c|c|} \hline
+		Values & Category & Bit representation \\ \hline
+		$0$ & $0$ & - \\
+		$-1,1$ & $1$ & $0,1$ \\
+		$-3, -2, 2, 3$ & $2$ & $00, 01, 10, 11$ \\
+		$-7, -6, -5, -4, 4, 5, 6, 7$ & $3$ & $000, 001, 010, 011, 100, 101, 110, 111$ \\
+		$\vdots$ & $\vdots$ & $\vdots$ \\
+		$-32767, -32766 \ldots, 32766, 32767$ & $16$ & $0000000000000000 \ldots 1111111111111111$ \\ \hline
+	\end{tabular}
+	}
+\end{centering}
+
+The vector entry of $(0,6)$ would become $(0,(3,110))$ when encoded as shown above. The last step is now to Huffman code these pairs of numbers. In a 8x8 block of pixels, there may be a lot of $(0,6)$, so instead of having to spends two bytes every time this pair appears, we use Huffman Tables. 
+
+A Huffman Table is a table where you can look up pair of numbers, and get a bit representation which corresponds to the pair of numbers. To complete the example with the entry $(0,6)$ which was encoded to $(0,3,110)$, $(0,3)$ is looked up in the Huffman Table and it can be seen that it has a category of $3$, and a bit representation of $100$. 
+
+So instead of having to write $0000 0000 0000 0110$ which is the byte representation of $(0,6)$, it is enough to write the Huffman coded $100110$.
+
+There are no universal Huffman tables, and JPEG allows an encoder to define its own. They do however provide some Huffman tables which has shown good results with a variety of images \citep[p. 153]{JPEGStandard}. 
 
 \subsection*{Dissection of a JPEG file}
+In this section a JFIF file which is compatible with the JPEG standard will be explained. The explanation is split into the same segments as the file itself is split into.
 \subsubsection*{Segments in a JPEG file}
 \begin{wraptable}{r}{5.5cm}
 \caption{Most commonly used markers in JPEG files}
@@ -223,11 +250,19 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Define Quantization Table S
 			Size in bytes  & Description \\ \hline \hline
 			2 bytes  & DQT marker\\ \hline
 			4 bits & Quantization value size (0 = 1 byte, 1 = 2 bytes) \\ \hline
-			4 bits & Table identifier (0-3) \\ \hline
+			4 bits & Table identifier (0-1) \\ \hline
 			64 or 128 bytes & Unsigned quantization values\\ \hline
 		\end{tabular}
 }
 \end{centering}
+The Define Quantization Table segment encodes the 8x8 block of integers used in the quantization process. 
+
+The table can use either one or two bytes for storing the integers in the quantization tables. Therefore a nibble is used for selecting how many bytes to use.
+
+The JFIF standard allows a JFIF file to use two quantization tables, which means that some channels have to share quantization tables. Because of this, each quantization tables gets an ID, so that each component can point to a quantization table. 
+
+While encoding the actual values of the table, they are encoding top to bottom, left to right.
+
 
 \subsubsection*{The DHT marker}
 \begin{centering}
@@ -243,6 +278,13 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Define Huffman Table Segmen
 		\end{tabular}
 }
 \end{centering}
+
+The Define Huffman Table segment describes how values are encoded in the the image data. The first part of the segment defines whether the table is used for DC or AC components. Next an ID is defined, so that each channel can be linked to a certain Huffman Table.
+
+The next 16 bytes defines how many codes of a certain length is encoded. The first byte describes how many codes of length one is encoded, the next describes how many codes of length two is encoded and so on, until all 16 bytes are used. 
+
+Now, the actual one byte codes which the Huffman Table has to convert, is supplied. There is as many bytes as the sum of the previous 16 bytes. The order of which they are supplied, defines which codes in the Huffman Table they become encoded as.
+
 \subsubsection*{The SOF marker}
 \begin{centering}
 \tcbox[left=0mm,right=0mm,top=0mm,bottom=0mm,boxsep=0mm,
@@ -257,6 +299,12 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Start of Frame Segment]{
 }
 \end{centering}
 
+The Start of Frame segment defines the components in the frame. First the height and width of the image in pixels are encoded. After that, a byte is used for defining the number of following component. By using a byte for the number of components, the JPEG standard allows a total of $11111111_2=255_{10}$ components, but JFIF limits this to 1 for grey-scale images or the for true-colour images.
+
+Next follows a Component Segment for each of the components defined in the SOF segment. The segment first defines an ID for the component. Again, JFIF states that we must use the ID 1 for the luminance channel, 2 for the chroma-blue channel and 3 for the chroma-red channel.
+
+Next each component supplies the scaling of the particular component, both horizontal and vertical. Lastly the ID of the quantization table to use for each component is supplied. 
+
 \begin{centering}
 \tcbox[left=0mm,right=0mm,top=0mm,bottom=0mm,boxsep=0mm,
 toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Component Segment]{
@@ -264,7 +312,7 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Component Segment]{
 			Size in bytes  & Description \\ \hline \hline
 			1 byte & Component identifier (1 = Y, 2 = Cb, 3 = Cr) \\ \hline
 			4 bits byte & Horizontal sampling \\ \hline
-			4 bits byte & Vertical sampling \\ \hline
+			4 bits byte & Verticalnyt hundikat billed/figur sampling \\ \hline
 			1 byte & Quantization table identifier \\ \hline
 		\end{tabular}
 }
@@ -285,6 +333,7 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Start of Scan Segment]{
 		\end{tabular}
 }
 \end{centering}
+The Scan Segment is where the actual image information is stored. First we have the Start of Scan segment which is a fixed length segment describing what image data will follow. Again the segment describes how many component to encode, then for each component supplies their Scan Component Descriptor which contains an ID for the component, together with the linked Huffman Tables for the DC and AC components.
 
 \begin{centering}
 \tcbox[left=0mm,right=0mm,top=0mm,bottom=0mm,boxsep=0mm,
@@ -299,6 +348,8 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Scan Component Descriptor S
 \end{centering}
 
 \subsubsection*{The scan data}
+After the SOS segment, the scan data follows, which is the actual image information. The data is not preceded by any marker. This is where the Huffman coded data is written, and is the data that the image processors use for calculating the actual pixels colours.
 
+In the beginning of this section it was explained that the a marker with the name FF00 does not exist. The reason for this is, that if the scan data must encode the byte $1111 1111_2=\text{FF}_{16}$ it cannot do so without it being read as a marker. Therefore the JPEG specification reads that a two consecutive bytes $\text{FF}00$ must be read as $\text{FF}$ and not as a marker. 
 
 \end{infobox}
