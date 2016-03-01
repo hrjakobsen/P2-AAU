@@ -11,7 +11,7 @@ namespace JpegFromBook {
             Bitmap b = new Bitmap("lena_color.jpg");
             
             JPEG jpg = new JPEG(b);
-            jpg.encode(System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\out.jpg");
+            jpg.encode(System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\out.jpg", 100.0);
 
         }
     }

@@ -22,6 +22,7 @@ namespace JpegFromBook {
         private Bitmap _sourceBitmap;
         private FileStream _fileStream;
         private short[] LastDC = {0, 0, 0};
+        
 
         public ushort Width { get; private set; }
         public ushort Height { get; private set; }
@@ -32,6 +33,26 @@ namespace JpegFromBook {
             Width = (ushort)(_sourceBitmap.Width);
             Height = (ushort)(_sourceBitmap.Height);
             bmpToChannels();
+
+            //double[,] testValues = new double[8, 8];
+
+            //for (int i = 0; i < 8; i++) {
+            //    for (int j = 0; j < 8; j++) {
+            //        testValues[j, i] = i * 8 + j + 1;
+            //    }
+            //}
+
+            //int[,] intValues = quantization(testValues, DefaultTables.testQtable);
+
+            //for (int i = 0; i < 8; i++) {
+            //    for (int j = 0; j < 8; j++) {
+            //        Console.Write(intValues[j, i] + "  ");
+            //    }
+            //    Console.Write("\n");
+            //}
+            //Console.WriteLine();
+            //Console.ReadKey();
+
 
         }
 
@@ -44,7 +65,14 @@ namespace JpegFromBook {
             }
         }
         
-        public void encode(string target) {
+        public void encode(string target, double scalingFactor) {
+
+            double scale = ((100 - scalingFactor) / 53 + 0.125);
+
+            for (int i = 0; i < 64; i++) {
+                DefaultTables.QuantizationTableChr[i] =(byte)(DefaultTables.QuantizationTableChr[i] * scale);
+                DefaultTables.QuantizationTableY[i] = (byte)(DefaultTables.QuantizationTableY[i] * scale);
+            }
 
             if (string.IsNullOrEmpty(target)) {
                 throw new ArgumentNullException();
@@ -96,7 +124,11 @@ namespace JpegFromBook {
             writeBytesToStream(0xff, 0xdb); //DQT header
             writeBytesToStream(0x00, 0x43); //Length of segment
             writeBytesToStream(id); //will output 0000 0xxx where the first nipple defines precission, and the second defines id
-            writeBytesToStream(quantizationTable);
+
+            for (int i = 0; i < 64; i++) {
+                writeBytesToStream(quantizationTable[_roadPoints[i, 0] + _roadPoints[i,1]*8]);
+            }
+            
         }
 
         private void addFrameHeader() {
@@ -297,7 +329,6 @@ namespace JpegFromBook {
 
         private int[,] quantization(double[,] block8, byte[] quantizationTable) {
             int[,] block8Quantizied = new int[8, 8];
-
             for (int y = 0; y < 8; y++) {
                 for (int x = 0; x < 8; x++) {
                     block8Quantizied[x,y] = (int)(block8[x, y] / quantizationTable[y * 8 + x] + 0.5);
@@ -306,20 +337,8 @@ namespace JpegFromBook {
 
             return block8Quantizied;
         }
-
-        private int count = -1;
+        
         private void HuffmanEncode(ref List<byte> bits, int[,] block8, HuffmanTable huffmanDC, HuffmanTable huffmanAC, int DCIndex) {
-            count++;
-            if (count > 150000) { 
-                for (int i = 0; i < 8; i++) {
-                    for (int j = 0; j < 8; j++) {
-                        Console.Write(block8[j, i] + "  ");
-                    }
-                    Console.Write("\n");
-                }
-                Console.WriteLine();
-                Console.ReadKey();
-            }
             short diff = (short)(block8[0, 0] - LastDC[DCIndex]);
             LastDC[DCIndex] += diff;
             if (diff != 0) {
@@ -378,14 +397,14 @@ namespace JpegFromBook {
         private double c(int i, int j) {
             if (i == 0) {
                 if (j == 0) {
-                    return 0.125;
+                    return 0.125; // 1/8
                 } 
-                return 0.17677;
+                return 0.17677; // 1/(4*sqrt(2))
             }
             if (j == 0) {
                 return 0.17677;
             }
-            return 0.25;
+            return 0.25; // 1/4
         }
 
         private ushort negativeNumberEncoder(short number) {
