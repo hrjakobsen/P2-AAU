@@ -17,7 +17,9 @@ Because of this, the following section will examine how the social network proce
 To test the level of compression on different social networks, images encoded in different file formats were uploaded to multiple social networks. 
 After being uploaded, the compressed file was then again downloaded and examined.
 To examine how much the compression algorithms distorted the images, the euclidean distance between the original image and the compressed version was calculated as described by Wang et. Al \citep{Wang2005}.
+
 The results using images saved with JPEG encoding can be seen in table \ref{tab:JPEG-compression}. 
+As can be seen in the results, some images were scaled in the encoding process, which makes computing the eucledian distance impossible without scaling the resulting image or the original image. Seen from the perspective of the sender, who sends hidden data embedded in an image. It doesn't make sense to scale the original image, as the embedded data will be lost. Instead the resulting image is rescaled to the original width and height, before computing the eucledian distance.
 
 From the results it can clearly be seen that on JPEG images Twitter compresses the file the most in terms of both file size and resolution.
 Combined, this results in a higher euclidean distance, as the image loses more information. 

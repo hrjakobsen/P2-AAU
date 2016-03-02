@@ -14,9 +14,15 @@ To make both images easier to work with, we store each pixel's colour in their o
 To store each pixel within the cover, we first mask the cover to remove the information stored within the least significant bits using the bitwise operator \&. 
 We then mask the concealed image to only keep the information stored in two bits, then right-shift those bits so the result, will be a byte where only the least-significant-bits, can be 1, and then, add this information to the cover. 
 The result will be a slightly changed pixel by a value between 0 and 3 for the Red, Green and Blue channels. 
-The first pixel in the cover will contain the two most significant bits of the concealed image, the next will contain the third and fourth, and so on. This is illustrated in figure \ref{fig:hundigrafik}
+The first pixel in the cover will contain the two most significant bits of the concealed image, the next will contain the third and fourth, and so on. 
 
 To get back the image information, we once again use the bitwise \& operator, to only keep the information within the least-significant bits of every pixel, then left-shift them accordingly and save this to a Colour array. Once every pixel has been read, the Colour array can be transformed into an image which looks just like the original.
+
+The entire process of encoding one pixel into four others using the two least significant bits is shown in figure \ref{fig:hundigrafik}. We have the cover image $C$, the message image $M$ and the steganographic image $S$. Each pixel in the message image is split up into four parts $M_1, M_2, M_3$ and $M_4$ where each part contains two bits from the R, G and B channels of the original pixel.
+
+For every pixel chosen in $M$, four pixel are chosen from $C$. For each of these pixels, we store the 6 most significant bits from the R, G and B channels in $C_1, C_2, C_3$ and $C_4$.
+
+Lastly, four pixels in $S$ are created by making pairs in the form of $C_nM_n$. This means that the four pixels in $S$ will be the following combinations: $C_1M_1,C_2M_2,C_3M_3$ and $C_4M_4$.
 
 \begin{figure}
 	\centering
@@ -27,4 +33,4 @@ To get back the image information, we once again use the bitwise \& operator, to
 
 
 
-\input{sections/problem_analysis/LSBalgoBedre.tex}
+\input{sections/problem_analysis/LSBalgo.tex}
