@@ -222,7 +222,7 @@ namespace JpegFromBook {
         private byte[] flush(List<byte> bits) {
 
             for (int i = 0; i < bits.Count / 8 - 1; i ++) {
-                if ((bits[i*8] == 1 && bits[i*8 + 1] == 1 && bits[i*8 + 2] == 1 && bits[i*8 + 3] == 1 && bits[i*8 + 4] == 1 && bits[i*8 + 5] == 1 && bits[i*8 + 6] == 1 && bits[i*8 + 7] == 1)) {
+                if (bits[i*8] == 1 && bits[i*8 + 1] == 1 && bits[i*8 + 2] == 1 && bits[i*8 + 3] == 1 && bits[i*8 + 4] == 1 && bits[i*8 + 5] == 1 && bits[i*8 + 6] == 1 && bits[i*8 + 7] == 1) {
                     for (int j = 0; j < 8; j++) {
                         bits.Insert(i * 8 + 8, 0x00);
                     }
