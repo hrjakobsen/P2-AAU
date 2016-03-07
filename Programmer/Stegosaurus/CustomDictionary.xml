@@ -1,0 +1,12 @@
+<Dictionary>
+      <Acronyms>
+         <CasingExceptions>
+            <Acronym>RGB</Acronym>		<!-- Red, Green, Blue -->
+            <Acronym>LSB</Acronym>		<!-- Least significant bit -->
+            <Acronym>MCU</Acronym>	<!-- Minimum Coded Units -->
+            <Acronym>DCT</Acronym>		<!-- Discrete Cosine Transform -->
+            <Acronym>IDCT</Acronym> 	<!-- Inverse Discrete Cosine Transform -->
+			
+         </CasingExceptions>
+      </Acronyms>
+</Dictionary>
