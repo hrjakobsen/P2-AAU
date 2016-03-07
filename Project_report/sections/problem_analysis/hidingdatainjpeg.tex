@@ -13,9 +13,22 @@
 	\end{itemize}
 	\item More Challenging Methods
 	\begin{itemize}
-		\item LSB in Quantization tables (64-128 bits per table)
+		\item LSB in Quantization tables
+		
+		It is possible to hide information within the least significant bit of a quantization table without making anyone bat an eye. 
+		The difference in altering each value by one, is such a negligible change that nobody will notice. 
+		However if this is done, we'll only get up to 128 bits, which we can change, which is a mere 16 bytes, or 16 letters, but still enough to list something like a certain time and place. 
+		As an example: ``Basisbaren 12am'', is 15 letters.
 		\item Template from Huffman Tables
+		
+		The Huffman tables are very important to produce a compressed jpeg file, and each jpeg has them. 
+		There exist ones which generally works well, but to get the optimal solution, it's necessary to analyse the image you want encoded, and then create Huffman tables based on that analysis. 
+		It's thus also possible to create Huffman tables where some of the values represents a letter, and then provide the people you wish to see the encoded message with a template for the Huffman tables you're using, telling them in which order to read the pixels for the hidden image to show itself.
 		\item LSB on JPEG thumbnail
+		
+		The Jpeg standard also defines a thumbnail, which can also act as a cover image for a hidden image, or text, by doing something similar to what we did previously at \ref{sec:lsb-implementation}.
+		Doing this will give us many more bytes to work on, compared to the two previously mentioned suggestions. 
+		Even for a 64x64 thumbnail, we'll be able to encode 1536 letters if only the least significant bit is changed, significantly more data than hiding the message within the quantization tables.
 	\end{itemize}
 	\item Complicated Methods
 	\begin{itemize}
