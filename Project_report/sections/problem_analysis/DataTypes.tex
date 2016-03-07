@@ -2,11 +2,15 @@
 When trying to hide data it is important to understand the various data types one might use for the cover file and the hidden information.
 
 \subsection{Image File formats}
+Image file formats are standardized ways for storing and organizing digital images.
+Image files may store data in uncompressed or compressed or vector formats, though once rasterized the image becomes a grid of pixels each with a number of bits to designate it's colour.
 
-%TODO: Talk general about image formats, and capabilities of steganography in images.
+
+When hiding data within an image, the concealed data mustn't affect the cover image so much as to rise suspicion.
+Furthermore if the image with the concealed data is to be transferred, the data has to survive potential compressions or alterations when transferred.
 
 \subsubsection*{Bitmap}
-BMP file format is a raster graphics image file format and is capable of storing two-dimensional digital images of arbitrary width, height and resolution, both monochrome and colour, in various colour depths. 
+BMP file format is capable of storing two-dimensional digital images of arbitrary width, height and resolution, both monochrome and colour, in various colour depths. 
 One can also use data compression, alpha channels and colour profiles if needed.
 All of these options make it easy to work with in regard to steganography, the problem arises in that the file size of these images can become quite large in comparison to other more used image formats, and because of this, it is not used as widely as the other aforementioned image formats.
 
