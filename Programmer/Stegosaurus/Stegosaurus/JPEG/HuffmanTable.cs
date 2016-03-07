@@ -16,6 +16,11 @@ namespace Stegosaurus {
                 numberOfCodes[element.Length - 1]++;
             }
 
+            string s = "";
+            for (int i = 0; i < 16; i++) {
+                s += numberOfCodes[i] + " ";
+            }
+
             return numberOfCodes;
         }
 
@@ -24,7 +29,8 @@ namespace Stegosaurus {
             return s;
         }
 
-        public HuffmanElement GetElementFromRunSize(byte runSize) {
+        public HuffmanElement GetElementFromRunSize(byte run, byte size) {
+            byte runSize = (byte)((run << 4) | size);
             // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (HuffmanElement huffmanElement in Elements) {
                 if (huffmanElement.RunSize == runSize) {
@@ -413,7 +419,11 @@ namespace Stegosaurus {
         }
 
         public int CompareTo(HuffmanElement other) {
-            return Length - other.Length;
+            if (Length == other.Length) {
+                return RunSize - other.RunSize;
+            } else {
+                return Length - other.Length;
+            }
         }
 
         public byte[] CodeWordToBytes() {
@@ -425,7 +435,7 @@ namespace Stegosaurus {
         }
 
         public override string ToString() {
-            return $"{RunSize} = {CodeWord}, {Length}";
+            return $"{Convert.ToString(RunSize, 2)} = {Convert.ToString(CodeWord, 2)}, {Convert.ToString(Length, 2)}";
         }
     }
 }

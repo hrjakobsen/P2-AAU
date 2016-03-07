@@ -44,7 +44,7 @@ namespace JpegFromBook {
         }
 
         public huffmanElement getHuffmanCode(byte zeroes, byte trailingBits) {
-            byte SearchByte = (byte)((zeroes << 4) | trailingBits) ;
+            byte SearchByte = (byte)((zeroes << 4) | trailingBits);
 
             for (int i = 0; i < combinationsInTable; i++) {
                 if (elements[i].runSize == SearchByte) {

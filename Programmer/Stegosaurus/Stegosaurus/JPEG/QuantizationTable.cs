@@ -3,7 +3,7 @@
         public byte[] Entries { get; }
         public byte[] ZigzagEntries { get; }
 
-        private readonly int[,] _roadPoints = {
+        public static readonly int[,] RoadPoints = {
             {0, 0}, {1, 0}, {0, 1}, {0, 2}, {1, 1}, {2, 0}, {3, 0}, {2, 1}, 
             {1, 2}, {0, 3}, {0, 4}, {1, 3}, {2, 2}, {3, 1}, {4, 0}, {5, 0}, 
             {4, 1}, {3, 2}, {2, 3}, {1, 4}, {0, 5}, {0, 6}, {1, 5}, {2, 4}, 
@@ -20,14 +20,15 @@
             ZigzagEntries = new byte[64];
 
             for (int i = 0; i < 64; i++) {
-                ZigzagEntries[i] = Entries[_roadPoints[i, 0] + _roadPoints[i, 1] * 8];
+                ZigzagEntries[i] = Entries[RoadPoints[i, 0] + RoadPoints[i, 1] * 8];
             }
         }
 
-        public QuantizationTable Scale(int factor) {
+        public QuantizationTable Scale(int quality) {
+            double scale = ((100 - quality) / 53 + 0.125);
             byte[] scaledEntries = new byte[64];
             for (int entryIndex = 0; entryIndex < 64; entryIndex++) {
-                scaledEntries[entryIndex] = (byte)(Entries[entryIndex] * factor);
+                scaledEntries[entryIndex] = (byte)(Entries[entryIndex] * scale);
             }
             return new QuantizationTable(scaledEntries);
         }
