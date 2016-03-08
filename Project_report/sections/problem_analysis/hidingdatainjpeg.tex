@@ -6,20 +6,24 @@
 	\item Simple Methods
 	\begin{itemize}
 		\item \textbf{Comments}
+		
 		It is possible to store plain text in a JPEG-file in a comment marker (indicated by the hex-value FFFE).
 		Comments are usually used to store copyright information, but it can contain any plaintext.
 		Comments are ignored by the decoder, but it is very easy for a person to see any hidden text.
 
 		\item \textbf{After EOI}
+		
 		The EOI marker (hex-value FFD9) marks the End of Image, and any data following that is ignored by the decoder.
 		It is therefore possible to store information after the EOI marker in much the same way as the comment marker.
 
 		\item \textbf{Progressive bits}
+		
 		The SOS marker (Start of Scan, hex-value FFDA) precedes 6 bytes of information, where only three of those are needed in sequential (and baseline) JPEG-compression.
 		This means that it is possible to store a very small amount of data when encoding baseline JPEG.
 		It may also be harder for a human to notice any hidden information in a SOS-section of a JPEG-image than in a comment or after an EOI-marker.
 
 		\item \textbf{APP$_n$ markers}
+		
 		Application markers (APP$_0-15$, hex-values FFE0-FFEF) are used for application-specific information.
 		Apart from APP$_0$, which is used by the JFIF-format, any application can create one or more APP-markers to store information.
 		These markers can be used to store secret information, though, as with comments, it is very easy for a human to see.
@@ -32,11 +36,13 @@
 		The difference in altering each value by one, is such a negligible change that nobody will notice.
 		However if this is done, we'll only get up to 128 bits, which we can change, which is a mere 16 bytes, or 16 letters, but still enough to list something like a certain time and place.
 		As an example: ``Basisbaren 12am'', is 15 letters.
+		
 		\item \textbf{Template from Huffman Tables}
 
 		The Huffman tables are very important to produce a compressed jpeg file, and each jpeg has them.
 		There exist ones which generally works well, but to get the optimal solution, it's necessary to analyse the image you want encoded, and then create Huffman tables based on that analysis.
 		It's thus also possible to create Huffman tables where some of the values represents a letter, and then provide the people you wish to see the encoded message with a template for the Huffman tables you're using, telling them in which order to read the pixels for the hidden image to show itself.
+		
 		\item \textbf{LSB on JPEG thumbnail}
 
 		The Jpeg standard also defines a thumbnail, which can also act as a cover image for a hidden image, or text, by doing something similar to what we did previously at \ref{sec:lsb-implementation}.
