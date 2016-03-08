@@ -59,7 +59,6 @@ namespace Stegosaurus {
             /* Array for holding the flattened decoded image */
             Color[] decodedArr = new Color[CoverImage.Width * CoverImage.Height];
 
-            /* WRITE SOMETHING HERE! */
             for (int coverArrIndex = 0; coverArrIndex < coverArr.Length; coverArrIndex += 4) {
                 for (int messageBytePos = 0; messageBytePos < 4; messageBytePos++) {
                     byte r = _encodeComponent(coverArr[coverArrIndex + messageBytePos].R, messageArr[messageArrIndex].R, messageBytePos);
@@ -87,8 +86,7 @@ namespace Stegosaurus {
 
             /* Array for holding flattened message image */
             Color[] plainArr = new Color[StegoImage.Width / 2 * StegoImage.Height / 2];
-
-            /* WRITE SOMETHING HERE! */
+            
             for (int plainArrIndex = 0; plainArrIndex < plainArr.Length; plainArrIndex++) {
                 byte r = 0, g = 0, b = 0;
                 for (int stegoBitPos = 0; stegoBitPos < 4; stegoBitPos++) {
