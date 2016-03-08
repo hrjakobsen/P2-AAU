@@ -53,11 +53,19 @@
 	\begin{itemize}
 		\item \textbf{A Graph-Theoretic Approach to Steganography}
 		
-		Stefan Hetzl and Petra Mutzel defines a method where graph theory is used for embedding data into bitmap images\citep{hetzl_2005}. Used on a bitmap image, the algorithm finds which pairs of pixels needs to be interchanged, to be able to store data hidden in the image. This process is in many ways superior to methods such as LSB, because no pixels are actually changed while using this approach, pixels are merely interchanged. This makes it much more difficult to use statistical analysis on the image, to figure out if an image contains embedded data. With JPEG images however, pixels are not set separately, and two pixels cannot be interchanged very easily. Instead this method can be used on the quantization tables instead, and embed the data into those tables.
+		Stefan Hetzl and Petra Mutzel define a method where graph theory is used for embedding data into bitmap images\citep{hetzl_2005}. 
+		Used on a bitmap image, the algorithm finds which pairs of pixels need to be interchanged, to be able to store data hidden in the image. 
+		This process is in many ways superior to methods such as LSB, because no pixels are actually changed while using this approach, pixels are merely interchanged.
+		This makes it much more difficult to use statistical analysis on the image, to figure out if an image contains embedded data. 
+		With JPEG images however, pixels are not set separately, and two pixels cannot be interchanged very easily. 
+		Instead, this method can be used on the quantization tables, and have the data embedded into them.
 
 		\item \textbf{A Reversible Data Hiding Scheme for JPEG Images}
 		
-		Qiming Li et al. proposes a method for embedding data into the DCT coefficients\citep{Li2010}, a method much more targeted JPEG images than the before mentioned. The process is split into three parts. The selecting algorithm which selects a subset of the AC-DCT coefficients, for storing information. The embedding process which embeds the actual data into the image, and lastly the decoder which reverses the process, and retracts the hidden data from the image. Because of the way JPEG encoding works, as described in section \ref{sec:jpegStudy}, small changes in the DCT coefficients or the quantization, will not lead to visible distortion of the JPEG image.
+		Qiming Li et al. proposes a method for embedding data into the DCT coefficients\citep{Li2010}, a method much more targeted towards JPEG images than the before mentioned.
+		The process is split into three parts. The selecting algorithm which selects a subset of the AC-DCT coefficients, for storing information. 
+		The embedding process which embeds the actual data into the image, and lastly the decoder which reverses the process, and retracts the hidden data from the image. 
+		Because of the way JPEG encoding works, as described in section \ref{sec:jpegStudy}, small changes in the DCT coefficients or the quantization, will not lead to visible distortion of the JPEG image.
 
 	\end{itemize}
 \end{itemize}
