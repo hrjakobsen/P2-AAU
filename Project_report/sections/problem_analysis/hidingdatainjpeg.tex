@@ -7,8 +7,8 @@
 	\begin{itemize}
 		\item \textbf{Comments}
 		It is possible to store plain text in a JPEG-file in a comment marker (indicated by the hex-value FFFE).
-		Comments are usually used to store copyright information, but it can contain any plaintext.
-		Comments are ignored by the decoder, but it is very easy for a person to see any hidden text.
+		Comments are usually used to store copyright information, but it can contain any information in hex bytes.
+		Comments are ignored by decoders, but when the image is decoded, it is very easy to see which information succeeds the comment marker.
 
 		\item \textbf{After EOI}
 		The EOI marker (hex-value FFD9) marks the End of Image, and any data following that is ignored by the decoder.
