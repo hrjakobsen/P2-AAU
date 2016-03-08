@@ -47,8 +47,8 @@ namespace Stegosaurus {
         }
 
         private void _calculateCosineCoefficients() {
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
+            for (int j = 0; j < 8; j++) {
+                for (int i = 0; i < 8; i++) {
                     _cosines[j, i] = Math.Cos((2 * j + 1) * i * Math.PI / 16);
                 }
             }
@@ -179,10 +179,10 @@ namespace Stegosaurus {
                 channels[i] = new double[16,16];
             }
             for (int MCUY = 0; MCUY < imageHeight; MCUY += 16) {
-                for (int MCUX = 0; MCUX < imageWidth; MCUX += 16) {
-                    for (int i = 0; i < 3; i++) {    
-                        for (int y = 0; y < 16; y++) {
-                            for (int x = 0; x < 16; x++) {
+                for (int MCUX = 0; MCUX < imageWidth; MCUX += 16) { 
+                    for (int i = 0; i < 3; i++) {
+                        for (int x = 0; x < 16; x++) {
+                            for (int y = 0; y < 16; y++) {
                                 channels[i][x, y] = YCbCrChannels[i][MCUX + x, MCUY + y];
                             }
                         }
@@ -194,26 +194,24 @@ namespace Stegosaurus {
 
         // ReSharper disable once InconsistentNaming
         private void _encodeBlocks(ref List<byte> bits, double[][,] MCU) {
-            
+
+            double[,] YBlock;
             for (int i = 0; i < 4; i++) {
-                double[,] YBlock = _block16ToBlock8(MCU[0], i);
-
-                YBlock = _discreteCosineTransform(YBlock);
-
-                int[,] quantizedYblock = _quantization(YBlock, YQuantizationTable);
-
-                HuffmanEncode(ref bits, quantizedYblock, YDCHuffman, YACHuffman, 0);
+                 YBlock = _block16ToBlock8(MCU[0], i);
+                _encodeBlocksSubMethod(ref bits, YBlock, YDCHuffman, YACHuffman, 0, YQuantizationTable);
             }
 
             double[,] CbDownSampled = _downSample(MCU[1]);
-            CbDownSampled = _discreteCosineTransform(CbDownSampled);
-            int[,] quantizedCbBlock = _quantization(CbDownSampled, ChrQuantizationTable);
-            HuffmanEncode(ref bits, quantizedCbBlock, ChrDCHuffman, ChrACHuffman, 1);
+            _encodeBlocksSubMethod(ref bits, CbDownSampled, ChrDCHuffman, ChrACHuffman, 1, ChrQuantizationTable);
 
             double[,] CrDownSampled = _downSample(MCU[2]);
-            CrDownSampled = _discreteCosineTransform(CrDownSampled);
-            int[,] quantizedCrBlock = _quantization(CrDownSampled, ChrQuantizationTable);
-            HuffmanEncode(ref bits, quantizedCrBlock, ChrDCHuffman, ChrACHuffman, 2);
+            _encodeBlocksSubMethod(ref bits, CrDownSampled, ChrDCHuffman, ChrACHuffman, 2, ChrQuantizationTable);
+        }
+
+        private void _encodeBlocksSubMethod(ref List<byte> bits, double[,] blocks, HuffmanTable DC, HuffmanTable AC, int index, QuantizationTable table) {
+            blocks = _discreteCosineTransform(blocks);
+            int[,] quantiziedBlock = _quantization(blocks, table);
+            HuffmanEncode(ref bits, quantiziedBlock, DC, AC, index);
         }
 
         private byte[] _flush(List<byte> bits) {
@@ -227,8 +225,6 @@ namespace Stegosaurus {
             }
 
             byte[] byteArray = new byte[(int)Math.Ceiling(bits.Count / 8.0)];
-
-
 
             for (int i = 0; i < byteArray.Length; i++) {
                 for (int j = 0; j < 8; j++) {
@@ -246,7 +242,7 @@ namespace Stegosaurus {
 
         private int[,] _quantization(double[,] values, QuantizationTable qTable) {
             int[,] quantizedValues = new int[8,8];
-            for (int x = 0; x < 8; x++) {
+            for (int x = 0; x < 8; x++) { 
                 for (int y = 0; y < 8; y++) {
                     quantizedValues[x, y] =(int)(values[x, y] / qTable.Entries[y * 8 + x]);
                 }
@@ -261,8 +257,8 @@ namespace Stegosaurus {
                 for (int j = 0; j < 8; j++) {
                     double tempSum = 0.0;
                     double cCoefficient = c(i, j);
-                    for (int y = 0; y < 8; y++) {
-                        for (int x = 0; x < 8; x++) {
+                    for (int x = 0; x < 8; x++) {
+                        for (int y = 0; y < 8; y++) {
                             tempSum += cCoefficient * block8[x, y] * _cosines[x, i] * _cosines[y, j];
                         }
                     }
@@ -288,19 +284,18 @@ namespace Stegosaurus {
         private double[,] _block16ToBlock8(double[,] block16, int index) {
             double[,] block8 = new double[8, 8];
 
-            for (int x = 0; x < 8; x++) {
-                for (int y = 0; y < 8; y++) {
+            for (int y = 0; y < 8; y++) {
+                for (int x = 0; x < 8; x++) {
                     block8[x, y] = block16[x + (index % 2) * 8, y + index / 2 * 8];
                 }
             }
-
             return block8;
         }
 
         private double[,] _downSample(double[,] values) {
             double[,] downSampled = new double[8,8];
-            for (int j = 0; j < 16; j += 2) {
-                for (int i = 0; i < 16; i += 2) {
+            for (int i = 0; i < 16; i += 2) {
+                for (int j = 0; j < 16; j += 2) {
                     downSampled[j / 2, i / 2] = (values[j, i] + values[j + 1, i] + values[j, i + 1] + values[j + 1, i + 1]) / 4;
                 }
             }
