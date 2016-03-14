@@ -2,12 +2,30 @@
 Different forms of steganography have been invented, either because there was an actual need to send a confidential message, or because it has been seen as an interesting challenge by someone who has an interest and often a certain skill set. In this section some of the tools already available for performing digital steganography will be mentioned and examined in the hope of gaining greater knowledge of the already existing methods. This could potentially give an idea of what these tools could be missing or doing wrong in a real-life context. 
 
 \begin{itemize}
-	\item EZStego is a piece of Java-based software relying on the principle of manipulating the least significant bits of pixels in an image file (here GIF and PICT) for storing another image inside it\citep{E-Council|Press2015}. As a result, the colour palette is rearranged, but this is done with the changes being barely, or not at all, visible to the human eye. 
+	\item EZStego is a piece of Java-based software relying on the principle of manipulating the least significant bits of pixels in an image file (here GIF and PICT) for storing another image inside it\citep{E-Council|Press2015}.
+	As a result, the colour palette is rearranged, but this is done with the changes being barely, or not at all, visible to the human eye. 
 	
-	\item MP3stego takes steganography to audio files and makes it possible to hide information in MP3 files. During the compression process, the data is first compressed, encrypted and then hidden in the MP3 bit stream. The concealment is done in the Layer III encoding process in the ''inner\_loop'' where the input data is first quantized and the quantizer step size is then increased until the data can be coded with the available number of bits. Another loop checks that the distortions caused by quantization do not exceed a defined threshold. A variable contains the number of bits used for scale-factors and Huffman code data in the MP3 bit stream. The bits are encoded as its parity by changing the end loop condition of the inner loop. Only randomly chosen values of the variable are modified\citep{MP3Stego}. 
+	\item MP3stego takes steganography to audio files and makes it possible to hide information in MP3 files. 
+	During the compression process, the data is first compressed, encrypted and then hidden in the MP3 bit stream. 
+	The concealment is done in the Layer III encoding process in the ''inner\_loop'' where the input data is first quantized and the quantizer step size is then increased until the data can be coded with the available number of bits. 
+	Another loop checks that the distortions caused by quantization do not exceed a defined threshold. 
+	A variable contains the number of bits used for scale-factors and Huffman code data in the MP3 bit stream. 
+	The bits are encoded as its parity by changing the end loop condition of the inner loop. 
+	Only randomly chosen values of the variable are modified\citep{MP3Stego}. 
 	
-	\item JSteg-Jpeg, as the name suggests, has its focus on JPEG steganography. The programme reads multiple image formats and takes an image file and a secret message that it combines and saves as a JPEG image. It utilises the fact that the format is split into two stages, the lossy stage using DCT and a quantization step to compress the image data, and the lossless stage using Huffmann coding to further compress. This splitting allows the secret message to be hidden in the image data between the two stages. The rounding process in the quantized DCT coefficients are also modulated. JSteg-Jpeg allows for adjustment of the quality factor of the JPEG compression as this together with the size of the embedded message determines the degradation of the quality of the final image\citep{ImageProcessingFrankY}. 
+	\item JSteg-Jpeg, as the name suggests, has its focus on JPEG steganography. 
+	The programme reads multiple image formats and takes an image file and a secret message that it combines and saves as a JPEG image. 
+	It utilises the fact that the format is split into two stages, the lossy stage using DCT and a quantization step to compress the image data, and the lossless stage using Huffmann coding to further compress.  
+	This splitting allows the secret message to be hidden in the image data between the two stages. The rounding process in the quantized DCT coefficients are also modulated. 
+	JSteg-Jpeg allows for adjustment of the quality factor of the JPEG compression as this together with the size of the embedded message determines the degradation of the quality of the final image\citep{ImageProcessingFrankY}. 
+	
+	\item OpenPuff is a freeware steganography and watermarking tool by Cosimo Oliboni and is a more modern approach to steganography, first released in 2004, last updated July 2012. 
+	It lets the user hide data by splitting it into several carrier files forming a so called carrier chain. The carrier files supported include image files like JPG and PNG, audio files like MP3 and WAV and video files like 3GP and MP4.
+	The programme implements up to 5 layers of security with the first four layers including encryption, scrambling, whitening (mixing scrambled data with noise) and then encoding of the data before injecting it in the carrier files, this being the last security layer\citep{Oliboni2012}. 
+	Also the principle of deniable encryption, where the existence of an encrypted file or message is deniable as the existence of plaintext data cannot be proven\citep{Schneier2008}, is taken to deniable steganography. As so, OpenPuff not only hides data, but secures it with 256bit cryptography.
 \end{itemize}
 
-This is just a very small selection of the tools available. Most other programmes utilise similarly simple methods and choose to deal with only simple file formats like BMP or GIF. This tells us that dealing with formats that implement compression is a great task that requires research. 
+This is just a very small selection of the tools available. 
+Most other programmes utilise similarly simple methods and choose to deal with only simple file formats like BMP or GIF. 
+This tells us that dealing with formats that implement compression is a great task that requires research. 
 It should be mentioned that several programmes do not describe the specific techniques that are used.
