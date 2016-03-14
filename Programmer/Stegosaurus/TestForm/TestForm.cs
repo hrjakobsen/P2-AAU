@@ -31,14 +31,14 @@ namespace TestForm{
 
             picStego.Image = StegoController.StegoImage;
             btnDecode.Enabled = true;
-            StegoController.StegoImage.Save("./encrypted");
+            StegoController.StegoImage.Save("./encrypted.png");
         }
 
         private void Decode_Click(object sender, EventArgs e) {
             StegoController.Decode();
 
             picMessage.Image = StegoController.MessageImage;
-            StegoController.MessageImage.Save("./decrypted");
+            StegoController.MessageImage.Save("./decrypted.png");
         }
 
         private void getFileCover_FileOk(object sender, CancelEventArgs e) {
