@@ -1,11 +1,86 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
-\section{A Graph-Theoretic Apporach to Steganography}
+\clearpage
+\section{Overview of ``A Graph-Theoretic Approach to Steganography''}
 \label{sec:graphtheory}
-(This section is based on the article by Hetzl and Mutzel and Olav Geils lecture on the article.)
-$ v_m: \mathds{Z} \Rightarrow \{0,1,2,\ldots,m-1\} $ such that $ v_m(s) = s \mod m $
+\footnotesize{This section is based on the article by Hetzl and Mutzel\citep{hetzl_2005} and Olav Geils lecture on the article.}
 
-Message $e = \{ e_0, e_1, e_2, \ldots, e_n \}$ where $\forall i\left( e_i < m \right)$
+\subsection*{Terminology}
+First we define the $v$ as $ v_m: \mathds{Z} \Rightarrow \{0,1,2,\ldots,m-1\} $ such that $ v_m(s) = s \mod m $. Furthermore we have the message to encode in the image $e = \{ e_0, e_1, e_2, \ldots, e_n \}$ where $\forall i\left( e_i < m \right)$. Because all entries in the vector to be encoded must be less that $m$, $m$ defines the number of actual bits can be transferred in each pair of pixels. With $m = 2$ the only two possible values are $0$ and $1$, which means that only one bit can be embedded as one entry in the message vector. By choosing $m = 4$ the possible values are $0$, $1$, $2$ and $3$, or $00_2$, $01_2$, $10_2$ and $11_2$, practically this means that we can embed two bits in every entry in the vector.
 
+The $\oplus_m$ operator is used for computing sums modulo $m$. In other word, that operator describes the calculation $x \oplus_m y = v_m(x + y) = (x + y) \mod m$.  
 
+\subsection*{Method described in article}
 
-$\oplus \ominus$
+A grey-scale image can be viewed as a list of pixels with a value $0 \leq p \leq 255$. These pixels are then ordered into pairs of two. These pairs are then added together with the $\oplus_m$ operator, and compared to message which is to be encoded. If the addition result equals the wanted message, these pixels are perfect. If not, they need to be changed by either switching two pixels, or changing one of the values. In this method we want to avoid changing the values directly. So instead we find all pairs of pixels that be interchanged and result in perfect pairs. In table \ref{PairOrdering} this method is applied to a fictional grey-scale image with 14 pixels, and a message vector with 14 entries, in the example $m=4$ is used. 
+
+\begin{table}[h]
+\centering
+\caption{Process of finding pixels in need of changing or switching}
+\label{PairOrdering}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+Pixel & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 \\ \hline
+Value & 106 & 102 & 103 & 100 & 101 & 101 & 200 & 255 & 100 & 125 & 103 & 254 & 104 & 100 \\ \hline
+$\oplus_4$ & \multicolumn{2}{c|}{0} & \multicolumn{2}{c|}{3} & \multicolumn{2}{c|}{2} & \multicolumn{2}{c|}{3} & \multicolumn{2}{c|}{1} & \multicolumn{2}{c|}{1} & \multicolumn{2}{c|}{0} \\ \hline
+Message & \multicolumn{2}{c|}{2} & \multicolumn{2}{c|}{2} & \multicolumn{2}{c|}{1} & \multicolumn{2}{c|}{2} & \multicolumn{2}{c|}{1} & \multicolumn{2}{c|}{2} & \multicolumn{2}{c|}{2} \\ \hline
+ & \multicolumn{2}{c|}{$\neq$} & \multicolumn{2}{c|}{$\neq$} & \multicolumn{2}{c|}{$\neq$} & \multicolumn{2}{c|}{=} & \multicolumn{2}{c|}{=} & \multicolumn{2}{c|}{$\neq$} & \multicolumn{2}{c|}{$\neq$} \\ \hline
+Needed values & \multicolumn{2}{c|}{\begin{tabular}[c]{@{}c@{}}<104,100>\\ <108,104>\end{tabular}} & \multicolumn{2}{c|}{\begin{tabular}[c]{@{}c@{}}<102,99>\\ <106,103>\end{tabular}} & \multicolumn{2}{c|}{\begin{tabular}[c]{@{}c@{}}<100,100>\\ <104,104>\end{tabular}} & \multicolumn{2}{c|}{\begin{tabular}[c]{@{}c@{}}<199,254>\\ <203,002>\end{tabular}} & \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{\begin{tabular}[c]{@{}c@{}}<100,251>\\ <104,255>\end{tabular}} & \multicolumn{2}{c|}{\begin{tabular}[c]{@{}c@{}}<102,98>\\ <106,102>\end{tabular}} \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+From the table we can see that the following switches would make pairs correct $(4 \leftrightarrow 11)$, $(8\leftrightarrow 12)$, $(2\leftrightarrow 13)$ and $(1 \leftrightarrow 13)$.
+
+As a graph these switches can represented as on figure \ref{fig:graph}. Each vertex represents a pair of pixel, where at least one of the pixels can be changed. The edges describe a switch between two pixels. This graph can then be used to determine which switches to make. Every time a switch is chosen, all other edges touching the two vertices where pixels are changed, are removed. This graph can be used to determine which switches are the best, by introducing edge weight, describing how much of a visual change a switch would result in.
+
+\begin{figure}[h]
+\caption{Graph containing the possible switches}
+\label{fig:graph}
+\centering
+\begin {tikzpicture}[-latex ,auto ,node distance =0.7777777777777778 cm and 0.7777777777777778cm ,on grid ,
+semithick ,
+state/.style ={ circle ,top color =white ,
+draw , text=black , minimum width =0.3111111111111111 cm},
+state2/.style ={ circle ,color =white ,
+draw , text=black, opacity=0.0 , minimum width =.3 cm}]
+\node[state] (A0) {(1,2)};
+\node[state2] (A1) [right =of A0] {};
+\node[state2] (A2) [right =of A1] {};
+\node[state2] (A3) [right =of A2] {};
+\node[state2] (A4) [right =of A3] {};
+\node[state2] (A5) [right =of A4] {};
+\node[state2] (A6) [right =of A5] {};
+\node[state2] (A7) [right =of A6] {};
+\node[state2] (A8) [right =of A7] {};
+\node[state2] (A9) [right =of A8] {};
+\node[state2] (A10) [below =of A9] {};
+\node[state2] (A11) [below =of A10] {};
+\node[state] (A12) [below =of A11] {(3,4)};
+\node[state2] (A13) [left =of A12] {};
+\node[state2] (A14) [left =of A13] {};
+\node[state2] (A15) [left =of A14] {};
+\node[state2] (A16) [below =of A15] {};
+\node[state2] (A17) [below =of A16] {};
+\node[state] (A18) [below =of A17] {(7,8)};
+\node[state2] (A19) [right =of A18] {};
+\node[state2] (A20) [right =of A19] {};
+\node[state] (A21) [right =of A20] {(11,12)};
+\node[state2] (A22) [left =of A21] {};
+\node[state2] (A23) [left =of A22] {};
+\node[state2] (A24) [left =of A23] {};
+\node[state2] (A25) [left =of A24] {};
+\node[state2] (A26) [left =of A25] {};
+\node[state] (A27) [left =of A26] {(13,14)};
+\path[-] (A12) edge node[] {$4 \leftrightarrow 11$}(A21);
+\path[-] (A18) edge node[right=-.6cm,above=.6cm] {$8\leftrightarrow 12$}(A21);
+\path[-] (A0) edge [bend right =-45] node[] {$2\leftrightarrow 13$}(A27);
+\path[-] (A0) edge [bend right =45] node[] {$1 \leftrightarrow 13$}(A27);
+\end{tikzpicture}
+\end{figure}
+
+Lets say that the switches $2\leftrightarrow 13$ and $4\leftrightarrow 11$ are chosen. Then we still need to correct the pairs (5,6) and (7,8). There is no switch that allows us to correct these values, so instead the actual values are forcibly changed and by doing so, changing the image ever so slightly.
+
+By doing these switches, we minimize the need to alter the pixels in the image. With methods such as LSB it is rarely the case that pixels does not need to be altered, so this method is much more resistant to statistical analysis such as colour histograms described in section \ref{steganalysis}.
+
+When the data is to be read from the image, the same method of grouping the pixels into pairs are applied. Now instead of trying to find pairs to be switched, the value obtained after using the $\oplus_m$ operation is the values embedded in the image. These values can then be grouped into a vector, which is a copy of the original message vector.
