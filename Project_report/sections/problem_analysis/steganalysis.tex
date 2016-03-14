@@ -24,11 +24,14 @@ This unusual histogram might just be a product of a compression algorithm.
 \paragraph*{DCT coefficients histogram}
 By looking at a histogram of the DCT coefficients of a JPEG image, one might be able to detect if data has been hidden.
 This is because of steganography algorithms like F5, the ``shrinkage'' it uses will result in a high amount of zeros in the DCT coefficients.
-If we predict the histogram of the original cover image and compare it to the histogram of suspected image.
-To estimate the DCT coefficients of the original cover image, we need to crop the suspected image by 4 vertical columns and recompress it using the same quantization table. \ref{Fridrich2003}
+This can be seen on the comparison between figure \ref{fig:InputF5} and figure \ref{fig:outputF5}, these are histograms of DCT coefficients of figure \ref{fig:puffin}.
+We can clearly see that after data has been hidden using the F5 algorithm there has occurred ``shrinkage'', with almost only zeros remaining.
+
+%To estimate the DCT coefficients of the original cover image, we need to crop the suspected image by 4 vertical columns and recompress it using the same quantization table. \ref{Fridrich2003}
 %TODO: make histogram of DCT coefficients and add F5 to section "State of the art"
 
-\paragraph*{}
+\paragraph*{$\chi^2$ attack or chi-squared attack}
+ATTACK!!
 
 \paragraph*{Steganography signatures}
 Unusual patterns in a image are obvious and arise suspicion, for example unused bits in the file headers or even comment headers, these might give us some insight into which algorithm was used.
@@ -58,4 +61,25 @@ So the most common way of recovering hidden data is by using the same algorithm 
 	\includegraphics[width=1\textwidth]{figures/HistoLSBCatEncrypted.png}
 	\caption{Colour Histogram of image containing secret image hidden with LSB.}
 	\label{fig:HistoWithLSB}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.25\textwidth]{figures/puffin.jpg}
+	\caption{F5 cover image.}
+	\label{fig:puffin}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{figures/inputF5.png}
+	\caption{Histogram of DCT coefficient before F5.}
+	\label{fig:InputF5}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{figures/outputF5.png}
+	\caption{Histogram of DCT coefficient after F5.}
+	\label{fig:outputF5}
 \end{figure}
