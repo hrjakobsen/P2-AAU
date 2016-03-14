@@ -1,4 +1,5 @@
 \section{Steganalysis}$First draft$
+\label{steganalysis}
 Steganalysis is the study of detecting information hidden with steganography and if possible, recover that information.
 Because of the nature of steganography, it is not always obvious if a file has hidden information or not.
 Therefore steganalysis is often used on a large set of files, which are suspected of containing hidden data.
@@ -8,10 +9,7 @@ Therefore steganalysis is often used on a large set of files, which are suspecte
 Most steganography algorithms are able to hide data without any notable visual impact on images.
 It is therefore hard if not impossible to detect if something is hidden by simply looking at the image.
 
-Detection of hidden data is therefore done with statistical tools like looking at histograms, modified and signatures of different steganography algorithms.
-
-\subsubsection*{Histogram}
-By looking at different histograms of the image data, and analysing them we might be able to determine if a image contains hidden data.
+Detection of hidden data is therefore done with statistical tools like looking at histograms, modified DCT coefficients and signatures of different steganography algorithms.
 
 \paragraph*{Colour Histogram}
 A colour histogram is a representation of the distribution of colours in an image. 
@@ -28,9 +26,18 @@ By looking at a histogram of the DCT coefficients of a JPEG image, one might be 
 This is because of steganography algorithms like F5, the ``shrinkage'' it uses will result in a high amount of zeros in the DCT coefficients.
 If we predict the histogram of the original cover image and compare it to the histogram of suspected image.
 To estimate the DCT coefficients of the original cover image, we need to crop the suspected image by 4 vertical columns and recompress it using the same quantization table. \ref{Fridrich2003}
-%TODO: make histogram of DCT coefficients
+%TODO: make histogram of DCT coefficients and add F5 to section "State of the art"
 
-\subsubsection*{}
+\paragraph*{}
+
+\paragraph*{Steganography signatures}
+Unusual patterns in a image are obvious and arise suspicion, for example unused bits in the file headers or even comment headers, these might give us some insight into which algorithm was used.
+
+\subsection{Recovery}
+Recovery of data hidden with steganography is difficult, to recover the data we must know what kind of algorithm was used to hide the data.
+Even if we know the algorithm used, we might still only get back meaningless data, because in addition to hiding the data, it might also be encrypted.
+
+So the most common way of recovering hidden data is by using the same algorithm that was used to encode the image to decode the data.
 
 \begin{figure}
 	\centering
