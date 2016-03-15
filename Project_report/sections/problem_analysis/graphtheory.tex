@@ -2,7 +2,7 @@
 \clearpage
 \section{Overview of ``A Graph-Theoretic Approach to Steganography''}
 \label{sec:graphtheory}
-\footnotesize{This section is based on the article by Hetzl and Mutzel\citep{hetzl_2005} and Olav Geil's lecture on the article.}
+{\footnotesize This section is based on the article by Hetzl and Mutzel\citep{hetzl_2005} and Olav Geil's lecture on the article.}
 
 \subsection*{Terminology}
 First we define the $v$ as $ v_m: \mathds{Z} \Rightarrow \{0,1,2,\ldots,m-1\} $ such that $ v_m(s) = s \mod m $. Furthermore we have the message to encode in the image $e = \{ e_0, e_1, e_2, \ldots, e_n \}$ where $\forall i\left( e_i < m \right)$. Because all entries in the vector to be encoded must be less than $m$, $m$ defines the number of actual bits can be transferred in each pair of pixels. With $m = 2$ the only two possible values are $0$ and $1$, which means that only one bit can be embedded as one entry in the message vector. By choosing $m = 4$ the possible values are $0$, $1$, $2$ and $3$, or $00_2$, $01_2$, $10_2$ and $11_2$. Practically this means that we can embed two bits in every entry in the vector.
