@@ -9,8 +9,9 @@ using System.Drawing;
 namespace ConsoleTester {
     class Program {
         static void Main(string[] args) {
-            JpegImage ji = new JpegImage(new Bitmap(@"cat.jpg"), @"output.jpg", 100);
+            JpegImage ji = new JpegImage(new Bitmap(@"cat.jpg"), 100);
             ji.Encode();
+            ji.Save(@"output.jpg");
             //     ji.Decode();
         }
     }

@@ -2,40 +2,92 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Stegosaurus {
     public class JpegImage : StegoImageBase{
-        public Bitmap CoverImage { get; private set; }
-        public string Path { get; set; }
+        public Bitmap CoverImage { get; }
         private JpegWriter _jw;
+
+        /// <summary>
+        /// Quantization table used for the Y component of the image.
+        /// </summary>
         public QuantizationTable YQuantizationTable { get; set; }
+
+        /// <summary>
+        /// Quantization table used for the CrCb components of the image.
+        /// </summary>
         public QuantizationTable ChrQuantizationTable { get; set; }
+
+        /// <summary>
+        /// Huffman table used for the DC coefficient of the Y component of the image.
+        /// </summary>
         public HuffmanTable YDCHuffman { get; set; }
+
+        /// <summary>
+        /// Huffman table used for the AC coefficient of the Y component of the image.
+        /// </summary>
         public HuffmanTable YACHuffman { get; set; }
+
+        /// <summary>
+        /// Huffman table used for the DC coefficient of the CrCb components of the image.
+        /// </summary>
         public HuffmanTable ChrDCHuffman { get; set; }
+
+        /// <summary>
+        /// Huffman table used for the AC coefficient of the CrCb components of the image.
+        /// </summary>
         public HuffmanTable ChrACHuffman { get; set; }
-        private double[,] _cosines = new double[8, 8];
-        private int[] _lastDc = { 0, 0, 0 };
 
-        public JpegImage(Bitmap coverImage, string path, int quality) :this(coverImage, path, quality, QuantizationTable.JpegDefaultYTable, QuantizationTable.JpegDefaultChrTable) {}
+        private readonly double[,] _cosines = new double[8, 8];
+        private readonly int[] _lastDc = { 0, 0, 0 };
 
-        public JpegImage(Bitmap coverImage, string path, int quality, QuantizationTable yTable, QuantizationTable chrTable) 
-            : this (coverImage, path, quality, yTable, chrTable, HuffmanTable.JpegHuffmanTableYDC, HuffmanTable.JpegHuffmanTableYAC, HuffmanTable.JpegHuffmanTableChrDC, HuffmanTable.JpegHuffmanTableChrAC) { }
+        /// <summary>
+        /// A constructor
+        /// </summary>
+        /// <param name="coverImage"></param>
+        /// <param name="quality"></param>
+        public JpegImage(Bitmap coverImage, int quality) :this(coverImage, quality, QuantizationTable.JpegDefaultYTable, QuantizationTable.JpegDefaultChrTable) {}
 
-        public JpegImage(Bitmap coverImage, string path, int quality, HuffmanTable huffmanYDC, HuffmanTable huffmanYAC, HuffmanTable huffmanChrDC, HuffmanTable huffmanChrAC) 
-            :this(coverImage, path, quality, QuantizationTable.JpegDefaultYTable, QuantizationTable.JpegDefaultChrTable, huffmanYDC, huffmanYAC, huffmanChrDC, huffmanChrAC)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="coverImage"></param>
+        /// <param name="quality"></param>
+        /// <param name="yTable"></param>
+        /// <param name="chrTable"></param>
+        public JpegImage(Bitmap coverImage, int quality, QuantizationTable yTable, QuantizationTable chrTable) 
+            : this (coverImage, quality, yTable, chrTable, HuffmanTable.JpegHuffmanTableYDC, HuffmanTable.JpegHuffmanTableYAC, HuffmanTable.JpegHuffmanTableChrDC, HuffmanTable.JpegHuffmanTableChrAC) { }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="coverImage"></param>
+        /// <param name="quality"></param>
+        /// <param name="huffmanYDC"></param>
+        /// <param name="huffmanYAC"></param>
+        /// <param name="huffmanChrDC"></param>
+        /// <param name="huffmanChrAC"></param>
+        public JpegImage(Bitmap coverImage, int quality, HuffmanTable huffmanYDC, HuffmanTable huffmanYAC, HuffmanTable huffmanChrDC, HuffmanTable huffmanChrAC) 
+            :this(coverImage, quality, QuantizationTable.JpegDefaultYTable, QuantizationTable.JpegDefaultChrTable, huffmanYDC, huffmanYAC, huffmanChrDC, huffmanChrAC)
             {}
 
-        public JpegImage(Bitmap coverImage, string path, int quality, QuantizationTable yTable, QuantizationTable chrTable, HuffmanTable huffmanYDC, HuffmanTable huffmanYAC, HuffmanTable huffmanChrDC, HuffmanTable huffmanChrAC) {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="coverImage"></param>
+        /// <param name="quality"></param>
+        /// <param name="yTable"></param>
+        /// <param name="chrTable"></param>
+        /// <param name="huffmanYDC"></param>
+        /// <param name="huffmanYAC"></param>
+        /// <param name="huffmanChrDC"></param>
+        /// <param name="huffmanChrAC"></param>
+        public JpegImage(Bitmap coverImage, int quality, QuantizationTable yTable, QuantizationTable chrTable, HuffmanTable huffmanYDC, HuffmanTable huffmanYAC, HuffmanTable huffmanChrDC, HuffmanTable huffmanChrAC) {
             if (coverImage == null) { 
                 throw new ArgumentNullException();
             }
 
             CoverImage = coverImage;
-            Path = path;
             YQuantizationTable = yTable.Scale(quality);
             ChrQuantizationTable = chrTable.Scale(quality);
             YDCHuffman = huffmanYDC;
@@ -54,12 +106,28 @@ namespace Stegosaurus {
             }
         }
 
+        /// <summary>
+        /// Used to encode a Bitmap as a JPEG along with a message
+        /// </summary>
         public override void Encode() {
-            _jw = new JpegWriter(Path);
+            _jw = new JpegWriter();
             _writeHeaders();
+            //Hide data here
             _writeScanData();
             _writeEndOfImage();
-            _jw.Close();
+        }
+
+        /// <summary>
+        /// Saves an encoded jpeg image to a filesystem
+        /// </summary>
+        /// <param name="Path"></param>
+        public void Save(string Path) {
+            FileStream fs = new FileStream(Path, FileMode.Create, FileAccess.Write);
+            byte[] fileBytes = _jw.ToArray();
+
+            foreach (byte fileByte in fileBytes) {
+                fs.WriteByte(fileByte);
+            }
         }
 
         private void _writeHeaders() {
@@ -172,7 +240,6 @@ namespace Stegosaurus {
             
         }
 
-        // ReSharper disable once InconsistentNaming
         private void _encodeMCU(ref List<byte> bits, double[][,] YCbCrChannels, int imageWidth, int imageHeight) {
             double[][,] channels = new double[3][,];
             for (int i = 0; i < 3; i++) {
@@ -192,12 +259,9 @@ namespace Stegosaurus {
             }
         }
 
-        // ReSharper disable once InconsistentNaming
         private void _encodeBlocks(ref List<byte> bits, double[][,] MCU) {
-
-            double[,] YBlock;
             for (int i = 0; i < 4; i++) {
-                 YBlock = _block16ToBlock8(MCU[0], i);
+                double[,] YBlock = _block16ToBlock8(MCU[0], i);
                 _encodeBlocksSubMethod(ref bits, YBlock, YDCHuffman, YACHuffman, 0, YQuantizationTable);
             }
 
@@ -215,7 +279,6 @@ namespace Stegosaurus {
         }
 
         private byte[] _flush(List<byte> bits) {
-
             for (int i = 0; i < bits.Count / 8 - 1; i++) {
                 if (bits[i * 8] == 1 && bits[i * 8 + 1] == 1 && bits[i * 8 + 2] == 1 && bits[i * 8 + 3] == 1 && bits[i * 8 + 4] == 1 && bits[i * 8 + 5] == 1 && bits[i * 8 + 6] == 1 && bits[i * 8 + 7] == 1) {
                     for (int j = 0; j < 8; j++) {
@@ -361,16 +424,16 @@ namespace Stegosaurus {
         public override void Decode() {
             throw new NotImplementedException();
         }
-
+        
         private void HuffmanEncode(ref List<byte> bits, int[,] block8, HuffmanTable huffmanDC, HuffmanTable huffmanAC, int DCIndex) {
             short diff = (short)(block8[0, 0] - _lastDc[DCIndex]);
             _lastDc[DCIndex] += diff;
             if (diff != 0) {
-                byte category = bitCost(diff);
+                byte category = _bitCost(diff);
                 HuffmanElement huffmanCode = huffmanDC.GetElementFromRunSize(0, category);
                 ushortToBits(ref bits, huffmanCode.CodeWord, huffmanCode.Length);
 
-                ushortToBits(ref bits, numberEncoder(diff), category);
+                ushortToBits(ref bits, _numberEncoder(diff), category);
             } else {
                 HuffmanElement EOB = huffmanDC.GetElementFromRunSize(0x00, 0x00);
                 ushortToBits(ref bits, EOB.CodeWord, EOB.Length);
@@ -389,12 +452,12 @@ namespace Stegosaurus {
                     zeroesCounter -= 16;
                 }
 
-                byte cost = bitCost((short)Math.Abs(block8[x, y]));
+                byte cost = _bitCost((short)Math.Abs(block8[x, y]));
                 HuffmanElement codeElement = huffmanAC.GetElementFromRunSize((byte)zeroesCounter, cost);
                 zeroesCounter = 0;
                 ushortToBits(ref bits, codeElement.CodeWord, codeElement.Length);
 
-                ushortToBits(ref bits, numberEncoder((short)block8[x, y]), cost);
+                ushortToBits(ref bits, _numberEncoder((short)block8[x, y]), cost);
 
             }
 
@@ -414,12 +477,12 @@ namespace Stegosaurus {
             }
         }
 
-        private byte bitCost(short number) {
+        private byte _bitCost(short number) {
             return (byte)Math.Ceiling(Math.Log(Math.Abs(number) + 1, 2));
         }
 
 
-        private ushort numberEncoder(short number) {
+        private ushort _numberEncoder(short number) {
             return (number < 0) ? (ushort)(~Math.Abs(number)) : (ushort)Math.Abs(number);
         }
     }
