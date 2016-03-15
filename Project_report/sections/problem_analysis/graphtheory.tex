@@ -2,16 +2,16 @@
 \clearpage
 \section{Overview of ``A Graph-Theoretic Approach to Steganography''}
 \label{sec:graphtheory}
-\footnotesize{This section is based on the article by Hetzl and Mutzel\citep{hetzl_2005} and Olav Geils lecture on the article.}
+\footnotesize{This section is based on the article by Hetzl and Mutzel\citep{hetzl_2005} and Olav Geil's lecture on the article.}
 
 \subsection*{Terminology}
-First we define the $v$ as $ v_m: \mathds{Z} \Rightarrow \{0,1,2,\ldots,m-1\} $ such that $ v_m(s) = s \mod m $. Furthermore we have the message to encode in the image $e = \{ e_0, e_1, e_2, \ldots, e_n \}$ where $\forall i\left( e_i < m \right)$. Because all entries in the vector to be encoded must be less that $m$, $m$ defines the number of actual bits can be transferred in each pair of pixels. With $m = 2$ the only two possible values are $0$ and $1$, which means that only one bit can be embedded as one entry in the message vector. By choosing $m = 4$ the possible values are $0$, $1$, $2$ and $3$, or $00_2$, $01_2$, $10_2$ and $11_2$, practically this means that we can embed two bits in every entry in the vector.
+First we define the $v$ as $ v_m: \mathds{Z} \Rightarrow \{0,1,2,\ldots,m-1\} $ such that $ v_m(s) = s \mod m $. Furthermore we have the message to encode in the image $e = \{ e_0, e_1, e_2, \ldots, e_n \}$ where $\forall i\left( e_i < m \right)$. Because all entries in the vector to be encoded must be less than $m$, $m$ defines the number of actual bits can be transferred in each pair of pixels. With $m = 2$ the only two possible values are $0$ and $1$, which means that only one bit can be embedded as one entry in the message vector. By choosing $m = 4$ the possible values are $0$, $1$, $2$ and $3$, or $00_2$, $01_2$, $10_2$ and $11_2$. Practically this means that we can embed two bits in every entry in the vector.
 
-The $\oplus_m$ operator is used for computing sums modulo $m$. In other word, that operator describes the calculation $x \oplus_m y = v_m(x + y) = (x + y) \mod m$.  
+The $\oplus_m$ operator is used for computing sums modulo $m$. In other words, the operator describes the calculation $x \oplus_m y = v_m(x + y) = (x + y) \mod m$.  
 
 \subsection*{Method described in article}
 
-A grey-scale image can be viewed as a list of pixels with a value $0 \leq p \leq 255$. These pixels are then ordered into pairs of two. These pairs are then added together with the $\oplus_m$ operator, and compared to message which is to be encoded. If the addition result equals the wanted message, these pixels are perfect. If not, they need to be changed by either switching two pixels, or changing one of the values. In this method we want to avoid changing the values directly. So instead we find all pairs of pixels that be interchanged and result in perfect pairs. In table \ref{PairOrdering} this method is applied to a fictional grey-scale image with 14 pixels, and a message vector with 14 entries, in the example $m=4$ is used. 
+A grey-scale image can be viewed as a list of pixels with a value $0 \leq p \leq 255$. These pixels are then ordered into pairs of two. These pairs are then added together with the $\oplus_m$ operator, and compared to the message which is to be encoded. If the addition result equals the wanted message, these pixels are perfect. If not, they need to be changed by either switching two pixels, or changing one of the values. In this method we want to avoid changing the values directly. So instead, we find all pairs of pixels that could be interchanged and result in perfect pairs. In table \ref{PairOrdering} this method is applied to a fictional grey-scale image with 14 pixels, and a message vector with 14 entries, in the example $m=4$ is used. 
 
 \begin{table}[h]
 \centering
@@ -30,9 +30,9 @@ Needed values & \multicolumn{2}{c|}{\begin{tabular}[c]{@{}c@{}}<104,100>\\ <108,
 }
 \end{table}
 
-From the table we can see that the following switches would make pairs correct $(4 \leftrightarrow 11)$, $(8\leftrightarrow 12)$, $(2\leftrightarrow 13)$ and $(1 \leftrightarrow 13)$.
+From the table we can see that the following switches would make these pairs correct $(4 \leftrightarrow 11)$, $(8\leftrightarrow 12)$, $(2\leftrightarrow 13)$ and $(1 \leftrightarrow 13)$.
 
-As a graph these switches can represented as on figure \ref{fig:graph}. Each vertex represents a pair of pixel, where at least one of the pixels can be changed. The edges describe a switch between two pixels. This graph can then be used to determine which switches to make. Every time a switch is chosen, all other edges touching the two vertices where pixels are changed, are removed. This graph can be used to determine which switches are the best, by introducing edge weight, describing how much of a visual change a switch would result in.
+As a graph, these switches can be represented as on figure \ref{fig:graph}. Each vertex represents a pair of pixels, where at least one of the pixels can be changed. The edges describe a switch between two pixels. This graph can then be used to determine which switches to make. Every time a switch is chosen, all other edges touching the two vertices where pixels are changed, are removed. This graph can be used to determine which switches are the best, by introducing edge weight, describing how much of a visual change a switch would result in.
 
 \begin{figure}[h]
 \caption{Graph containing the possible switches}
@@ -79,8 +79,8 @@ draw , text=black, opacity=0.0 , minimum width =.3 cm}]
 \end{tikzpicture}
 \end{figure}
 
-Lets say that the switches $2\leftrightarrow 13$ and $4\leftrightarrow 11$ are chosen. Then we still need to correct the pairs (5,6) and (7,8). There is no switch that allows us to correct these values, so instead the actual values are forcibly changed and by doing so, changing the image ever so slightly.
+Lets say that the switches $2\leftrightarrow 13$ and $4\leftrightarrow 11$ are chosen. We would still need to correct the pairs (5,6) and (7,8). There is no switch that allows us to correct these values, so instead the actual values are forcibly changed and by doing so, change the image ever so slightly.
 
-By doing these switches, we minimize the need to alter the pixels in the image. With methods such as LSB it is rarely the case that pixels does not need to be altered, so this method is much more resistant to statistical analysis such as colour histograms described in section \ref{steganalysis}.
+By doing these switches, we minimize the need to alter the pixels in the image. With methods such as LSB it is rarely the case that pixels do not need to be altered, so this method is much more resistant to statistical analysis. For example, the colour histograms described in section \ref{steganalysis}.
 
-When the data is to be read from the image, the same method of grouping the pixels into pairs are applied. Now instead of trying to find pairs to be switched, the value obtained after using the $\oplus_m$ operation is the values embedded in the image. These values can then be grouped into a vector, which is a copy of the original message vector.
+When the data is to be read from the image, the same method of grouping pixels into pairs are applied. Now, instead of trying to find pairs to be switched, the value obtained after using the $\oplus_m$ operation are the values embedded in the image. These values can then be grouped into a vector, which is a copy of the original message vector.
