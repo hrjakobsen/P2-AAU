@@ -2,10 +2,12 @@
 \label{steganalysis}
 Steganalysis is the study of detecting information hidden with steganography and if possible, recover that information.
 Because of the nature of steganography, it is not always obvious if a file has hidden information or not.
-Therefore steganalysis is often used on a large set of files, which are suspected of containing hidden data.
+Therefore steganalysis is often applied on a large set of files, which are suspected of containing hidden data.
+There are many different techniques used in detection of hidden data, some of these techniques are described below.
 %TODO: add more to intro
 
 \subsection{Detection}
+\label{Detection}
 Most steganography algorithms are able to hide data without any notable visual impact on images.
 It is therefore hard if not impossible to detect if something is hidden by simply looking at the image.
 
@@ -78,7 +80,7 @@ LSB enhancing works by doing the opposite of what LSB usually does, it eliminate
 So all bytes will be either 0 or 1, it then ``enhances'' each byte by setting the 0 bytes to the minimum 0 and 1 to the maximum 255.
 This make the LSB of the image very visible, allowing for a visual check by simply looking for patterns.
 Figure \ref{fig:hiddengoodle} shows a 24 bit BMP image with 2 kb of random data hidden in it, and figure \ref{fig:LSBenhanced} is the same image LSB enhanced.
-We can see that there is something hidden in the bottom half of the image, while the top half remains untouched.\ref{Westfeld2000}
+We can see that there is something hidden in the bottom half of the image, while the top half remains untouched.\citep{Westfeld2000}
 
 \begin{figure}
 	\centering
