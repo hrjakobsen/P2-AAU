@@ -11,7 +11,6 @@ OTHER = *~ *.aux *.dvi *.toc *.bbl *.blg *.gz *.out *.thm *.ps *.idx *.ilg *.ind
 
 pdflatex: Presentation.tex
 	pdflatex --synctex=1 Presentation.tex
-	bibtex Presentation.aux
 	pdflatex --synctex=1 Presentation.tex
 	pdflatex --synctex=1 Presentation.tex
 	rm -f $(OTHER) $(PS)
