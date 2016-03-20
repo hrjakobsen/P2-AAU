@@ -20,9 +20,18 @@ namespace BeamerViewer {
             InitializeComponent();
         }
 
+        private Screen GetSecondaryScreen() {
+            foreach (Screen screen in Screen.AllScreens) {
+                if (screen != Screen.PrimaryScreen) {
+                    return screen;
+                }
+            }
+            return Screen.PrimaryScreen;
+        }
+
         private void Presenter_Load(object sender, EventArgs e) {
             Rectangle screenRes = Screen.AllScreens[1].Bounds;
-            Rectangle primaryMonitorRes = Screen.AllScreens[0].WorkingArea;
+            Rectangle primaryMonitorRes = GetSecondaryScreen().WorkingArea;
 
             notes.SizeMode = PictureBoxSizeMode.StretchImage;
             notes.Size = new Size((int)(primaryMonitorRes.Height * 1.33) / 2, primaryMonitorRes.Height / 2);
@@ -30,7 +39,7 @@ namespace BeamerViewer {
             nextslide.Size = new Size((int)(primaryMonitorRes.Height * 1.33) / 4, primaryMonitorRes.Height / 4);
             nextslide.Location = new Point(nextslide.Location.X - nextslide.Width + 30, 0);
 
-            Location = Screen.AllScreens[0].WorkingArea.Location;
+            Location = GetSecondaryScreen().WorkingArea.Location;
             Height = primaryMonitorRes.Height; 
             Width = primaryMonitorRes.Width;
             fv = new FullscreenView((int)(screenRes.Height * 1.3333), screenRes.Height);
@@ -47,6 +56,7 @@ namespace BeamerViewer {
         }
 
         void updateSlide() {
+            System.GC.Collect();
             fv.UpdateImage(pdf.GetSlide(currentPage));
             notes.Image = pdf.GetNotes(currentPage);
             nextslide.Image = pdf.GetSlide(currentPage + 1);

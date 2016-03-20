@@ -15,8 +15,8 @@ namespace BeamerViewer {
         public FullscreenView(int width, int height) {
             InitializeComponent();
             pictureBox1.Location = new Point(Width / 2 - width / 2, 0);
-            pictureBox1.Width = width;
-            pictureBox1.Height = height;
+            pictureBox1.Width = (int)(Screen.PrimaryScreen.Bounds.Height * 1.33);
+            pictureBox1.Height = Screen.PrimaryScreen.Bounds.Height;
         }
 
         public void UpdateImage(Image newImage) {

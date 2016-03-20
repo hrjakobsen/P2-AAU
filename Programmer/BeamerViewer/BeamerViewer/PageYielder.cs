@@ -17,13 +17,13 @@ namespace BeamerViewer {
         }
 
         public Image GetSlide(int page) {
-            Rectangle screenRes = Screen.AllScreens[1].Bounds;
+            Rectangle screenRes = Screen.PrimaryScreen.Bounds;
             Image i = doc.Render(page, (int)(screenRes.Height * 1.33), screenRes.Height * 2, 300, 300, PdfRenderFlags.None);
             return cropImage(i, new Rectangle(0, 0, (int)(screenRes.Height * 1.33), screenRes.Height));
         }
 
         public Image GetNotes(int page) {
-            Rectangle screenRes = Screen.AllScreens[1].Bounds;
+            Rectangle screenRes = Screen.PrimaryScreen.Bounds;
             Image i = doc.Render(page, (int)(screenRes.Height * 1.33), screenRes.Height * 2, 300, 300, PdfRenderFlags.None);
             i.Save("this.png", ImageFormat.Png);
             return cropImage(i, new Rectangle(0,screenRes.Height, (int)(screenRes.Height * 1.33), screenRes.Height));
