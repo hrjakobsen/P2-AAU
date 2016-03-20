@@ -292,8 +292,8 @@
   \coordinate (CF) at (IS |- CS); % coordinate of the current frame number
   {%
     \usebeamercolor{palette sidebar primary}%
-    \usebeamercolor{AAUsidebar}%
-%    \draw[color=bg,line width=\beamer@barwidth] (IS) -| (CF);
+    \usebeamercolor{AAUsidebar}%    
+    %\draw[color=bg,line width=\beamer@barwidth] (IS) -| (CF);
     \node[fill=palette sidebar primary.bg,draw=AAUsidebar.fg,circle,minimum width=3.5mm,thick] at (CF) {{\fontsize{4}{5}\selectfont{\usebeamercolor[fg]{subsection in sidebar}#1}}};
   }
   \end{tikzpicture}%
