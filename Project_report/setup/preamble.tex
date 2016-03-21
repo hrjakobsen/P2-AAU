@@ -244,3 +244,27 @@
 \usepackage{capt-of}
 
 \usepackage{ dsfont }
+
+\usepackage{amsmath}
+
+\newcounter{excounter}
+
+\newenvironment{experiment}[1]{%      define a custom environment       
+   \begin{leftbar}
+   \vspace{-.6cm}
+   \refstepcounter{excounter}% increment the environment's counter
+   \section*{Experiment \theexcounter: #1}% or \textbf, \textit, ...
+   }{\end{leftbar}}  %          create a vertical offset to following material
+%\numberwithin{excounter}{section}
+
+\definecolor{sidebarGrey}{RGB}{64, 64, 64}
+\renewenvironment{leftbar}[1][\hsize]
+{%
+    \def\FrameCommand
+    {%
+        {\color{sidebarGrey}\vrule width 2pt}%
+        \hspace{4pt}%must no space.
+    }%
+    \MakeFramed{\hsize#1\advance\hsize-\width\FrameRestore}%
+}
+{\endMakeFramed}
