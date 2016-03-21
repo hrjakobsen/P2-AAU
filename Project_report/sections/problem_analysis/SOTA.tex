@@ -6,13 +6,13 @@ Different forms of steganography have been invented, either because there was an
 	\item EZStego is a piece of Java-based software relying on the principle of manipulating the least significant bits of pixels in an image file (here GIF and PICT) for storing another image inside it\citep{E-Council|Press2015}.
 	As a result, the colour palette is rearranged, but this is done with the changes being barely, or not at all, visible to the human eye. 
 	
-	\item MP3stego takes steganography to audio files and makes it possible to hide information in MP3 files. 
-	During the compression process, the data is first compressed, encrypted and then hidden in the MP3 bit stream. 
-	The concealment is done in the Layer III encoding process in the ''inner\_loop'' where the input data is first quantized and the quantizer step size is then increased until the data can be coded with the available number of bits. 
-	Another loop checks that the distortions caused by quantization do not exceed a defined threshold. 
-	A variable contains the number of bits used for scale-factors and Huffman code data in the MP3 bit stream. 
-	The bits are encoded as its parity by changing the end loop condition of the inner loop. 
-	Only randomly chosen values of the variable are modified\citep{MP3Stego}. 
+%	\item MP3stego takes steganography to audio files and makes it possible to hide information in MP3 files. 
+%	During the compression process, the data is first compressed, encrypted and then hidden in the MP3 bit stream. 
+%	The concealment is done in the Layer III encoding process in the ''inner\_loop'' where the input data is first quantized and the quantizer step size 	%	is then increased until the data can be coded with the available number of bits. 
+%	Another loop checks that the distortions caused by quantization do not exceed a defined threshold. 
+%	A variable contains the number of bits used for scale-factors and Huffman code data in the MP3 bit stream. 
+%	The bits are encoded as its parity by changing the end loop condition of the inner loop. 
+%	Only randomly chosen values of the variable are modified\citep{MP3Stego}. 
 	
 	\item JSteg-Jpeg, as the name suggests, has its focus on JPEG steganography. 
 	The programme reads multiple image formats and takes an image file and a secret message that it combines and saves as a JPEG image. 
