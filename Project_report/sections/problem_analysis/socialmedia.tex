@@ -1,30 +1,29 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
 \clearpage
-\section{Using Social Networks for activism}
-Social Networks play a big role in activism. 
+\section{Using Social Media for Activism}
+Social media play a big role in activism.
 It has been argued that the Egyptian Revolution in 2011 was made possible partly due to the ease of sharing information on social media \citep{IJoC1242}. 
-The networks could be used for swiftly sharing information, staging protests and keeping the outside world updated on the status of the country.
-The large amount of users on social networks makes them an obvious platform for activists, as they can easily reach their target audience. 
+These networks could be used for readily sharing critical information such as staging protests and keeping the outside world updated on the status of the country.
+The large amount of users on social media makes them an obvious platform for activists, as they can easily reach their target audience. 
 
 The same reasoning can be used for using social networks for sharing embedded information using steganography. 
-By sharing information on social networks, the information can quickly be distributed to all other activists, though by being embedded in something inconspicuous, avoids detection by the opponents of the cause.
+By sharing information on social networks, the information can quickly be distributed to several other activists, though by being embedded in something inconspicuous, avoids detection by the opponents of the cause.
 
-Most social networks relies on video, imaging and text as the main component in information sharing.
-Because of this, the following section will examine how the social network process the images uploaded to their site, and if it is possible to send embedded data through the social networks.
+Most social media rely on video, images and text as the main components in information sharing.
+Because of this, the following section will examine how the social media process images uploaded to their sites, and if it is possible to send embedded data through them.
 
-\section{Image Sharing on Social Networks}
-
-To test the level of compression on different social networks, images encoded in different file formats were uploaded to multiple social networks. 
-After being uploaded, the compressed file was then again downloaded and examined.
+\section{Image Sharing on Social Media}
+To test the level of compression on different social media, images encoded in different file formats were uploaded to multiple social media. 
+After being uploaded, the compressed file was then downloaded and examined.
 To examine how much the compression algorithms distorted the images, the euclidean distance between the original image and the compressed version was calculated as described by Wang et. Al \citep{Wang2005}.
 
-The results using images saved with JPEG encoding can be seen in table \ref{tab:JPEG-compression}. 
-As can be seen in the results, some images were scaled in the encoding process, which makes computing the eucledian distance impossible without scaling the resulting image or the original image. Seen from the perspective of the sender, who sends hidden data embedded in an image. It doesn't make sense to scale the original image, as the embedded data will be lost. Instead the resulting image is rescaled to the original width and height, before computing the eucledian distance.
+The results of using images saved with JPEG encoding can be seen in table \ref{tab:JPEG-compression}. 
+As can be seen in the results, some images were scaled in the encoding process, which makes computing the euclidean distance impossible without scaling the resulting image or the original image. Seen from the perspective of the sender, who sends hidden data embedded in an image it does not make sense to scale the original image, as the embedded data will be lost. Instead the resulting image is rescaled to the original width and height, before computing the euclidean distance.
 
-From the results it can clearly be seen that on JPEG images Twitter compresses the file the most in terms of both file size and resolution.
+From the results it can clearly be seen on JPEG images that Twitter compresses the file the most in terms of both file size and resolution.
 Combined, this results in a higher euclidean distance, as the image loses more information. 
 
-On the other hand, the image sharing site Imgur changed nearly nothing in the uploaded JPEG image, and when downloaded again, all of the images reached an euclidean distance of 0, which means that the every pixel in the images were equal.
+On the other hand, the image sharing site Imgur changed next to nothing in the uploaded JPEG image, and when downloaded again, all of the images reached a euclidean distance of 0, which means that every pixel in the images were equal.
 
 \begin{threeparttable}[]
 \centering
@@ -32,7 +31,7 @@ On the other hand, the image sharing site Imgur changed nearly nothing in the up
 \begin{tabular}{|p{1.7cm}|p{1.3cm}|p{1.9cm}|p{1.5cm}|p{1.3cm}|p{1.9cm}|p{1.5cm}|p{2cm}|}
 \hline
                & \multicolumn{3}{c|}{Before compression}      & \multicolumn{3}{c|}{After compression}       &                    \\ \hline
-Social \newline Network & Image format & Image \newline resolution & Image size & Image format & Image \newline resolution & Image size & Euclidean distance \\ \hline
+Social \newline medium & Image format & Image \newline resolution & Image size & Image format & Image \newline resolution & Image size & Euclidean distance \\ \hline
 Facebook       & jpg          & 3648x2432        & 2.33 MB    & jpg          & 2048x1365        & 149 KB     & 4884\tnote{\textdagger}          \\ \hline
                & jpg          & 1824x1216        & 1.13 MB    & jpg          & 1824x1216        & 126 KB     & 2382\tnote{\textdagger}          \\ \hline
                & jpg          & 912x608          & 369 KB     & jpg          & 912x608          & 44.5 KB    & 1672          \\ \hline
@@ -47,17 +46,19 @@ Imgur          & jpg          & 3648x2432        & 2.33 MB    & jpg          & 3
 \begin{tablenotes}
     \footnotesize{\item[\textdagger] Image has been scaled to the original image size before calculating euclidean distance, which\\ may have skewed the results.}
     \end{tablenotes}
-\caption{Social Network compression on JPEG}
+\caption{Social media compression on JPEG}
 \label{tab:JPEG-compression}
 \end{threeparttable}
 
 
-After the initial tests of the compression systems used, the same test was run with images saved with PNG encoding.
-This time however, embedded in the images, using the least significant bit method described in section \ref{sec:lsb-implementation}, was a secret image. 
+After the initial tests of the compression systems, the same test was run with images saved with PNG encoding.
+This time, however, embedded in the images, using the LSB method described in section \ref{sec:lsb-implementation}, was a secret image. 
 The results from these tests are shown in table \ref{tab:PNG-compression}.
-From the result, it is clear that being able to preserve all pixels, with regards to the LSB method, all information is a rare occurrence when sharing images on social networking sites. In only two of the nine tested images the hidden image could be extracted. 
-These images were the lowest in both resolution and file size, which shows that there exists a threshold for when the social networks compress the uploaded images. 
-Below these thresholds both Twitter and Imgur could be used to send data without it being compressed. In the tests conducted the highest amount transferred was $912\text{ pixels} \cdot 608\text{ pixels} \cdot 3\text{ bytes/pixel} \cdot 2\text{ bits/byte} = 3.327\cdot 10^6\text{ bits}$ which is enough to save $415,872$ characters using their ASCII value.\\ 
+From the results, it is clear that being able to preserve all pixels is a rare occurrence, when sharing images on social media.
+In only two of the nine tested images the hidden image could be extracted.
+These images were the lowest in both resolution and file size, which shows that a threshold for when the social media compress the uploaded images exists. 
+Below these thresholds both Twitter and Imgur could be used to send data without it being compressed. 
+In the tests conducted, the highest amount transferred was $912\text{ pixels} \cdot 608\text{ pixels} \cdot 3\text{ bytes/pixel} \cdot 2\text{ bits/byte} = 3.327\cdot 10^6\text{ bits}$ which is enough to save $415,872$ characters using their ASCII value.\\ 
 
 
 \begin{threeparttable}[]
@@ -66,7 +67,7 @@ Below these thresholds both Twitter and Imgur could be used to send data without
 \begin{tabular}{|p{1.7cm}|p{1.3cm}|p{1.9cm}|p{1.5cm}|p{1.3cm}|p{1.9cm}|p{1.5cm}|p{2cm}|p{1.3cm}|}
 \hline
                & \multicolumn{3}{c|}{Before compression}      & \multicolumn{3}{c|}{After compression}       &                    &                            \\ \hline
-Social \newline Network & Image format & Image \newline resolution & Image size & Image format & Image \newline resolution & Image size & Euclidean distance & Extract \newline image? \\ \hline
+Social \newline medium & Image format & Image \newline resolution & Image size & Image format & Image \newline resolution & Image size & Euclidean distance & Extract \newline image? \\ \hline
 Facebook       & png          & 3648x2432        & 18.1 MB    & jpg          & 2048x1365        & 152 KB     & 5936\tnote{\textdagger}          & No                         \\ \hline
                & png          & 1824x1216        & 5.08 MB    & jpg          & 1824x1216        & 142 KB     & 2774\tnote{\textdagger}          & No                         \\ \hline
                & png          & 912x608          & 1.35 MB    & jpg          & 912x608          & 49 KB      & 1775          & No                         \\ \hline
@@ -81,9 +82,9 @@ Imgur          & png          & 3648x2432        & 18.1 MB    & jpg          & 3
 \begin{tablenotes}
     \footnotesize{\item[\textdagger] Image has been scaled to the original image size before calculating euclidean distance, which\\ may have skewed the results.}
     \end{tablenotes}
-\caption{Social Network compression on PNG}
+\caption{Social media compression on PNG}
 \label{tab:PNG-compression}
 \end{threeparttable}
 
-From the tests conducted it is clear that when using social networks to share information embedded in conventional files, it is critical to understand how the social networking site processes the file, before serving it to the other users of the site.
-Otherwise you can very easily end up with your data being scrambled beyond repair, and the secret message being lost.
+From the tests conducted it is clear that when using social media to share information embedded in conventional image files, it is critical to understand how the social medium processes the file, before serving it to the users of the site.
+Otherwise you can very easily end up with your data being scrambled beyond repair, and the secret message lost.

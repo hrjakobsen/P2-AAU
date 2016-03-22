@@ -1,22 +1,22 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
 \section{LSB implementation}
 \label{sec:lsb-implementation}
-During the beginning of the project, to learn more and understand how this algorithm works, as well as see first-hand what social media sites re-encoded images, we created a small prototype of a programme, which is able to conceal an image within another image, using the LSB algorithm. The code for this program, can be seen in appendix \ref{ch:appAlabel}, and the algorithm we've implemented, can be seen in Procedure \ref{alg1}.
+During the beginning of the project, to learn more and understand how this algorithm works, as well as investigate which social media re-encoded images, we created a small prototype of a programme, with the ability to conceal an image within another image, using the LSB algorithm. The code for this programme, can be seen in the digital appendix \ref{ch:appAlabel}, and the algorithm we have implemented can be seen in Procedure \ref{alg1}.
 
-By storing the information we want concealed in the two least significant bits, we can keep all of the original information, and changing each pixel of the cover image, by a maximum value of 3 or $00000011_2$, the concealed image will almost be invisible to the naked eye.
+By storing the information we want concealed in the two least significant bits, we can keep all of the message's original information, and changing each pixel of the cover image, by a maximum value of 3 or $00000011_2$, the concealed image will be almost invisible to the naked eye.
 
-To do this, we had to make some restrictions on how big the cover image had to be relatively to the to-be-concealed image. 
+To do this, we had to make some restrictions on how big the cover image could be relative to the message image. 
 To not cause corruption and to ensure all information got saved, the cover image has to be four times as big as the hidden image, more specifically twice its height, and twice its width. 
-Each pixel of the concealed image will be stored within four pixels of the cover image, each masked differently, hence the cover image has to be four times its size. 
+Each pixel of the concealed image will be stored within four pixels of the cover image, each masked differently, hence the size requirements. 
 We do this to get as much of the concealed image's information stored within the cover as possible.
 
 To make both images easier to work with, we store each pixel's colour in their own array of type \lstinline|Color|.
-To store each pixel within the cover, we first mask the cover to remove the information stored within the least significant bits using the bitwise operator \&. 
-We then mask the concealed image to only keep the information stored in two bits, then right-shift those bits so the result, will be a byte where only the least-significant-bits, can be 1, and then, add this information to the cover. 
-The result will be a slightly changed pixel by a value between 0 and 3 for the Red, Green and Blue channels. 
+To store each pixel within the cover, we first mask the cover to remove the information stored within the least significant bits, using the bitwise operator \&.
+We then mask the concealed image to only keep the information stored in two bits, then right-shift those bits so the result will be a byte where only the least-significant-bits, can be 1, and then, add this information to the cover. 
+The result will be a pixel with its value for the Red, Green and Blue channels slightly changed by a value between 0 and 3.
 The first pixel in the cover will contain the two most significant bits of the concealed image, the next will contain the third and fourth, and so on. 
 
-To get back the image information, we once again use the bitwise \& operator, to only keep the information within the least-significant bits of every pixel, then left-shift them accordingly and save this to a Colour array. Once every pixel has been read, the Colour array can be transformed into an image which looks just like the original.
+To recover the message image, we once again use the bitwise \& operator to only keep the information within the two least-significant bits of every pixel, then left-shift them accordingly and save this to a \lstinline|Color| array. Once every pixel has been read, the \lstinline|Color| array can be transformed into an image which looks just like the original.
 
 The entire process of encoding one pixel into four others using the two least significant bits is shown in figure \ref{fig:hundigrafik}. We have the cover image $C$, the message image $M$ and the steganographic image $S$. Each pixel in the message image is split up into four parts $M_1, M_2, M_3$ and $M_4$ where each part contains two bits from the R, G and B channels of the original pixel.
 
