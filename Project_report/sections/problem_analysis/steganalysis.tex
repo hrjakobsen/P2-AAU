@@ -47,7 +47,7 @@ This unusual histogram might just be a product of a compression algorithm.
 \paragraph*{DCT coefficients histogram}
 To detect if data is hidden using a algorithm which employs ``shrinkage'', we can look at a histogram of the DCT coefficients.
 when hiding data in the least significant bit of the DCT coefficients instead of just changing the bits, we can analyse each of the bits.
-If the bit matches our message we move on, if it doesn't we subtract 1 from the DCT value, if the value is negative we add 1, This is call shrinkage.
+If the bit matches our message we move on, if it doesn't we subtrac t1 from the DCT value, if the value is negative we add 1, This is call shrinkage.
 This method results in a high amount of zeros in the DCT coefficients.
 This can be seen on the comparison between figure \ref{fig:InputF5} and figure \ref{fig:outputF5}, these are histograms of DCT coefficients of figure \ref{fig:puffin}.
 We can clearly see that after data has been hidden using a algorithm which uses ``shrinkage'', as there are almost only zeros remaining.
