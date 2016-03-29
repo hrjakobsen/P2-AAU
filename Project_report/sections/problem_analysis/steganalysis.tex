@@ -45,10 +45,12 @@ The new stego image has quite an unusual histogram, though unfortunately we cann
 This unusual histogram might just be a product of a compression algorithm.
 
 \paragraph*{DCT coefficients histogram}
-By looking at a histogram of the DCT coefficients of a JPEG image, one might be able to detect if data has been hidden.
-This is because of steganography algorithms like F5, the ``shrinkage'' it uses will result in a high amount of zeros in the DCT coefficients.
+To detect if data is hidden using a algorithm which employs ``shrinkage'', we can look at a histogram of the DCT coefficients.
+when hiding data in the least significant bit of the DCT coefficients instead of just changing the bits, we can analyse each of the bits.
+If the bit matches our message we move on, if it doesn't we subtract 1 from the bit, if the bit is negative we add 1, This is call shrinkage.
+This method results in a high amount of zeros in the DCT coefficients.
 This can be seen on the comparison between figure \ref{fig:InputF5} and figure \ref{fig:outputF5}, these are histograms of DCT coefficients of figure \ref{fig:puffin}.
-We can clearly see that after data has been hidden using the F5 algorithm there has occurred ``shrinkage'', with almost only zeros remaining.
+We can clearly see that after data has been hidden using a algorithm which uses ``shrinkage'', as there are almost only zeros remaining.
 
 
 \begin{figure}
