@@ -95,7 +95,27 @@ draw , text=black, opacity=0.0 , minimum width =.3 cm}]
 \label{fig:graph}
 \end{figure}
 
-Lets say that the switches $2\leftrightarrow 13$ and $4\leftrightarrow 11$ are chosen. We would still need to correct the pairs (5,6) and (7,8). There is no switch that allows us to correct these values, so instead the actual values are forcibly changed and by doing so, change the image ever so slightly. The image obtained after these switches and changes are the one shown on figure \ref{fig:endingImage} next to the original image shown on figure \ref{fig:startingImage}.
+Lets say that the switches $2\leftrightarrow 13$ and $4\leftrightarrow 11$ are chosen. The pixels after these swithces are shown in table \ref{tab:pixelsSwitched}. We would still need to correct the pairs (5,6) and (7,8). There is no switch that allows us to correct these values, so instead the actual values are forcibly changed and by doing so, change the image ever so slightly. 
+
+\begin{table}[h]
+\caption{Pixels after switching}
+\label{tab:pixelsSwitched}
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+Pixels & $p_1$ & $p_2$ & $p_3$ & $p_4$ & $p_5$ & $p_6$ & $p_7$ & $p_8$ & $p_9$ & $p_{10}$ & $p_{11}$ & $p_{12}$ & $p_{13}$ & $p_{14}$ \\ \hline
+Value & 106 & 104 & 103 & 103 & 101 & 101 & 200 & 255 & 100 & 125 & 100 & 254 & 102 & 100 \\ \hline
+$\oplus_4$ & \multicolumn{2}{c|}{2} & \multicolumn{2}{c|}{2} & \multicolumn{2}{c|}{2} & \multicolumn{2}{c|}{3} & \multicolumn{2}{c|}{1} & \multicolumn{2}{c|}{2} & \multicolumn{2}{c|}{2} \\ \hline
+Message & \multicolumn{2}{c|}{2} & \multicolumn{2}{c|}{2} & \multicolumn{2}{c|}{1} & \multicolumn{2}{c|}{2} & \multicolumn{2}{c|}{1} & \multicolumn{2}{c|}{2} & \multicolumn{2}{c|}{2} \\ \hline
+ & \multicolumn{2}{c|}{=} & \multicolumn{2}{c|}{=} & \multicolumn{2}{c|}{$\neq$} & \multicolumn{2}{c|}{$\neq$} & \multicolumn{2}{c|}{=} & \multicolumn{2}{c|}{=} & \multicolumn{2}{c|}{=} \\ \hline
+Needed values & \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{\begin{tabular}[c]{@{}c@{}}<100,100>\\ <104,104>\end{tabular}} & \multicolumn{2}{c|}{\begin{tabular}[c]{@{}c@{}}<199,254>\\ <203,003>\end{tabular}} & \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{} \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+
+The image obtained after these switches and changes are the one shown on figure \ref{fig:endingImage} next to the original image shown on figure \ref{fig:startingImage}.
 
 
 \begin{figure}[h!]
