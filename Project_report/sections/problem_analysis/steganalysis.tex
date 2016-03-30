@@ -98,10 +98,18 @@ We can see that there is something hidden in the bottom half of the image, while
 	\label{fig:LSBenhanced}
 \end{figure}
 
-%\paragraph*{$\chi^2$ attack or chi-squared attack}
-%Chi-squared is a statistical test measure if a given set observed data and an expected set of data are similar.
-%We compare pairs of values' observed frequencies with their expected frequencies and calculate the probability of having some embedded data.
-%\ref{fig:Chiattack} shows the result of chi-squared attack on figure \ref{fig:hiddengoodle}.
+\paragraph*{$\chi^2$ attack or chi-squared attack}
+When testing for is data is hidden using pairs of values to hide information, as opposed to using individual values.
+We could do a statistical test like Chi-squared, if a given set of observed data and a set of expected data, we can use chi-square to check how similar they are.
+Chi-square compares pairs of values' observed frequencies with their expected frequencies and calculate the probability of the observed set has embedded data.
+\ref{fig:Chiattack]} graphs the similarity of the two data sets on \ref{fig:hiddengoodle}, the steep decline in the graph indicates that there might be data hidden in the observed set.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{figures/ChiSquareAttack.png}
+	\caption{Graph of chi-squared attack.}
+	\label{fig:Chiattack}
+\end{figure}
 
 \paragraph*{Steganography signatures}
 Unusual patterns in a image are obvious and arise suspicion, for example unused bits in the file headers or even comment headers, these might give us some insight into which algorithm was used.
@@ -111,9 +119,3 @@ Recovery of data hidden with steganography is difficult, to recover the data we 
 Even if we know the algorithm used, we might still only get back meaningless data, because in addition to hiding the data, it might also be encrypted.
 
 So the most common way of recovering hidden data is by using the same algorithm that was used to encode the image to decode the data.
-%\begin{figure}
-%	\centering
-%	\includegraphics[width=0.5\textwidth]{figures/ChiSquareAttack.png}
-%	\caption{Graph of chi-squared attack.}
-%	\label{fig:Chiattack}
-%\end{figure}
