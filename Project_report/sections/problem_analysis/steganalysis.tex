@@ -81,19 +81,19 @@ We can clearly see that after data has been hidden using a algorithm which uses 
 LSB enhancing works by doing the opposite of what LSB usually does, it eliminates all 7 high-level bits for each pixel except the last LSB. 
 So all bytes will be either 0 or 1, it then ``enhances'' each byte by setting the 0 bytes to the minimum 0 and 1 to the maximum 255.
 This make the LSB of the image very visible, allowing for a visual check by simply looking for patterns.
-Figure \ref{fig:hiddengoodle} shows a 24 bit BMP image with 2 kb of random data hidden in it, and figure \ref{fig:LSBenhanced} is the same image LSB enhanced.
-We can see that there is something hidden in the bottom half of the image, while the top half remains untouched\citep{Westfeld2000}.
+Figure \ref{fig:hiddenAAU} shows a 24 bit BMP image with 2 kb of random data hidden in it, and figure \ref{fig:LSBenhanced} is the same image LSB enhanced.
+We can see that there is something hidden in the top half of the image, while the top half remains untouched\citep{Westfeld2000}.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.4\textwidth]{figures/google.png}
-	\caption{24 bit bmp image 2 kb random data.}
-	\label{fig:hiddengoodle}
+	\includegraphics[width=0.4\textwidth]{figures/StegoAAU.png}
+	\caption{24 bit bmp image with a 12 kb image hidden within.}
+	\label{fig:hiddenAAU}
 \end{figure}
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.4\textwidth]{figures/LSBenhanced.png}
+	\includegraphics[width=0.4\textwidth]{figures/StegoAAULSB.png}
 	\caption{24 bit bmp image LSB enhanced.}
 	\label{fig:LSBenhanced}
 \end{figure}
@@ -102,7 +102,7 @@ We can see that there is something hidden in the bottom half of the image, while
 When testing for is data is hidden using pairs of values to hide information, as opposed to using individual values.
 We could do a statistical test like Chi-squared, if a given set of observed data and a set of expected data, we can use chi-square to check how similar they are.
 Chi-square compares pairs of values' observed frequencies with their expected frequencies and calculate the probability of the observed set has embedded data.
-\ref{fig:Chiattack]} graphs the similarity of the two data sets on \ref{fig:hiddengoodle}, the steep decline in the graph indicates that there might be data hidden in the observed set.
+\ref{fig:Chiattack]} graphs the similarity of the two data sets on \ref{fig:hiddenAAU}, the steep decline in the graph indicates that there might be data hidden in the observed set.
 
 \begin{figure}
 	\centering
