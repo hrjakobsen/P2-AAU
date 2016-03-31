@@ -15,15 +15,14 @@ JPEG is a widely used image format, which stems from the compression method used
 This compression has a drawback though, in that it is a lossy compression method, meaning a compression will remove data from the original image and therefore degrade the image quality.
 Because the JPEG compression method is lossy, we cannot use simple methods like LSB for JPEG steganography because we do not have a good control over each individual pixel.
 
-\subsubsection*{Portable Network Graphics}
+\subsubsection*{Portable Network Graphics} %TODO: add sources
 PNG was created in 1996 as a better alternative to the Graphics Interchange Format (GIF).
 PNG offers a wide range of colour depths, from 24-bit (8 bits per channel) to 48-bit (16 bits per channel) and even up to 64-bit when an alpha channel is added.
 The compression method used for the PNG image format is lossless, so no data is lost under compression.
 Because the compression is lossless and PNG is widely used on the internet makes it ideal as a cover for use in steganography.
 
 \subsubsection*{Conclusion}
-After looking at the various file formats and how image compression works we have decided to work with with the JPEG format. 
-As discovered in \ref{whycompression}, we realised that most sites convert images to JPEG when uploaded. 
-Because of this, JPEG appears to be the most commonly used file format when it comes to sharing images online and this is why the JPEG format will be the focus throughout the rest of the report.
-
-%TODO: add sources
+After looking at the various file formats and how image compression works we have decided to work with the JPEG format.
+As discovered in \ref{sec:whycompression}, we realised that most sites convert images to JPEG when uploaded. 
+Because of this, JPEG appears to be the most commonly used file format when it comes to sharing images online.
+This is why the JPEG format will be the focus throughout the rest of the report.

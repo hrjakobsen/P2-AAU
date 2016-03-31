@@ -2,7 +2,8 @@
 \begin{experiment}{LSB implementation}
 
 \label{sec:lsb-implementation}
-During the beginning of the project, to learn more and understand how this algorithm works, as well as investigate which social media re-encoded images, we created a small prototype of a programme, with the ability to conceal an image within another image, using the LSB algorithm. The code for this programme, can be seen in the digital appendix \ref{ch:appAlabel}, and the algorithm we have implemented can be seen in Procedure \ref{alg1}.
+During the beginning of the project, to learn more and understand how this algorithm works, as well as investigate which social media re-encoded images, we created a small prototype of a programme, with the ability to conceal an image within another image, using an LSB algorithm.
+The code for this programme, can be seen in the digital appendix \ref{ch:appAlabel}, and the algorithm we have implemented can be seen in Procedure \ref{alg1}.
 
 By storing the information we want concealed in the two least significant bits, we can keep all of the message's original information, and changing each pixel of the cover image, by a maximum value of 3 or $00000011_2$, the concealed image will be almost invisible to the naked eye.
 
