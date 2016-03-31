@@ -2,8 +2,9 @@
 \label{steganalysis}
 Steganalysis is the study of detecting information hidden with steganography and if possible, recover that information.
 Because of the nature of steganography, it is not always obvious if a file has hidden information or not.
-Therefore steganalysis is often applied on a large set of files, which are suspected of containing hidden data.
-There are many different techniques used in detection of hidden data, some of these techniques are described below.
+Therefore, steganalysis is often applied on a large set of files, which are suspected of containing hidden data.
+There are many different techniques used in detection of hidden data.
+Some of these techniques are described below.
 %TODO: add more to intro
 
 \subsection{Detection}
@@ -27,31 +28,31 @@ This can be used to detect unusual distributions of colour, which may occur when
 \begin{figure}
 	\centering
 	\includegraphics[width=0.6\textwidth]{figures/HistoLSBCat.png}
-	\caption{Colour Histogram of image without hidden data.}
+	\caption{Colour histogram of image shown in figure \ref{fig:CoverImage} without hidden data.}
 	\label{fig:HistoWithoutLSB}
 \end{figure}
 
 \begin{figure}
 	\centering
 	\includegraphics[width=0.6\textwidth]{figures/HistoLSBCatEncrypted.png}
-	\caption{Colour Histogram of image containing secret image hidden with LSB.}
+	\caption{Colour histogram of image shown in figure \ref{fig:CoverImage} containing secret image hidden with LSB.}
 	\label{fig:HistoWithLSB}
 \end{figure}
 
-We have our cover image \ref{fig:CoverImage} and its respective colour histogram in figure \ref{fig:HistoWithoutLSB}.
-We then hide another image in our cover image, this produces a new colour histogram (figure \ref{fig:HistoWithLSB}).
-The new stego image has quite an unusual histogram, though unfortunately we cannot be sure there is hidden data only by looking at these histogram.
+We have our cover image shown in figure \ref{fig:CoverImage} and its respective colour histogram in figure \ref{fig:HistoWithoutLSB}.
+We then hide another image in our cover image, this produces a new colour histogram shown in figure \ref{fig:HistoWithLSB}.
+The new stego image has quite an unusual histogram, though unfortunately we cannot be sure there is hidden data only by looking at these histograms.
 
 This unusual histogram might just be a product of a compression algorithm.
 
 \paragraph*{DCT coefficients histogram}
-To detect if data is hidden using a algorithm which employs ``shrinkage'', we can look at a histogram of the DCT coefficients.
-when hiding data in the least significant bit of the DCT coefficients instead of just changing the bits, we can analyse each of the bits.
-If the least significant bit matches our message we move on, if it doesn't we subtract 1 from the DCT value, if the value is negative we add 1, This is call ``shrinkage''.
+To detect if data is hidden using a algorithm which employs shrinkage, we can look at a histogram of the DCT coefficients.
+When hiding data in the least significant bit of the DCT coefficients instead of just changing the bits, we can analyse each of the bits.
+If the least significant bit matches our message we move on, if it does not we subtract 1 from the DCT value, if the value is negative we add 1.
+This is called shrinkage.
 This method results in a high amount of zeros in the DCT coefficients.
 This can be seen on the comparison between figure \ref{fig:InputF5} and figure \ref{fig:outputF5}, these are histograms of DCT coefficients of figure \ref{fig:puffin}.
-We can clearly see that after data has been hidden using a algorithm which uses ``shrinkage'', as there are almost only zeros remaining.
-
+We can clearly see that after data has been hidden using a algorithm which uses shrinkage, as there are almost only zeros remaining.
 
 \begin{figure}
 	\centering
@@ -78,11 +79,13 @@ We can clearly see that after data has been hidden using a algorithm which uses 
 %TODO: add F5 to section "State of the art"
 
 \paragraph*{LSB enhancing}
-LSB enhancing works by doing the opposite of what LSB usually does, it eliminates all 7 high-level bits for each pixel except the last LSB. 
-So all bytes will be either 0 or 1, it then ``enhances'' each byte by setting the 0 bytes to the minimum 0 and 1 to the maximum 255.
-This make the LSB of the image very visible, allowing for a visual check by simply looking for patterns.
+LSB enhancing works by doing the opposite of what LSB usually does.
+It eliminates all seven high-level bits for each byte. 
+The least significant bit will then remain, making all bytes either 0 or 1.
+These are then enhanced by setting each 0 byte to the minimum 0 and 1 to the maximum 255.
+This makes the LSB of the image very visible, allowing for a visual check by simply looking for patterns.
 Figure \ref{fig:hiddenAAU} shows a 24 bit BMP image with 2 kb of random data hidden in it, and figure \ref{fig:LSBenhanced} is the same image LSB enhanced.
-We can see that there is something hidden in the top half of the image, while the top half remains untouched\citep{Westfeld2000}.
+We can see that there is something hidden in the top half of the image, while the bottom half remains untouched \citep{Westfeld2000}.
 
 \begin{figure}
 	\centering
@@ -99,10 +102,10 @@ We can see that there is something hidden in the top half of the image, while th
 \end{figure}
 
 \paragraph*{$\chi^2$ attack or chi-squared attack}
-When testing for is data is hidden using pairs of values to hide information, as opposed to using individual values.
-We could do a statistical test like Chi-squared, if a given set of observed data and a set of expected data, we can use chi-square to check how similar they are.
+We could do a statistical test like chi-squared, if a given set of observed data and a set of expected data, we can use chi-square to check how similar they are.
 Chi-square compares pairs of values' observed frequencies with their expected frequencies and calculate the probability of the observed set has embedded data.
-\ref{fig:Chiattack]} graphs the similarity of the two data sets on \ref{fig:hiddenAAU}, the steep decline in the graph indicates that there might be data hidden in the observed set.
+Figure \ref{fig:Chiattack]} show a graph of the similarities of the two data sets on figure \ref{fig:hiddenAAU}.
+The steep decline in the graph indicates that there might be data hidden in the observed set.
 
 \begin{figure}
 	\centering

@@ -145,11 +145,11 @@ toptitle=0.5mm,center title, nobeforeafter,bottomtitle=0.5mm,title=Proposed Quan
 \vspace{4mm}
 \subsection*{Zigzag-ordering} 
 \vspace{-2.5mm}
-Because of the quantization process, there are now a lot of zeroes in the lower-right corner of the 8x8 block of pixels.
-This feature can be utilised to compress the image data, but first the table must be ordered so that the zeroes are placed next to each other. 
+Because of the quantization process, there are now a lot of zeros in the lower-right corner of the 8x8 block of pixels.
+This feature can be utilised to compress the image data, but first the table must be ordered so that the zeros are placed next to each other. 
 
 To do this, the 8x8 block of pixels are now read in a zigzag manner displayed on figure \ref{fig:zigzag}.
-By reading the block this way, you have a 64 dimensional vector with a lot of consecutive zeroes. 
+By reading the block this way, you have a 64 dimensional vector with a lot of consecutive zeros. 
 
 \begin{centering}
 \includegraphics[width=.5\textwidth]{figures/zigzagordering.png}
@@ -160,12 +160,12 @@ By reading the block this way, you have a 64 dimensional vector with a lot of co
 \vspace{4mm}
 \subsection*{Encoding the vector}
 \vspace{-2.5mm}
-The first entry in the vector is called the DC coefficient, and will be encoded differently from the other 63. To encode the last 63 entries, run-length encoding (RLE) is used. Each value different from zero in the vector is represented as $(\text{Number of zeroes before this entry}, \text{Entry})$. Because of the many consecutive zeroes in the data, this allows a very compact encoding of the numbers. If at one point in the vector only zeroes remain, we end the block with the EOB value (0,0). 
+The first entry in the vector is called the DC coefficient, and will be encoded differently from the other 63. To encode the last 63 entries, run-length encoding (RLE) is used. Each value different from zero in the vector is represented as $(\text{Number of zeros before this entry}, \text{Entry})$. Because of the many consecutive zeros in the data, this allows a very compact encoding of the numbers. If at one point in the vector only zeros remain, we end the block with the EOB value (0,0). 
 
 The DC coefficient is often a large number, so it would be a waste of bits to write it in full to the file each time. Instead only the difference from the previous DC coefficient is stored, so that smaller numbers need to be encoded. So when reading a JPEG file, a decoder must keep track of the previous DC coefficient. The first coefficient encoded, of course, is the whole number.
 
-There are some restrictions to this encoding, as only a nibble is used to represent the number of preceding zeroes, the maximum value we can denote is $F_{16}=15_{10}$.
-If there are more than 15 consecutive zeroes, we can encode 16 zeroes as (15,0), and by using multiple of these values, denote any number of consecutive zeroes. 
+There are some restrictions to this encoding, as only a nibble is used to represent the number of preceding zeros, the maximum value we can denote is $F_{16}=15_{10}$.
+If there are more than 15 consecutive zeros, we can encode 16 zeros as (15,0), and by using multiple of these values, denote any number of consecutive zeros. 
 
 \vspace{4mm}
 \subsection*{Huffman Encoding}
