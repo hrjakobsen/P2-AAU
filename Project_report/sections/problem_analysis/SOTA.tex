@@ -5,8 +5,13 @@ In this section some of the tools already available for performing digital stega
 This could potentially give an idea of what these tools could be missing or otherwise do wrong in a real-life context. 
 
 \begin{description}
-	\item[EZStego] is a piece of Java-based software relying on the principle of manipulating the least significant bits of pixels in an image file (here 		GIF and PICT) for storing another image inside it \citep{E-Council|Press2015}.
-	As a result, the colour palette is rearranged, but this is done with the changes being barely, or not at all, visible to the human eye.
+	\item[EzStego] is a Java-based steganography tool for embedding information in GIF-files. 
+	GIF images are limited to a palette of 256 colours per pixel, and EzStego takes advantage of this to embed information into the pixels.
+	A GIF palette is usually sorted by luminance, but this is not ideal, since two colours with similar luminance could be very different.
+	EzStego sorts a GIF palette in a way that two adjacent colours are very similar, which means that if the colours are switched, it is unlikely that a 		human would notice.
+	The embedding of data in EzStego works by switching colours if the bit to be embedded is '1', and leaving the colours if it is '0'.
+	This will create an image that looks a lot like the original image, and it is done without changing the file size.
+	It is, however, possible to extract the hidden data if the created stego-image is compared pixel-by-pixel to the original image \citep{Westfeld_2000}.
 	
 %	\item MP3stego takes steganography to audio files and makes it possible to hide information in MP3 files. 
 %	During the compression process, the data is first compressed, encrypted and then hidden in the MP3 bit stream. 
@@ -34,7 +39,7 @@ This could potentially give an idea of what these tools could be missing or othe
 \end{description}
 
 This is just a small selection of the tools available. 
-Most other programmes utilise simple methods similar to some of the examples and choose to deal with only simple file formats like BMP or GIF. 
+Most other programmes utilise simple methods similar to some of the examples and choose to deal with only simple file formats like BMP or GIF.
 This tells us that dealing with formats that implement compression is a more complex task that requires research.
 It has also become clear that very few solutions take into account, the difficulties of sharing steganographic material online.
 This makes compression of steganography very interesting to work with. 

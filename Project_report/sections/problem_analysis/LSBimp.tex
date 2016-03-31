@@ -1,5 +1,5 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
-\section{LSB implementation}
+\begin{experiment}{LSB implementation}
 
 \label{sec:lsb-implementation}
 During the beginning of the project, to learn more and understand how this algorithm works, as well as investigate which social media re-encoded images, we created a small prototype of a programme, with the ability to conceal an image within another image, using the LSB algorithm. The code for this programme, can be seen in the digital appendix \ref{ch:appAlabel}, and the algorithm we have implemented can be seen in Procedure \ref{alg1}.
@@ -25,11 +25,14 @@ For every pixel chosen in $M$, four pixel are chosen from $C$. For each of these
 
 Lastly, four pixels in $S$ are created by making pairs in the form of $C_nM_n$. This means that the four pixels in $S$ will be the following combinations: $C_1M_1,C_2M_2,C_3M_3$ and $C_4M_4$.
 
-
+\end{experiment}
 \begin{figure}
 	\centering
 	\includegraphics[width=1\textwidth]{figures/hundikatgrafik.png}
 	\caption{Illustration of how the message is saved within its cover image.}
 	\label{fig:hundigrafik}
 \end{figure}
+
 \input{sections/problem_analysis/LSBalgo.tex}
+
+
