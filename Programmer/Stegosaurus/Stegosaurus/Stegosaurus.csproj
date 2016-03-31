@@ -50,7 +50,7 @@
   <ItemGroup>
     <Compile Include="JPEG\HuffmanTable.cs" />
     <Compile Include="JPEG\JPEGImage.cs" />
-    <Compile Include="JPEG\JpegWriter.cs" />
+    <Compile Include="JPEG\JPEGWriter.cs" />
     <Compile Include="JPEG\QuantizationTable.cs" />
     <Compile Include="LSB\LeastSignificantBitImage.cs" />
     <Compile Include="StegoImageBase.cs" />
