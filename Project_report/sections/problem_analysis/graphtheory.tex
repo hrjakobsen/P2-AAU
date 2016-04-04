@@ -23,10 +23,10 @@ The message to be concealed in the image is the binary string $10100110011010$.
 
 \subsection*{Terminology}
 First we define the function $v$ as $ v_m: \mathds{Z} \Rightarrow \{0,1,2,\ldots,m-1\} $ such that $ v_m(s) = s \mod m $. 
-Furthermore we have the message to encode in the image $e = \{ e_0, e_1, e_2, \ldots, e_n \}$, where $\forall i\left( e_i < m \right)$. 
-Because all entries in the vector to be encoded must be less than $m$, $m$ defines the number of actual bits can be transferred in each pair of pixels. With $m = 2$ the only two possible values are $0$ and $1$, which means that only one bit can be embedded as one entry in the message vector.
+Furthermore we have the message, $e$ a list of $n$ elements, to encode in the image: $e = \{ e_0, e_1, e_2, \ldots, e_n \}$, where $\forall i\left( e_i < m \right)$. 
+Because all entries in the message list to be encoded must be less than $m$, $m$ defines the number of actual bits can be transferred in each pair of pixels. With $m = 2$ the only two possible values are $0$ and $1$, which means that only one bit can be embedded as one entry in the message vector.
 By choosing $m = 4$, the possible values are $0$, $1$, $2$ and $3$, or $00_2$, $01_2$, $10_2$ and $11_2$.
-Practically this means that we can embed two bits in every entry in the message vector.
+Practically this means that we can embed two bits in every entry in the message vector. 
 
 The $\oplus_m$ operator is used for computing sums modulo $m$.
 In other words, the operator describes the calculation $x \oplus_m y = v_m(x + y) = (x + y) \mod m$.  
@@ -35,10 +35,12 @@ In the following example we will use $m = 4$, as this allows 2 bits to be used f
 Our message vector is found by splitting the binary string into pairs of two bits, which then makes it $e = [10 \, 10 \, 01 \, 10 \, 01 \, 10 \, 10]$. 
 
 \subsection*{Method Described in Article}
-A grey-scale image can be viewed as a list of pixels with a value $0 \leq p \leq 255$.
-These pixels are then ordered into pairs of two.
+A grey-scale image can be viewed as a list of pixels $p = \{ p_0, p_1, p_2, \ldots, p_n \}$, where $\forall i\left( 0 \leq p_i \leq 255 \right)$. 
+These pixels are then ordered into consecutive pairs of two.
+Because we embed one entry from the message vector into each pair of pixels, an $m$ value of 4, means that we embed two bit per two pixels, meaning the message vector can have the same dimension as the amount of pixels in the image. 
+Were we to chose $m = 2$, only half of this message could fit in the same image.
 The $\oplus_m$ operator is then used on each individual pair, and compared to the message which is to be encoded.
-If the resulting remainder equals the wanted message, these pixels are a perfect pair.
+If the resulting remainder equals the wanted message, these pixels are a \textit{perfect pair}.
 If not, they need to be changed by either switching two pixels around, or changing one of the values.
 In this method we want to avoid changing the values directly.
 Instead, we find all pairs of pixels that could be interchanged and result in perfect pairs.
@@ -55,7 +57,7 @@ Pixel & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 \\ \hline
 Value & 106 & 102 & 103 & 100 & 101 & 101 & 200 & 255 & 100 & 125 & 103 & 254 & 104 & 100 \\ \hline
 $\oplus_4$ & \multicolumn{2}{c|}{0} & \multicolumn{2}{c|}{3} & \multicolumn{2}{c|}{2} & \multicolumn{2}{c|}{3} & \multicolumn{2}{c|}{1} & \multicolumn{2}{c|}{1} & \multicolumn{2}{c|}{0} \\ \hline
 Message & \multicolumn{2}{c|}{2} & \multicolumn{2}{c|}{2} & \multicolumn{2}{c|}{1} & \multicolumn{2}{c|}{2} & \multicolumn{2}{c|}{1} & \multicolumn{2}{c|}{2} & \multicolumn{2}{c|}{2} \\ \hline
- & \multicolumn{2}{c|}{$\neq$} & \multicolumn{2}{c|}{$\neq$} & \multicolumn{2}{c|}{$\neq$} & \multicolumn{2}{c|}{=} & \multicolumn{2}{c|}{=} & \multicolumn{2}{c|}{$\neq$} & \multicolumn{2}{c|}{$\neq$} \\ \hline
+ & \multicolumn{2}{c|}{$\neq$} & \multicolumn{2}{c|}{$\neq$} & \multicolumn{2}{c|}{$\neq$} & \multicolumn{2}{c|}{$\neq$} & \multicolumn{2}{c|}{=} & \multicolumn{2}{c|}{$\neq$} & \multicolumn{2}{c|}{$\neq$} \\ \hline
 Needed values & \multicolumn{2}{c|}{\begin{tabular}[c]{@{}c@{}}<104,100>\\ <108,104>\end{tabular}} & \multicolumn{2}{c|}{\begin{tabular}[c]{@{}c@{}}<102,99>\\ <106,103>\end{tabular}} & \multicolumn{2}{c|}{\begin{tabular}[c]{@{}c@{}}<100,100>\\ <104,104>\end{tabular}} & \multicolumn{2}{c|}{\begin{tabular}[c]{@{}c@{}}<199,254>\\ <203,002>\end{tabular}} & \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{\begin{tabular}[c]{@{}c@{}}<100,251>\\ <104,255>\end{tabular}} & \multicolumn{2}{c|}{\begin{tabular}[c]{@{}c@{}}<102,98>\\ <106,102>\end{tabular}} \\ \hline
 \end{tabular}%
 }
@@ -137,7 +139,7 @@ Needed values & \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{} & \multicolumn{2}{
 \end{table}
 
 
-The image obtained after these switches and changes are the one shown on figure \ref{fig:endingImage} next to the original image shown on figure \ref{fig:startingImage}.
+The image obtained after these switches and changes are the one shown on figure \ref{fig:endingImageComp} next to the original image shown on figure \ref{fig:startingImageComp}.
 
 
 \begin{figure}[h!]
@@ -145,14 +147,14 @@ The image obtained after these switches and changes are the one shown on figure 
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth, frame]{figures/pixelgrid.png}
 		\caption{Grey-scale cover image}
-		\label{fig:startingImage}
+		\label{fig:startingImageComp}
     \end{subfigure}
     ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc. 
       %(or a blank line to force the subfigure onto a new line)
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth, frame]{figures/pixelgrid2.png}
 		\caption{Grey-scale stego image}
-		\label{fig:endingImage}
+		\label{fig:endingImageComp}
     \end{subfigure}
     \caption{Comparison of the image before (\ref{fig:startingImage}) and after (\ref{fig:endingImage}) the changes have been made.}\label{fig:pixelGrids}
 \end{figure}
