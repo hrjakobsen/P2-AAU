@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 
 namespace Stegosaurus {
-    public class JpegImage : StegoImageBase{
+    public class JpegImage : IImageEncoder{
+
         public Bitmap CoverImage { get; }
         private JpegWriter _jw;
 
@@ -109,7 +111,7 @@ namespace Stegosaurus {
         /// <summary>
         /// Used to encode a Bitmap as a JPEG along with a message
         /// </summary>
-        public override void Encode() {
+        public void Encode(byte[] message) {
             _jw = new JpegWriter();
             _writeHeaders();
             //Hide data here
@@ -201,7 +203,7 @@ namespace Stegosaurus {
         private void _writeHuffmanSegment(HuffmanTable huffman, byte id, bool dc) {
             _jw.WriteBytes(0xff, 0xc4); //DHT marker
 
-            ushort len = (ushort)(huffman.Elements.Length + huffman.Combinations().Length + 3);
+            ushort len = (ushort)(huffman.Elements.Count + huffman.Combinations().Length + 3);
             _jw.WriteBytes((byte)(len >> 8), (byte)(len & 0xff));
 
             byte combined;
@@ -215,7 +217,9 @@ namespace Stegosaurus {
 
             _jw.WriteBytes(huffman.Combinations());
 
-            foreach (HuffmanElement huffmanElement in huffman.Elements) {
+
+            HuffmanElement[] allElements = huffman.Elements.Values.OrderBy(x => x.Length).ThenBy(x => x.RunSize).ToArray();
+            foreach (HuffmanElement huffmanElement in allElements) {
                 _jw.WriteBytes(huffmanElement.RunSize);
             }
         }
@@ -310,6 +314,7 @@ namespace Stegosaurus {
                     quantizedValues[x, y] =(int)(values[x, y] / qTable.Entries[y * 8 + x]);
                 }
             }
+
             return quantizedValues;
         }
 
@@ -420,10 +425,6 @@ namespace Stegosaurus {
         private void _writeEndOfImage() {
             _jw.WriteBytes(0xff, 0xd9);
         }
-
-        public override void Decode() {
-            throw new NotImplementedException();
-        }
         
         private void HuffmanEncode(ref List<byte> bits, int[,] block8, HuffmanTable huffmanDC, HuffmanTable huffmanAC, int DCIndex) {
             short diff = (short)(block8[0, 0] - _lastDc[DCIndex]);
@@ -484,6 +485,11 @@ namespace Stegosaurus {
 
         private ushort _numberEncoder(short number) {
             return (number < 0) ? (ushort)(~Math.Abs(number)) : (ushort)Math.Abs(number);
+        }
+        
+
+        public int GetCapacity() {
+            throw new NotImplementedException();
         }
     }
 }

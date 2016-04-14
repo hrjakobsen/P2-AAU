@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="JPEG\HuffmanTable.cs" />
+    <Compile Include="JPEG\IImageEncoder.cs" />
     <Compile Include="JPEG\JPEGImage.cs" />
     <Compile Include="JPEG\JPEGWriter.cs" />
     <Compile Include="JPEG\QuantizationTable.cs" />
