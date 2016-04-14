@@ -6,9 +6,13 @@ using System.Linq;
 
 namespace Stegosaurus {
     public class JpegImage : IImageEncoder{
+        private JpegWriter _jw;
+        private int _m;
+        private byte[] _message;
+        private readonly double[,] _cosines = new double[8, 8];
+        private readonly int[] _lastDc = { 0, 0, 0 };
 
         public Bitmap CoverImage { get; }
-        private JpegWriter _jw;
 
         /// <summary>
         /// Quantization table used for the Y component of the image.
@@ -40,8 +44,21 @@ namespace Stegosaurus {
         /// </summary>
         public HuffmanTable ChrACHuffman { get; set; }
 
-        private readonly double[,] _cosines = new double[8, 8];
-        private readonly int[] _lastDc = { 0, 0, 0 };
+        public int M {
+            get { return _m; }
+            set {
+                switch (value) {
+                    case 2:
+                    case 4:
+                    case 16:
+                    case 256:
+                        _m = value;
+                        break;
+                    default:
+                        throw new ArgumentException("M must 2, 4, 16 or 256!");
+                }
+            }
+        }
 
         /// <summary>
         /// A constructor
@@ -112,9 +129,13 @@ namespace Stegosaurus {
         /// Used to encode a Bitmap as a JPEG along with a message
         /// </summary>
         public void Encode(byte[] message) {
+            if (message.Length > 16884) {
+                throw new ArgumentException("Message cannot be longer 16884 bytes!");
+            }
+            _breakDownMessage(message);    
+
             _jw = new JpegWriter();
             _writeHeaders();
-            //Hide data here
             _writeScanData();
             _writeEndOfImage();
         }
@@ -122,14 +143,46 @@ namespace Stegosaurus {
         /// <summary>
         /// Saves an encoded jpeg image to a filesystem
         /// </summary>
-        /// <param name="Path"></param>
-        public void Save(string Path) {
-            FileStream fs = new FileStream(Path, FileMode.Create, FileAccess.Write);
+        /// <param name="path"></param>
+        public void Save(string path) {
+            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
             byte[] fileBytes = _jw.ToArray();
 
             foreach (byte fileByte in fileBytes) {
                 fs.WriteByte(fileByte);
             }
+        }
+
+        private void _breakDownMessage(byte[] message) {
+            List<byte> temp = new List<byte>();
+
+            //Encode the message length in the 14 first bits and the value of M into the 15th and 16th bits
+            short len = (short)(message.Length << 2);
+            switch (M) {
+                case 4:
+                    len++;
+                    break;
+                case 16:
+                    len += 2;
+                    break;
+                case 256:
+                    len += 3;
+                    break;
+            }
+            
+            temp.Add((byte)((len & 0xFF00) >> 8));
+            temp.Add((byte)(len & 0xFF));
+
+            byte mask = (byte) (M - 1);
+
+            foreach (byte b in message) {
+                //Each byte must be split into 8/log2(M) parts
+                for (int i = 0; i < 8/Math.Log(M, 2); i++) {
+                    //Save log2(M) bits at a time
+                    temp.Add((byte)(b & (byte)(mask << i)));
+                }
+            }
+            _message = temp.ToArray();
         }
 
         private void _writeHeaders() {
