@@ -5,11 +5,11 @@ using System.Windows.Forms;
 using Stegosaurus;
 
 namespace TestForm{
-    public partial class TestForm:Form {
+    public partial class StegosaurusGUI:Form {
         private readonly LeastSignificantBitImage StegoController;
         private bool CoverImageSet, MessageImageSet;
 
-        public TestForm() {
+        public StegosaurusGUI() {
             InitializeComponent();
             StegoController = new LeastSignificantBitImage();
         }
