@@ -594,7 +594,8 @@ namespace Stegosaurus {
             List<byte> byteList = new List<byte>();
             int i;
             for (i = 1; i < scanData.Length; i++) {
-                byteList.Add((byte)((scanData[i] + scanData[i++]) % m));
+                //HUSK! LAD VÆRE AT ADDE NULLER!!!!
+                byteList.Add((byte)((scanData[i] + scanData[++i]) % m));
             }
 
             int iterations = (int)(8/Math.Log(m,2));

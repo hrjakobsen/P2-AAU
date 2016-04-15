@@ -16,9 +16,9 @@ namespace StegoGUI
         {
             InitializeComponent();
 
-            label1.AutoSize = false;
-            label1.Height = 2;
-            label1.BorderStyle = BorderStyle.Fixed3D;
+            //label1.AutoSize = false;
+            //label1.Height = 2;
+            //label1.BorderStyle = BorderStyle.Fixed3D;
         }
 
         private void picCover_Click(object sender, EventArgs e)
