@@ -1,0 +1,19 @@
+UI:
+	Kvalitetsindstillinger (slider)
+	Progress-indikator
+	eventuelt mulighed for egne huffman tables
+	Tab i toppen hvor man kan vælge metode til steganografi (LSB eller Graph)
+	Display af billederne
+
+
+Der er tre knapper, load, encode og decode
+
+Encode og decode kan "selectes" (være active/inactive)
+
+	Encode active:
+		Det kan ses, at decode er inactive (teksten er gennemsigtig), encode active.
+		Load image er lige så "highlighted" som encode
+
+	Decode active:
+		Det kan ses, at encode er inactive (teksten er gennemsigtig), decode active.
+		Load image er synlig, men det er meget tydligt, at den ikke kan trykkes på (grayscaled tekst samt box)
