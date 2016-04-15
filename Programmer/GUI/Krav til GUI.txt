@@ -2,6 +2,7 @@ UI:
 	Kvalitetsindstillinger (slider)
 	Progress-indikator
 	eventuelt mulighed for egne huffman tables
+	Mulighed for custom quantization tables
 	Tab i toppen hvor man kan vælge metode til steganografi (LSB eller Graph)
 	Display af billederne
 
