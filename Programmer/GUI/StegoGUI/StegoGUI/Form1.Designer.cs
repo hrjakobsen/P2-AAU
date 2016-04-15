@@ -41,6 +41,7 @@
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.showHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.line = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.picStego)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picMessage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picCover)).BeginInit();
@@ -145,7 +146,7 @@
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.optionsToolStripMenuItem.Text = "Options";
             // 
             // helpToolStripMenuItem1
@@ -160,20 +161,29 @@
             // showHelpToolStripMenuItem
             // 
             this.showHelpToolStripMenuItem.Name = "showHelpToolStripMenuItem";
-            this.showHelpToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.showHelpToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
             this.showHelpToolStripMenuItem.Text = "Show help";
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
             this.aboutToolStripMenuItem.Text = "About";
+            // 
+            // line
+            // 
+            this.line.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.line.Location = new System.Drawing.Point(4, 23);
+            this.line.Name = "line";
+            this.line.Size = new System.Drawing.Size(576, 2);
+            this.line.TabIndex = 15;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(585, 285);
+            this.Controls.Add(this.line);
             this.Controls.Add(this.picStego);
             this.Controls.Add(this.btnDecode);
             this.Controls.Add(this.btnEncode);
@@ -210,6 +220,7 @@
         private System.Windows.Forms.ToolStripMenuItem showHelpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
+        private System.Windows.Forms.Label line;
     }
 }
 
