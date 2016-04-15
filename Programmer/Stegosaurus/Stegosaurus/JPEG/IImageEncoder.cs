@@ -3,6 +3,5 @@
         void Encode(byte[] message);
         int GetCapacity();
         void Save(string path);
-        void Decode(string path);
     }
 }

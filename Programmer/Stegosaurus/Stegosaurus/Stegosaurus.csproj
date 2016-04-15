@@ -48,9 +48,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="JPEG\Decoder.cs" />
     <Compile Include="JPEG\Edge.cs" />
     <Compile Include="JPEG\Graph.cs" />
     <Compile Include="JPEG\HuffmanTable.cs" />
+    <Compile Include="JPEG\IDecode.cs" />
     <Compile Include="JPEG\IImageEncoder.cs" />
     <Compile Include="JPEG\JPEGImage.cs" />
     <Compile Include="JPEG\JPEGWriter.cs" />
