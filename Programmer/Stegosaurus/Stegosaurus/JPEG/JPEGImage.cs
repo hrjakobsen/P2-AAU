@@ -2,11 +2,17 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 
 namespace Stegosaurus {
-    public class JpegImage : StegoImageBase{
-        public Bitmap CoverImage { get; }
+    public class JpegImage : IImageEncoder{
         private JpegWriter _jw;
+        private int _m;
+        private byte[] _message;
+        private readonly double[,] _cosines = new double[8, 8];
+        private readonly int[] _lastDc = { 0, 0, 0 };
+
+        public Bitmap CoverImage { get; }
 
         /// <summary>
         /// Quantization table used for the Y component of the image.
@@ -38,8 +44,21 @@ namespace Stegosaurus {
         /// </summary>
         public HuffmanTable ChrACHuffman { get; set; }
 
-        private readonly double[,] _cosines = new double[8, 8];
-        private readonly int[] _lastDc = { 0, 0, 0 };
+        public int M {
+            get { return _m; }
+            set {
+                switch (value) {
+                    case 2:
+                    case 4:
+                    case 16:
+                    case 256:
+                        _m = value;
+                        break;
+                    default:
+                        throw new ArgumentException("M must 2, 4, 16 or 256!");
+                }
+            }
+        }
 
         /// <summary>
         /// A constructor
@@ -109,25 +128,72 @@ namespace Stegosaurus {
         /// <summary>
         /// Used to encode a Bitmap as a JPEG along with a message
         /// </summary>
-        public override void Encode() {
+        public void Encode(byte[] message) {
+            if (message.Length > 16884) {
+                throw new ArgumentException("Message cannot be longer 16884 bytes!");
+            }
+            _breakDownMessage(message);    
+
             _jw = new JpegWriter();
             _writeHeaders();
-            //Hide data here
             _writeScanData();
             _writeEndOfImage();
         }
 
         /// <summary>
+        /// Used to decode the hidden message in given file
+        /// </summary>
+        /// <param name="path"></param>
+        public void Decode(string path) {
+            StreamReader sr = new StreamReader(path);
+            BinaryReader file = new BinaryReader(sr.BaseStream);
+            byte[] byteArr = findScanData(file);
+            byteArr = GetMessage(byteArr);
+        }
+
+        /// <summary>
         /// Saves an encoded jpeg image to a filesystem
         /// </summary>
-        /// <param name="Path"></param>
-        public void Save(string Path) {
-            FileStream fs = new FileStream(Path, FileMode.Create, FileAccess.Write);
+        /// <param name="path"></param>
+        public void Save(string path) {
+            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
             byte[] fileBytes = _jw.ToArray();
 
             foreach (byte fileByte in fileBytes) {
                 fs.WriteByte(fileByte);
             }
+        }
+
+        private void _breakDownMessage(byte[] message) {
+            List<byte> temp = new List<byte>();
+
+            //Encode the message length in the 14 first bits and the value of M into the 15th and 16th bits
+            short len = (short)(message.Length << 2);
+            switch (M) {
+                case 4:
+                    len++;
+                    break;
+                case 16:
+                    len += 2;
+                    break;
+                case 256:
+                    len += 3;
+                    break;
+            }
+            
+            temp.Add((byte)((len & 0xFF00) >> 8));
+            temp.Add((byte)(len & 0xFF));
+
+            byte mask = (byte) (M - 1);
+
+            foreach (byte b in message) {
+                //Each byte must be split into 8/log2(M) parts
+                for (int i = 0; i < 8/Math.Log(M, 2); i++) {
+                    //Save log2(M) bits at a time
+                    temp.Add((byte)(b & (byte)(mask << i)));
+                }
+            }
+            _message = temp.ToArray();
         }
 
         private void _writeHeaders() {
@@ -201,7 +267,7 @@ namespace Stegosaurus {
         private void _writeHuffmanSegment(HuffmanTable huffman, byte id, bool dc) {
             _jw.WriteBytes(0xff, 0xc4); //DHT marker
 
-            ushort len = (ushort)(huffman.Elements.Length + huffman.Combinations().Length + 3);
+            ushort len = (ushort)(huffman.Elements.Count + huffman.Combinations().Length + 3);
             _jw.WriteBytes((byte)(len >> 8), (byte)(len & 0xff));
 
             byte combined;
@@ -215,7 +281,9 @@ namespace Stegosaurus {
 
             _jw.WriteBytes(huffman.Combinations());
 
-            foreach (HuffmanElement huffmanElement in huffman.Elements) {
+
+            HuffmanElement[] allElements = huffman.Elements.Values.OrderBy(x => x.Length).ThenBy(x => x.RunSize).ToArray();
+            foreach (HuffmanElement huffmanElement in allElements) {
                 _jw.WriteBytes(huffmanElement.RunSize);
             }
         }
@@ -310,6 +378,7 @@ namespace Stegosaurus {
                     quantizedValues[x, y] =(int)(values[x, y] / qTable.Entries[y * 8 + x]);
                 }
             }
+
             return quantizedValues;
         }
 
@@ -420,10 +489,6 @@ namespace Stegosaurus {
         private void _writeEndOfImage() {
             _jw.WriteBytes(0xff, 0xd9);
         }
-
-        public override void Decode() {
-            throw new NotImplementedException();
-        }
         
         private void HuffmanEncode(ref List<byte> bits, int[,] block8, HuffmanTable huffmanDC, HuffmanTable huffmanAC, int DCIndex) {
             short diff = (short)(block8[0, 0] - _lastDc[DCIndex]);
@@ -484,6 +549,79 @@ namespace Stegosaurus {
 
         private ushort _numberEncoder(short number) {
             return (number < 0) ? (ushort)(~Math.Abs(number)) : (ushort)Math.Abs(number);
+        }
+        
+
+        public int GetCapacity() {
+            throw new NotImplementedException();
+        }
+
+        private byte[] findScanData(BinaryReader file) {
+            byte a;
+            bool foundMarker = false;
+            while (!foundMarker) {
+                a = file.ReadByte();
+                if (a == 0xff) {
+                    a = file.ReadByte();
+                    if (a == 0xda) {
+                        foundMarker = true;
+                    }
+                }
+            }
+            foundMarker = false;
+            List<byte> listOfBytes = new List<byte>();
+            while (!foundMarker) {
+                a = file.ReadByte();
+
+                if (a == 0xff) {
+                    byte b = file.ReadByte();
+                    if (b != 0) {
+                        break;
+                    }
+                    listOfBytes.Add(a);
+                    listOfBytes.Add(b);
+                } else {
+                    listOfBytes.Add(a);
+                }
+            }
+            return listOfBytes.ToArray();
+        }
+
+        private byte[] GetMessage(byte[] scanData) {
+            // int m = scanData[0];
+            // m is the modulo operator saved somewhere in scanData
+            int m = 4;
+            List<byte> byteList = new List<byte>();
+            int i;
+            for (i = 1; i < scanData.Length; i++) {
+                byteList.Add((byte)((scanData[i] + scanData[i++]) % m));
+            }
+
+            int iterations = (int)(8/Math.Log(m,2));
+            int logM = (int)Math.Log(m, 2);
+            List<byte> message = new List<byte>();
+            i = 1;
+            while(i < byteList.Count) {
+                byte byteToAdd = 0;
+                for (int j = 0; j < iterations; j++) {
+                    if (i < byteList.Count) {
+                        // extracts the message from the bytelist and bitshifts the appropriate amount of times.
+                        // LogM describes how many bits we've got the information in
+                        // iterations - j + 1 times LogM ensures we've added the bits in the right spots
+                        byteToAdd += (byte)(byteList[i] << (logM * (iterations - j + 1)));
+                        i++;
+                    }
+                }
+                message.Add(byteToAdd);
+            }
+            List<byte> actualMessage = new List<byte>();
+
+            //byteList[4] is the position where the length of the message is saved
+            int read = byteList[4];
+            for (i = 0; i < read; i++) {
+                actualMessage.Add(message[i]);
+            }
+            return actualMessage.ToArray();
         }
     }
 }

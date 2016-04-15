@@ -1,43 +1,34 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Stegosaurus {
     public class HuffmanTable {
-        public readonly HuffmanElement[] Elements;
+
+        public Dictionary<byte, HuffmanElement> Elements = new Dictionary<byte, HuffmanElement>();
 
         public HuffmanTable(params HuffmanElement[] elements) {
-            Elements = elements;
-            Array.Sort(Elements);
-        }
+            foreach (HuffmanElement huffmanElement in elements) {
+                Elements.Add(huffmanElement.RunSize, huffmanElement);
+            }
+        } 
 
         public byte[] Combinations() {
             byte[] numberOfCodes = new byte[16];
-            foreach (HuffmanElement element in Elements) {
-                numberOfCodes[element.Length - 1]++;
-            }
-
-            string s = "";
-            for (int i = 0; i < 16; i++) {
-                s += numberOfCodes[i] + " ";
+            foreach (KeyValuePair<byte, HuffmanElement> element in Elements) {
+                numberOfCodes[element.Value.Length - 1]++;
             }
 
             return numberOfCodes;
         }
 
         public override string ToString() {
-            string s = Elements.Aggregate("", (current, huffmanElement) => current + (huffmanElement + "\n"));
-            return s;
+            return Elements.Aggregate("", (current, huffmanElement) => current + (huffmanElement + "\n"));
         }
 
         public HuffmanElement GetElementFromRunSize(byte run, byte size) {
             byte runSize = (byte)((run << 4) | size);
-            // ReSharper disable once LoopCanBeConvertedToQuery
-            foreach (HuffmanElement huffmanElement in Elements) {
-                if (huffmanElement.RunSize == runSize) {
-                    return huffmanElement;
-                }
-            }
-            return null;
+            return Elements[runSize];
         }
 #region DefaultTables
         // ReSharper disable once InconsistentNaming
