@@ -8,7 +8,7 @@ namespace Stegosaurus {
     public class JpegImage : IImageEncoder{
         private JpegWriter _jw;
         private int _m;
-        private byte[] _message;
+        private List<byte> _message = new List<byte>();
         private readonly double[,] _cosines = new double[8, 8];
         private readonly int[] _lastDc = { 0, 0, 0 };
 
@@ -165,7 +165,6 @@ namespace Stegosaurus {
         }
 
         private void _breakDownMessage(byte[] message) {
-            List<byte> temp = new List<byte>();
 
             //Encode the message length in the 14 first bits and the value of M into the 15th and 16th bits
             short len = (short)(message.Length << 2);
@@ -181,8 +180,8 @@ namespace Stegosaurus {
                     break;
             }
             
-            temp.Add((byte)((len & 0xFF00) >> 8));
-            temp.Add((byte)(len & 0xFF));
+            _message.Add((byte)((len & 0xFF00) >> 8));
+            _message.Add((byte)(len & 0xFF));
 
             byte mask = (byte) (M - 1);
 
@@ -190,10 +189,9 @@ namespace Stegosaurus {
                 //Each byte must be split into 8/log2(M) parts
                 for (int i = 0; i < 8/Math.Log(M, 2); i++) {
                     //Save log2(M) bits at a time
-                    temp.Add((byte)(b & (byte)(mask << i)));
+                    _message.Add((byte)(b & (byte)(mask << i)));
                 }
             }
-            _message = temp.ToArray();
         }
 
         private void _writeHeaders() {
@@ -378,8 +376,42 @@ namespace Stegosaurus {
                     quantizedValues[x, y] =(int)(values[x, y] / qTable.Entries[y * 8 + x]);
                 }
             }
-
+            //Do graph things
+            if (_message.Count != 0) {
+                quantizedValues = _encodeData(quantizedValues);
+            }
             return quantizedValues;
+        }
+
+        private int[,] _encodeData(int[,] qValues) {
+            int k = 2;
+            List<int> nonZeroValues = new List<int>();
+            for (int y = 0; y < 8; y++) {
+                for (int x = 0; x < 8; x++) {
+                    if (qValues[x, y] != 0 && x + y != 0) {
+                        nonZeroValues.Add(qValues[x,y]);
+                    }
+                }
+            }
+            List<Pair<int, int>> pairs = new List<Pair<int, int>>();
+            for (int i = 0; i < nonZeroValues.Count - 1; i += 2) {
+                pairs.Add(new Pair<int, int>(nonZeroValues[i], nonZeroValues[i + 1]));
+            }
+        
+
+            foreach (Pair<int, int> pair in pairs) {
+                int index = pairs.IndexOf(pair);
+                if ((pair.First + pair.Second).Mod(M) == _message[index]) {
+                    _message.RemoveAt(index);
+                    pairs.RemoveAt(index);
+                }
+            }
+
+
+            return qValues;
+
+
+
         }
 
         private double[,] _discreteCosineTransform(double[,] block8) {
