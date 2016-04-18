@@ -4,15 +4,10 @@ using System.Net.Configuration;
 
 namespace Stegosaurus {
     public class Graph {
-        public List<Vertex> Vertices { get; set; }
+        public List<Vertex> Vertices { get; set; } = new List<Vertex>();
 
-        public Vertex GetVertexByID(int id) {
-            return Vertices.Single(v => v.ID == id);
-        }
-
-        public Vertex AddVertex(Vertex vertex) {
-            Vertices.Add(vertex);
-            return vertex;
+        public override string ToString() {
+            return Vertices.Aggregate("These are my vertices: \n", (current, v) => current + (v + "\n"));
         }
     }
 }

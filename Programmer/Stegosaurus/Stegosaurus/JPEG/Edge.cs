@@ -1,15 +1,21 @@
-﻿
+﻿using System;
+
 namespace Stegosaurus {
     public class Edge {
         public Vertex VStart { get; set; }
         public Vertex VEnd { get; set; }
 
-        public int Weight { get; set; }
+        public int Weight => Math.Abs((_vStartFirst ? VStart.Value.Item1 : VStart.Value.Item2) -
+                                      (_vEndFirst ? VEnd.Value.Item1 : VEnd.Value.Item2));
 
-        public Edge(Vertex vStart, Vertex vEnd, int weight) {
+        private readonly bool _vStartFirst;
+        private readonly bool _vEndFirst;
+
+        public Edge(Vertex vStart, Vertex vEnd, bool vStartFirstItem, bool vEndFirstItem) {
             VStart = vStart;
             VEnd = vEnd;
-            Weight = weight;
+            _vStartFirst = vStartFirstItem;
+            _vEndFirst = vEndFirstItem;
         }
     }
 }
