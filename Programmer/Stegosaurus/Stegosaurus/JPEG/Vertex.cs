@@ -2,6 +2,15 @@
 
 namespace Stegosaurus {
     public class Vertex {
-        public List<Edge> Neighbours;
+        public int ID { get; }
+        public List<Edge> Neighbours { get; set; }
+
+        public Vertex(int id) {
+            ID = id;
+        }
+
+        public void AddNeighbour(Edge neighbour) {
+            Neighbours.Add(neighbour);
+        }
     }
 }

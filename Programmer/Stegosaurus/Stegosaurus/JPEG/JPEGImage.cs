@@ -65,29 +65,32 @@ namespace Stegosaurus {
         /// </summary>
         /// <param name="coverImage"></param>
         /// <param name="quality"></param>
-        public JpegImage(Bitmap coverImage, int quality) :this(coverImage, quality, QuantizationTable.JpegDefaultYTable, QuantizationTable.JpegDefaultChrTable) {}
+        /// <param name="m"></param>
+        public JpegImage(Bitmap coverImage, int quality, int m) :this(coverImage, quality, m, QuantizationTable.JpegDefaultYTable, QuantizationTable.JpegDefaultChrTable) {}
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="coverImage"></param>
         /// <param name="quality"></param>
+        /// <param name="m"></param>
         /// <param name="yTable"></param>
         /// <param name="chrTable"></param>
-        public JpegImage(Bitmap coverImage, int quality, QuantizationTable yTable, QuantizationTable chrTable) 
-            : this (coverImage, quality, yTable, chrTable, HuffmanTable.JpegHuffmanTableYDC, HuffmanTable.JpegHuffmanTableYAC, HuffmanTable.JpegHuffmanTableChrDC, HuffmanTable.JpegHuffmanTableChrAC) { }
+        public JpegImage(Bitmap coverImage, int quality, int m, QuantizationTable yTable, QuantizationTable chrTable) 
+            : this (coverImage, quality, m, yTable, chrTable, HuffmanTable.JpegHuffmanTableYDC, HuffmanTable.JpegHuffmanTableYAC, HuffmanTable.JpegHuffmanTableChrDC, HuffmanTable.JpegHuffmanTableChrAC) { }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="coverImage"></param>
         /// <param name="quality"></param>
+        /// <param name="m"></param>
         /// <param name="huffmanYDC"></param>
         /// <param name="huffmanYAC"></param>
         /// <param name="huffmanChrDC"></param>
         /// <param name="huffmanChrAC"></param>
-        public JpegImage(Bitmap coverImage, int quality, HuffmanTable huffmanYDC, HuffmanTable huffmanYAC, HuffmanTable huffmanChrDC, HuffmanTable huffmanChrAC) 
-            :this(coverImage, quality, QuantizationTable.JpegDefaultYTable, QuantizationTable.JpegDefaultChrTable, huffmanYDC, huffmanYAC, huffmanChrDC, huffmanChrAC)
+        public JpegImage(Bitmap coverImage, int quality, int m, HuffmanTable huffmanYDC, HuffmanTable huffmanYAC, HuffmanTable huffmanChrDC, HuffmanTable huffmanChrAC) 
+            :this(coverImage, quality, m, QuantizationTable.JpegDefaultYTable, QuantizationTable.JpegDefaultChrTable, huffmanYDC, huffmanYAC, huffmanChrDC, huffmanChrAC)
             {}
 
         /// <summary>
@@ -95,13 +98,14 @@ namespace Stegosaurus {
         /// </summary>
         /// <param name="coverImage"></param>
         /// <param name="quality"></param>
+        /// <param name="m"></param>
         /// <param name="yTable"></param>
         /// <param name="chrTable"></param>
         /// <param name="huffmanYDC"></param>
         /// <param name="huffmanYAC"></param>
         /// <param name="huffmanChrDC"></param>
         /// <param name="huffmanChrAC"></param>
-        public JpegImage(Bitmap coverImage, int quality, QuantizationTable yTable, QuantizationTable chrTable, HuffmanTable huffmanYDC, HuffmanTable huffmanYAC, HuffmanTable huffmanChrDC, HuffmanTable huffmanChrAC) {
+        public JpegImage(Bitmap coverImage, int quality, int m, QuantizationTable yTable, QuantizationTable chrTable, HuffmanTable huffmanYDC, HuffmanTable huffmanYAC, HuffmanTable huffmanChrDC, HuffmanTable huffmanChrAC) {
             if (coverImage == null) { 
                 throw new ArgumentNullException();
             }
@@ -109,6 +113,7 @@ namespace Stegosaurus {
             CoverImage = coverImage;
             YQuantizationTable = yTable.Scale(quality);
             ChrQuantizationTable = chrTable.Scale(quality);
+            M = m;
             YDCHuffman = huffmanYDC;
             YACHuffman = huffmanYAC;
             ChrDCHuffman = huffmanChrDC;
@@ -362,18 +367,23 @@ namespace Stegosaurus {
             int[,] quantizedValues = new int[8,8];
             for (int x = 0; x < 8; x++) { 
                 for (int y = 0; y < 8; y++) {
-                    quantizedValues[x, y] =(int)(values[x, y] / qTable.Entries[y * 8 + x]);
+                    quantizedValues[x, y] = (int)(values[x, y] / qTable.Entries[y * 8 + x]);
+                    //Console.Write(quantizedValues[x, y]);
                 }
+                //Console.WriteLine();
             }
+
+
+
             //Do graph things
             if (_message.Count != 0) {
-                quantizedValues = _encodeData(quantizedValues);
+                //quantizedValues = _encodeData(quantizedValues);
             }
+
             return quantizedValues;
         }
 
         private int[,] _encodeData(int[,] qValues) {
-            int k = 2;
             List<int> nonZeroValues = new List<int>();
             for (int y = 0; y < 8; y++) {
                 for (int x = 0; x < 8; x++) {
@@ -382,17 +392,31 @@ namespace Stegosaurus {
                     }
                 }
             }
-            List<Pair<int, int>> pairs = new List<Pair<int, int>>();
+            List<Tuple<int, int>> pairs = new List<Tuple<int, int>>();
             for (int i = 0; i < nonZeroValues.Count - 1; i += 2) {
-                pairs.Add(new Pair<int, int>(nonZeroValues[i], nonZeroValues[i + 1]));
+                pairs.Add(new Tuple<int, int>(nonZeroValues[i], nonZeroValues[i + 1]));
             }
         
-
-            foreach (Pair<int, int> pair in pairs) {
+            Graph graph = new Graph();
+            
+            foreach (Tuple<int, int> pair in pairs) {
                 int index = pairs.IndexOf(pair);
-                if ((pair.First + pair.Second).Mod(M) == _message[index]) {
+                if ((pair.Item1 + pair.Item2).Mod(M) == _message[index]) {
                     _message.RemoveAt(index);
                     pairs.RemoveAt(index);
+                } else {
+                    graph.AddVertex(new Vertex(index));
+                    for (int i = index + 1; i < pairs.Count; i++) {
+                        int sum = pairs[i].Item1 + pairs[i].Item2;
+                        if (sum.Mod(M) == _message[index]) {
+                            int diff = Math.Abs(pair.Item1 + pair.Item2 - sum);
+                            Vertex vStart = graph.GetVertexByID(index);
+                            Vertex vEnd = graph.AddVertex(new Vertex(i));
+
+                            vStart.AddNeighbour(new Edge(vStart, vEnd, diff));
+                        }
+
+                    }
                 }
             }
 
