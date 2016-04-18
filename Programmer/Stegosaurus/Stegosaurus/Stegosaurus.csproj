@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="JPEG\BitList.cs" />
     <Compile Include="JPEG\Decoder.cs" />
     <Compile Include="JPEG\Edge.cs" />
     <Compile Include="JPEG\ExtensionMethods.cs" />
