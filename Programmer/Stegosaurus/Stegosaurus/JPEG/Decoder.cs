@@ -1,12 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Stegosaurus {
-    public class Decoder : IDecoder {
+    public class Decoder : IImageDecoder {
 
         /// <summary>
         /// Used to decode the hidden message in given file
