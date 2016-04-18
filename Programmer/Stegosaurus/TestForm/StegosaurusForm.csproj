@@ -46,25 +46,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="About.cs">
+    <Compile Include="AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="About.Designer.cs">
-      <DependentUpon>About.cs</DependentUpon>
+    <Compile Include="AboutForm.Designer.cs">
+      <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="StegosaurusGUI.cs">
+    <Compile Include="StegosaurusForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StegosaurusGUI.Designer.cs">
-      <DependentUpon>StegosaurusGUI.cs</DependentUpon>
+    <Compile Include="StegosaurusForm.Designer.cs">
+      <DependentUpon>StegosaurusForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="About.resx">
-      <DependentUpon>About.cs</DependentUpon>
+    <EmbeddedResource Include="AboutForm.resx">
+      <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StegosaurusGUI.resx">
-      <DependentUpon>StegosaurusGUI.cs</DependentUpon>
+    <EmbeddedResource Include="StegosaurusForm.resx">
+      <DependentUpon>StegosaurusForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

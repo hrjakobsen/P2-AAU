@@ -1,5 +1,5 @@
 ﻿namespace TestForm {
-    partial class StegosaurusGUI {
+    partial class StegosaurusForm {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -28,15 +28,15 @@
             this.getFileStego = new System.Windows.Forms.OpenFileDialog();
             this.line = new System.Windows.Forms.Label();
             this.picStego = new System.Windows.Forms.PictureBox();
-            this.btnDecode = new System.Windows.Forms.Button();
-            this.btnEncode = new System.Windows.Forms.Button();
+            this.Decode = new System.Windows.Forms.Button();
+            this.Encode = new System.Windows.Forms.Button();
             this.loadMessage = new System.Windows.Forms.Button();
             this.loadCover = new System.Windows.Forms.Button();
             this.picMessage = new System.Windows.Forms.PictureBox();
             this.picCover = new System.Windows.Forms.PictureBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.showHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -79,24 +79,24 @@
             this.picStego.TabIndex = 22;
             this.picStego.TabStop = false;
             // 
-            // btnDecode
+            // Decode
             // 
-            this.btnDecode.Location = new System.Drawing.Point(249, 227);
-            this.btnDecode.Name = "btnDecode";
-            this.btnDecode.Size = new System.Drawing.Size(86, 23);
-            this.btnDecode.TabIndex = 21;
-            this.btnDecode.Text = "Decode";
-            this.btnDecode.UseVisualStyleBackColor = true;
+            this.Decode.Location = new System.Drawing.Point(249, 227);
+            this.Decode.Name = "Decode";
+            this.Decode.Size = new System.Drawing.Size(86, 23);
+            this.Decode.TabIndex = 21;
+            this.Decode.Text = "Decode";
+            this.Decode.UseVisualStyleBackColor = true;
             // 
-            // btnEncode
+            // Encode
             // 
-            this.btnEncode.Enabled = false;
-            this.btnEncode.Location = new System.Drawing.Point(249, 198);
-            this.btnEncode.Name = "btnEncode";
-            this.btnEncode.Size = new System.Drawing.Size(86, 23);
-            this.btnEncode.TabIndex = 20;
-            this.btnEncode.Text = "Encode";
-            this.btnEncode.UseVisualStyleBackColor = true;
+            this.Encode.Enabled = false;
+            this.Encode.Location = new System.Drawing.Point(249, 198);
+            this.Encode.Name = "Encode";
+            this.Encode.Size = new System.Drawing.Size(86, 23);
+            this.Encode.TabIndex = 20;
+            this.Encode.Text = "Encode";
+            this.Encode.UseVisualStyleBackColor = true;
             // 
             // loadMessage
             // 
@@ -151,16 +151,17 @@
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.optionsToolStripMenuItem});
+            this.viewOptions});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "View";
             // 
-            // optionsToolStripMenuItem
+            // viewOptions
             // 
-            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
-            this.optionsToolStripMenuItem.Text = "Options";
+            this.viewOptions.Name = "viewOptions";
+            this.viewOptions.Size = new System.Drawing.Size(152, 22);
+            this.viewOptions.Text = "Options";
+            this.viewOptions.Click += new System.EventHandler(this.viewOptions_Click);
             // 
             // helpToolStripMenuItem1
             // 
@@ -180,24 +181,25 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
-            // StegosaurusGUI
+            // StegosaurusForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(583, 290);
             this.Controls.Add(this.line);
             this.Controls.Add(this.picStego);
-            this.Controls.Add(this.btnDecode);
-            this.Controls.Add(this.btnEncode);
+            this.Controls.Add(this.Decode);
+            this.Controls.Add(this.Encode);
             this.Controls.Add(this.loadMessage);
             this.Controls.Add(this.loadCover);
             this.Controls.Add(this.picMessage);
             this.Controls.Add(this.picCover);
             this.Controls.Add(this.menuStrip1);
-            this.Name = "StegosaurusGUI";
+            this.Name = "StegosaurusForm";
             this.Text = "Stegosaurus";
             ((System.ComponentModel.ISupportInitialize)(this.picStego)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picMessage)).EndInit();
@@ -216,15 +218,15 @@
         private System.Windows.Forms.OpenFileDialog getFileStego;
         private System.Windows.Forms.Label line;
         private System.Windows.Forms.PictureBox picStego;
-        private System.Windows.Forms.Button btnDecode;
-        private System.Windows.Forms.Button btnEncode;
+        private System.Windows.Forms.Button Decode;
+        private System.Windows.Forms.Button Encode;
         private System.Windows.Forms.Button loadMessage;
         private System.Windows.Forms.Button loadCover;
         private System.Windows.Forms.PictureBox picMessage;
         private System.Windows.Forms.PictureBox picCover;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewOptions;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem showHelpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;

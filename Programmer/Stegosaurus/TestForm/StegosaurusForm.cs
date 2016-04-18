@@ -5,11 +5,11 @@ using System.Windows.Forms;
 using Stegosaurus;
 
 namespace TestForm{
-    public partial class StegosaurusGUI:Form {
+    public partial class StegosaurusForm:Form {
         private readonly LeastSignificantBitImage StegoController;
         private bool CoverImageSet, MessageImageSet;
 
-        public StegosaurusGUI() {
+        public StegosaurusForm() {
             InitializeComponent();
             StegoController = new LeastSignificantBitImage();
         }
@@ -30,7 +30,7 @@ namespace TestForm{
             StegoController.Encode();
 
             picStego.Image = StegoController.StegoImage;
-            btnDecode.Enabled = true;
+            Decode.Enabled = true;
             StegoController.StegoImage.Save("./encrypted.png");
         }
 
@@ -47,7 +47,7 @@ namespace TestForm{
             CoverImageSet = true;
 
             if (MessageImageSet) {
-                btnEncode.Enabled = true;
+                Encode.Enabled = true;
             }
         }
 
@@ -57,15 +57,26 @@ namespace TestForm{
             MessageImageSet = true;
 
             if (CoverImageSet) {
-                btnEncode.Enabled = true;
+                Encode.Enabled = true;
             }
+        }
+
+        private void viewOptions_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutForm aboutForm = new AboutForm();
+            aboutForm.Show();
         }
 
         private void getFileStego_FileOk(object sender, CancelEventArgs e) {
             StegoController.StegoImage = new Bitmap(getFileStego.FileName);
             picStego.Image = StegoController.StegoImage;
             
-            btnDecode.Enabled = true;
+            Decode.Enabled = true;
         }
     }
 }

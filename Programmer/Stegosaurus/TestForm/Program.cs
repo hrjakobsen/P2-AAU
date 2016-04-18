@@ -13,7 +13,7 @@ namespace TestForm {
         static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new StegosaurusGUI());
+            Application.Run(new StegosaurusForm());
         }
     }
 }
