@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StegosaurusGUI", "TestForm\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTester", "ConsoleTester\ConsoleTester.csproj", "{C738D5C4-F528-410A-9C1C-CEA31F87E658}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StegosaurusTests", "StegosaurusTests\StegosaurusTests.csproj", "{53E237EC-B880-44A8-9F46-DA3377FDA9F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{C738D5C4-F528-410A-9C1C-CEA31F87E658}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C738D5C4-F528-410A-9C1C-CEA31F87E658}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C738D5C4-F528-410A-9C1C-CEA31F87E658}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53E237EC-B880-44A8-9F46-DA3377FDA9F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53E237EC-B880-44A8-9F46-DA3377FDA9F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53E237EC-B880-44A8-9F46-DA3377FDA9F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53E237EC-B880-44A8-9F46-DA3377FDA9F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

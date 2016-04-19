@@ -1,16 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Stegosaurus {
     public class Vertex {
-        public int ID { get; }
-        public List<Edge> Neighbours { get; set; }
+        public Tuple<int, int, byte> Value { get; }
+        public List<Edge> Neighbours { get; set; } = new List<Edge>();
 
-        public Vertex(int id) {
-            ID = id;
+        public Vertex(Tuple<int, int, byte> value) {
+            Value = value;
         }
 
-        public void AddNeighbour(Edge neighbour) {
-            Neighbours.Add(neighbour);
+        public override string ToString() {
+            return $"I am ({Value.Item1},{Value.Item2})";
         }
     }
 }

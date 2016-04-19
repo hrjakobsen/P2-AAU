@@ -364,20 +364,16 @@ namespace Stegosaurus {
 
 
         private int[,] _quantization(double[,] values, QuantizationTable qTable) {
-            int[,] quantizedValues = new int[8,8];
-            for (int x = 0; x < 8; x++) { 
-                for (int y = 0; y < 8; y++) {
-                    quantizedValues[x, y] = (int)(values[x, y] / qTable.Entries[y * 8 + x]);
-                    //Console.Write(quantizedValues[x, y]);
+            int[,] quantizedValues = new int[8, 8];
+            for (int i = 0; i < 8; i++) { 
+                for (int j = 0; j < 8; j++) {
+                    quantizedValues[i, j] = (int)(values[i, j] / qTable.Entries[j * 8 + i]);
                 }
-                //Console.WriteLine();
             }
-
-
-
+            
             //Do graph things
             if (_message.Count != 0) {
-                //quantizedValues = _encodeData(quantizedValues);
+                quantizedValues = _encodeData(quantizedValues);
             }
 
             return quantizedValues;
@@ -385,46 +381,67 @@ namespace Stegosaurus {
 
         private int[,] _encodeData(int[,] qValues) {
             List<int> nonZeroValues = new List<int>();
-            for (int y = 0; y < 8; y++) {
-                for (int x = 0; x < 8; x++) {
-                    if (qValues[x, y] != 0 && x + y != 0) {
-                        nonZeroValues.Add(qValues[x,y]);
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (qValues[j, i] != 0 && j + i != 0) {
+                        nonZeroValues.Add(qValues[j, i]);
                     }
+                    Console.Write($"{qValues[j, i], 3}");
                 }
+                Console.WriteLine();
             }
-            List<Tuple<int, int>> pairs = new List<Tuple<int, int>>();
+
+            List<Tuple<int, int, byte>> pairs = new List<Tuple<int, int, byte>>();
             for (int i = 0; i < nonZeroValues.Count - 1; i += 2) {
-                pairs.Add(new Tuple<int, int>(nonZeroValues[i], nonZeroValues[i + 1]));
+                if (_message.Count != 0) {
+                    pairs.Add(new Tuple<int, int, byte>(nonZeroValues[i], nonZeroValues[i + 1], _message[0]));
+                    _message.RemoveAt(0);
+                }
             }
         
             Graph graph = new Graph();
-            
-            foreach (Tuple<int, int> pair in pairs) {
-                int index = pairs.IndexOf(pair);
-                if ((pair.Item1 + pair.Item2).Mod(M) == _message[index]) {
-                    _message.RemoveAt(index);
-                    pairs.RemoveAt(index);
+
+            foreach (Tuple<int, int, byte> pair in pairs) {
+                if ((pair.Item1 + pair.Item2).Mod(M) != pair.Item3) {
+                    graph.Vertices.Add(new Vertex(pair));
                 } else {
-                    graph.AddVertex(new Vertex(index));
-                    for (int i = index + 1; i < pairs.Count; i++) {
-                        int sum = pairs[i].Item1 + pairs[i].Item2;
-                        if (sum.Mod(M) == _message[index]) {
-                            int diff = Math.Abs(pair.Item1 + pair.Item2 - sum);
-                            Vertex vStart = graph.GetVertexByID(index);
-                            Vertex vEnd = graph.AddVertex(new Vertex(i));
+                    Console.WriteLine("");
+                }
+            }
+            Console.WriteLine(graph);
 
-                            vStart.AddNeighbour(new Edge(vStart, vEnd, diff));
-                        }
-
+            //World's worst loops
+            foreach (Vertex currentVertex in graph.Vertices) {
+                foreach (Vertex otherVertex in graph.Vertices.Where(v => v != currentVertex)) {
+                    if ((currentVertex.Value.Item2 + otherVertex.Value.Item1).Mod(M) == currentVertex.Value.Item3 &&
+                        (currentVertex.Value.Item1 + otherVertex.Value.Item2).Mod(M) == otherVertex.Value.Item3) {
+                        Edge e = new Edge(currentVertex, otherVertex, true, true);
+                        currentVertex.Neighbours.Add(e);
+                        otherVertex.Neighbours.Add(e);
+                    }
+                    if ((currentVertex.Value.Item2 + otherVertex.Value.Item2).Mod(M) == currentVertex.Value.Item3 &&
+                        (currentVertex.Value.Item1 + otherVertex.Value.Item1).Mod(M) == otherVertex.Value.Item3) {
+                        Edge e = new Edge(currentVertex, otherVertex, true, false);
+                        currentVertex.Neighbours.Add(e);
+                        otherVertex.Neighbours.Add(e);
+                    }
+                    if ((currentVertex.Value.Item1 + otherVertex.Value.Item2).Mod(M) == currentVertex.Value.Item3 &&
+                        (currentVertex.Value.Item2 + otherVertex.Value.Item1).Mod(M) == otherVertex.Value.Item3) {
+                        Edge e = new Edge(currentVertex, otherVertex, false, true);
+                        currentVertex.Neighbours.Add(e);
+                        otherVertex.Neighbours.Add(e);
+                    }
+                    if ((currentVertex.Value.Item1 + otherVertex.Value.Item1).Mod(M) == currentVertex.Value.Item3 &&
+                        (currentVertex.Value.Item2 + otherVertex.Value.Item2).Mod(M) == otherVertex.Value.Item3) {
+                        Edge e = new Edge(currentVertex, otherVertex, false, false);
+                        currentVertex.Neighbours.Add(e);
+                        otherVertex.Neighbours.Add(e);
                     }
                 }
             }
-
+            Console.ReadKey();
 
             return qValues;
-
-
-
         }
 
         private double[,] _discreteCosineTransform(double[,] block8) {
