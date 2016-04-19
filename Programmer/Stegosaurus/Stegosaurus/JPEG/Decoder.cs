@@ -5,6 +5,7 @@ using System.Collections.Generic;
 namespace Stegosaurus {
     public class Decoder : IImageDecoder {
 
+        List<HuffmanTable> huffmanTables = new List<HuffmanTable>();
         /// <summary>
         /// Used to decode the hidden message in given file
         /// </summary>
@@ -12,8 +13,53 @@ namespace Stegosaurus {
         public byte[] Decode(string path) {
             StreamReader sr = new StreamReader(path);
             BinaryReader file = new BinaryReader(sr.BaseStream);
+            for (int i = 0; i < 4; i++) {
+                huffmanTables.Add(getHuffmanTable(file));
+            }
             byte[] byteArr = findScanData(file);
             return GetMessage(byteArr);
+        }
+
+        private HuffmanTable getHuffmanTable(BinaryReader file) {
+            List<HuffmanElement> huffmanElements = new List<HuffmanElement>();
+            bool foundMarker = false;
+            byte a;
+            /* length of the huffman table also contains the length of the elements, as well as the length itself
+               subtracting the offset from the length, ensures we only read all the huffman elements, and not from outside the huffmantable */
+            int offset = 19;
+            while (!foundMarker) {
+                a = file.ReadByte();
+                if(a == 0xff) {
+                    a = file.ReadByte();
+                    if(a == 0xc4) {
+                        foundMarker = true;
+                    }
+                }
+            }
+            int length = ((file.ReadByte() << 8) + file.ReadByte());
+            file.ReadByte();
+
+            byte[] byteArr = new byte[16];
+            for (int i = 0; i < 16; i++) {
+                byteArr[i] = file.ReadByte();
+            }
+
+            /* creates the huffman table from the file */
+            length = length - offset;
+            int elementsOfLengthLeft, currentLength = 0;
+            ushort code = 0;
+            elementsOfLengthLeft = byteArr[currentLength];
+            for (int i = 0; i < length; i++) {
+                while(elementsOfLengthLeft <= 0 && currentLength != 16) {
+                    currentLength++;
+                    code <<= 1;
+                    elementsOfLengthLeft = byteArr[currentLength];
+                }
+                huffmanElements.Add(new HuffmanElement(file.ReadByte(), code, byteArr[currentLength]));
+                elementsOfLengthLeft--;
+                code++;                
+            }
+            return new HuffmanTable(huffmanElements.ToArray());
         }
 
         private byte[] findScanData(BinaryReader file) {
