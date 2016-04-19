@@ -52,6 +52,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="JPEG\BitListTests.cs" />
+    <Compile Include="JPEG\JpegImageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
