@@ -51,7 +51,7 @@ namespace Stegosaurus {
             }
             BitArray bitArr = findScanData(file);
             byte[] byteArr = decodeHuffmanValues(bitArr);
-            return GetMessage(byteArr);
+            return byteArr;//GetMessage(byteArr);
         }
 
         private HuffmanTable getHuffmanTable(BinaryReader file, ref byte ClassAndID) {
