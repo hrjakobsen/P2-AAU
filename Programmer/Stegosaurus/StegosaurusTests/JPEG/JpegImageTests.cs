@@ -17,23 +17,64 @@ namespace Stegosaurus.Tests
         [Test]
         public void JpegImageTest() //Test if JpegImage constructor throws exception when cover image is null
         {
-            int exceptions = 0;
             try
             {
                 IImageEncoder ji = new JpegImage(null, 100, 4);
             }
             catch (ArgumentNullException)
             {
-                exceptions++;
+                return;
             }
             
-            Assert.AreEqual(1, exceptions);
+            Assert.Fail();
         }
 
         [Test()]
-        public void JpegImageTest1()
+        public void JpegImageTest1() //Test if JpegImage constructor does not throw exception when cover image is not null
         {
+            Bitmap testcover = new Bitmap(200, 100);
+            try
+            {
+                IImageEncoder ji = new JpegImage(testcover, 100, 4);
+            }
+            catch (ArgumentNullException)
+            {
+                Assert.Fail();
+            }
+
+            Assert.Pass();
+        }
+
+        [Test()]
+        public void JpegImageTest2()
+        {
+            Bitmap testcover = new Bitmap(200, 100);
+            try
+            {
+                JpegImage testMod = new JpegImage(testcover, 100, 0);
+            }
+            catch (ArgumentException)
+            {
+                Assert.Pass();
+            }
+
             Assert.Fail();
+        }
+
+        [Test()]
+        public void JpegImageTest3()
+        {
+            Bitmap testcover = new Bitmap(200, 100);
+            try
+            {
+                JpegImage testMod = new JpegImage(testcover, 100, 2);
+            }
+            catch (ArgumentException)
+            {
+                Assert.Fail();
+            }
+
+            Assert.Pass();
         }
         #endregion
 
