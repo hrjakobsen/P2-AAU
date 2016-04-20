@@ -1,9 +1,30 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 
 namespace Stegosaurus {
     public class Decoder : IImageDecoder {
+
+        /// <summary>
+        /// Huffman table used for the DC coefficient of the Y component of the image.
+        /// </summary>
+        public HuffmanTable YDCHuffman { get; set; }
+
+        /// <summary>
+        /// Huffman table used for the AC coefficient of the Y component of the image.
+        /// </summary>
+        public HuffmanTable YACHuffman { get; set; }
+
+        /// <summary>
+        /// Huffman table used for the DC coefficient of the CrCb components of the image.
+        /// </summary>
+        public HuffmanTable ChrDCHuffman { get; set; }
+
+        /// <summary>
+        /// Huffman table used for the AC coefficient of the CrCb components of the image.
+        /// </summary>
+        public HuffmanTable ChrACHuffman { get; set; }
 
         List<HuffmanTable> huffmanTables = new List<HuffmanTable>();
         /// <summary>
@@ -14,13 +35,26 @@ namespace Stegosaurus {
             StreamReader sr = new StreamReader(path);
             BinaryReader file = new BinaryReader(sr.BaseStream);
             for (int i = 0; i < 4; i++) {
-                huffmanTables.Add(getHuffmanTable(file));
+                byte ClassAndID = 0;
+                HuffmanTable temp = getHuffmanTable(file, ref ClassAndID);
+                if ((byte)(ClassAndID & 0xf0) == 0) {
+                    if ((byte)(ClassAndID & 0x0f) == 0) {
+                        YDCHuffman = temp;
+                    } else {
+                        ChrDCHuffman = temp;
+                    }
+                } else if ((byte)(ClassAndID & 0x0f) == 0) {
+                    YACHuffman = temp;
+                } else {
+                    ChrACHuffman = temp;
+                }
             }
-            byte[] byteArr = findScanData(file);
+            BitArray bitArr = findScanData(file);
+            byte[] byteArr = decodeHuffmanValues(bitArr);
             return GetMessage(byteArr);
         }
 
-        private HuffmanTable getHuffmanTable(BinaryReader file) {
+        private HuffmanTable getHuffmanTable(BinaryReader file, ref byte ClassAndID) {
             List<HuffmanElement> huffmanElements = new List<HuffmanElement>();
             bool foundMarker = false;
             byte a;
@@ -37,7 +71,7 @@ namespace Stegosaurus {
                 }
             }
             int length = ((file.ReadByte() << 8) + file.ReadByte());
-            file.ReadByte();
+            ClassAndID = file.ReadByte();
 
             byte[] byteArr = new byte[16];
             for (int i = 0; i < 16; i++) {
@@ -62,7 +96,7 @@ namespace Stegosaurus {
             return new HuffmanTable(huffmanElements.ToArray());
         }
 
-        private byte[] findScanData(BinaryReader file) {
+        private BitArray findScanData(BinaryReader file) {
             byte a;
             bool foundMarker = false;
             while (!foundMarker) {
@@ -90,7 +124,13 @@ namespace Stegosaurus {
                     listOfBytes.Add(a);
                 }
             }
-            return listOfBytes.ToArray();
+            BitArray bitArr = new BitArray(listOfBytes.ToArray());
+            return bitArr;
+        }
+
+        private byte[] decodeHuffmanValues(BitArray bitArr) {
+            byte[] byteArr = new byte[10];
+            return byteArr;
         }
 
         private byte[] GetMessage(byte[] scanData) {
