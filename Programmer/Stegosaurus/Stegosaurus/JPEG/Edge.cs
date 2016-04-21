@@ -8,8 +8,8 @@ namespace Stegosaurus {
         public int Weight => Math.Abs((_vStartFirst ? VStart.Value.Item1 : VStart.Value.Item2) -
                                       (_vEndFirst ? VEnd.Value.Item1 : VEnd.Value.Item2));
 
-        private readonly bool _vStartFirst;
-        private readonly bool _vEndFirst;
+        public readonly bool _vStartFirst;
+        public readonly bool _vEndFirst;
 
         public Edge(Vertex vStart, Vertex vEnd, bool vStartFirstItem, bool vEndFirstItem) {
             VStart = vStart;
