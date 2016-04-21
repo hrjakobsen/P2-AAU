@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Stegosaurus {
     public class JpegImage : IImageEncoder{
@@ -300,6 +301,8 @@ namespace Stegosaurus {
             
         }
 
+        private List<Tuple<int[,], HuffmanTable, HuffmanTable, int>> QuantizisedValues = new List<Tuple<int[,], HuffmanTable, HuffmanTable, int>>();
+
         private void _encodeMCU(ref List<byte> bits, double[][,] YCbCrChannels, int imageWidth, int imageHeight) {
             double[][,] channels = new double[3][,];
             for (int i = 0; i < 3; i++) {
@@ -317,6 +320,13 @@ namespace Stegosaurus {
                     _encodeBlocks(ref bits, channels);
                 }
             }
+            //This is where all quantization tables are saved in the list
+            _encodeData();
+
+            //This is where the data is saved to the file
+            foreach (var quantizisedValue in QuantizisedValues) {
+                HuffmanEncode(ref bits, quantizisedValue.Item1, quantizisedValue.Item2, quantizisedValue.Item3, quantizisedValue.Item4);
+            }
         }
 
         private void _encodeBlocks(ref List<byte> bits, double[][,] MCU) {
@@ -332,10 +342,11 @@ namespace Stegosaurus {
             _encodeBlocksSubMethod(ref bits, CrDownSampled, ChrDCHuffman, ChrACHuffman, 2, ChrQuantizationTable);
         }
 
+
         private void _encodeBlocksSubMethod(ref List<byte> bits, double[,] blocks, HuffmanTable DC, HuffmanTable AC, int index, QuantizationTable table) {
             blocks = _discreteCosineTransform(blocks);
             int[,] quantiziedBlock = _quantization(blocks, table);
-            HuffmanEncode(ref bits, quantiziedBlock, DC, AC, index);
+            QuantizisedValues.Add(new Tuple<int[,], HuffmanTable, HuffmanTable, int>(quantiziedBlock, DC, AC, index));
         }
 
         private byte[] _flush(List<byte> bits) {
@@ -370,27 +381,24 @@ namespace Stegosaurus {
                     quantizedValues[i, j] = (int)(values[i, j] / qTable.Entries[j * 8 + i]);
                 }
             }
-            
-            //Do graph things
-            if (_message.Count != 0) {
-                quantizedValues = _encodeData(quantizedValues);
-            }
 
             return quantizedValues;
         }
 
-        private int[,] _encodeData(int[,] qValues) {
+        private void _encodeData() {
             List<int> nonZeroValues = new List<int>();
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-                    if (qValues[j, i] != 0 && j + i != 0) {
-                        nonZeroValues.Add(qValues[j, i]);
-                    }
-                    Console.Write($"{qValues[j, i], 3}");
-                }
-                Console.WriteLine();
-            }
+            int len = QuantizisedValues.Count*64;
+            for (int i = 0; i < len; i++) {
+                int array = i / 64;
+                int xpos = i % 8;
+                int ypos = (i % 64) / 8;
 
+                if (xpos + ypos != 0 && QuantizisedValues[array].Item1[xpos, ypos] != 0) {
+                    nonZeroValues.Add(QuantizisedValues[array].Item1[xpos, ypos]);
+                }
+
+            }
+            
             List<Tuple<int, int, byte>> pairs = new List<Tuple<int, int, byte>>();
             for (int i = 0; i < nonZeroValues.Count - 1; i += 2) {
                 if (_message.Count != 0) {
@@ -405,12 +413,12 @@ namespace Stegosaurus {
                 if ((pair.Item1 + pair.Item2).Mod(M) != pair.Item3) {
                     graph.Vertices.Add(new Vertex(pair));
                 } else {
-                    Console.WriteLine("");
+                   // Console.WriteLine("passer");
                 }
             }
             Console.WriteLine(graph);
-
-            //World's worst loops
+            //Console.WriteLine(graph.Vertices.Count);
+            //World's worst loops (O(n^2) shiet)
             foreach (Vertex currentVertex in graph.Vertices) {
                 foreach (Vertex otherVertex in graph.Vertices.Where(v => v != currentVertex)) {
                     if ((currentVertex.Value.Item2 + otherVertex.Value.Item1).Mod(M) == currentVertex.Value.Item3 &&
@@ -427,21 +435,26 @@ namespace Stegosaurus {
                     }
                     if ((currentVertex.Value.Item1 + otherVertex.Value.Item2).Mod(M) == currentVertex.Value.Item3 &&
                         (currentVertex.Value.Item2 + otherVertex.Value.Item1).Mod(M) == otherVertex.Value.Item3) {
-                        Edge e = new Edge(currentVertex, otherVertex, false, true);
+                        Edge e = new Edge(currentVertex, otherVertex, false, false);
                         currentVertex.Neighbours.Add(e);
                         otherVertex.Neighbours.Add(e);
                     }
                     if ((currentVertex.Value.Item1 + otherVertex.Value.Item1).Mod(M) == currentVertex.Value.Item3 &&
                         (currentVertex.Value.Item2 + otherVertex.Value.Item2).Mod(M) == otherVertex.Value.Item3) {
-                        Edge e = new Edge(currentVertex, otherVertex, false, false);
+                        Edge e = new Edge(currentVertex, otherVertex, false, true);
                         currentVertex.Neighbours.Add(e);
                         otherVertex.Neighbours.Add(e);
                     }
                 }
             }
-            Console.ReadKey();
 
-            return qValues;
+            //Console.WriteLine(graph.Vertices[5].Value.Item3);
+            //foreach (var edge in graph.Vertices[5].Neighbours) {
+            //    Console.WriteLine(edge.VStart + " - " + edge.VEnd + " - " + edge.Weight + $" - {edge._vStartFirst}:{edge._vEndFirst} | {edge.VStart.Value.Item3} | {edge.VEnd.Value.Item3}");
+            //}
+
+            graph.DoSwitches();
+
         }
 
         private double[,] _discreteCosineTransform(double[,] block8) {
