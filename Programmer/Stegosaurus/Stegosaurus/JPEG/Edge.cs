@@ -17,5 +17,13 @@ namespace Stegosaurus {
             _vStartFirst = vStartFirstItem;
             _vEndFirst = vEndFirstItem;
         }
+
+        public override bool Equals(object other) {
+            return other is Edge && (VStart == ((Edge)other).VStart && VEnd == ((Edge)other).VEnd) || (VStart == ((Edge)other).VEnd && VStart == ((Edge)other).VEnd);
+        }
+
+        public override string ToString() {
+            return $"({VStart} <-> {VEnd})";
+        }
     }
 }

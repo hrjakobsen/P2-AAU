@@ -7,12 +7,11 @@ namespace ConsoleTester {
     class Program {
         static void Main(string[] args) {
             IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100, 4);
-            IImageDecoder jid = new Decoder();
-            jid.Decode(@"output.jpg");
+            //IImageDecoder jid = new Decoder();
+            //jid.Decode(@"output.jpg");
 
-            //ji.Encode(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,23,24,25 });
+            //ji.Encode(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 });
             //ji.Save(@"output.jpg");
-            //Console.ReadKey();
 
             //Graph g = new Graph();
             //Vertex v1 = new Vertex(new Tuple<int, int, byte>(48, 50, 2));
@@ -32,33 +31,48 @@ namespace ConsoleTester {
             //g.Vertices.Add(v6);
             //g.Vertices.Add(v8);
             //g.Vertices.Add(v9);
-
-
+        
             //foreach (Vertex currentVertex in g.Vertices) {
             //    foreach (Vertex otherVertex in g.Vertices.Where(v => v != currentVertex)) {
             //        if ((currentVertex.Value.Item2 + otherVertex.Value.Item1).Mod(4) == currentVertex.Value.Item3 &&
             //            (currentVertex.Value.Item1 + otherVertex.Value.Item2).Mod(4) == otherVertex.Value.Item3) {
             //            Edge e = new Edge(currentVertex, otherVertex, true, true);
-            //            currentVertex.Neighbours.Add(e);
-            //            otherVertex.Neighbours.Add(e);
+            //            if (!currentVertex.Neighbours.Contains(e)) {
+            //                currentVertex.Neighbours.Add(e);
+            //            }
+            //            if (!otherVertex.Neighbours.Contains(e)) {
+            //                otherVertex.Neighbours.Add(e);
+            //            }
             //        }
             //        if ((currentVertex.Value.Item2 + otherVertex.Value.Item2).Mod(4) == currentVertex.Value.Item3 &&
             //            (currentVertex.Value.Item1 + otherVertex.Value.Item1).Mod(4) == otherVertex.Value.Item3) {
             //            Edge e = new Edge(currentVertex, otherVertex, true, false);
-            //            currentVertex.Neighbours.Add(e);
-            //            otherVertex.Neighbours.Add(e);
+            //            if (!currentVertex.Neighbours.Contains(e)) {
+            //                currentVertex.Neighbours.Add(e);
+            //            }
+            //            if (!otherVertex.Neighbours.Contains(e)) {
+            //                otherVertex.Neighbours.Add(e);
+            //            }
             //        }
             //        if ((currentVertex.Value.Item1 + otherVertex.Value.Item2).Mod(4) == currentVertex.Value.Item3 &&
             //            (currentVertex.Value.Item2 + otherVertex.Value.Item1).Mod(4) == otherVertex.Value.Item3) {
             //            Edge e = new Edge(currentVertex, otherVertex, false, false);
-            //            currentVertex.Neighbours.Add(e);
-            //            otherVertex.Neighbours.Add(e);
+            //            if (!currentVertex.Neighbours.Contains(e)) {
+            //                currentVertex.Neighbours.Add(e);
+            //            }
+            //            if (!otherVertex.Neighbours.Contains(e)) {
+            //                otherVertex.Neighbours.Add(e);
+            //            }
             //        }
             //        if ((currentVertex.Value.Item1 + otherVertex.Value.Item1).Mod(4) == currentVertex.Value.Item3 &&
             //            (currentVertex.Value.Item2 + otherVertex.Value.Item2).Mod(4) == otherVertex.Value.Item3) {
             //            Edge e = new Edge(currentVertex, otherVertex, false, true);
-            //            currentVertex.Neighbours.Add(e);
-            //            otherVertex.Neighbours.Add(e);
+            //            if (!currentVertex.Neighbours.Contains(e)) {
+            //                currentVertex.Neighbours.Add(e);
+            //            }
+            //            if (!otherVertex.Neighbours.Contains(e)) {
+            //                otherVertex.Neighbours.Add(e);
+            //            }
             //        }
             //    }
             //}

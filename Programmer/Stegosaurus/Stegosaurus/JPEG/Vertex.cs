@@ -12,7 +12,7 @@ namespace Stegosaurus {
         }
 
         public override string ToString() {
-            return $"I am ({Value.Item1},{Value.Item2})";
+            return $"({Value.Item1},{Value.Item2})";
         }
     }
 }
