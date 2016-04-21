@@ -1,0 +1,6 @@
+\subsection{Find the Huffman Tables from a JPEG file}
+As previously mentioned in section \ref{sec:jpegStudy}, the Huffman tables are placed in the beginning of a JPEG file, prior to the scan-data session. 
+Since a stream reader reads from the beginning of a file towards the end, it's important to do things in much the same way. 
+First step is to look for the $DHT$ marker $0xFFC4$, since we then know what comes next, is all the information about the Huffman table. 
+To read in all the information we needed, and store it in a table, we came up with the following algorithm with a little inspiration from \cite{HuffmanDecoding}.
+\input{sections/design/findHuffmanAlgo.tex}
