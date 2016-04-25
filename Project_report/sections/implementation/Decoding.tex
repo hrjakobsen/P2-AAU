@@ -1,0 +1,7 @@
+\section{Decoding}
+As previously mentioned in section \ref{sec:DesignHuffman}, a stream-reader reads from a file from the beginning towards the end, thus the first thing we did in the decoding process, was to read the huffman tables from the JPEG file. 
+To do that, we implemented algorithm \ref{alg2}, which gave us all the information we needed about the Huffman table, and what kind it was so we could store it in the appropriate property. 
+Checking the first four bits in the output parameter, ensured we knew whenever the Huffman table was a DC table, or an AC table. 
+Reading the remaining four bits gave us the ID of it, which then told us whenever the table was for the luminance channel, or the chroma components.
+After this, it is now time to read in all the bytes from the scan-data section. So long no header is being read, the byte will be written to a byte array, which will then be turned into a bitarray.
+Working on the bitarray is the fastest possible solution, since we'll read each bit from start to end and won't have to add additional bits in the future.

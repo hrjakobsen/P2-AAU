@@ -1,15 +1,29 @@
-﻿
+﻿using System;
+
 namespace Stegosaurus {
     public class Edge {
         public Vertex VStart { get; set; }
         public Vertex VEnd { get; set; }
 
-        public int Weight { get; set; }
+        public int Weight => Math.Abs((_vStartFirst ? VStart.Value.Item1 : VStart.Value.Item2) -
+                                      (_vEndFirst ? VEnd.Value.Item1 : VEnd.Value.Item2));
 
-        public Edge(Vertex vStart, Vertex vEnd, int weight) {
+        public readonly bool _vStartFirst;
+        public readonly bool _vEndFirst;
+
+        public Edge(Vertex vStart, Vertex vEnd, bool vStartFirstItem, bool vEndFirstItem) {
             VStart = vStart;
             VEnd = vEnd;
-            Weight = weight;
+            _vStartFirst = vStartFirstItem;
+            _vEndFirst = vEndFirstItem;
+        }
+
+        public override bool Equals(object other) {
+            return other is Edge && (VStart == ((Edge)other).VStart && VEnd == ((Edge)other).VEnd) || (VStart == ((Edge)other).VEnd && VStart == ((Edge)other).VEnd);
+        }
+
+        public override string ToString() {
+            return $"({VStart} <-> {VEnd})";
         }
     }
 }

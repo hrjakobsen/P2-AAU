@@ -1,0 +1,13 @@
+% -*- root: ../../DAT2-A423_Project_Report.tex -*-
+\section{Implementation of a JPEG image}
+
+\subsection{Working with bits}
+While working with JPEG images bit-patterns and bit-wise operations often occur. Due to hardware limitations, a single bit in the memory cannot be changed individually, and we can only address the individual bytes. There are now two ways that we can go about this. Either we use bytes to represent bits, and effectively waste 7 bits of memory for each bit, or we use the class \lstinline|BitArray| from the \lstinline|System.Collections| library.
+
+\lstinline|BitArray|'s seems like the way to go, and we implemented a class \lstinline|BitList| which implemented List-like features like \lstinline|Add| and \lstinline|Insert| while using the \lstinline|BitArray| to store our data. The implementation can be seen in appendix \ref{app:C}. 
+
+The \lstinline|BitArray| offers the functionality of modifying the length of the array, so that more values can be added, so every time the \lstinline|BitList| runs out of space in the underlying \lstinline|BitArray|, we simply multiply the length of the array by 2, so that more values can be added. This makes adding to the array relatively fast, as most of the times, we have enough room to add more values, inserting values in the middle of the array proved to be much more difficult.
+
+When inserting a value into the array, we have to move at least all values after the value to be inserted, so that room are made from the new value. In an example 512x512 image, we have over 750,000 bits to save and if we were to insert a bit in the beginning of the array, we would have to move upwards of 750,000 elements in the array. A very computationally expensive operation.
+
+So while the \lstinline|BitArray| seemed promising in theory, saving us a lot of memory, the need of inserting bits into the middle of the array makes using the \lstinline|BitArray| infeasible. Instead we use a \lstinline|List<byte>| instead and use 8 times the required memory.
