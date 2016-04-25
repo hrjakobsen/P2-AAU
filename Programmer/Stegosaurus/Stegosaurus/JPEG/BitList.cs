@@ -18,7 +18,7 @@ namespace Stegosaurus {
 
         public BitList() {
             _bits = new BitArray(1);
-            Count = 1;
+            Count = 0;
         }
 
         public bool this[int i] {
@@ -58,6 +58,33 @@ namespace Stegosaurus {
             } else {
                 throw new ArgumentOutOfRangeException();
             }
+        }
+
+        private BitArray latestEntries = new BitArray(8);
+        private int addCounter = 0;
+
+        public void CheckedAdd(int val) {
+            if (addCounter % 8 == 0) {
+                latestEntries.SetAll(false);
+            }
+            latestEntries[addCounter % 8] = (val == 1);
+            Add(val == 1);
+            bool allOne = true;
+            for (int i = 0; i < latestEntries.Length; i++) {
+                if (!latestEntries[i]) {
+                    allOne = false;
+                    break;
+                }
+            }
+
+            if (allOne) {
+                for (int i = 0; i < 8; i++) {
+                    Add(false);
+                }
+            }
+            
+            addCounter++;
+
         }
 
         public void Add(bool val) {

@@ -293,14 +293,14 @@ namespace Stegosaurus {
         private void _writeScanData() {
             Bitmap paddedCoverImage = _padCoverImage();
             double[][,] channelValues = _splitToChannels(paddedCoverImage);
-            List<byte> bits = new List<byte>();
+            BitList bits = new BitList();
 
-            _encodeMCU(ref bits, channelValues, paddedCoverImage.Width, paddedCoverImage.Height);
+            _encodeMCU(bits, channelValues, paddedCoverImage.Width, paddedCoverImage.Height);
             _jw.WriteBytes(_flush(bits));
             
         }
 
-        private void _encodeMCU(ref List<byte> bits, double[][,] YCbCrChannels, int imageWidth, int imageHeight) {
+        private void _encodeMCU(BitList bits, double[][,] YCbCrChannels, int imageWidth, int imageHeight) {
             double[][,] channels = new double[3][,];
             for (int i = 0; i < 3; i++) {
                 channels[i] = new double[16,16];
@@ -314,38 +314,44 @@ namespace Stegosaurus {
                             }
                         }
                     }
-                    _encodeBlocks(ref bits, channels);
+                    _encodeBlocks(bits, channels);
                 }
             }
         }
 
-        private void _encodeBlocks(ref List<byte> bits, double[][,] MCU) {
+        private void _encodeBlocks(BitList bits, double[][,] MCU) {
             for (int i = 0; i < 4; i++) {
                 double[,] YBlock = _block16ToBlock8(MCU[0], i);
-                _encodeBlocksSubMethod(ref bits, YBlock, YDCHuffman, YACHuffman, 0, YQuantizationTable);
+                _encodeBlocksSubMethod(bits, YBlock, YDCHuffman, YACHuffman, 0, YQuantizationTable);
             }
 
             double[,] CbDownSampled = _downSample(MCU[1]);
-            _encodeBlocksSubMethod(ref bits, CbDownSampled, ChrDCHuffman, ChrACHuffman, 1, ChrQuantizationTable);
+            _encodeBlocksSubMethod(bits, CbDownSampled, ChrDCHuffman, ChrACHuffman, 1, ChrQuantizationTable);
 
             double[,] CrDownSampled = _downSample(MCU[2]);
-            _encodeBlocksSubMethod(ref bits, CrDownSampled, ChrDCHuffman, ChrACHuffman, 2, ChrQuantizationTable);
+            _encodeBlocksSubMethod(bits, CrDownSampled, ChrDCHuffman, ChrACHuffman, 2, ChrQuantizationTable);
         }
 
-        private void _encodeBlocksSubMethod(ref List<byte> bits, double[,] blocks, HuffmanTable DC, HuffmanTable AC, int index, QuantizationTable table) {
+        private void _encodeBlocksSubMethod(BitList bits, double[,] blocks, HuffmanTable DC, HuffmanTable AC, int index, QuantizationTable table) {
             blocks = _discreteCosineTransform(blocks);
             int[,] quantiziedBlock = _quantization(blocks, table);
-            HuffmanEncode(ref bits, quantiziedBlock, DC, AC, index);
+            HuffmanEncode(bits, quantiziedBlock, DC, AC, index);
         }
 
-        private byte[] _flush(List<byte> bits) {
-            for (int i = 0; i < bits.Count / 8 - 1; i++) {
-                if (bits[i * 8] == 1 && bits[i * 8 + 1] == 1 && bits[i * 8 + 2] == 1 && bits[i * 8 + 3] == 1 && bits[i * 8 + 4] == 1 && bits[i * 8 + 5] == 1 && bits[i * 8 + 6] == 1 && bits[i * 8 + 7] == 1) {
-                    for (int j = 0; j < 8; j++) {
-                        bits.Insert(i * 8 + 8, 0x00);
-                    }
-                }
+        private byte[] _flush(BitList bits) {
+            //for (int i = 0; i < bits.Count / 8 - 1; i++) {
+            //    if (bits[i * 8] == 1 && bits[i * 8 + 1] == 1 && bits[i * 8 + 2] == 1 && bits[i * 8 + 3] == 1 && bits[i * 8 + 4] == 1 && bits[i * 8 + 5] == 1 && bits[i * 8 + 6] == 1 && bits[i * 8 + 7] == 1) {
+            //        for (int j = 0; j < 8; j++) {
+            //            bits.Insert(i * 8 + 8, 0x00);
+            //        }
+            //    }
+            //}
+            while (bits.Count % 8 != 0) {
+                bits.Add(false);
             }
+            Console.WriteLine("Begin");
+
+            Console.WriteLine(bits.Count);
 
             byte[] byteArray = new byte[(int)Math.Ceiling(bits.Count / 8.0)];
 
@@ -355,10 +361,11 @@ namespace Stegosaurus {
                     if (i * 8 + j >= bits.Count) {
                         byteArray[i] = (byte)(byteArray[i] | 0x01);
                     } else {
-                        byteArray[i] = (byte)(byteArray[i] | bits[i * 8 + j]);
+                        byteArray[i] = (byte)(byteArray[i]  | (bits[i * 8 + j] ? 1 : 0));
                     }
                 }
             }
+            Console.WriteLine("End");
             return byteArray;
         }
 
@@ -535,18 +542,18 @@ namespace Stegosaurus {
             _jw.WriteBytes(0xff, 0xd9);
         }
         
-        private void HuffmanEncode(ref List<byte> bits, int[,] block8, HuffmanTable huffmanDC, HuffmanTable huffmanAC, int DCIndex) {
+        private void HuffmanEncode(BitList bits, int[,] block8, HuffmanTable huffmanDC, HuffmanTable huffmanAC, int DCIndex) {
             short diff = (short)(block8[0, 0] - _lastDc[DCIndex]);
             _lastDc[DCIndex] += diff;
             if (diff != 0) {
                 byte category = _bitCost(diff);
                 HuffmanElement huffmanCode = huffmanDC.GetElementFromRunSize(0, category);
-                ushortToBits(ref bits, huffmanCode.CodeWord, huffmanCode.Length);
+                ushortToBits(bits, huffmanCode.CodeWord, huffmanCode.Length);
 
-                ushortToBits(ref bits, _numberEncoder(diff), category);
+                ushortToBits(bits, _numberEncoder(diff), category);
             } else {
                 HuffmanElement EOB = huffmanDC.GetElementFromRunSize(0x00, 0x00);
-                ushortToBits(ref bits, EOB.CodeWord, EOB.Length);
+                ushortToBits(bits, EOB.CodeWord, EOB.Length);
             }
 
             int zeroesCounter = 0;
@@ -558,32 +565,32 @@ namespace Stegosaurus {
                 }
                 while (zeroesCounter >= 16) {
                     HuffmanElement ZRL = huffmanAC.GetElementFromRunSize(0x0F, 0x00);
-                    ushortToBits(ref bits, ZRL.CodeWord, ZRL.Length);
+                    ushortToBits(bits, ZRL.CodeWord, ZRL.Length);
                     zeroesCounter -= 16;
                 }
 
                 byte cost = _bitCost((short)Math.Abs(block8[x, y]));
                 HuffmanElement codeElement = huffmanAC.GetElementFromRunSize((byte)zeroesCounter, cost);
                 zeroesCounter = 0;
-                ushortToBits(ref bits, codeElement.CodeWord, codeElement.Length);
+                ushortToBits(bits, codeElement.CodeWord, codeElement.Length);
 
-                ushortToBits(ref bits, _numberEncoder((short)block8[x, y]), cost);
+                ushortToBits(bits, _numberEncoder((short)block8[x, y]), cost);
 
             }
 
             if (zeroesCounter != 0) { //EOB
                 HuffmanElement EOB = huffmanAC.GetElementFromRunSize(0x00, 0x00);
-                ushortToBits(ref bits, EOB.CodeWord, EOB.Length);
+                ushortToBits(bits, EOB.CodeWord, EOB.Length);
             }
         }
 
-        private void ushortToBits(ref List<byte> bits, ushort number, byte length) {
+        private void ushortToBits(BitList bits, ushort number, byte length) {
             for (int i = 0; i < length; i++) {
                 ushort dummy = 0x01;
                 dummy = (ushort)(dummy << (length - i - 1));
                 dummy = (ushort)(dummy & number);
                 dummy = (ushort)(dummy >> (length - i - 1));
-                bits.Add((byte)dummy);
+                bits.CheckedAdd((byte)dummy);
             }
         }
 
