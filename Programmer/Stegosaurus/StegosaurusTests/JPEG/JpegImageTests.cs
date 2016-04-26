@@ -46,7 +46,7 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void JpegImageTest2()
+        public void JpegImageTest2() // Test if JpegImage throws exception when m is 0
         {
             Bitmap testcover = new Bitmap(200, 100);
             try
@@ -67,14 +67,24 @@ namespace Stegosaurus.Tests
             Bitmap testcover = new Bitmap(200, 100);
             try
             {
-                JpegImage testMod = new JpegImage(testcover, 100, 2);
+                JpegImage testMod = new JpegImage(testcover, 100, -4);
             }
             catch (ArgumentException)
             {
-                Assert.Fail();
+                Assert.Pass();
             }
 
-            Assert.Pass();
+            Assert.Fail();
+        }
+
+        [Test()]
+        public void JpegImageTest4() // Test if JpegImage value M was 4 when set to 4...
+        {
+            Bitmap testcover = new Bitmap(200, 100);
+
+            JpegImage testMod = new JpegImage(testcover, 100, 4);
+
+            Assert.AreEqual(4, testMod.M);
         }
         #endregion
 
