@@ -349,19 +349,9 @@ namespace Stegosaurus {
         }
 
         private byte[] _flush(BitList bits) {
-            //for (int i = 0; i < bits.Count / 8 - 1; i++) {
-            //    if (bits[i * 8] == 1 && bits[i * 8 + 1] == 1 && bits[i * 8 + 2] == 1 && bits[i * 8 + 3] == 1 && bits[i * 8 + 4] == 1 && bits[i * 8 + 5] == 1 && bits[i * 8 + 6] == 1 && bits[i * 8 + 7] == 1) {
-            //        for (int j = 0; j < 8; j++) {
-            //            bits.Insert(i * 8 + 8, 0x00);
-            //        }
-            //    }
-            //}
             while (bits.Count % 8 != 0) {
                 bits.Add(false);
             }
-            Console.WriteLine("Begin");
-
-            Console.WriteLine(bits.Count);
 
             byte[] byteArray = new byte[(int)Math.Ceiling(bits.Count / 8.0)];
 
@@ -375,7 +365,6 @@ namespace Stegosaurus {
                     }
                 }
             }
-            Console.WriteLine("End");
             return byteArray;
         }
 
@@ -405,62 +394,97 @@ namespace Stegosaurus {
 
             }
             
-            List<Tuple<int, int, byte>> pairs = new List<Tuple<int, int, byte>>();
+            List<Vertex> pairs = new List<Vertex>();
             for (int i = 0; i < nonZeroValues.Count - 1; i += 2) {
                 if (_message.Count != 0) {
-                    pairs.Add(new Tuple<int, int, byte>(nonZeroValues[i], nonZeroValues[i + 1], _message[0]));
+                    pairs.Add(new Vertex(nonZeroValues[i], nonZeroValues[i + 1], _message[0]));
                     _message.RemoveAt(0);
-                }
+                } 
+                
             }
         
             Graph graph = new Graph();
 
-            foreach (Tuple<int, int, byte> pair in pairs) {
-                if ((pair.Item1 + pair.Item2).Mod(M) != pair.Item3) {
-                    graph.Vertices.Add(new Vertex(pair));
-                } else {
-                   // Console.WriteLine("passer");
-                }
+            foreach (Vertex pair in pairs) {
+                graph.Vertices.Add(pair);
             }
-            Console.WriteLine(graph);
             //Console.WriteLine(graph.Vertices.Count);
             //World's worst loops (O(n^2) shiet)
+            Console.WriteLine(graph.Vertices.Count);
             foreach (Vertex currentVertex in graph.Vertices) {
-                foreach (Vertex otherVertex in graph.Vertices.Where(v => v != currentVertex)) {
-                    if ((currentVertex.Value.Item2 + otherVertex.Value.Item1).Mod(M) == currentVertex.Value.Item3 &&
-                        (currentVertex.Value.Item1 + otherVertex.Value.Item2).Mod(M) == otherVertex.Value.Item3) {
+                foreach (Vertex otherVertex in graph.Vertices.Where(otherVertex => currentVertex != otherVertex)) {
+                    if (((currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message ) &&
+                        ((currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message)) {
                         Edge e = new Edge(currentVertex, otherVertex, true, true);
-                        currentVertex.Neighbours.Add(e);
-                        otherVertex.Neighbours.Add(e);
+                        graph.Edges.Add(e);
                     }
-                    if ((currentVertex.Value.Item2 + otherVertex.Value.Item2).Mod(M) == currentVertex.Value.Item3 &&
-                        (currentVertex.Value.Item1 + otherVertex.Value.Item1).Mod(M) == otherVertex.Value.Item3) {
+                    if (((currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message ) &&
+                        ((currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message)) {
                         Edge e = new Edge(currentVertex, otherVertex, true, false);
-                        currentVertex.Neighbours.Add(e);
-                        otherVertex.Neighbours.Add(e);
+                        graph.Edges.Add(e);
                     }
-                    if ((currentVertex.Value.Item1 + otherVertex.Value.Item2).Mod(M) == currentVertex.Value.Item3 &&
-                        (currentVertex.Value.Item2 + otherVertex.Value.Item1).Mod(M) == otherVertex.Value.Item3) {
+                    if (((currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message ) &&
+                        ((currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message )) {
                         Edge e = new Edge(currentVertex, otherVertex, false, false);
-                        currentVertex.Neighbours.Add(e);
-                        otherVertex.Neighbours.Add(e);
+                        graph.Edges.Add(e);
                     }
-                    if ((currentVertex.Value.Item1 + otherVertex.Value.Item1).Mod(M) == currentVertex.Value.Item3 &&
-                        (currentVertex.Value.Item2 + otherVertex.Value.Item2).Mod(M) == otherVertex.Value.Item3) {
+                    if (((currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message ) &&
+                        ((currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message )) {
                         Edge e = new Edge(currentVertex, otherVertex, false, true);
-                        currentVertex.Neighbours.Add(e);
-                        otherVertex.Neighbours.Add(e);
+                        graph.Edges.Add(e);
                     }
                 }
             }
 
-            //Console.WriteLine(graph.Vertices[5].Value.Item3);
+            //Console.WriteLine(graph.Vertices[5].Value.Message);
             //foreach (var edge in graph.Vertices[5].Neighbours) {
-            //    Console.WriteLine(edge.VStart + " - " + edge.VEnd + " - " + edge.Weight + $" - {edge._vStartFirst}:{edge._vEndFirst} | {edge.VStart.Value.Item3} | {edge.VEnd.Value.Item3}");
+            //    Console.WriteLine(edge.VStart + " - " + edge.VEnd + " - " + edge.Weight + $" - {edge.vStartFirst}:{edge.vEndFirst} | {edge.VStart.Value.Message} | {edge.VEnd.Value.Message}");
             //}
 
-            graph.DoSwitches();
+            List<Edge> chosen = graph.DoSwitches();
+            foreach (Edge edge in chosen) {
+                _swapVertexData(edge);
+            }
 
+            foreach (Vertex vertex in graph.Vertices.Where(x => x.HasMessage)) {
+                if ((vertex.SampleValue1 + vertex.SampleValue2).Mod(M) != vertex.Message) {
+                    while ((vertex.SampleValue1 + vertex.SampleValue2).Mod(M) != vertex.Message) {
+                        vertex.SampleValue1++;
+                    }
+                }
+            }
+
+            foreach (Vertex vertex in graph.Vertices.Where(x => x.HasMessage)) {
+                Console.WriteLine((vertex.SampleValue1 + vertex.SampleValue2).Mod(M) == vertex.Message);
+            }
+
+
+
+            }
+        
+        private void _swapVertexData(Edge e) {
+            int temp;
+            if (e.vStartFirst) {
+                if (e.vEndFirst) {
+                    temp = e.VStart.SampleValue1;
+                    e.VStart.SampleValue1 = e.VEnd.SampleValue1;
+                    e.VEnd.SampleValue1 = temp;
+                } else {
+                    temp = e.VStart.SampleValue1;
+                    e.VStart.SampleValue1 = e.VEnd.SampleValue2;
+                    e.VEnd.SampleValue2 = temp;
+                }
+            } else {
+                if (e.vEndFirst) {
+                    temp = e.VStart.SampleValue2;
+                    e.VStart.SampleValue2 = e.VEnd.SampleValue1;
+                    e.VEnd.SampleValue1 = temp;
+                } else {
+                    temp = e.VStart.SampleValue2;
+                    e.VStart.SampleValue2 = e.VEnd.SampleValue2;
+                    e.VEnd.SampleValue2 = temp;
+                }
+            }
         }
 
         private double[,] _discreteCosineTransform(double[,] block8) {

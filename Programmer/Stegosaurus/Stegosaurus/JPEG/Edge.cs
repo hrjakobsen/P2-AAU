@@ -5,17 +5,17 @@ namespace Stegosaurus {
         public Vertex VStart { get; set; }
         public Vertex VEnd { get; set; }
 
-        public int Weight => Math.Abs((_vStartFirst ? VStart.Value.Item1 : VStart.Value.Item2) -
-                                      (_vEndFirst ? VEnd.Value.Item1 : VEnd.Value.Item2));
+        public int Weight => Math.Abs((vStartFirst ? VStart.SampleValue1 : VStart.SampleValue2) -
+                                      (vEndFirst ? VEnd.SampleValue1 : VEnd.SampleValue2));
 
-        public readonly bool _vStartFirst;
-        public readonly bool _vEndFirst;
+        public readonly bool vStartFirst;
+        public readonly bool vEndFirst;
 
         public Edge(Vertex vStart, Vertex vEnd, bool vStartFirstItem, bool vEndFirstItem) {
             VStart = vStart;
             VEnd = vEnd;
-            _vStartFirst = vStartFirstItem;
-            _vEndFirst = vEndFirstItem;
+            vStartFirst = vStartFirstItem;
+            vEndFirst = vEndFirstItem;
         }
 
         public override bool Equals(object other) {

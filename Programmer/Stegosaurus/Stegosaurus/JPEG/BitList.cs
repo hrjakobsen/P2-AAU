@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Stegosaurus {
     public class BitList : IEnumerable{
@@ -60,18 +56,18 @@ namespace Stegosaurus {
             }
         }
 
-        private BitArray latestEntries = new BitArray(8);
-        private int addCounter = 0;
+        private readonly BitArray _latestEntries = new BitArray(8);
+        private int _addCounter;
 
         public void CheckedAdd(int val) {
-            if (addCounter % 8 == 0) {
-                latestEntries.SetAll(false);
+            if (_addCounter % 8 == 0) {
+                _latestEntries.SetAll(false);
             }
-            latestEntries[addCounter % 8] = (val == 1);
+            _latestEntries[_addCounter % 8] = (val == 1);
             Add(val == 1);
             bool allOne = true;
-            for (int i = 0; i < latestEntries.Length; i++) {
-                if (!latestEntries[i]) {
+            for (int i = 0; i < _latestEntries.Length; i++) {
+                if (!_latestEntries[i]) {
                     allOne = false;
                     break;
                 }
@@ -83,7 +79,7 @@ namespace Stegosaurus {
                 }
             }
             
-            addCounter++;
+            _addCounter++;
 
         }
 
