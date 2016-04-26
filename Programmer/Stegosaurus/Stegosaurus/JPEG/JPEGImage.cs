@@ -576,6 +576,7 @@ namespace Stegosaurus {
                 ushortToBits(ref bits, _numberEncoder(diff), category);
             } else {
                 HuffmanElement EOB = huffmanDC.GetElementFromRunSize(0x00, 0x00);
+                Console.WriteLine(EOB.CodeWord);
                 ushortToBits(ref bits, EOB.CodeWord, EOB.Length);
             }
 

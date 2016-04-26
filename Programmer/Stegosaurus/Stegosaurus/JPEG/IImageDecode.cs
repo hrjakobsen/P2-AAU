@@ -1,5 +1,9 @@
 ﻿namespace Stegosaurus {
     public interface IImageDecoder {
-        byte[] Decode(string path);
+        HuffmanTable YDCHuffman { get; }
+        HuffmanTable YACHuffman { get; }
+        HuffmanTable ChrDCHuffman { get; }
+        HuffmanTable ChrACHuffman { get; }
+        byte[] Decode();
     }
 }
