@@ -294,16 +294,15 @@ namespace Stegosaurus {
         private void _writeScanData() {
             Bitmap paddedCoverImage = _padCoverImage();
             double[][,] channelValues = _splitToChannels(paddedCoverImage);
-            List<byte> bits = new List<byte>();
+            BitList bits = new BitList();
 
-            _encodeMCU(ref bits, channelValues, paddedCoverImage.Width, paddedCoverImage.Height);
+            _encodeMCU(bits, channelValues, paddedCoverImage.Width, paddedCoverImage.Height);
             _jw.WriteBytes(_flush(bits));
             
         }
-
+        
         private List<Tuple<int[,], HuffmanTable, HuffmanTable, int>> QuantizisedValues = new List<Tuple<int[,], HuffmanTable, HuffmanTable, int>>();
-
-        private void _encodeMCU(ref List<byte> bits, double[][,] YCbCrChannels, int imageWidth, int imageHeight) {
+        private void _encodeMCU(BitList bits, double[][,] YCbCrChannels, int imageWidth, int imageHeight) {
             double[][,] channels = new double[3][,];
             for (int i = 0; i < 3; i++) {
                 channels[i] = new double[16,16];
@@ -317,7 +316,7 @@ namespace Stegosaurus {
                             }
                         }
                     }
-                    _encodeBlocks(ref bits, channels);
+                    _encodeBlocks(bits, channels);
                 }
             }
             //This is where all quantization tables are saved in the list
@@ -325,37 +324,33 @@ namespace Stegosaurus {
 
             //This is where the data is saved to the file
             foreach (var quantizisedValue in QuantizisedValues) {
-                HuffmanEncode(ref bits, quantizisedValue.Item1, quantizisedValue.Item2, quantizisedValue.Item3, quantizisedValue.Item4);
+                HuffmanEncode(bits, quantizisedValue.Item1, quantizisedValue.Item2, quantizisedValue.Item3, quantizisedValue.Item4);
             }
         }
 
-        private void _encodeBlocks(ref List<byte> bits, double[][,] MCU) {
+        private void _encodeBlocks(BitList bits, double[][,] MCU) {
             for (int i = 0; i < 4; i++) {
                 double[,] YBlock = _block16ToBlock8(MCU[0], i);
-                _encodeBlocksSubMethod(ref bits, YBlock, YDCHuffman, YACHuffman, 0, YQuantizationTable);
+                _encodeBlocksSubMethod(bits, YBlock, YDCHuffman, YACHuffman, 0, YQuantizationTable);
             }
 
             double[,] CbDownSampled = _downSample(MCU[1]);
-            _encodeBlocksSubMethod(ref bits, CbDownSampled, ChrDCHuffman, ChrACHuffman, 1, ChrQuantizationTable);
+            _encodeBlocksSubMethod(bits, CbDownSampled, ChrDCHuffman, ChrACHuffman, 1, ChrQuantizationTable);
 
             double[,] CrDownSampled = _downSample(MCU[2]);
-            _encodeBlocksSubMethod(ref bits, CrDownSampled, ChrDCHuffman, ChrACHuffman, 2, ChrQuantizationTable);
+            _encodeBlocksSubMethod(bits, CrDownSampled, ChrDCHuffman, ChrACHuffman, 2, ChrQuantizationTable);
         }
 
-
-        private void _encodeBlocksSubMethod(ref List<byte> bits, double[,] blocks, HuffmanTable DC, HuffmanTable AC, int index, QuantizationTable table) {
+        private void _encodeBlocksSubMethod(BitList bits, double[,] blocks, HuffmanTable DC, HuffmanTable AC, int index, QuantizationTable table) {
             blocks = _discreteCosineTransform(blocks);
             int[,] quantiziedBlock = _quantization(blocks, table);
+            HuffmanEncode(bits, quantiziedBlock, DC, AC, index);
             QuantizisedValues.Add(new Tuple<int[,], HuffmanTable, HuffmanTable, int>(quantiziedBlock, DC, AC, index));
         }
 
-        private byte[] _flush(List<byte> bits) {
-            for (int i = 0; i < bits.Count / 8 - 1; i++) {
-                if (bits[i * 8] == 1 && bits[i * 8 + 1] == 1 && bits[i * 8 + 2] == 1 && bits[i * 8 + 3] == 1 && bits[i * 8 + 4] == 1 && bits[i * 8 + 5] == 1 && bits[i * 8 + 6] == 1 && bits[i * 8 + 7] == 1) {
-                    for (int j = 0; j < 8; j++) {
-                        bits.Insert(i * 8 + 8, 0x00);
-                    }
-                }
+        private byte[] _flush(BitList bits) {
+            while (bits.Count % 8 != 0) {
+                bits.Add(false);
             }
 
             byte[] byteArray = new byte[(int)Math.Ceiling(bits.Count / 8.0)];
@@ -366,7 +361,7 @@ namespace Stegosaurus {
                     if (i * 8 + j >= bits.Count) {
                         byteArray[i] = (byte)(byteArray[i] | 0x01);
                     } else {
-                        byteArray[i] = (byte)(byteArray[i] | bits[i * 8 + j]);
+                        byteArray[i] = (byte)(byteArray[i]  | (bits[i * 8 + j] ? 1 : 0));
                     }
                 }
             }
@@ -399,62 +394,97 @@ namespace Stegosaurus {
 
             }
             
-            List<Tuple<int, int, byte>> pairs = new List<Tuple<int, int, byte>>();
+            List<Vertex> pairs = new List<Vertex>();
             for (int i = 0; i < nonZeroValues.Count - 1; i += 2) {
                 if (_message.Count != 0) {
-                    pairs.Add(new Tuple<int, int, byte>(nonZeroValues[i], nonZeroValues[i + 1], _message[0]));
+                    pairs.Add(new Vertex(nonZeroValues[i], nonZeroValues[i + 1], _message[0]));
                     _message.RemoveAt(0);
-                }
+                } 
+                
             }
         
             Graph graph = new Graph();
 
-            foreach (Tuple<int, int, byte> pair in pairs) {
-                if ((pair.Item1 + pair.Item2).Mod(M) != pair.Item3) {
-                    graph.Vertices.Add(new Vertex(pair));
-                } else {
-                   // Console.WriteLine("passer");
-                }
+            foreach (Vertex pair in pairs) {
+                graph.Vertices.Add(pair);
             }
-            Console.WriteLine(graph);
             //Console.WriteLine(graph.Vertices.Count);
             //World's worst loops (O(n^2) shiet)
+            Console.WriteLine(graph.Vertices.Count);
             foreach (Vertex currentVertex in graph.Vertices) {
-                foreach (Vertex otherVertex in graph.Vertices.Where(v => v != currentVertex)) {
-                    if ((currentVertex.Value.Item2 + otherVertex.Value.Item1).Mod(M) == currentVertex.Value.Item3 &&
-                        (currentVertex.Value.Item1 + otherVertex.Value.Item2).Mod(M) == otherVertex.Value.Item3) {
+                foreach (Vertex otherVertex in graph.Vertices.Where(otherVertex => currentVertex != otherVertex)) {
+                    if (((currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message ) &&
+                        ((currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message)) {
                         Edge e = new Edge(currentVertex, otherVertex, true, true);
-                        currentVertex.Neighbours.Add(e);
-                        otherVertex.Neighbours.Add(e);
+                        graph.Edges.Add(e);
                     }
-                    if ((currentVertex.Value.Item2 + otherVertex.Value.Item2).Mod(M) == currentVertex.Value.Item3 &&
-                        (currentVertex.Value.Item1 + otherVertex.Value.Item1).Mod(M) == otherVertex.Value.Item3) {
+                    if (((currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message ) &&
+                        ((currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message)) {
                         Edge e = new Edge(currentVertex, otherVertex, true, false);
-                        currentVertex.Neighbours.Add(e);
-                        otherVertex.Neighbours.Add(e);
+                        graph.Edges.Add(e);
                     }
-                    if ((currentVertex.Value.Item1 + otherVertex.Value.Item2).Mod(M) == currentVertex.Value.Item3 &&
-                        (currentVertex.Value.Item2 + otherVertex.Value.Item1).Mod(M) == otherVertex.Value.Item3) {
+                    if (((currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message ) &&
+                        ((currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message )) {
                         Edge e = new Edge(currentVertex, otherVertex, false, false);
-                        currentVertex.Neighbours.Add(e);
-                        otherVertex.Neighbours.Add(e);
+                        graph.Edges.Add(e);
                     }
-                    if ((currentVertex.Value.Item1 + otherVertex.Value.Item1).Mod(M) == currentVertex.Value.Item3 &&
-                        (currentVertex.Value.Item2 + otherVertex.Value.Item2).Mod(M) == otherVertex.Value.Item3) {
+                    if (((currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message ) &&
+                        ((currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message )) {
                         Edge e = new Edge(currentVertex, otherVertex, false, true);
-                        currentVertex.Neighbours.Add(e);
-                        otherVertex.Neighbours.Add(e);
+                        graph.Edges.Add(e);
                     }
                 }
             }
 
-            //Console.WriteLine(graph.Vertices[5].Value.Item3);
+            //Console.WriteLine(graph.Vertices[5].Value.Message);
             //foreach (var edge in graph.Vertices[5].Neighbours) {
-            //    Console.WriteLine(edge.VStart + " - " + edge.VEnd + " - " + edge.Weight + $" - {edge._vStartFirst}:{edge._vEndFirst} | {edge.VStart.Value.Item3} | {edge.VEnd.Value.Item3}");
+            //    Console.WriteLine(edge.VStart + " - " + edge.VEnd + " - " + edge.Weight + $" - {edge.vStartFirst}:{edge.vEndFirst} | {edge.VStart.Value.Message} | {edge.VEnd.Value.Message}");
             //}
 
-            graph.DoSwitches();
+            List<Edge> chosen = graph.DoSwitches();
+            foreach (Edge edge in chosen) {
+                _swapVertexData(edge);
+            }
 
+            foreach (Vertex vertex in graph.Vertices.Where(x => x.HasMessage)) {
+                if ((vertex.SampleValue1 + vertex.SampleValue2).Mod(M) != vertex.Message) {
+                    while ((vertex.SampleValue1 + vertex.SampleValue2).Mod(M) != vertex.Message) {
+                        vertex.SampleValue1++;
+                    }
+                }
+            }
+
+            foreach (Vertex vertex in graph.Vertices.Where(x => x.HasMessage)) {
+                Console.WriteLine((vertex.SampleValue1 + vertex.SampleValue2).Mod(M) == vertex.Message);
+            }
+
+
+
+            }
+        
+        private void _swapVertexData(Edge e) {
+            int temp;
+            if (e.vStartFirst) {
+                if (e.vEndFirst) {
+                    temp = e.VStart.SampleValue1;
+                    e.VStart.SampleValue1 = e.VEnd.SampleValue1;
+                    e.VEnd.SampleValue1 = temp;
+                } else {
+                    temp = e.VStart.SampleValue1;
+                    e.VStart.SampleValue1 = e.VEnd.SampleValue2;
+                    e.VEnd.SampleValue2 = temp;
+                }
+            } else {
+                if (e.vEndFirst) {
+                    temp = e.VStart.SampleValue2;
+                    e.VStart.SampleValue2 = e.VEnd.SampleValue1;
+                    e.VEnd.SampleValue1 = temp;
+                } else {
+                    temp = e.VStart.SampleValue2;
+                    e.VStart.SampleValue2 = e.VEnd.SampleValue2;
+                    e.VEnd.SampleValue2 = temp;
+                }
+            }
         }
 
         private double[,] _discreteCosineTransform(double[,] block8) {
@@ -565,19 +595,18 @@ namespace Stegosaurus {
             _jw.WriteBytes(0xff, 0xd9);
         }
         
-        private void HuffmanEncode(ref List<byte> bits, int[,] block8, HuffmanTable huffmanDC, HuffmanTable huffmanAC, int DCIndex) {
+        private void HuffmanEncode(BitList bits, int[,] block8, HuffmanTable huffmanDC, HuffmanTable huffmanAC, int DCIndex) {
             short diff = (short)(block8[0, 0] - _lastDc[DCIndex]);
             _lastDc[DCIndex] += diff;
             if (diff != 0) {
                 byte category = _bitCost(diff);
                 HuffmanElement huffmanCode = huffmanDC.GetElementFromRunSize(0, category);
-                ushortToBits(ref bits, huffmanCode.CodeWord, huffmanCode.Length);
+                ushortToBits(bits, huffmanCode.CodeWord, huffmanCode.Length);
 
-                ushortToBits(ref bits, _numberEncoder(diff), category);
+                ushortToBits(bits, _numberEncoder(diff), category);
             } else {
                 HuffmanElement EOB = huffmanDC.GetElementFromRunSize(0x00, 0x00);
-                Console.WriteLine(EOB.CodeWord);
-                ushortToBits(ref bits, EOB.CodeWord, EOB.Length);
+                ushortToBits(bits, EOB.CodeWord, EOB.Length);
             }
 
             int zeroesCounter = 0;
@@ -589,32 +618,32 @@ namespace Stegosaurus {
                 }
                 while (zeroesCounter >= 16) {
                     HuffmanElement ZRL = huffmanAC.GetElementFromRunSize(0x0F, 0x00);
-                    ushortToBits(ref bits, ZRL.CodeWord, ZRL.Length);
+                    ushortToBits(bits, ZRL.CodeWord, ZRL.Length);
                     zeroesCounter -= 16;
                 }
 
                 byte cost = _bitCost((short)Math.Abs(block8[x, y]));
                 HuffmanElement codeElement = huffmanAC.GetElementFromRunSize((byte)zeroesCounter, cost);
                 zeroesCounter = 0;
-                ushortToBits(ref bits, codeElement.CodeWord, codeElement.Length);
+                ushortToBits(bits, codeElement.CodeWord, codeElement.Length);
 
-                ushortToBits(ref bits, _numberEncoder((short)block8[x, y]), cost);
+                ushortToBits(bits, _numberEncoder((short)block8[x, y]), cost);
 
             }
 
             if (zeroesCounter != 0) { //EOB
                 HuffmanElement EOB = huffmanAC.GetElementFromRunSize(0x00, 0x00);
-                ushortToBits(ref bits, EOB.CodeWord, EOB.Length);
+                ushortToBits(bits, EOB.CodeWord, EOB.Length);
             }
         }
 
-        private void ushortToBits(ref List<byte> bits, ushort number, byte length) {
+        private void ushortToBits(BitList bits, ushort number, byte length) {
             for (int i = 0; i < length; i++) {
                 ushort dummy = 0x01;
                 dummy = (ushort)(dummy << (length - i - 1));
                 dummy = (ushort)(dummy & number);
                 dummy = (ushort)(dummy >> (length - i - 1));
-                bits.Add((byte)dummy);
+                bits.CheckedAdd((byte)dummy);
             }
         }
 

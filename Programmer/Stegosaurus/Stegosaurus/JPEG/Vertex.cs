@@ -4,15 +4,20 @@ using System.Linq;
 
 namespace Stegosaurus {
     public class Vertex {
-        public Tuple<int, int, byte> Value { get; }
-        public List<Edge> Neighbours { get; set; } = new List<Edge>();
+        public int SampleValue1 { get; set; }
+        public int SampleValue2 { get; set; }
+        public byte Message { get; set; }
+        public bool HasMessage { get; set; }
 
-        public Vertex(Tuple<int, int, byte> value) {
-            Value = value;
+        public Vertex(int sampleValue1, int sampleValue2, byte message, bool hasMessage = true) {
+            SampleValue1 = sampleValue1;
+            SampleValue2 = sampleValue2;
+            Message = message;
+            HasMessage = hasMessage;
         }
 
         public override string ToString() {
-            return $"({Value.Item1},{Value.Item2})";
+            return $"({SampleValue1},{SampleValue2})";
         }
     }
 }
