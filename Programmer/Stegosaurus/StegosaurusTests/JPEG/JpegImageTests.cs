@@ -13,7 +13,7 @@ namespace Stegosaurus.Tests
     [TestFixture()]
     public class JpegImageTests
     {
-        #region JpegImage
+         #region JpegImage
         [Test]
         public void JpegImageTest() //Test if JpegImage constructor throws exception when cover image is null
         {
