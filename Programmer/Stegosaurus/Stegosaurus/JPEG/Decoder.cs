@@ -147,6 +147,7 @@ namespace Stegosaurus {
                     arrPos += counter;
                 }
             }
+            listOfBytes.Sort();
             foreach (var item in listOfBytes) {
                 Console.Write(item + " ");
             }
@@ -156,20 +157,28 @@ namespace Stegosaurus {
         private void decodeYDC(ref List<byte> listOfBytes, BitArray bitArr, ref int arrPos, ref int counter) {
             ushort code = 0;
             int i = 0;
+            int length = 0;
             while (i < 16) {
                 code += (ushort)(bitArr[arrPos++] ? 1 : 0);
                 i++;
                 counter--;
-                if (i > 1 && (code & 0x03) == 0) {
-                    break;
-                }
                 foreach (var item in YDCHuffman.Elements) {
                     if (i == item.Value.Length && code == item.Value.CodeWord) {
-                        listOfBytes.Add(item.Value.RunSize);
+                        length = item.Value.RunSize;
+                        break;
                     }
                 }
                 code <<= 1;
             }
+            length += (arrPos - 1);
+            for (i = arrPos; i < length; i++, arrPos++) {
+                code += (ushort)(bitArr[i] ? 1 : 0);
+                code <<= 1;
+                counter--;
+            }
+            code += (ushort)(bitArr[arrPos++] ? 1 : 0);
+            counter--;
+            listOfBytes.Add((byte)code);
         }
 
         private void decodeYAC(ref List<byte> listOfBytes, BitArray bitArr, ref int arrPos, ref int counter) {
@@ -179,7 +188,7 @@ namespace Stegosaurus {
                 code += (ushort)(bitArr[arrPos++] ? 1 : 0);
                 i++;
                 counter--;
-                if(i > 1 && (code & 0x03) == 0) {
+                if (i > 1 && (code & 0xA) == 0) {
                     break;
                 }
                 foreach (var item in YACHuffman.Elements) {
@@ -198,9 +207,6 @@ namespace Stegosaurus {
                 code += (ushort)(bitArr[arrPos++] ? 1 : 0);
                 i++;
                 counter--;
-                if (i > 1 && (code & 0x03) == 0) {
-                    break;
-                }
                 foreach (var item in ChrDCHuffman.Elements) {
                     if (i == item.Value.Length && code == item.Value.CodeWord) {
                         listOfBytes.Add(item.Value.RunSize);
@@ -217,7 +223,7 @@ namespace Stegosaurus {
                 code += (ushort)(bitArr[arrPos++] ? 1 : 0);
                 i++;
                 counter--;
-                if (i > 1 && (code & 0x03) == 0) {
+                if (i > 1 && (code & 0x00) == 0) {
                     break;
                 }
                 foreach (var item in ChrACHuffman.Elements) {
