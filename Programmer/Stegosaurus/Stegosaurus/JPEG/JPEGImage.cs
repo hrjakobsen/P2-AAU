@@ -160,9 +160,10 @@ namespace Stegosaurus {
         }
 
         private void _breakDownMessage(byte[] message) {
-
+            List<byte> messageList = message.ToList();
             //Encode the message length in the 14 first bits and the value of M into the 15th and 16th bits
-            short len = (short)(message.Length << 2);
+            
+            ushort len = (ushort)(message.Length << 2);
             switch (M) {
                 case 4:
                     len++;
@@ -174,17 +175,17 @@ namespace Stegosaurus {
                     len += 3;
                     break;
             }
-            
-            _message.Add((byte)((len & 0xFF00) >> 8));
-            _message.Add((byte)(len & 0xFF));
+            messageList.Insert(0, (byte)((len & 0xFF00) >> 8));
+            messageList.Insert(1, (byte)(len & 0xFF));
 
             byte mask = (byte) (M - 1);
 
-            foreach (byte b in message) {
+            foreach (byte b in messageList) {
                 //Each byte must be split into 8/log2(M) parts
                 for (int i = 0; i < 8/Math.Log(M, 2); i++) {
                     //Save log2(M) bits at a time
-                    _message.Add((byte)(b & (byte)(mask << i)));
+                    byte toBeAdded = (byte)(b & (byte)(mask << (int)(i * Math.Log(M, 2))));
+                    _message.Add((byte)(toBeAdded >> (int)(i * Math.Log(M, 2))));
                 }
             }
         }
@@ -436,11 +437,6 @@ namespace Stegosaurus {
                 }
             }
 
-            //Console.WriteLine(graph.Vertices[5].Value.Message);
-            //foreach (var edge in graph.Vertices[5].Neighbours) {
-            //    Console.WriteLine(edge.VStart + " - " + edge.VEnd + " - " + edge.Weight + $" - {edge.vStartFirst}:{edge.vEndFirst} | {edge.VStart.Value.Message} | {edge.VEnd.Value.Message}");
-            //}
-
             List<Edge> chosen = graph.DoSwitches();
             foreach (Edge edge in chosen) {
                 _swapVertexData(edge);
@@ -453,14 +449,29 @@ namespace Stegosaurus {
                     }
                 }
             }
+            
+            int vertexPos = 0;
+            bool firstValue = true;
+            for (int i = 0; i < graph.Vertices.Count; i++) {
+                int array = i / 64;
+                int xpos = i % 8;
+                int ypos = (i % 64) / 8;
 
-            foreach (Vertex vertex in graph.Vertices.Where(x => x.HasMessage)) {
-                Console.WriteLine((vertex.SampleValue1 + vertex.SampleValue2).Mod(M) == vertex.Message);
+                if (xpos + ypos != 0 && QuantizisedValues[array].Item1[xpos, ypos] != 0) {
+                    if (firstValue) {
+                        QuantizisedValues[array].Item1[xpos, ypos] = graph.Vertices[vertexPos].SampleValue1;
+                        firstValue = false;
+                    } else {
+                        QuantizisedValues[array].Item1[xpos, ypos] = graph.Vertices[vertexPos].SampleValue2;
+                        firstValue = true;
+                        vertexPos++;
+                    }
+                }
+
             }
+            
 
-
-
-            }
+        }
         
         private void _swapVertexData(Edge e) {
             int temp;

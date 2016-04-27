@@ -13,8 +13,9 @@ namespace ConsoleTester {
 
             ji.Encode(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
             ji.Save(@"output.jpg");
+            Console.ReadKey();
 
-#if DEBUG
+/*
             Graph g = new Graph();
             Vertex v1 = new Vertex(48, 50, 2);
             Vertex v2 = new Vertex(49, 48, 2);
@@ -97,7 +98,7 @@ namespace ConsoleTester {
                     e.VEnd.SampleValue2 = temp;
                 }
             }
-#endif
+*/
         }
     }
 }

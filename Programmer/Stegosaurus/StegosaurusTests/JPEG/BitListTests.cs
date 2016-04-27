@@ -42,7 +42,7 @@ namespace Stegosaurus.Tests
             BitList testList = new BitList();
             testList.Add(val);
 
-            Assert.AreEqual();
+            Assert.AreEqual(testList[0],true);
 
             Assert.Fail();
         }
