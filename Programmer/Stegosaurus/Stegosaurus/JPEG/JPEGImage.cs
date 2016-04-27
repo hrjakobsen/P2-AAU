@@ -445,35 +445,42 @@ namespace Stegosaurus {
 
             foreach (Vertex vertex in graph.Vertices.Where(x => x.HasMessage)) {
                 if ((vertex.SampleValue1 + vertex.SampleValue2).Mod(M) != vertex.Message) {
-                    while ((vertex.SampleValue1 + vertex.SampleValue2).Mod(M) != vertex.Message) {
-                        vertex.SampleValue1++;
-                    }
+                    _forceSampleChange(vertex);
                 }
             }
             
             int vertexPos = 0;
             bool firstValue = true;
-            for (int i = 0; i < graph.Vertices.Count; i++) {
-                int array = i / 64;
-                int xpos = i % 8;
-                int ypos = (i % 64) / 8;
+            //for (int i = 0; i < graph.Vertices.Count; i++) {
+            //    int array = i / 64;
+            //    int xpos = i % 8;
+            //    int ypos = (i % 64) / 8;
 
-                if (xpos + ypos != 0 && QuantizisedValues[array].Item1[xpos, ypos] != 0) {
-                    if (firstValue) {
-                        QuantizisedValues[array].Item1[xpos, ypos] = graph.Vertices[vertexPos].SampleValue1;
-                        firstValue = false;
-                    } else {
-                        QuantizisedValues[array].Item1[xpos, ypos] = graph.Vertices[vertexPos].SampleValue2;
-                        firstValue = true;
-                        vertexPos++;
-                    }
-                }
-
-            }
-            
-
+            //    if (xpos + ypos != 0 && QuantizisedValues[array].Item1[xpos, ypos] != 0) {
+            //        if (firstValue) {
+            //            QuantizisedValues[array].Item1[xpos, ypos] = graph.Vertices[vertexPos].SampleValue1;
+            //            firstValue = false;
+            //        } else {
+            //            QuantizisedValues[array].Item1[xpos, ypos] = graph.Vertices[vertexPos].SampleValue2;
+            //            firstValue = true;
+            //            vertexPos++;
+            //        }
+            //    }
+            //}
         }
-        
+
+        private void _forceSampleChange(Vertex vertex) {
+            int error = (vertex.SampleValue1 + vertex.SampleValue2).Mod(M) - vertex.Message;
+
+            if (vertex.SampleValue1 - error <= 127 && vertex.SampleValue1 - error >= -128) {
+                vertex.SampleValue1 -= error;
+            } else if (vertex.SampleValue1 - error <= 127 && vertex.SampleValue1 - error >= -128) {
+                vertex.SampleValue2 -= error;
+            } else {
+                vertex.SampleValue1 += 4 - error;
+            }
+        }
+
         private void _swapVertexData(Edge e) {
             int temp;
             if (e.vStartFirst) {
