@@ -299,15 +299,37 @@ namespace Stegosaurus {
 
             _encodeMCU(bits, channelValues, paddedCoverImage.Width, paddedCoverImage.Height);
             _jw.WriteBytes(_flush(bits));
-            
         }
-        
-        private List<Tuple<int[,], HuffmanTable, HuffmanTable, int>> QuantizisedValues = new List<Tuple<int[,], HuffmanTable, HuffmanTable, int>>();
+
+        private byte[] _flush(BitList bits) {
+            while (bits.Count % 8 != 0) {
+                bits.Add(false);
+            }
+
+            byte[] byteArray = new byte[(int)Math.Ceiling(bits.Count / 8.0)];
+
+            for (int i = 0; i < byteArray.Length; i++) {
+                for (int j = 0; j < 8; j++) {
+                    byteArray[i] = (byte)(byteArray[i] << 1);
+                    if (i * 8 + j >= bits.Count) {
+                        byteArray[i] = (byte)(byteArray[i] | 0x01);
+                    } else {
+                        byteArray[i] = (byte)(byteArray[i] | (bits[i * 8 + j] ? 1 : 0));
+                    }
+                }
+            }
+            return byteArray;
+        }
+
+        List<Tuple<int[,], HuffmanTable, HuffmanTable, int>> _quantizedBlocks = new List<Tuple<int[,], HuffmanTable, HuffmanTable, int>>();
+
         private void _encodeMCU(BitList bits, double[][,] YCbCrChannels, int imageWidth, int imageHeight) {
             double[][,] channels = new double[3][,];
+
             for (int i = 0; i < 3; i++) {
                 channels[i] = new double[16,16];
             }
+
             for (int MCUY = 0; MCUY < imageHeight; MCUY += 16) {
                 for (int MCUX = 0; MCUX < imageWidth; MCUX += 16) { 
                     for (int i = 0; i < 3; i++) {
@@ -320,12 +342,13 @@ namespace Stegosaurus {
                     _encodeBlocks(bits, channels);
                 }
             }
-            //This is where all quantization tables are saved in the list
-            _encodeData();
 
-            //This is where the data is saved to the file
-            foreach (var quantizisedValue in QuantizisedValues) {
-                HuffmanEncode(bits, quantizisedValue.Item1, quantizisedValue.Item2, quantizisedValue.Item3, quantizisedValue.Item4);
+            //Encode the secret message in the quantized blocks
+            _encodeMessage();
+
+            //This is where the data is huffman encoded and saved to the file
+            foreach (var quantizisedBlock in _quantizedBlocks) {
+                HuffmanEncode(bits, quantizisedBlock.Item1, quantizisedBlock.Item2, quantizisedBlock.Item3, quantizisedBlock.Item4);
             }
         }
 
@@ -346,29 +369,8 @@ namespace Stegosaurus {
             blocks = _discreteCosineTransform(blocks);
             int[,] quantiziedBlock = _quantization(blocks, table);
             HuffmanEncode(bits, quantiziedBlock, DC, AC, index);
-            QuantizisedValues.Add(new Tuple<int[,], HuffmanTable, HuffmanTable, int>(quantiziedBlock, DC, AC, index));
+            _quantizedBlocks.Add(new Tuple<int[,], HuffmanTable, HuffmanTable, int>(quantiziedBlock, DC, AC, index));
         }
-
-        private byte[] _flush(BitList bits) {
-            while (bits.Count % 8 != 0) {
-                bits.Add(false);
-            }
-
-            byte[] byteArray = new byte[(int)Math.Ceiling(bits.Count / 8.0)];
-
-            for (int i = 0; i < byteArray.Length; i++) {
-                for (int j = 0; j < 8; j++) {
-                    byteArray[i] = (byte)(byteArray[i] << 1);
-                    if (i * 8 + j >= bits.Count) {
-                        byteArray[i] = (byte)(byteArray[i] | 0x01);
-                    } else {
-                        byteArray[i] = (byte)(byteArray[i]  | (bits[i * 8 + j] ? 1 : 0));
-                    }
-                }
-            }
-            return byteArray;
-        }
-
 
         private int[,] _quantization(double[,] values, QuantizationTable qTable) {
             int[,] quantizedValues = new int[8, 8];
@@ -381,37 +383,34 @@ namespace Stegosaurus {
             return quantizedValues;
         }
 
-        private void _encodeData() {
+        private void _encodeMessage() {
             List<int> nonZeroValues = new List<int>();
-            int len = QuantizisedValues.Count*64;
+
+            int len = _quantizedBlocks.Count * 64;
             for (int i = 0; i < len; i++) {
                 int array = i / 64;
                 int xpos = i % 8;
                 int ypos = (i % 64) / 8;
 
-                if (xpos + ypos != 0 && QuantizisedValues[array].Item1[xpos, ypos] != 0) {
-                    nonZeroValues.Add(QuantizisedValues[array].Item1[xpos, ypos]);
+                if (xpos + ypos != 0 && _quantizedBlocks[array].Item1[xpos, ypos] != 0) {
+                    nonZeroValues.Add(_quantizedBlocks[array].Item1[xpos, ypos]);
                 }
 
             }
-            
-            List<Vertex> pairs = new List<Vertex>();
-            for (int i = 0; i < nonZeroValues.Count - 1; i += 2) {
-                if (_message.Count != 0) {
-                    pairs.Add(new Vertex(nonZeroValues[i], nonZeroValues[i + 1], _message[0]));
-                    _message.RemoveAt(0);
-                } 
-                
-            }
-        
+
             Graph graph = new Graph();
 
-            foreach (Vertex pair in pairs) {
-                graph.Vertices.Add(pair);
+            len = nonZeroValues.Count;
+            for (int i = 0; i < len - 1; i += 2) {
+                if (_message.Count != 0) {
+                    graph.Vertices.Add(new Vertex(nonZeroValues[i], nonZeroValues[i + 1], _message[0]));
+                    _message.RemoveAt(0);
+                } 
             }
-            //Console.WriteLine(graph.Vertices.Count);
+
             //World's worst loops (O(n^2) shiet)
-            Console.WriteLine(graph.Vertices.Count);
+
+            //Find alle the possible switches between vertices and add them as edges
             foreach (Vertex currentVertex in graph.Vertices) {
                 foreach (Vertex otherVertex in graph.Vertices.Where(otherVertex => currentVertex != otherVertex)) {
                     if (((currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message ) &&
@@ -437,6 +436,14 @@ namespace Stegosaurus {
                 }
             }
 
+            //Swap values and force the rest
+            _refactorGraph(graph);
+
+            //Put the changed values back into the QuantizedValues
+            _mergeGraphAndQuantizedValues(graph);
+        }
+
+        private void _refactorGraph(Graph graph) {
             List<Edge> chosen = graph.DoSwitches();
             foreach (Edge edge in chosen) {
                 _swapVertexData(edge);
@@ -447,25 +454,6 @@ namespace Stegosaurus {
                     _forceSampleChange(vertex);
                 }
             }
-            
-            int vertexPos = 0;
-            bool firstValue = true;
-            //for (int i = 0; i < graph.Vertices.Count; i++) {
-            //    int array = i / 64;
-            //    int xpos = i % 8;
-            //    int ypos = (i % 64) / 8;
-
-            //    if (xpos + ypos != 0 && QuantizisedValues[array].Item1[xpos, ypos] != 0) {
-            //        if (firstValue) {
-            //            QuantizisedValues[array].Item1[xpos, ypos] = graph.Vertices[vertexPos].SampleValue1;
-            //            firstValue = false;
-            //        } else {
-            //            QuantizisedValues[array].Item1[xpos, ypos] = graph.Vertices[vertexPos].SampleValue2;
-            //            firstValue = true;
-            //            vertexPos++;
-            //        }
-            //    }
-            //}
         }
 
         private void _forceSampleChange(Vertex vertex) {
@@ -501,6 +489,28 @@ namespace Stegosaurus {
                     temp = e.VStart.SampleValue2;
                     e.VStart.SampleValue2 = e.VEnd.SampleValue2;
                     e.VEnd.SampleValue2 = temp;
+                }
+            }
+        }
+
+        private void _mergeGraphAndQuantizedValues(Graph graph) {
+            int vertexPos = 0;
+            int len = graph.Vertices.Count;
+            bool firstValue = true;
+            for (int i = 0; i < len ; i++) {
+                int array = i / 64;
+                int xpos = i % 8;
+                int ypos = (i % 64) / 8;
+
+                if (xpos + ypos != 0 && _quantizedBlocks[array].Item1[xpos, ypos] != 0) {
+                    if (firstValue) {
+                        _quantizedBlocks[array].Item1[xpos, ypos] = graph.Vertices[vertexPos].SampleValue1;
+                        firstValue = false;
+                    } else {
+                        _quantizedBlocks[array].Item1[xpos, ypos] = graph.Vertices[vertexPos].SampleValue2;
+                        firstValue = true;
+                        vertexPos++;
+                    }
                 }
             }
         }
