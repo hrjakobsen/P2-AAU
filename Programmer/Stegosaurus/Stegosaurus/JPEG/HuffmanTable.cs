@@ -29,6 +29,7 @@ namespace Stegosaurus {
             byte runSize = (byte)((run << 4) | size);
             return Elements[runSize];
         }
+
 #region DefaultTables
         // ReSharper disable once InconsistentNaming
         public static HuffmanTable JpegHuffmanTableYDC = new HuffmanTable(

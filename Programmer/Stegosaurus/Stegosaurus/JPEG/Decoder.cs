@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Stegosaurus {
@@ -9,31 +10,29 @@ namespace Stegosaurus {
         /// <summary>
         /// Huffman table used for the DC coefficient of the Y component of the image.
         /// </summary>
-        public HuffmanTable YDCHuffman { get; set; }
+        public HuffmanTable YDCHuffman { get; private set; }
 
         /// <summary>
         /// Huffman table used for the AC coefficient of the Y component of the image.
         /// </summary>
-        public HuffmanTable YACHuffman { get; set; }
+        public HuffmanTable YACHuffman { get; private set; }
 
         /// <summary>
         /// Huffman table used for the DC coefficient of the CrCb components of the image.
         /// </summary>
-        public HuffmanTable ChrDCHuffman { get; set; }
+        public HuffmanTable ChrDCHuffman { get; private set; }
 
         /// <summary>
         /// Huffman table used for the AC coefficient of the CrCb components of the image.
         /// </summary>
-        public HuffmanTable ChrACHuffman { get; set; }
+        public HuffmanTable ChrACHuffman { get; private set; }
 
+        private BinaryReader file;
         List<HuffmanTable> huffmanTables = new List<HuffmanTable>();
-        /// <summary>
-        /// Used to decode the hidden message in given file
-        /// </summary>
-        /// <param name="path"></param>
-        public byte[] Decode(string path) {
+
+        public Decoder(string path) {
             StreamReader sr = new StreamReader(path);
-            BinaryReader file = new BinaryReader(sr.BaseStream);
+            file = new BinaryReader(sr.BaseStream);
             for (int i = 0; i < 4; i++) {
                 byte ClassAndID = 0;
                 HuffmanTable temp = getHuffmanTable(file, ref ClassAndID);
@@ -49,6 +48,13 @@ namespace Stegosaurus {
                     ChrACHuffman = temp;
                 }
             }
+        }
+
+        /// <summary>
+        /// Used to decode the hidden message in given file
+        /// </summary>
+        /// <param name="path"></param>
+        public byte[] Decode() {
             BitArray bitArr = findScanData(file);
             byte[] byteArr = decodeHuffmanValues(bitArr);
             return byteArr;//GetMessage(byteArr);
@@ -129,10 +135,105 @@ namespace Stegosaurus {
         }
 
         private byte[] decodeHuffmanValues(BitArray bitArr) {
-            byte[] byteArr = new byte[10];
-            return byteArr;
+            int counter, arrPos = 0;
+            List<byte> listOfBytes = new List<byte>();
+            while (bitArr.Count > arrPos && arrPos + 64 <= bitArr.Count) {
+                counter = 64;
+                decodeYDC(ref listOfBytes, bitArr, ref arrPos, ref counter);
+                decodeYAC(ref listOfBytes, bitArr, ref arrPos, ref counter);
+                decodeChrDC(ref listOfBytes, bitArr, ref arrPos, ref counter);
+                decodeChrAC(ref listOfBytes, bitArr, ref arrPos, ref counter);
+                if (counter > 0) {
+                    arrPos += counter;
+                }
+            }
+            foreach (var item in listOfBytes) {
+                Console.Write(item + " ");
+            }
+            return listOfBytes.ToArray();
         }
 
+        private void decodeYDC(ref List<byte> listOfBytes, BitArray bitArr, ref int arrPos, ref int counter) {
+            ushort code = 0;
+            int i = 0;
+            while (i < 16) {
+                code += (ushort)(bitArr[arrPos++] ? 1 : 0);
+                i++;
+                counter--;
+                if (i > 1 && (code & 0x03) == 0) {
+                    break;
+                }
+                foreach (var item in YDCHuffman.Elements) {
+                    if (i == item.Value.Length && code == item.Value.CodeWord) {
+                        listOfBytes.Add(item.Value.RunSize);
+                    }
+                }
+                code <<= 1;
+            }
+        }
+
+        private void decodeYAC(ref List<byte> listOfBytes, BitArray bitArr, ref int arrPos, ref int counter) {
+            ushort code = 0;
+            int i = 0;
+            while (i < 16) {
+                code += (ushort)(bitArr[arrPos++] ? 1 : 0);
+                i++;
+                counter--;
+                if(i > 1 && (code & 0x03) == 0) {
+                    break;
+                }
+                foreach (var item in YACHuffman.Elements) {
+                    if (i == item.Value.Length && code == item.Value.CodeWord) {
+                        listOfBytes.Add(item.Value.RunSize);
+                    }
+                }
+                code <<= 1;
+            }
+        }
+
+        private void decodeChrDC(ref List<byte> listOfBytes, BitArray bitArr, ref int arrPos, ref int counter) {
+            ushort code = 0;
+            int i = 0;
+            while (i < 16) {
+                code += (ushort)(bitArr[arrPos++] ? 1 : 0);
+                i++;
+                counter--;
+                if (i > 1 && (code & 0x03) == 0) {
+                    break;
+                }
+                foreach (var item in ChrDCHuffman.Elements) {
+                    if (i == item.Value.Length && code == item.Value.CodeWord) {
+                        listOfBytes.Add(item.Value.RunSize);
+                    }
+                }
+                code <<= 1;
+            }
+        }
+
+        private void decodeChrAC(ref List<byte> listOfBytes, BitArray bitArr, ref int arrPos, ref int counter) {
+            ushort code = 0;
+            int i = 0;
+            while (i < 16) {
+                code += (ushort)(bitArr[arrPos++] ? 1 : 0);
+                i++;
+                counter--;
+                if (i > 1 && (code & 0x03) == 0) {
+                    break;
+                }
+                foreach (var item in ChrACHuffman.Elements) {
+                    if (i == item.Value.Length && code == item.Value.CodeWord) {
+                        listOfBytes.Add(item.Value.RunSize);
+                        code = 0;
+                        i = 0;
+                    }
+                }
+                code <<= 1;
+                if (counter == 0) {
+                    break;
+                }
+            }
+        }
+    
         private byte[] GetMessage(byte[] scanData) {
             // int m = scanData[0];
             // m is the modulo operator saved somewhere in scanData
