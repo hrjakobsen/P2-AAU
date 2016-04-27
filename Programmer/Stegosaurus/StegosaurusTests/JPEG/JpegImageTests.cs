@@ -13,81 +13,36 @@ namespace Stegosaurus.Tests
     [TestFixture()]
     public class JpegImageTests
     {
-         #region JpegImage
         [Test]
-        public void JpegImageTest() //Test if JpegImage constructor throws exception when cover image is null
+        public void JpegImage_Test_if_constructor_throws_exception_when_image_is_null() //Test if JpegImage constructor throws exception when cover image is null
         {
-            try
-            {
-                IImageEncoder ji = new JpegImage(null, 100, 4);
-            }
-            catch (ArgumentNullException)
-            {
-                return;
-            }
-            
-            Assert.Fail();
+            Assert.Throws<ArgumentNullException>(() => new JpegImage(null, 100, 4));
         }
 
         [Test()]
-        public void JpegImageTest1() //Test if JpegImage constructor does not throw exception when cover image is not null
+        public void JpegImage_Test_If_image_width_Is_unchanged_by_constructor() //Test if JpegImage constructor does not throw exception when cover image is not null
         {
-            Bitmap testcover = new Bitmap(200, 100);
-            try
-            {
-                IImageEncoder ji = new JpegImage(testcover, 100, 4);
-            }
-            catch (ArgumentNullException)
-            {
-                Assert.Fail();
-            }
+            int imageWidth = 200;
+            int imageHeight = 100;
 
-            Assert.Pass();
+            Bitmap bm = new Bitmap(imageWidth, imageHeight);
+            JpegImage ji = new JpegImage(bm, 100, 4);
+
+            Assert.AreEqual(imageWidth, ji.CoverImage.Width);
         }
 
         [Test()]
-        public void JpegImageTest2() // Test if JpegImage throws exception when m is 0
+        public void JpegImage_Test_If_image_height_Is_unchanged_by_constructor() //Test if JpegImage constructor does not throw exception when cover image is not null
         {
-            Bitmap testcover = new Bitmap(200, 100);
-            try
-            {
-                JpegImage testMod = new JpegImage(testcover, 100, 0);
-            }
-            catch (ArgumentException)
-            {
-                Assert.Pass();
-            }
+            int imageWidth = 200;
+            int imageHeight = 100;
 
-            Assert.Fail();
+            Bitmap bm = new Bitmap(imageWidth, imageHeight);
+            JpegImage ji = new JpegImage(bm, 100, 4);
+
+            Assert.AreEqual(imageHeight, ji.CoverImage.Height);
         }
-
-        [Test()]
-        public void JpegImageTest3()
-        {
-            Bitmap testcover = new Bitmap(200, 100);
-            try
-            {
-                JpegImage testMod = new JpegImage(testcover, 100, -4);
-            }
-            catch (ArgumentException)
-            {
-                Assert.Pass();
-            }
-
-            Assert.Fail();
-        }
-
-        [Test()]
-        public void JpegImageTest4() // Test if JpegImage value M was 4 when set to 4...
-        {
-            Bitmap testcover = new Bitmap(200, 100);
-
-            JpegImage testMod = new JpegImage(testcover, 100, 4);
-
-            Assert.AreEqual(4, testMod.M);
-        }
-        #endregion
-
+        
         [Test()]
         public void EncodeTest()
         {
