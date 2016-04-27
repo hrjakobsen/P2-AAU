@@ -303,6 +303,7 @@ namespace Stegosaurus {
         }
         
         private List<Tuple<int[,], HuffmanTable, HuffmanTable, int>> QuantizisedValues = new List<Tuple<int[,], HuffmanTable, HuffmanTable, int>>();
+
         private void _encodeMCU(BitList bits, double[][,] YCbCrChannels, int imageWidth, int imageHeight) {
             double[][,] channels = new double[3][,];
             for (int i = 0; i < 3; i++) {
