@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Stegosaurus {
     public class JpegImage : IImageEncoder{
         private JpegWriter _jw;
-        private int _m;
-        private List<byte> _message = new List<byte>();
+        private readonly List<byte> _message = new List<byte>();
         private readonly double[,] _cosines = new double[8, 8];
         private readonly int[] _lastDc = { 0, 0, 0 };
+        private int _m;
 
         public Bitmap CoverImage { get; }
 
@@ -161,10 +160,13 @@ namespace Stegosaurus {
 
         private void _breakDownMessage(byte[] message) {
             List<byte> messageList = message.ToList();
+
             //Encode the message length in the 14 first bits and the value of M into the 15th and 16th bits
-            
+            //The M value is encoded with a temporary M-value of 4
             ushort len = (ushort)(message.Length << 2);
             switch (M) {
+                case 2:
+                    break;
                 case 4:
                     len++;
                     break;
@@ -175,17 +177,26 @@ namespace Stegosaurus {
                     len += 3;
                     break;
             }
-            messageList.Insert(0, (byte)((len & 0xFF00) >> 8));
-            messageList.Insert(1, (byte)(len & 0xFF));
 
-            byte mask = (byte) (M - 1);
+            List<byte> metaDataList = new List<byte> {
+                (byte) (len & 0xFF),
+                (byte) ((len & 0xFF00) >> 8)
+            };
 
-            foreach (byte b in messageList) {
+            //Split the metadata
+            _splitMessageIntoSmallerComponents(metaDataList, 0x11, 2);
+
+            //Split the message itself
+            _splitMessageIntoSmallerComponents(messageList, (byte)(M - 1), (int)Math.Log(M, 2));
+        }
+
+        private void _splitMessageIntoSmallerComponents(List<byte> list, byte mask, int steps) {
+            foreach (byte b in list) {
                 //Each byte must be split into 8/log2(M) parts
-                for (int i = 0; i < 8/Math.Log(M, 2); i++) {
+                for (int i = 0; i < 8 / steps; i++) {
                     //Save log2(M) bits at a time
-                    byte toBeAdded = (byte)(b & (byte)(mask << (int)(i * Math.Log(M, 2))));
-                    _message.Add((byte)(toBeAdded >> (int)(i * Math.Log(M, 2))));
+                    byte toBeAdded = (byte)(b & (byte)(mask << i * steps));
+                    _message.Add((byte)(toBeAdded >> i * steps));
                 }
             }
         }
@@ -321,7 +332,7 @@ namespace Stegosaurus {
             return byteArray;
         }
 
-        List<Tuple<int[,], HuffmanTable, HuffmanTable, int>> _quantizedBlocks = new List<Tuple<int[,], HuffmanTable, HuffmanTable, int>>();
+        readonly List<Tuple<int[,], HuffmanTable, HuffmanTable, int>> _quantizedBlocks = new List<Tuple<int[,], HuffmanTable, HuffmanTable, int>>();
 
         private void _encodeMCU(BitList bits, double[][,] YCbCrChannels, int imageWidth, int imageHeight) {
             double[][,] channels = new double[3][,];
@@ -395,7 +406,6 @@ namespace Stegosaurus {
                 if (xpos + ypos != 0 && _quantizedBlocks[array].Item1[xpos, ypos] != 0) {
                     nonZeroValues.Add(_quantizedBlocks[array].Item1[xpos, ypos]);
                 }
-
             }
 
             Graph graph = new Graph();
@@ -665,7 +675,7 @@ namespace Stegosaurus {
             }
         }
 
-        private void ushortToBits(BitList bits, ushort number, byte length) {
+        private static void ushortToBits(BitList bits, ushort number, byte length) {
             for (int i = 0; i < length; i++) {
                 ushort dummy = 0x01;
                 dummy = (ushort)(dummy << (length - i - 1));
@@ -675,13 +685,13 @@ namespace Stegosaurus {
             }
         }
 
-        private byte _bitCost(short number) {
+        private static byte _bitCost(short number) {
             return (byte)Math.Ceiling(Math.Log(Math.Abs(number) + 1, 2));
         }
 
 
-        private ushort _numberEncoder(short number) {
-            return (number < 0) ? (ushort)(~Math.Abs(number)) : (ushort)Math.Abs(number);
+        private static ushort _numberEncoder(short number) {
+            return number < 0 ? (ushort)~Math.Abs(number) : (ushort)Math.Abs(number);
         }
         
 
