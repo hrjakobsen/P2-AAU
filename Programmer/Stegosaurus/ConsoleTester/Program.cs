@@ -9,8 +9,8 @@ namespace ConsoleTester {
         static void Main(string[] args) {
             //IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100, 4);
             //IImageEncoder ji = new JpegImage(new Bitmap(@"loladele.jpg"), 100, 4);
-            //IImageDecoder jid = new Decoder("output.jpg");
-            //jid.Decode();
+            IImageDecoder jid = new Decoder("output.jpg");
+            jid.Decode();
 
             //ji.Encode(new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 21, 54, 12, 56, 12, 12, 12, 12, 45, 76, 23, 54});
             //ji.Save(@"output.jpg");

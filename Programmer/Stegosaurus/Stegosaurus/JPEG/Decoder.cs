@@ -135,33 +135,38 @@ namespace Stegosaurus {
         }
 
         private short[] decodeHuffmanValues(BitArray bitArr) {
-            int counter = 64, arrPos = 0;
+            int arrPos, iterations, length, modulo;
+            arrPos = iterations = length = modulo = 0;
             List<short> listOfShorts = new List<short>();
-            while (bitArr.Count > arrPos && arrPos + 64 <= bitArr.Count) {
-                counter = 64;
-                decodeYDC(bitArr, ref arrPos, ref counter);
-                decodeYAC(ref listOfShorts, bitArr, ref arrPos, ref counter);
-                decodeChrDC(bitArr, ref arrPos, ref counter);
-                decodeChrAC(ref listOfShorts, bitArr, ref arrPos, ref counter);
-                if (counter > 0) {
-                    arrPos += counter;
+            while (bitArr.Count > arrPos) {
+                for (int i = 0; i < 4; i++) {
+                    decodeYDC(bitArr, ref arrPos);
+                    decodeYAC(ref listOfShorts, bitArr, ref arrPos);
                 }
+                decodeChrDC(bitArr, ref arrPos);
+                decodeChrAC(ref listOfShorts, bitArr, ref arrPos);
+                iterations++;
+                if (iterations == 1) {
+                    length = getMessageLength(listOfShorts, ref modulo);
+                }
+                Console.WriteLine(listOfShorts.Count + " " + arrPos);
+                Console.ReadKey();
+
             }
-            Console.WriteLine(counter);
-            foreach (var item in listOfShorts) {
-                Console.Write($"{item} ");
-            }
+            //foreach (var item in listOfShorts) {
+            //    Console.Write($"{item} ");
+            //}
+            Console.WriteLine(listOfShorts.Count);
             return listOfShorts.ToArray();
         }
 
-        private void decodeYDC(BitArray bitArr, ref int arrPos, ref int counter) {
+        private void decodeYDC(BitArray bitArr, ref int arrPos) {
             ushort code = 0;
             int i = 0;
             int length = 0;
             while (i < 16) {
                 code += (ushort)(bitArr[arrPos++] ? 1 : 0);
                 i++;
-                counter--;
                 foreach (var item in YDCHuffman.Elements) {
                     if (i == item.Value.Length && code == item.Value.CodeWord) {
                         length = item.Value.RunSize;
@@ -176,63 +181,57 @@ namespace Stegosaurus {
             }
         }
 
-        private void decodeYAC(ref List<short> listOfShorts, BitArray bitArr, ref int arrPos, ref int counter) {
+        private void decodeYAC(ref List<short> listOfShorts, BitArray bitArr, ref int arrPos) {
             ushort code = 0;
-            int i = 0;
+            int i = 0, counter = 1;
             byte zeroes = 0;
             int category = 0;
             bool EOB = false;
-            while (i < 16) {
-                code += (ushort)(bitArr[arrPos++] ? 1 : 0);
-                i++;
-                counter--;
-                //EOB
-                if (i > 1 && (code & 0xf) == 10) {
-                    EOB = true;
-                    break;
-                }
-                foreach (var item in YACHuffman.Elements) {
-                    if (i == item.Value.Length && code == item.Value.CodeWord) {
-                        zeroes = (byte)(item.Value.RunSize & 0xf0);
-                        category = (item.Value.RunSize & 0x0f) + 1;
+            while (!EOB && counter < 64) {
+                code = 0;
+                bool valueNotFound = true;
+                while (i < 16 && valueNotFound) {
+                    code += (ushort)(bitArr[arrPos++] ? 1 : 0);
+                    i++;
+                    //EOB
+                    if (i > 1 && (code & 0xf) == 10) {
+                        EOB = true;
                         break;
                     }
-                }
-                code <<= 1;
-            }
-            if (!EOB) {
-                while (zeroes > 0) {
-                    zeroes--;
-                    arrPos++;
-                    counter--;
-                }
-
-                int length = category + (arrPos - 1);
-                code = 0;
-                for (; arrPos < length; arrPos++) {
-                    code += (ushort)(bitArr[arrPos] ? 1 : 0);
+                    foreach (var item in YACHuffman.Elements) {
+                        if (i == item.Value.Length && code == item.Value.CodeWord) {
+                            zeroes = (byte)(item.Value.RunSize & 0xf0);
+                            category = (item.Value.RunSize & 0x0f) + 1;
+                            valueNotFound = false;
+                            break;
+                        }
+                    }
                     code <<= 1;
-                    counter--;
                 }
-                code += (ushort)(bitArr[arrPos++] ? 1 : 0);
-                counter--;
+                counter += (zeroes + 1);
+                i = 0;
 
-                short value = lookupValue(code, category);
+                if (!EOB) {
+                    int length = category + (arrPos - 1);
+                    code = 0;
+                    for (; arrPos < length; arrPos++) {
+                        code += (ushort)(bitArr[arrPos] ? 1 : 0);
+                        code <<= 1;
+                    }
+                    code += (ushort)(bitArr[arrPos++] ? 1 : 0);
 
-                if (value != 0) {
-                    listOfShorts.Add(value);
+                    listOfShorts.Add(lookupValue(code, category));
                 }
             }
         }
 
-        private void decodeChrDC(BitArray bitArr, ref int arrPos, ref int counter) {
+        private void decodeChrDC(BitArray bitArr, ref int arrPos) {
             ushort code = 0;
             int i = 0;
             int length = 0;
             while (i < 16) {
                 code += (ushort)(bitArr[arrPos++] ? 1 : 0);
                 i++;
-                counter--;
                 foreach (var item in ChrDCHuffman.Elements) {
                     if (i == item.Value.Length && code == item.Value.CodeWord) {
                         length = item.Value.RunSize;
@@ -248,59 +247,50 @@ namespace Stegosaurus {
             }
         }
 
-        private void decodeChrAC(ref List<short> listOfShorts, BitArray bitArr, ref int arrPos, ref int counter) {
+        private void decodeChrAC(ref List<short> listOfShorts, BitArray bitArr, ref int arrPos) {
             ushort code = 0;
-            int i = 0;
-            int category = 0;
+            int i = 0, counter = 1;
             byte zeroes = 0;
+            int category = 0;
             bool EOB = false;
-            while (i < 16) {
-                if (bitArr.Count <= arrPos) {
-                    EOB = true;
-                    break;
-                }
-                code += (ushort)(bitArr[arrPos++] ? 1 : 0);
-                i++;
-                counter--;
-                //EOB
-                if (i > 1 && (code & 0x3) == 0) {
-                    EOB = true;
-                    break;
-                }
-                foreach (var item in ChrACHuffman.Elements) {
-                    if (i == item.Value.Length && code == item.Value.CodeWord) {
-                        zeroes = (byte)(item.Value.RunSize & 0xf0);
-                        category = (item.Value.RunSize & 0x0f) + 1;
+            while (!EOB && counter < 64) {
+                bool valueNotFound = true;
+                code = 0;
+                while (i < 16 && valueNotFound) {
+                    code += (ushort)(bitArr[arrPos++] ? 1 : 0);
+                    i++;
+                    //EOB
+                    if (i > 1 && (code & 0xf) == 10) {
+                        EOB = true;
                         break;
                     }
-                }
-                code <<= 1;
-            }
-            if (!EOB) {
-                while (zeroes > 0) {
-                    arrPos++;
-                    counter--;
-                    zeroes--;
-                }
-
-                int length = category + (arrPos - 1);
-                code = 0;
-                for (; arrPos < length; arrPos++) {
-                    code += (ushort)(bitArr[arrPos] ? 1 : 0);
+                    foreach (var item in YACHuffman.Elements) {
+                        if (i == item.Value.Length && code == item.Value.CodeWord) {
+                            zeroes = (byte)(item.Value.RunSize & 0xf0);
+                            category = (item.Value.RunSize & 0x0f) + 1;
+                            valueNotFound = false;
+                            break;
+                        }
+                    }
                     code <<= 1;
-                    counter--;
                 }
-                code += (ushort)(bitArr[arrPos++] ? 1 : 0);
-                counter--;
+                counter += (zeroes + 1);
+                i = 0;
 
-                short value = lookupValue(code, category);
+                if (!EOB) {
+                    int length = category + (arrPos - 1);
+                    code = 0;
+                    for (; arrPos < length; arrPos++) {
+                        code += (ushort)(bitArr[arrPos] ? 1 : 0);
+                        code <<= 1;
+                    }
+                    code += (ushort)(bitArr[arrPos++] ? 1 : 0);
 
-                if (value != 0) {
-                    listOfShorts.Add(value);
+                    listOfShorts.Add(lookupValue(code, category));
                 }
             }
         }
-        
+
         private short lookupValue(ushort value, int category) {
             //  Console.WriteLine($"{value}, {category}");
             short valueToReturn = 0;
@@ -310,6 +300,38 @@ namespace Stegosaurus {
                 valueToReturn = (short)(value - (Math.Pow(2, category)) + 1);
             }
             return valueToReturn;
+        }
+
+        private int getMessageLength(List<short> listOfShorts, ref int modulo) {
+            short[] shortArr = new short[8];
+            int k = 0;
+            for (int i = 0, j = 1; i < 16; i+=2) {
+                shortArr[k++] = (short)(listOfShorts[i] + listOfShorts[j]);
+                j += 2;
+            }
+            modulo = shortArr[shortArr.Length - 1];
+
+            switch (modulo) {
+                case 0:
+                    modulo = 2;
+                    break;
+                case 1:
+                    modulo = 4;
+                    break;
+                case 2:
+                    modulo = 16;
+                    break;
+                case 3:
+                    modulo = 256;
+                    break;
+                default:
+                    Console.WriteLine($"no such modulo. Modulo was {modulo}");
+                    throw new Exception();
+            }
+            foreach (var item in shortArr) {
+                Console.WriteLine(item);
+            }
+            return 1;
         }
 
         private byte[] GetMessage(short[] scanData) {
