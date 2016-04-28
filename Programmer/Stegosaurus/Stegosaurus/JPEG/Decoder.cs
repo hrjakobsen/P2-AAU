@@ -55,9 +55,10 @@ namespace Stegosaurus {
         /// </summary>
         /// <param name="path"></param>
         public byte[] Decode() {
+            int modulo = 0;
             BitArray bitArr = findScanData(file);
-            short[] byteArr = decodeHuffmanValues(bitArr);
-            return GetMessage(byteArr);
+            short[] byteArr = decodeHuffmanValues(bitArr, ref modulo);
+            return GetMessage(byteArr, modulo);
         }
 
         private HuffmanTable getHuffmanTable(BinaryReader file, ref byte ClassAndID) {
@@ -134,11 +135,12 @@ namespace Stegosaurus {
             return bitArr;
         }
 
-        private short[] decodeHuffmanValues(BitArray bitArr) {
-            int arrPos, iterations, length, modulo;
-            arrPos = iterations = length = modulo = 0;
+        private short[] decodeHuffmanValues(BitArray bitArr, ref int modulo) {
+            int arrPos, iterations, length;
+            arrPos = iterations = 0;
+            length = 1;
             List<short> listOfShorts = new List<short>();
-            while (bitArr.Count > arrPos) {
+            while (bitArr.Count > arrPos && listOfShorts.Count < length) {
                 for (int i = 0; i < 4; i++) {
                     decodeYDC(bitArr, ref arrPos);
                     decodeYAC(ref listOfShorts, bitArr, ref arrPos);
@@ -148,14 +150,20 @@ namespace Stegosaurus {
                 iterations++;
                 if (iterations == 1) {
                     length = getMessageLength(listOfShorts, ref modulo);
+                    for (int i = 0; i < 16; i++) {
+                        listOfShorts.RemoveAt(0);
+                    }
                 }
-                Console.WriteLine(listOfShorts.Count + " " + arrPos);
-                Console.ReadKey();
+               // Console.WriteLine(listOfShorts.Count + " " + arrPos);
 
             }
             //foreach (var item in listOfShorts) {
             //    Console.Write($"{item} ");
-            //}
+            //};
+            int additionalElements = listOfShorts.Count - length;
+            for (int i = 0; i < additionalElements; i++) {
+                listOfShorts.RemoveAt(length);
+            }
             Console.WriteLine(listOfShorts.Count);
             return listOfShorts.ToArray();
         }
@@ -186,21 +194,24 @@ namespace Stegosaurus {
             int i = 0, counter = 1;
             byte zeroes = 0;
             int category = 0;
-            bool EOB = false;
+            bool EOB, ZRL;
+            EOB = false;
             while (!EOB && counter < 64) {
                 code = 0;
+                i = 0;
                 bool valueNotFound = true;
+                ZRL = false;
                 while (i < 16 && valueNotFound) {
                     code += (ushort)(bitArr[arrPos++] ? 1 : 0);
                     i++;
-                    //EOB
-                    if (i > 1 && (code & 0xf) == 10) {
-                        EOB = true;
-                        break;
-                    }
                     foreach (var item in YACHuffman.Elements) {
                         if (i == item.Value.Length && code == item.Value.CodeWord) {
-                            zeroes = (byte)(item.Value.RunSize & 0xf0);
+                            if (item.Value.RunSize == 0xf0) {
+                                ZRL = true;
+                            } else if (item.Value.RunSize == 0) {
+                            EOB = true;
+                        }
+                        zeroes = (byte)((item.Value.RunSize & 0xf0) >> 4);
                             category = (item.Value.RunSize & 0x0f) + 1;
                             valueNotFound = false;
                             break;
@@ -209,9 +220,8 @@ namespace Stegosaurus {
                     code <<= 1;
                 }
                 counter += (zeroes + 1);
-                i = 0;
 
-                if (!EOB) {
+                if (!EOB && !ZRL) {
                     int length = category + (arrPos - 1);
                     code = 0;
                     for (; arrPos < length; arrPos++) {
@@ -252,21 +262,23 @@ namespace Stegosaurus {
             int i = 0, counter = 1;
             byte zeroes = 0;
             int category = 0;
-            bool EOB = false;
+            bool EOB, ZRL;
+            EOB = false;
             while (!EOB && counter < 64) {
                 bool valueNotFound = true;
+                ZRL = false;
                 code = 0;
                 while (i < 16 && valueNotFound) {
                     code += (ushort)(bitArr[arrPos++] ? 1 : 0);
                     i++;
-                    //EOB
-                    if (i > 1 && (code & 0xf) == 10) {
-                        EOB = true;
-                        break;
-                    }
                     foreach (var item in YACHuffman.Elements) {
                         if (i == item.Value.Length && code == item.Value.CodeWord) {
-                            zeroes = (byte)(item.Value.RunSize & 0xf0);
+                            if (item.Value.RunSize == 0xf0) {
+                                ZRL = true;
+                            } else if (item.Value.RunSize == 0) {
+                                EOB = true;
+                            }
+                            zeroes = (byte)((item.Value.RunSize & 0xf0) >> 4);
                             category = (item.Value.RunSize & 0x0f) + 1;
                             valueNotFound = false;
                             break;
@@ -276,8 +288,7 @@ namespace Stegosaurus {
                 }
                 counter += (zeroes + 1);
                 i = 0;
-
-                if (!EOB) {
+                if (!EOB && !ZRL) {
                     int length = category + (arrPos - 1);
                     code = 0;
                     for (; arrPos < length; arrPos++) {
@@ -305,18 +316,14 @@ namespace Stegosaurus {
         private int getMessageLength(List<short> listOfShorts, ref int modulo) {
             short[] shortArr = new short[8];
             int k = 0;
-            for (int i = 0, j = 1; i < 16; i+=2) {
-                shortArr[k++] = (short)(listOfShorts[i] + listOfShorts[j]);
-                j += 2;
-            }
-            modulo = shortArr[shortArr.Length - 1];
-
+            int length = shortArr.Length - 1;
+            modulo = shortArr[length];
             switch (modulo) {
                 case 0:
-                    modulo = 2;
+                    modulo = 4;
                     break;
                 case 1:
-                    modulo = 4;
+                    modulo = 8;
                     break;
                 case 2:
                     modulo = 16;
@@ -328,16 +335,27 @@ namespace Stegosaurus {
                     Console.WriteLine($"no such modulo. Modulo was {modulo}");
                     throw new Exception();
             }
+            int logM = (int)Math.Log(modulo, 2);
+            for (int i = 0, j = 1; i < 16; i+=2) {
+                shortArr[k++] = (short)((listOfShorts[i] + listOfShorts[j]).Mod(modulo));
+                j += 2;
+            }
+            length -= 1;
+            short lengthOfMessage = 0;
+            for (int i = 0; i < length; i++) {
+                lengthOfMessage += shortArr[i];
+                lengthOfMessage <<= logM;
+            }
+            lengthOfMessage += shortArr[length];
             foreach (var item in shortArr) {
                 Console.WriteLine(item);
             }
-            return 1;
+            Console.WriteLine($"length: {lengthOfMessage}");
+            Console.ReadKey();
+            return lengthOfMessage % 2 == 0 ? lengthOfMessage : lengthOfMessage + 1;
         }
 
-        private byte[] GetMessage(short[] scanData) {
-            // int m = scanData[0];
-            // m is the modulo operator saved somewhere in scanData
-            int m = 4;
+        private byte[] GetMessage(short[] scanData, int m) {
             List<byte> byteList = new List<byte>();
             int i;
             for (i = 1; i < scanData.Length; i++) {
