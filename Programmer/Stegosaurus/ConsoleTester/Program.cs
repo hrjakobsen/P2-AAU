@@ -9,7 +9,10 @@ namespace ConsoleTester {
         static void Main(string[] args) {
             IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100, 4);
 
-            ji.Encode("OMG JEG KAN ENCODE NOGET asdfkjasdlfkj asdklfja sdlfkjsæalk jdfælaskdjf æsaljkdf æaslkjdf lkjasdhfk jasfgd jhasfg djhaskgdf jhasgdfkj hafdI ET JPEG BILLEDEOMG JEG KAN ENCODE NOGET asdfkjasdlfkj asdklfja sdlfkjsæalk jdfælaskdjf æsaljkdf æaslkjdf lkjasdhfk jasfgd jhasfg djhaskgdf jhasgdfkj hafdI ET JPEG BILLEDEOMG JEG KAN ENCODE NOGET asdfkjasdlfkj asdklfja sdlfkjsæalk jdfælaskdjf æsaljkdf æaslkjdf lkjasdhfk jasfgd jhasfg djhaskgdf jhasgdfkj hafdI ET JPEG BILLEDEOMG JEG KAN ENCODE NOGET asdjasdlfkj asdklfja sdlfkjsæalk jdfælaskdjf æsaljkdf æaslkjdf lkjasdhfk jasfgd jhasfg djhaskgdf jhasgdfkj hafdI ET JPEG BILLEDEOMG JEG KAN ENCODE NOGET asdfkjasdlfkj asdklfja sdlfkjsæalk jdfælaskdjf æsaljkdf æaslkjdf lkjasdhfk jasfgd jhasfg djhaskgdf jhasgdfkj hafdI ET JPEG BILLEDEOMG JEG KAN ENCODE NOGET asdfkjasdlfkj asdklfja sdlfkjsæalk jdfælaskdjf æsaljkdf æaslkjdf lkjasdhfk jasfgd jhasfg djhaskgdf jhasgdfkj hafdI ET JPEG BILLEDEOMG JEG KAN ENCODE NOGET asdfkjasdlfkj asdklfja sdlfkjsæalk jdfælaskdjf æsaljkdf æaslkjdf lkjasdhfk jasfgd jhasfg djhaskgdf jhasgdfkj hafdI ET JPEG BILLEDEOMG JEG KAN ENCODE NOGET asdfkjasdlfkj asdklfja sdlfkjsæalk jdfælaskdjf æsaljkdf æaslkjdf lkjasdhfk ".Select(x => (byte)x).ToArray());
+            byte[] msg = "Hej med dig jeg hedder Henrik, dette er mit forsøg på at askrive 140 karaktererererererererer..... ahhhhh der skal flere til flere igen omg.".Select(x => (byte)x).ToArray();
+            Console.WriteLine(msg.Length);
+
+            ji.Encode(msg);
             ji.Save(@"output.jpg");
             
             //IImageDecoder jid = new Decoder("output.jpg");

@@ -365,7 +365,7 @@ namespace Stegosaurus {
 
             //Encode the secret message in the quantized blocks
             _encodeMessage();
-
+            ;
             //This is where the data is huffman encoded and saved to the file
             foreach (var quantizisedBlock in _quantizedBlocks) {
                 HuffmanEncode(bits, quantizisedBlock.Item1, quantizisedBlock.Item2, quantizisedBlock.Item3, quantizisedBlock.Item4);
@@ -406,13 +406,19 @@ namespace Stegosaurus {
             List<int> nonZeroValues = new List<int>();
 
             int len = _quantizedBlocks.Count * 64;
+            int valuesNeeded = _message.Count * 16 / (int)Math.Log(M, 2);
+
             for (int i = 0; i < len; i++) {
+                if (valuesNeeded <= 0) {
+                    break;
+                }
                 int array = i / 64;
                 int xpos = i % 8;
                 int ypos = (i % 64) / 8;
 
                 if (xpos + ypos != 0 && _quantizedBlocks[array].Item1[xpos, ypos] != 0) {
                     nonZeroValues.Add(_quantizedBlocks[array].Item1[xpos, ypos]);
+                    valuesNeeded--;
                 }
             }
 
@@ -429,7 +435,6 @@ namespace Stegosaurus {
             }
 
             //World's worst loops (O(n^2) shiet)
-
             //Find alle the possible switches between vertices and add them as edges
             foreach (Vertex currentVertex in graph.Vertices) {
                 foreach (Vertex otherVertex in graph.Vertices) {
@@ -439,22 +444,30 @@ namespace Stegosaurus {
                     if (((currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message ) &&
                         ((currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message)) {
                         Edge e = new Edge(currentVertex, otherVertex, true, true);
-                        graph.Edges.Add(e);
+                        if (e.Weight < 5) {
+                            graph.Edges.Add(e);
+                        }
                     }
                     if (((currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message ) &&
                         ((currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message)) {
                         Edge e = new Edge(currentVertex, otherVertex, true, false);
-                        graph.Edges.Add(e);
+                        if (e.Weight < 5) {
+                            graph.Edges.Add(e);
+                        }
                     }
                     if (((currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message ) &&
                         ((currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message )) {
                         Edge e = new Edge(currentVertex, otherVertex, false, false);
-                        graph.Edges.Add(e);
+                        if (e.Weight < 5) {
+                            graph.Edges.Add(e);
+                        }
                     }
                     if (((currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message ) &&
                         ((currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message )) {
                         Edge e = new Edge(currentVertex, otherVertex, false, true);
-                        graph.Edges.Add(e);
+                        if (e.Weight < 5) {
+                            graph.Edges.Add(e);
+                        }
                     }
                 }
             }
