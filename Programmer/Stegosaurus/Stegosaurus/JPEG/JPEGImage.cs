@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Stegosaurus {
     public class JpegImage : IImageEncoder{
         private JpegWriter _jw;
-        private int _m;
-        private List<byte> _message = new List<byte>();
+        private readonly List<byte> _message = new List<byte>();
         private readonly double[,] _cosines = new double[8, 8];
         private readonly int[] _lastDc = { 0, 0, 0 };
+        private int _m;
 
         public Bitmap CoverImage { get; }
 
@@ -157,14 +156,18 @@ namespace Stegosaurus {
             foreach (byte fileByte in fileBytes) {
                 fs.WriteByte(fileByte);
             }
+            fs.Close();
         }
 
         private void _breakDownMessage(byte[] message) {
             List<byte> messageList = message.ToList();
+
             //Encode the message length in the 14 first bits and the value of M into the 15th and 16th bits
-            
+            //The M value is encoded with a temporary M-value of 4
             ushort len = (ushort)(message.Length << 2);
             switch (M) {
+                case 2:
+                    break;
                 case 4:
                     len++;
                     break;
@@ -175,17 +178,30 @@ namespace Stegosaurus {
                     len += 3;
                     break;
             }
-            messageList.Insert(0, (byte)((len & 0xFF00) >> 8));
-            messageList.Insert(1, (byte)(len & 0xFF));
 
-            byte mask = (byte) (M - 1);
+            Console.WriteLine($"Actual Length: {Convert.ToString(len >> 2, 2)}");
 
-            foreach (byte b in messageList) {
+            List<byte> metaDataList = new List<byte> {
+                (byte) ((len & 0xFF00) >> 8),
+                (byte) (len & 0xFF)
+            };
+
+            
+
+            //Split the metadata
+            _splitMessageIntoSmallerComponents(metaDataList, 0x3, 2);
+
+            //Split the message itself
+            _splitMessageIntoSmallerComponents(messageList, (byte)(M - 1), (int)Math.Log(M, 2));
+        }
+
+        private void _splitMessageIntoSmallerComponents(List<byte> list, byte mask, int steps) {
+            foreach (byte b in list) {
                 //Each byte must be split into 8/log2(M) parts
-                for (int i = 0; i < 8/Math.Log(M, 2); i++) {
+                for (int i = 0; i < 8 / steps; i++) {
                     //Save log2(M) bits at a time
-                    byte toBeAdded = (byte)(b & (byte)(mask << (int)(i * Math.Log(M, 2))));
-                    _message.Add((byte)(toBeAdded >> (int)(i * Math.Log(M, 2))));
+                    byte toBeAdded = (byte)(b & (byte)(mask << i * steps));
+                    _message.Add((byte)(toBeAdded >> i * steps));
                 }
             }
         }
@@ -321,7 +337,7 @@ namespace Stegosaurus {
             return byteArray;
         }
 
-        List<Tuple<int[,], HuffmanTable, HuffmanTable, int>> _quantizedBlocks = new List<Tuple<int[,], HuffmanTable, HuffmanTable, int>>();
+        readonly List<Tuple<int[,], HuffmanTable, HuffmanTable, int>> _quantizedBlocks = new List<Tuple<int[,], HuffmanTable, HuffmanTable, int>>();
 
         private void _encodeMCU(BitList bits, double[][,] YCbCrChannels, int imageWidth, int imageHeight) {
             double[][,] channels = new double[3][,];
@@ -394,7 +410,6 @@ namespace Stegosaurus {
                 if (xpos + ypos != 0 && _quantizedBlocks[array].Item1[xpos, ypos] != 0) {
                     nonZeroValues.Add(_quantizedBlocks[array].Item1[xpos, ypos]);
                 }
-
             }
 
             Graph graph = new Graph();
@@ -443,6 +458,43 @@ namespace Stegosaurus {
 
             //Put the changed values back into the QuantizedValues
             _mergeGraphAndQuantizedValues(graph);
+
+            testOutput();
+        }
+
+        private void testOutput() {
+            List<int> validNumbers = new List<int>();
+            int len = _quantizedBlocks.Count * 64;
+            for (int i = 0; i < len; i++) {
+                int array = i / 64;
+                int xpos = i % 8;
+                int ypos = (i % 64) / 8;
+
+                if (xpos + ypos != 0 && _quantizedBlocks[array].Item1[xpos, ypos] != 0) {
+                    validNumbers.Add(_quantizedBlocks[array].Item1[xpos, ypos]);
+                }
+            }
+            ushort length = 0;
+            byte mvalue = 0;
+            for (int i = 0; i < 14; i += 2) {
+                int current = (validNumbers[i] + validNumbers[i + 1]).Mod(4);
+                length = (ushort)((length << 2) + current);
+            }
+            Console.WriteLine($"Length of message is: {Convert.ToString(length, 2)}");
+
+            switch ((validNumbers[14] + validNumbers[15]).Mod(4)) {
+                case 0:
+                    mvalue = 2;
+                    break;
+                case 1:
+                    mvalue = 4;
+                    break;
+                case 2:
+                    mvalue = 16;
+                    break;
+            }
+
+            Console.WriteLine($"The M-value for the rest is {mvalue}");
         }
 
         private void _refactorGraph(Graph graph) {
@@ -461,9 +513,9 @@ namespace Stegosaurus {
         private void _forceSampleChange(Vertex vertex) {
             int error = (vertex.SampleValue1 + vertex.SampleValue2).Mod(M) - vertex.Message;
 
-            if (vertex.SampleValue1 - error <= 127 && vertex.SampleValue1 - error >= -128) {
+            if (vertex.SampleValue1 - error <= 127 && vertex.SampleValue1 - error >= -128 && vertex.SampleValue1 - error != 0) {
                 vertex.SampleValue1 -= error;
-            } else if (vertex.SampleValue1 - error <= 127 && vertex.SampleValue1 - error >= -128) {
+            } else if (vertex.SampleValue2 - error <= 127 && vertex.SampleValue2 - error >= -128 && vertex.SampleValue2 - error != 0) {
                 vertex.SampleValue2 -= error;
             } else {
                 vertex.SampleValue1 += 4 - error;
@@ -667,7 +719,7 @@ namespace Stegosaurus {
             }
         }
 
-        private void ushortToBits(BitList bits, ushort number, byte length) {
+        private static void ushortToBits(BitList bits, ushort number, byte length) {
             for (int i = 0; i < length; i++) {
                 ushort dummy = 0x01;
                 dummy = (ushort)(dummy << (length - i - 1));
@@ -677,13 +729,13 @@ namespace Stegosaurus {
             }
         }
 
-        private byte _bitCost(short number) {
+        private static byte _bitCost(short number) {
             return (byte)Math.Ceiling(Math.Log(Math.Abs(number) + 1, 2));
         }
 
 
-        private ushort _numberEncoder(short number) {
-            return (number < 0) ? (ushort)(~Math.Abs(number)) : (ushort)Math.Abs(number);
+        private static ushort _numberEncoder(short number) {
+            return number < 0 ? (ushort)~Math.Abs(number) : (ushort)Math.Abs(number);
         }
         
 
