@@ -156,6 +156,7 @@ namespace Stegosaurus {
             foreach (byte fileByte in fileBytes) {
                 fs.WriteByte(fileByte);
             }
+            fs.Close();
         }
 
         private void _breakDownMessage(byte[] message) {

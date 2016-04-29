@@ -164,7 +164,7 @@ namespace Stegosaurus {
             for (int i = 0; i < additionalElements; i++) {
                 listOfShorts.RemoveAt(length);
             }
-            Console.WriteLine(listOfShorts.Count);
+            //Console.WriteLine(listOfShorts.Count);
             return listOfShorts.ToArray();
         }
 
@@ -183,10 +183,7 @@ namespace Stegosaurus {
                 }
                 code <<= 1;
             }
-            length += arrPos;
-            while (arrPos < length) {
-                arrPos++;
-            }
+            arrPos += length;
         }
 
         private void decodeYAC(ref List<short> listOfShorts, BitArray bitArr, ref int arrPos) {
@@ -251,10 +248,7 @@ namespace Stegosaurus {
                 code <<= 1;
             }
 
-            length += arrPos;
-            while (arrPos < length) {
-                arrPos++;
-            }
+            arrPos += length;
         }
 
         private void decodeChrAC(ref List<short> listOfShorts, BitArray bitArr, ref int arrPos) {
@@ -268,6 +262,7 @@ namespace Stegosaurus {
                 bool valueNotFound = true;
                 ZRL = false;
                 code = 0;
+                i = 0;
                 while (i < 16 && valueNotFound) {
                     code += (ushort)(bitArr[arrPos++] ? 1 : 0);
                     i++;
@@ -287,7 +282,6 @@ namespace Stegosaurus {
                     code <<= 1;
                 }
                 counter += (zeroes + 1);
-                i = 0;
                 if (!EOB && !ZRL) {
                     int length = category + (arrPos - 1);
                     code = 0;
@@ -314,10 +308,10 @@ namespace Stegosaurus {
         }
 
         private int getMessageLength(List<short> listOfShorts, ref int modulo) {
-            short[] shortArr = new short[8];
+            short[] shortArr = new short[7];
             int k = 0;
-            int length = shortArr.Length - 1;
-            modulo = shortArr[length];
+            int length = 7;
+            modulo = listOfShorts[14] + listOfShorts[15];
             switch (modulo) {
                 case 0:
                     modulo = 4;
@@ -336,41 +330,32 @@ namespace Stegosaurus {
                     throw new Exception();
             }
             int logM = (int)Math.Log(modulo, 2);
-            for (int i = 0, j = 1; i < 16; i+=2) {
+            for (int i = 0, j = 1; i < 14; i+=2) {
                 shortArr[k++] = (short)((listOfShorts[i] + listOfShorts[j]).Mod(modulo));
                 j += 2;
             }
+
             length -= 1;
             short lengthOfMessage = 0;
             for (int i = 0; i < length; i++) {
                 lengthOfMessage += shortArr[i];
                 lengthOfMessage <<= logM;
             }
-            lengthOfMessage += shortArr[length];
-            foreach (var item in shortArr) {
-                Console.WriteLine(item);
-            }
-            Console.WriteLine($"length: {lengthOfMessage}");
-            Console.ReadKey();
+            //lengthOfMessage += shortArr[length];
+            //foreach (var item in shortArr) {
+            //    Console.WriteLine(item);
+            //}
+            //Console.WriteLine($"length: {lengthOfMessage}");
+            //Console.ReadKey();
             return lengthOfMessage % 2 == 0 ? lengthOfMessage : lengthOfMessage + 1;
         }
 
         private byte[] GetMessage(short[] scanData, int m) {
             List<byte> byteList = new List<byte>();
             int i;
-            for (i = 1; i < scanData.Length; i++) {
-                byte temp = 0;
-                while (scanData.Length > 1 && scanData[i] == 0) {
-                    i++;
-                }
-                if (scanData.Length > i) {
-                  //  temp = scanData[i++];
-                }
-                while (scanData.Length > i && scanData[i] == 0) {
-                    i++;
-                }
+            for (i = 1; i < scanData.Length - 1; i+=2) {
                 if (i < scanData.Length) {
-                    byteList.Add((byte)((scanData[i] + temp).Mod(m)));
+                    byteList.Add((byte)((scanData[i] + scanData[i+1]).Mod(m)));
                 }
                 
             }
