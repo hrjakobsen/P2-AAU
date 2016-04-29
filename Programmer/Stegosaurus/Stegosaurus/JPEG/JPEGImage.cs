@@ -179,8 +179,6 @@ namespace Stegosaurus {
                     break;
             }
 
-            Console.WriteLine($"Actual Length: {Convert.ToString(len >> 2, 2)}");
-
             List<byte> metaDataList = new List<byte> {
                 (byte) (len >> 8),
                 (byte) (len & 0xFF)
@@ -198,7 +196,7 @@ namespace Stegosaurus {
         private void _splitMessageIntoSmallerComponents(List<byte> list, byte mask, int steps) {
             foreach (byte b in list) {
                 //Each byte must be split into 8/log2(M) parts
-                for (int i = 0; i < 8 / steps; i++) {
+                for (int i = (8 / steps) - 1; i >= 0; i--) {
                     //Save log2(M) bits at a time
                     byte toBeAdded = (byte)(b & (byte)(mask << (i * steps)));
                     toBeAdded >>= i * steps;
@@ -485,7 +483,7 @@ namespace Stegosaurus {
                 int current = (validNumbers[i] + validNumbers[i + 1]).Mod(4);
                 length = (ushort)((length << 2) + current);
             }
-            Console.WriteLine($"Length of message is: {Convert.ToString(length, 2)}");
+
 
             switch ((validNumbers[14] + validNumbers[15]).Mod(4)) {
                 case 0:
@@ -499,7 +497,28 @@ namespace Stegosaurus {
                     break;
             }
 
-            Console.WriteLine($"The M-value for the rest is {mvalue}");
+            int elementsToRead = (int)(length * (8 / Math.Log(mvalue, 2))) * 2;
+
+            List<byte> messageParts = new List<byte>();
+
+            for (int i = 16; i <= elementsToRead + 16; i += 2) {
+                messageParts.Add((byte)(validNumbers[i] + validNumbers[i + 1]).Mod(mvalue));
+            }
+
+            List<byte> message = new List<byte>();
+            int steps = (int)(8 / Math.Log(mvalue, 2));
+            for (int i = 0; i < messageParts.Count - steps; i += steps) {
+                byte toAdd = 0;
+                for (int j = 0; j < steps; j++) {
+                    toAdd <<= (int)(Math.Log(mvalue, 2));
+                    toAdd += messageParts[i + j];
+                    ;
+                }
+                message.Add(toAdd);
+            }
+
+            string s = new string(message.Select(x => (char)x).ToArray());
+            Console.WriteLine(s);
         }
 
         private void _refactorGraph(Graph graph) {
@@ -529,8 +548,7 @@ namespace Stegosaurus {
             if (vertex.SampleValue1 == 0 || vertex.SampleValue2 == 0) {
                 Console.WriteLine("We done fucked up");
             }
-
-            Console.WriteLine((vertex.SampleValue1 + vertex.SampleValue2).Mod(M) == vertex.Message);
+            
         }
 
         private void _swapVertexData(Edge e) {

@@ -7,12 +7,12 @@ using System.Linq;
 namespace ConsoleTester {
     class Program {
         static void Main(string[] args) {
-            IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100, 4);
+            IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100, 2);
             //IImageEncoder ji = new JpegImage(new Bitmap(@"loladele.jpg"), 100, 4);
 
-            ji.Encode(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 21, 54, 12, 56, 12, 12, 12, 12, 45, 76, 23, 54 });
+            ji.Encode("OMG JEG KAN ENCODE NOGET I ET JPEG BILLEDE".Select(x => (byte)x).ToArray());
             /*22 = 1011001*/
-            // ji.Save(@"output.jpg");
+            ji.Save(@"output.jpg");
             //  Console.ReadKey();
             //IImageDecoder jid = new Decoder("output.jpg");
             //jid.Decode();
