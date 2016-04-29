@@ -9,15 +9,24 @@ namespace ConsoleTester {
         static void Main(string[] args) {
             IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100, 4);
             //IImageEncoder ji = new JpegImage(new Bitmap(@"loladele.jpg"), 100, 4);
-        
-            ji.Encode(new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 21, 54, 12, 56, 12, 12, 12, 12, 45, 76, 23, 54});
+
+            ji.Encode(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 21, 54, 12, 56, 12, 12, 12, 12, 45, 76, 23, 54 });
             /*22 = 1011001*/
-           // ji.Save(@"output.jpg");
-          //  Console.ReadKey();
+            // ji.Save(@"output.jpg");
+            //  Console.ReadKey();
             //IImageDecoder jid = new Decoder("output.jpg");
             //jid.Decode();
             Console.ReadKey();
-            /*
+            
+            
+            //ji.Encode(new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 21, 54, 12, 56, 12, 12, 12, 12, 45, 76, 23, 54});
+            //ji.Save(@"output.jpg");
+
+            debugGraph();
+        
+        
+        }
+        private static void debugGraph() {
                 Graph g = new Graph();
                 List<Vertex> samples = new List<Vertex> {
                     new Vertex(48, 50, 2),
@@ -93,9 +102,8 @@ namespace ConsoleTester {
                     a++;
                     Console.WriteLine($"Pair {a}: ({sample.SampleValue1};{sample.SampleValue2}) with message {sample.Message}. Does it fit? {(sample.SampleValue1 + sample.SampleValue2).Mod(4) == sample.Message}");
                 }
-
-                Console.ReadKey();
             }
+
 
             private static void _forceSampleChange(Vertex vertex) {
                 int M = 4;
@@ -110,34 +118,29 @@ namespace ConsoleTester {
                 }
             }
 
-            private static void swap(Edge e) {
-
-                int temp;
-                if (e.vStartFirst) {
-                    if (e.vEndFirst) {
-                        temp = e.VStart.SampleValue1;
-                        e.VStart.SampleValue1 = e.VEnd.SampleValue1;
-                        e.VEnd.SampleValue1 = temp;
-                    } else {
-                        temp = e.VStart.SampleValue1;
-                        e.VStart.SampleValue1 = e.VEnd.SampleValue2;
-                        e.VEnd.SampleValue2 = temp;
-                    }
+        private static void swap(Edge e) {
+            int temp;
+            if (e.vStartFirst) {
+                if (e.vEndFirst) {
+                    temp = e.VStart.SampleValue1;
+                    e.VStart.SampleValue1 = e.VEnd.SampleValue1;
+                    e.VEnd.SampleValue1 = temp;
                 } else {
-                    if (e.vEndFirst) {
-                        temp = e.VStart.SampleValue2;
-                        e.VStart.SampleValue2 = e.VEnd.SampleValue1;
-                        e.VEnd.SampleValue1 = temp;
-                    } else {
-                        temp = e.VStart.SampleValue2;
-                        e.VStart.SampleValue2 = e.VEnd.SampleValue2;
-                        e.VEnd.SampleValue2 = temp;
-                    }
+                    temp = e.VStart.SampleValue1;
+                    e.VStart.SampleValue1 = e.VEnd.SampleValue2;
+                    e.VEnd.SampleValue2 = temp;
                 }
-            
-            */
+            } else {
+                if (e.vEndFirst) {
+                    temp = e.VStart.SampleValue2;
+                    e.VStart.SampleValue2 = e.VEnd.SampleValue1;
+                    e.VEnd.SampleValue1 = temp;
+                } else {
+                    temp = e.VStart.SampleValue2;
+                    e.VStart.SampleValue2 = e.VEnd.SampleValue2;
+                    e.VEnd.SampleValue2 = temp;
+                }
             }
-
+        }
     }
 }
-
