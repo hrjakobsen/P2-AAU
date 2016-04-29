@@ -135,7 +135,7 @@ namespace Stegosaurus {
         /// </summary>
         public void Encode(byte[] message) {
             if (message.Length > 16884) {
-                throw new ArgumentException("Message cannot be longer 16884 bytes!");
+                throw new ArgumentException("Message cannot be longer than 16884 bytes!");
             }
             _breakDownMessage(message);    
 
@@ -184,7 +184,9 @@ namespace Stegosaurus {
                 (byte) (len & 0xFF)
             };
 
-            
+            foreach (var b in metaDataList) {
+                Console.WriteLine(Convert.ToString(b, 2));
+            }
 
             //Split the metadata
             _splitMessageIntoSmallerComponents(metaDataList, 0x3, 2);
@@ -338,9 +340,10 @@ namespace Stegosaurus {
             return byteArray;
         }
 
-        readonly List<Tuple<int[,], HuffmanTable, HuffmanTable, int>> _quantizedBlocks = new List<Tuple<int[,], HuffmanTable, HuffmanTable, int>>();
+        private List<Tuple<int[,], HuffmanTable, HuffmanTable, int>> _quantizedBlocks;
 
         private void _encodeMCU(BitList bits, double[][,] YCbCrChannels, int imageWidth, int imageHeight) {
+            _quantizedBlocks = new List<Tuple<int[,], HuffmanTable, HuffmanTable, int>>();
             double[][,] channels = new double[3][,];
 
             for (int i = 0; i < 3; i++) {
@@ -773,7 +776,50 @@ namespace Stegosaurus {
         
 
         public int GetCapacity() {
-            throw new NotImplementedException();
+            Bitmap paddedCoverImage = _padCoverImage();
+            double[][,] channelValues = _splitToChannels(paddedCoverImage);
+            BitList bits = new BitList();
+            int imageHeight = paddedCoverImage.Height;
+            int imageWidth = paddedCoverImage.Width;
+            
+            _quantizedBlocks = new List<Tuple<int[,], HuffmanTable, HuffmanTable, int>>();
+            double[][,] channels = new double[3][,];
+
+            for (int i = 0; i < 3; i++) {
+                channels[i] = new double[16, 16];
+            }
+
+            for (int MCUY = 0; MCUY < imageHeight; MCUY += 16) {
+                for (int MCUX = 0; MCUX < imageWidth; MCUX += 16) {
+                    for (int i = 0; i < 3; i++) {
+                        for (int x = 0; x < 16; x++) {
+                            for (int y = 0; y < 16; y++) {
+                                channels[i][x, y] = channelValues[i][MCUX + x, MCUY + y];
+                            }
+                        }
+                    }
+                    _encodeBlocks(bits, channels);
+                }
+            }
+
+            int len = _quantizedBlocks.Count * 64;
+            int nonZeroValues = 0;
+
+            for (int i = 0; i < len; i++) {
+                int array = i / 64;
+                int xpos = i % 8;
+                int ypos = (i % 64) / 8;
+
+                if (xpos + ypos != 0 && _quantizedBlocks[array].Item1[xpos, ypos] != 0) {
+                    nonZeroValues++;
+                }
+            }
+
+            //The amount of bytes can be calculated as follows:
+            //Pairs available = nonZeroValues / 2
+            //Bits per pair = Pairs / Math.Log(M, 2)
+            //Total bytes available = bits per pair / 8
+            return (nonZeroValues / 2 / (int)Math.Log(M, 2)) / 8;
         }
     }
 }
