@@ -66,7 +66,7 @@ namespace Stegosaurus {
             byte a;
             /* length of the huffman table also contains the length of the elements, as well as the length itself
                subtracting the offset from the length, ensures we only read all the huffman elements, and not from outside the huffmantable */
-            int offset = 19;
+            int offset = 19; //Where the fuck does 19 come from?? 16 (counter for each bitlength) + 2 (length bytes) + 1 (class byte)?
             while (!foundMarker) {
                 a = file.ReadByte();
                 if(a == 0xff) {
@@ -307,7 +307,7 @@ namespace Stegosaurus {
             if (value >> (category - 1) == 1) {
                 valueToReturn = (short)value;
             } else {
-                valueToReturn = (short)(value - (Math.Pow(2, category)) + 1);
+                valueToReturn = (short)(value - (Math.Pow(2, category)) + 1); //what?
             }
             return valueToReturn;
         }

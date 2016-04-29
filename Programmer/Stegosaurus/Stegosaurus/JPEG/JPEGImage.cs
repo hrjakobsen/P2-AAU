@@ -368,7 +368,6 @@ namespace Stegosaurus {
         private void _encodeBlocksSubMethod(BitList bits, double[,] blocks, HuffmanTable DC, HuffmanTable AC, int index, QuantizationTable table) {
             blocks = _discreteCosineTransform(blocks);
             int[,] quantiziedBlock = _quantization(blocks, table);
-            HuffmanEncode(bits, quantiziedBlock, DC, AC, index);
             _quantizedBlocks.Add(new Tuple<int[,], HuffmanTable, HuffmanTable, int>(quantiziedBlock, DC, AC, index));
         }
 
@@ -412,7 +411,10 @@ namespace Stegosaurus {
 
             //Find alle the possible switches between vertices and add them as edges
             foreach (Vertex currentVertex in graph.Vertices) {
-                foreach (Vertex otherVertex in graph.Vertices.Where(otherVertex => currentVertex != otherVertex)) {
+                foreach (Vertex otherVertex in graph.Vertices) {
+                    if (currentVertex == otherVertex) {
+                        continue;
+                    }
                     if (((currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message ) &&
                         ((currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message)) {
                         Edge e = new Edge(currentVertex, otherVertex, true, true);
