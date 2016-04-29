@@ -38,12 +38,6 @@ namespace Stegosaurus.Tests
         [Test()]
         public void AddTest()
         {
-            int val = 1;
-            BitList testList = new BitList();
-            testList.Add(val);
-
-            Assert.AreEqual(testList[0],true);
-
             Assert.Fail();
         }
 

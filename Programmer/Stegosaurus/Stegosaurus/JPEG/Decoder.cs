@@ -43,7 +43,7 @@ namespace Stegosaurus {
                         ChrDCHuffman = temp;
                     }
                 } else if ((byte)(ClassAndID & 0x0f) == 0) {
-                    YACHuffman = temp;
+                    YACHuffman = temp; 
                 } else {
                     ChrACHuffman = temp;
                 }
@@ -56,8 +56,8 @@ namespace Stegosaurus {
         /// <param name="path"></param>
         public byte[] Decode() {
             BitArray bitArr = findScanData(file);
-            byte[] byteArr = decodeHuffmanValues(bitArr);
-            return byteArr;//GetMessage(byteArr);
+            short[] byteArr = decodeHuffmanValues(bitArr);
+            return GetMessage(byteArr);
         }
 
         private HuffmanTable getHuffmanTable(BinaryReader file, ref byte ClassAndID) {
@@ -83,19 +83,19 @@ namespace Stegosaurus {
             for (int i = 0; i < 16; i++) {
                 byteArr[i] = file.ReadByte();
             }
-
+            
             /* creates the huffman table from the file */
             length = length - offset;
-            int elementsOfLengthLeft, currentLength = 0;
+            byte elementsOfLengthLeft, currentLength = 0;
             ushort code = 0;
             elementsOfLengthLeft = byteArr[currentLength];
             for (int i = 0; i < length; i++) {
-                while(elementsOfLengthLeft <= 0 && currentLength != 16) {
+                while(elementsOfLengthLeft <= 0 && currentLength != 15) {
                     currentLength++;
                     code <<= 1;
                     elementsOfLengthLeft = byteArr[currentLength];
                 }
-                huffmanElements.Add(new HuffmanElement(file.ReadByte(), code, byteArr[currentLength]));
+                huffmanElements.Add(new HuffmanElement(file.ReadByte(), code, (byte)(currentLength+1)));
                 elementsOfLengthLeft--;
                 code++;                
             }
@@ -134,123 +134,206 @@ namespace Stegosaurus {
             return bitArr;
         }
 
-        private byte[] decodeHuffmanValues(BitArray bitArr) {
-            int counter, arrPos = 0;
-            List<byte> listOfBytes = new List<byte>();
+        private short[] decodeHuffmanValues(BitArray bitArr) {
+            int counter = 64, arrPos = 0;
+            List<short> listOfShorts = new List<short>();
             while (bitArr.Count > arrPos && arrPos + 64 <= bitArr.Count) {
                 counter = 64;
-                decodeYDC(ref listOfBytes, bitArr, ref arrPos, ref counter);
-                decodeYAC(ref listOfBytes, bitArr, ref arrPos, ref counter);
-                decodeChrDC(ref listOfBytes, bitArr, ref arrPos, ref counter);
-                decodeChrAC(ref listOfBytes, bitArr, ref arrPos, ref counter);
+                decodeYDC(bitArr, ref arrPos, ref counter);
+                decodeYAC(ref listOfShorts, bitArr, ref arrPos, ref counter);
+                decodeChrDC(bitArr, ref arrPos, ref counter);
+                decodeChrAC(ref listOfShorts, bitArr, ref arrPos, ref counter);
                 if (counter > 0) {
                     arrPos += counter;
                 }
             }
-            foreach (var item in listOfBytes) {
-                Console.Write(item + " ");
+            Console.WriteLine(counter);
+            foreach (var item in listOfShorts) {
+                Console.Write($"{item} ");
             }
-            return listOfBytes.ToArray();
+            return listOfShorts.ToArray();
         }
 
-        private void decodeYDC(ref List<byte> listOfBytes, BitArray bitArr, ref int arrPos, ref int counter) {
+        private void decodeYDC(BitArray bitArr, ref int arrPos, ref int counter) {
             ushort code = 0;
             int i = 0;
+            int length = 0;
             while (i < 16) {
                 code += (ushort)(bitArr[arrPos++] ? 1 : 0);
                 i++;
                 counter--;
-                if (i > 1 && (code & 0x03) == 0) {
-                    break;
-                }
                 foreach (var item in YDCHuffman.Elements) {
                     if (i == item.Value.Length && code == item.Value.CodeWord) {
-                        listOfBytes.Add(item.Value.RunSize);
+                        length = item.Value.RunSize;
+                        break;
                     }
                 }
                 code <<= 1;
             }
+            length += arrPos;
+            while (arrPos < length) {
+                arrPos++;
+            }
         }
 
-        private void decodeYAC(ref List<byte> listOfBytes, BitArray bitArr, ref int arrPos, ref int counter) {
+        private void decodeYAC(ref List<short> listOfShorts, BitArray bitArr, ref int arrPos, ref int counter) {
             ushort code = 0;
             int i = 0;
+            byte zeroes = 0;
+            int category = 0;
+            bool EOB = false;
             while (i < 16) {
                 code += (ushort)(bitArr[arrPos++] ? 1 : 0);
                 i++;
                 counter--;
-                if(i > 1 && (code & 0x03) == 0) {
+                //EOB
+                if (i > 1 && (code & 0xf) == 10) {
+                    EOB = true;
                     break;
                 }
                 foreach (var item in YACHuffman.Elements) {
                     if (i == item.Value.Length && code == item.Value.CodeWord) {
-                        listOfBytes.Add(item.Value.RunSize);
+                        zeroes = (byte)(item.Value.RunSize & 0xf0);
+                        category = (item.Value.RunSize & 0x0f) + 1;
+                        break;
                     }
                 }
                 code <<= 1;
             }
+            if (!EOB) {
+                while (zeroes > 0) {
+                    zeroes--;
+                    arrPos++;
+                    counter--;
+                }
+
+                int length = category + (arrPos - 1);
+                code = 0;
+                for (; arrPos < length; arrPos++) {
+                    code += (ushort)(bitArr[arrPos] ? 1 : 0);
+                    code <<= 1;
+                    counter--;
+                }
+                code += (ushort)(bitArr[arrPos++] ? 1 : 0);
+                counter--;
+
+                short value = lookupValue(code, category);
+
+                if (value != 0) {
+                    listOfShorts.Add(value);
+                }
+            }
         }
 
-        private void decodeChrDC(ref List<byte> listOfBytes, BitArray bitArr, ref int arrPos, ref int counter) {
+        private void decodeChrDC(BitArray bitArr, ref int arrPos, ref int counter) {
             ushort code = 0;
             int i = 0;
+            int length = 0;
             while (i < 16) {
                 code += (ushort)(bitArr[arrPos++] ? 1 : 0);
                 i++;
                 counter--;
-                if (i > 1 && (code & 0x03) == 0) {
-                    break;
-                }
                 foreach (var item in ChrDCHuffman.Elements) {
                     if (i == item.Value.Length && code == item.Value.CodeWord) {
-                        listOfBytes.Add(item.Value.RunSize);
+                        length = item.Value.RunSize;
+                        break;
                     }
                 }
                 code <<= 1;
             }
+
+            length += arrPos;
+            while (arrPos < length) {
+                arrPos++;
+            }
         }
 
-        private void decodeChrAC(ref List<byte> listOfBytes, BitArray bitArr, ref int arrPos, ref int counter) {
+        private void decodeChrAC(ref List<short> listOfShorts, BitArray bitArr, ref int arrPos, ref int counter) {
             ushort code = 0;
             int i = 0;
+            int category = 0;
+            byte zeroes = 0;
+            bool EOB = false;
             while (i < 16) {
+                if (bitArr.Count <= arrPos) {
+                    EOB = true;
+                    break;
+                }
                 code += (ushort)(bitArr[arrPos++] ? 1 : 0);
                 i++;
                 counter--;
-                if (i > 1 && (code & 0x03) == 0) {
+                //EOB
+                if (i > 1 && (code & 0x3) == 0) {
+                    EOB = true;
                     break;
                 }
                 foreach (var item in ChrACHuffman.Elements) {
                     if (i == item.Value.Length && code == item.Value.CodeWord) {
-                        listOfBytes.Add(item.Value.RunSize);
-                        code = 0;
-                        i = 0;
+                        zeroes = (byte)(item.Value.RunSize & 0xf0);
+                        category = (item.Value.RunSize & 0x0f) + 1;
+                        break;
                     }
                 }
                 code <<= 1;
-                if (counter == 0) {
-                    break;
+            }
+            if (!EOB) {
+                while (zeroes > 0) {
+                    arrPos++;
+                    counter--;
+                    zeroes--;
+                }
+
+                int length = category + (arrPos - 1);
+                code = 0;
+                for (; arrPos < length; arrPos++) {
+                    code += (ushort)(bitArr[arrPos] ? 1 : 0);
+                    code <<= 1;
+                    counter--;
+                }
+                code += (ushort)(bitArr[arrPos++] ? 1 : 0);
+                counter--;
+
+                short value = lookupValue(code, category);
+
+                if (value != 0) {
+                    listOfShorts.Add(value);
                 }
             }
         }
-    
-        private byte[] GetMessage(byte[] scanData) {
+        
+        private short lookupValue(ushort value, int category) {
+            //  Console.WriteLine($"{value}, {category}");
+            short valueToReturn = 0;
+            if (value >> (category - 1) == 1) {
+                valueToReturn = (short)value;
+            } else {
+                valueToReturn = (short)(value - (Math.Pow(2, category)) + 1);
+            }
+            return valueToReturn;
+        }
+
+        private byte[] GetMessage(short[] scanData) {
             // int m = scanData[0];
             // m is the modulo operator saved somewhere in scanData
             int m = 4;
             List<byte> byteList = new List<byte>();
             int i;
             for (i = 1; i < scanData.Length; i++) {
-                while (scanData[i] == 0) {
+                byte temp = 0;
+                while (scanData.Length > 1 && scanData[i] == 0) {
                     i++;
                 }
-                byte temp = scanData[i++];
-                while (scanData[i] == 0) {
+                if (scanData.Length > i) {
+                  //  temp = scanData[i++];
+                }
+                while (scanData.Length > i && scanData[i] == 0) {
                     i++;
                 }
-                byteList.Add((byte)((scanData[i] + temp) % m));
+                if (i < scanData.Length) {
+                    byteList.Add((byte)((scanData[i] + temp).Mod(m)));
+                }
+                
             }
-
             int iterations = (int)(8 / Math.Log(m, 2));
             int logM = (int)Math.Log(m, 2);
             List<byte> message = new List<byte>();
