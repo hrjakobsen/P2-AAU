@@ -43,7 +43,7 @@ namespace Stegosaurus {
                         ChrDCHuffman = temp;
                     }
                 } else if ((byte)(ClassAndID & 0x0f) == 0) {
-                    YACHuffman = temp;
+                    YACHuffman = temp; 
                 } else {
                     ChrACHuffman = temp;
                 }

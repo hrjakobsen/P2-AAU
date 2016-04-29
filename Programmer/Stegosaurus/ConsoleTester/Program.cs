@@ -8,15 +8,21 @@ namespace ConsoleTester {
     class Program {
         static void Main(string[] args) {
             IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100, 4);
-            //Console.WriteLine(ji.GetCapacity());
-            ji.Encode(new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 21, 54, 12, 56, 12, 12, 12, 12, 45, 76, 23, 54});
-            //ji.Save(@"output.jpg");
+            //IImageEncoder ji = new JpegImage(new Bitmap(@"loladele.jpg"), 100, 4);
 
-            //debugGraph();
-
+            ji.Encode(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 21, 54, 12, 56, 12, 12, 12, 12, 45, 76, 23, 54 });
+            /*22 = 1011001*/
+            // ji.Save(@"output.jpg");
+            //  Console.ReadKey();
             //IImageDecoder jid = new Decoder("output.jpg");
             //jid.Decode();
             Console.ReadKey();
+            
+            
+            //ji.Encode(new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 21, 54, 12, 56, 12, 12, 12, 12, 45, 76, 23, 54});
+            //ji.Save(@"output.jpg");
+
+            debugGraph();
         }
 
         private static void debugGraph() {
@@ -111,29 +117,29 @@ namespace ConsoleTester {
                 }
             }
 
-            private static void swap(Edge e) {
-                int temp;
-                if (e.vStartFirst) {
-                    if (e.vEndFirst) {
-                        temp = e.VStart.SampleValue1;
-                        e.VStart.SampleValue1 = e.VEnd.SampleValue1;
-                        e.VEnd.SampleValue1 = temp;
-                    } else {
-                        temp = e.VStart.SampleValue1;
-                        e.VStart.SampleValue1 = e.VEnd.SampleValue2;
-                        e.VEnd.SampleValue2 = temp;
-                    }
+        private static void swap(Edge e) {
+            int temp;
+            if (e.vStartFirst) {
+                if (e.vEndFirst) {
+                    temp = e.VStart.SampleValue1;
+                    e.VStart.SampleValue1 = e.VEnd.SampleValue1;
+                    e.VEnd.SampleValue1 = temp;
                 } else {
-                    if (e.vEndFirst) {
-                        temp = e.VStart.SampleValue2;
-                        e.VStart.SampleValue2 = e.VEnd.SampleValue1;
-                        e.VEnd.SampleValue1 = temp;
-                    } else {
-                        temp = e.VStart.SampleValue2;
-                        e.VStart.SampleValue2 = e.VEnd.SampleValue2;
-                        e.VEnd.SampleValue2 = temp;
-                    }
+                    temp = e.VStart.SampleValue1;
+                    e.VStart.SampleValue1 = e.VEnd.SampleValue2;
+                    e.VEnd.SampleValue2 = temp;
+                }
+            } else {
+                if (e.vEndFirst) {
+                    temp = e.VStart.SampleValue2;
+                    e.VStart.SampleValue2 = e.VEnd.SampleValue1;
+                    e.VEnd.SampleValue1 = temp;
+                } else {
+                    temp = e.VStart.SampleValue2;
+                    e.VStart.SampleValue2 = e.VEnd.SampleValue2;
+                    e.VEnd.SampleValue2 = temp;
                 }
             }
+        }
     }
 }

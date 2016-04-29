@@ -182,7 +182,7 @@ namespace Stegosaurus {
             Console.WriteLine($"Actual Length: {Convert.ToString(len >> 2, 2)}");
 
             List<byte> metaDataList = new List<byte> {
-                (byte) ((len & 0xFF00) >> 8),
+                (byte) (len >> 8),
                 (byte) (len & 0xFF)
             };
 
@@ -198,8 +198,9 @@ namespace Stegosaurus {
                 //Each byte must be split into 8/log2(M) parts
                 for (int i = 0; i < 8 / steps; i++) {
                     //Save log2(M) bits at a time
-                    byte toBeAdded = (byte)(b & (byte)(mask << i * steps));
-                    _message.Add((byte)(toBeAdded >> i * steps));
+                    byte toBeAdded = (byte)(b & (byte)(mask << (i * steps)));
+                    toBeAdded >>= i * steps;
+                    _message.Add(toBeAdded);
                 }
             }
         }
@@ -314,6 +315,8 @@ namespace Stegosaurus {
             _encodeMCU(bits, channelValues, paddedCoverImage.Width, paddedCoverImage.Height);
             _jw.WriteBytes(_flush(bits));
         }
+        
+       
 
         private byte[] _flush(BitList bits) {
             while (bits.Count % 8 != 0) {
@@ -418,7 +421,9 @@ namespace Stegosaurus {
                 if (_message.Count != 0) {
                     graph.Vertices.Add(new Vertex(nonZeroValues[i], nonZeroValues[i + 1], _message[0]));
                     _message.RemoveAt(0);
-                } 
+                } else {
+                    break;
+                }
             }
 
             //World's worst loops (O(n^2) shiet)
@@ -519,6 +524,12 @@ namespace Stegosaurus {
             } else {
                 vertex.SampleValue1 += 4 - error;
             }
+
+            if (vertex.SampleValue1 == 0 || vertex.SampleValue2 == 0) {
+                Console.WriteLine("We done fucked up");
+            }
+
+            Console.WriteLine((vertex.SampleValue1 + vertex.SampleValue2).Mod(M) == vertex.Message);
         }
 
         private void _swapVertexData(Edge e) {
@@ -548,9 +559,13 @@ namespace Stegosaurus {
 
         private void _mergeGraphAndQuantizedValues(Graph graph) {
             int vertexPos = 0;
-            int len = graph.Vertices.Count;
+            int len = _quantizedBlocks.Count * 64;
             bool firstValue = true;
+            int numberOfVertices = graph.Vertices.Count;
             for (int i = 0; i < len ; i++) {
+                if (vertexPos >= numberOfVertices) {
+                    break;
+                }
                 int array = i / 64;
                 int xpos = i % 8;
                 int ypos = (i % 64) / 8;
