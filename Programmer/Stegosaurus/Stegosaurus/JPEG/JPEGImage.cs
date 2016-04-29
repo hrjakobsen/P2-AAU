@@ -186,6 +186,10 @@ namespace Stegosaurus {
                 (byte) (len & 0xFF)
             };
 
+            foreach (var b in metaDataList) {
+                Console.WriteLine(Convert.ToString(b, 2));
+            }
+
             //Split the metadata
             _splitMessageIntoSmallerComponents(metaDataList, 0x3, 2);
 
