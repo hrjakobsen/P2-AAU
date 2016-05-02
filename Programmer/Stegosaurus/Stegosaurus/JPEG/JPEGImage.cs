@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace Stegosaurus {
     public class JpegImage : IImageEncoder{
         private JpegWriter _jw;
         private readonly List<byte> _message = new List<byte>();
-        private readonly double[,] _cosines = new double[8, 8];
+        private readonly double[,] _cosineCoefficients = new double[8, 8];
         private readonly int[] _lastDc = { 0, 0, 0 };
         private int _m;
+        private List<Tuple<int[,], HuffmanTable, HuffmanTable, int>> _quantizedBlocks = new List<Tuple<int[,], HuffmanTable, HuffmanTable, int>>();
+        private List<int> _nonZeroValues;
 
         public Bitmap CoverImage { get; }
 
@@ -125,7 +128,7 @@ namespace Stegosaurus {
         private void _calculateCosineCoefficients() {
             for (int j = 0; j < 8; j++) {
                 for (int i = 0; i < 8; i++) {
-                    _cosines[j, i] = Math.Cos((2 * j + 1) * i * Math.PI / 16);
+                    _cosineCoefficients[j, i] = Math.Cos((2 * j + 1) * i * Math.PI / 16);
                 }
             }
         }
@@ -340,18 +343,30 @@ namespace Stegosaurus {
             return byteArray;
         }
 
-        private List<Tuple<int[,], HuffmanTable, HuffmanTable, int>> _quantizedBlocks;
-
         private void _encodeMCU(BitList bits, double[][,] YCbCrChannels, int imageWidth, int imageHeight) {
-            _quantizedBlocks = new List<Tuple<int[,], HuffmanTable, HuffmanTable, int>>();
-            double[][,] channels = new double[3][,];
+            if (_quantizedBlocks.Count == 0) {
+                _quantizeValues(YCbCrChannels, imageWidth, imageHeight);
+            }
 
+            //Encode the secret message in the quantized blocks
+            _encodeMessage();
+            
+            //This is where the data is huffman encoded and saved to the file
+            foreach (var quantizisedBlock in _quantizedBlocks) {
+                HuffmanEncode(bits, quantizisedBlock.Item1, quantizisedBlock.Item2, quantizisedBlock.Item3, quantizisedBlock.Item4);
+            }
+        }
+
+        private void _quantizeValues(double[][,] YCbCrChannels, int imageWidth, int imageHeight) {
+            _quantizedBlocks = new List<Tuple<int[,], HuffmanTable, HuffmanTable, int>>();
+
+            double[][,] channels = new double[3][,];
             for (int i = 0; i < 3; i++) {
-                channels[i] = new double[16,16];
+                channels[i] = new double[16, 16];
             }
 
             for (int MCUY = 0; MCUY < imageHeight; MCUY += 16) {
-                for (int MCUX = 0; MCUX < imageWidth; MCUX += 16) { 
+                for (int MCUX = 0; MCUX < imageWidth; MCUX += 16) {
                     for (int i = 0; i < 3; i++) {
                         for (int x = 0; x < 16; x++) {
                             for (int y = 0; y < 16; y++) {
@@ -359,36 +374,42 @@ namespace Stegosaurus {
                             }
                         }
                     }
-                    _encodeBlocks(bits, channels);
+                    _encodeBlocks(channels);
                 }
             }
 
-            //Encode the secret message in the quantized blocks
-            _encodeMessage();
-            ;
-            //This is where the data is huffman encoded and saved to the file
-            foreach (var quantizisedBlock in _quantizedBlocks) {
-                HuffmanEncode(bits, quantizisedBlock.Item1, quantizisedBlock.Item2, quantizisedBlock.Item3, quantizisedBlock.Item4);
+            _nonZeroValues = new List<int>();
+            int len = _quantizedBlocks.Count * 64;
+            for (int i = 0; i < len; i++) {
+                int array = i / 64;
+                int xpos = i % 8;
+                int ypos = (i % 64) / 8;
+
+                if (xpos + ypos != 0 && _quantizedBlocks[array].Item1[xpos, ypos] != 0) {
+                    _nonZeroValues.Add(_quantizedBlocks[array].Item1[xpos, ypos]);
+                }
             }
         }
 
-        private void _encodeBlocks(BitList bits, double[][,] MCU) {
+        private void _encodeBlocks(double[][,] MCU) {
             for (int i = 0; i < 4; i++) {
                 double[,] YBlock = _block16ToBlock8(MCU[0], i);
-                _encodeBlocksSubMethod(bits, YBlock, YDCHuffman, YACHuffman, 0, YQuantizationTable);
+                _quantizedBlocks.Add(new Tuple<int[,], HuffmanTable, HuffmanTable, int>(
+                    _encodeBlocksSubMethod(YBlock, YQuantizationTable), YDCHuffman, YACHuffman, 0));
             }
 
             double[,] CbDownSampled = _downSample(MCU[1]);
-            _encodeBlocksSubMethod(bits, CbDownSampled, ChrDCHuffman, ChrACHuffman, 1, ChrQuantizationTable);
-
+            _quantizedBlocks.Add(new Tuple<int[,], HuffmanTable, HuffmanTable, int>(
+                _encodeBlocksSubMethod(CbDownSampled, ChrQuantizationTable), ChrDCHuffman, ChrACHuffman, 1));
+            
             double[,] CrDownSampled = _downSample(MCU[2]);
-            _encodeBlocksSubMethod(bits, CrDownSampled, ChrDCHuffman, ChrACHuffman, 2, ChrQuantizationTable);
+            _quantizedBlocks.Add(new Tuple<int[,], HuffmanTable, HuffmanTable, int>(
+                _encodeBlocksSubMethod(CrDownSampled, ChrQuantizationTable), ChrDCHuffman, ChrACHuffman, 2));
         }
 
-        private void _encodeBlocksSubMethod(BitList bits, double[,] blocks, HuffmanTable DC, HuffmanTable AC, int index, QuantizationTable table) {
+        private int[,] _encodeBlocksSubMethod(double[,] blocks, QuantizationTable table) {
             blocks = _discreteCosineTransform(blocks);
-            int[,] quantiziedBlock = _quantization(blocks, table);
-            _quantizedBlocks.Add(new Tuple<int[,], HuffmanTable, HuffmanTable, int>(quantiziedBlock, DC, AC, index));
+            return _quantization(blocks, table);
         }
 
         private int[,] _quantization(double[,] values, QuantizationTable qTable) {
@@ -403,31 +424,12 @@ namespace Stegosaurus {
         }
 
         private void _encodeMessage() {
-            List<int> nonZeroValues = new List<int>();
-
-            int len = _quantizedBlocks.Count * 64;
-            int valuesNeeded = _message.Count * 16 / (int)Math.Log(M, 2);
-
-            for (int i = 0; i < len; i++) {
-                if (valuesNeeded <= 0) {
-                    break;
-                }
-                int array = i / 64;
-                int xpos = i % 8;
-                int ypos = (i % 64) / 8;
-
-                if (xpos + ypos != 0 && _quantizedBlocks[array].Item1[xpos, ypos] != 0) {
-                    nonZeroValues.Add(_quantizedBlocks[array].Item1[xpos, ypos]);
-                    valuesNeeded--;
-                }
-            }
-
             Graph graph = new Graph();
 
-            len = nonZeroValues.Count;
-            for (int i = 0; i < len - 1; i += 2) {
+            int valuesNeeded = _message.Count * 16 / (int)Math.Log(M, 2);
+            for (int i = 0; i < valuesNeeded - 1; i += 2) {
                 if (_message.Count != 0) {
-                    graph.Vertices.Add(new Vertex(nonZeroValues[i], nonZeroValues[i + 1], _message[0]));
+                    graph.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0]));
                     _message.RemoveAt(0);
                 } else {
                     break;
@@ -489,13 +491,13 @@ namespace Stegosaurus {
                     validNumbers.Add(_quantizedBlocks[array].Item1[xpos, ypos]);
                 }
             }
+
             ushort length = 0;
             byte mvalue = 0;
             for (int i = 0; i < 14; i += 2) {
                 int current = (validNumbers[i] + validNumbers[i + 1]).Mod(4);
                 length = (ushort)((length << 2) + current);
             }
-
 
             switch ((validNumbers[14] + validNumbers[15]).Mod(4)) {
                 case 0:
@@ -524,7 +526,6 @@ namespace Stegosaurus {
                 for (int j = 0; j < steps; j++) {
                     toAdd <<= (int)(Math.Log(mvalue, 2));
                     toAdd += messageParts[i + j];
-                    ;
                 }
                 message.Add(toAdd);
             }
@@ -620,7 +621,7 @@ namespace Stegosaurus {
                     double cCoefficient = c(i, j);
                     for (int x = 0; x < 8; x++) {
                         for (int y = 0; y < 8; y++) {
-                            tempSum += cCoefficient * block8[x, y] * _cosines[x, i] * _cosines[y, j];
+                            tempSum += cCoefficient * block8[x, y] * _cosineCoefficients[x, i] * _cosineCoefficients[y, j];
                         }
                     }
                     cosineValues[i, j] = tempSum;
@@ -783,49 +784,19 @@ namespace Stegosaurus {
 
         public int GetCapacity() {
             Bitmap paddedCoverImage = _padCoverImage();
-            double[][,] channelValues = _splitToChannels(paddedCoverImage);
-            BitList bits = new BitList();
+            double[][,] YCbCrChannels = _splitToChannels(paddedCoverImage);
             int imageHeight = paddedCoverImage.Height;
             int imageWidth = paddedCoverImage.Width;
-            
-            _quantizedBlocks = new List<Tuple<int[,], HuffmanTable, HuffmanTable, int>>();
-            double[][,] channels = new double[3][,];
 
-            for (int i = 0; i < 3; i++) {
-                channels[i] = new double[16, 16];
-            }
-
-            for (int MCUY = 0; MCUY < imageHeight; MCUY += 16) {
-                for (int MCUX = 0; MCUX < imageWidth; MCUX += 16) {
-                    for (int i = 0; i < 3; i++) {
-                        for (int x = 0; x < 16; x++) {
-                            for (int y = 0; y < 16; y++) {
-                                channels[i][x, y] = channelValues[i][MCUX + x, MCUY + y];
-                            }
-                        }
-                    }
-                    _encodeBlocks(bits, channels);
-                }
-            }
-
-            int len = _quantizedBlocks.Count * 64;
-            int nonZeroValues = 0;
-
-            for (int i = 0; i < len; i++) {
-                int array = i / 64;
-                int xpos = i % 8;
-                int ypos = (i % 64) / 8;
-
-                if (xpos + ypos != 0 && _quantizedBlocks[array].Item1[xpos, ypos] != 0) {
-                    nonZeroValues++;
-                }
+            if (_quantizedBlocks.Count == 0) {
+                _quantizeValues(YCbCrChannels, imageWidth, imageHeight);
             }
 
             //The amount of bytes can be calculated as follows:
             //Pairs available = nonZeroValues / 2
             //Bits per pair = Pairs / Math.Log(M, 2)
             //Total bytes available = bits per pair / 8
-            return (nonZeroValues / 2 / (int)Math.Log(M, 2)) / 8;
+            return (_nonZeroValues.Count / 2 / (int)Math.Log(M, 2)) / 8;
         }
     }
 }
