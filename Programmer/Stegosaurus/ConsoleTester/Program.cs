@@ -7,11 +7,11 @@ using System.Linq;
 namespace ConsoleTester {
     class Program {
         static void Main(string[] args) {
-            IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100, 4);
-            
-            Console.WriteLine(ji.GetCapacity());
+            //IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100, 4);
 
-            //byte[] msg = "hej".Select(x => (byte)x).ToArray();
+            //Console.WriteLine(ji.GetCapacity());
+
+            //byte[] msg = "hej med dig".Select(x => (byte)x).ToArray();
             //Console.WriteLine(msg.Length);
 
             //ji.Encode(msg);

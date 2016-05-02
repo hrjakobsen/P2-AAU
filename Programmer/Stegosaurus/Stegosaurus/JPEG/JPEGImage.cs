@@ -187,9 +187,7 @@ namespace Stegosaurus {
                 (byte) (len & 0xFF)
             };
 
-            foreach (var b in metaDataList) {
-                Console.WriteLine(Convert.ToString(b, 2));
-            }
+            Console.WriteLine(len >> 2);
 
             //Split the metadata
             _splitMessageIntoSmallerComponents(metaDataList, 0x3, 2);
@@ -481,15 +479,6 @@ namespace Stegosaurus {
 
         private void testOutput() {
             List<int> validNumbers = new List<int>();
-
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-                    Console.Write(_quantizedBlocks[0].Item1[j, i] + " ");
-                }
-                Console.WriteLine();
-            }
-
-            Console.WriteLine(_quantizedBlocks[0].Item2);
             
             int len = _quantizedBlocks.Count * 64;
             for (int i = 0; i < len; i++) {
@@ -500,6 +489,10 @@ namespace Stegosaurus {
                 if (xpos + ypos != 0 && _quantizedBlocks[array].Item1[xpos, ypos] != 0) {
                     validNumbers.Add(_quantizedBlocks[array].Item1[xpos, ypos]);
                 }
+            }
+
+            for (int i = 0; i < 16; i++) {
+                Console.WriteLine(validNumbers[i]);
             }
 
             ushort length = 0;

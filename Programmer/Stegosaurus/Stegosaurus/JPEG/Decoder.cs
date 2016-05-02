@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
+using System.Xml.Schema;
 
 namespace Stegosaurus {
     public class Decoder : IImageDecoder {
@@ -121,7 +122,7 @@ namespace Stegosaurus {
                     }
                 }
             }
-            for (int i = 0; i < 18; i++) {
+            for (int i = 0; i < 12; i++) {
                 file.ReadByte();
             }
 
@@ -152,55 +153,120 @@ namespace Stegosaurus {
                     bits.Add((current & (mask << (7 - i))) >> (7 - i));
                 }
             }
-            for (int j = 0; j < 8; j++) {    
-                for (int i = 0; i < 8; i++) {
-                    Console.Write(bits[j * 8 + i] ? 1 : 0);
-                }
-                Console.WriteLine();
-            }
             return bits;
         }
 
         private void decodeScanData(BitList bits, ref int mod) {
-            List<int[]> Allnumbers = new List<int[]>();
+            List<int> validNumbers = new List<int>();
             int index = 0;
-            Allnumbers.Add(getBlock(bits, ref index, YDCHuffman, YACHuffman));
-            Allnumbers.Add(getBlock(bits, ref index, YDCHuffman, YACHuffman));
-            Allnumbers.Add(getBlock(bits, ref index, YDCHuffman, YACHuffman));
-            Allnumbers.Add(getBlock(bits, ref index, YDCHuffman, YACHuffman));
-            Allnumbers.Add(getBlock(bits, ref index, ChrDCHuffman, ChrACHuffman));
-            Allnumbers.Add(getBlock(bits, ref index, ChrDCHuffman, ChrACHuffman));
 
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-                    Console.Write(Allnumbers[0][i * 8 + j] + " ");
-                }
-                Console.WriteLine();
+            while (validNumbers.Count < 16) {
+                _addNextMCU(validNumbers, bits, ref index);
             }
+            
+
+            int length = getLength(validNumbers);
+            int mvalue = getModulo(validNumbers);
+
+            validNumbers.RemoveRange(0, 16);
+            
+
+            int elementsToRead = (int)(length * (8 / Math.Log(mvalue, 2))) * 2;
+
+            while (validNumbers.Count < elementsToRead) {
+                _addNextMCU(validNumbers, bits, ref index);
+            }
+
+            List<byte> messageParts = new List<byte>();
+
+            for (int i = 0; i <= elementsToRead; i += 2) {
+                messageParts.Add((byte)(validNumbers[i] + validNumbers[i + 1]).Mod(mvalue));
+            }
+
+            List<byte> message = new List<byte>();
+            int steps = (int)(8 / Math.Log(mvalue, 2));
+            for (int i = 0; i < messageParts.Count - steps; i += steps) {
+                byte toAdd = 0;
+                for (int j = 0; j < steps; j++) {
+                    toAdd <<= (int)(Math.Log(mvalue, 2));
+                    toAdd += messageParts[i + j];
+                }
+                message.Add(toAdd);
+            }
+
+            string s = new string(message.Select(x => (char)x).ToArray());
+            Console.WriteLine(s);
+
 
             Console.ReadKey();
         }
 
-        private int[] getBlock(BitList bits, ref int index, HuffmanTable DC, HuffmanTable AC) {
+        private int getLength(List<int> values) {
+            ushort length = 0;
+            for (int i = 0; i < 14; i += 2) {
+                int current = (values[i] + values[i + 1]).Mod(4);
+                length = (ushort)((length << 2) + current);
+            }
+            return length;
+        }
+
+        private int getModulo(List<int> values) {
+            switch ((values[14] + values[15]).Mod(4)) {
+                case 0:
+                    return 2;
+                case 1:
+                    return 4;
+                case 2:
+                    return 16;
+                case 3:
+                    return 256;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void _addNextMCU(List<int> validNumbers, BitList bits, ref int index) {
+            for (int i = 0; i < 4; i++) {
+                validNumbers.AddRange(getBlock(bits, ref index, YDCHuffman, YACHuffman));
+            }
+            for (int i = 0; i < 2; i++) {
+                validNumbers.AddRange(getBlock(bits, ref index, ChrDCHuffman, ChrACHuffman));
+            }
+        }
+
+        private List<int> getBlock(BitList bits, ref int index, HuffmanTable DC, HuffmanTable AC) {
+            List<int> validNumbers = new List<int>();
             int[] values = new int[64];
+            int[] zigzag = {
+                0, 1, 8, 16, 9, 2, 3, 10, 17, 24, 32, 25, 18, 11, 4, 5, 12, 19, 26, 33, 40, 48, 41, 34, 27, 20, 13, 6, 7,
+                14, 21, 28, 35, 42, 49, 56, 57, 50, 43, 36, 29, 22, 15, 23, 30, 37, 44, 51, 58, 59, 52, 45, 38, 31, 39,
+                46, 53, 60, 61, 54, 47, 55, 62, 63
+            };
             int numberOfElements = 0;
             int zeroes = 0;
-            values[numberOfElements++] = nextValue(bits, ref index, DC, out zeroes);
+            values[zigzag[numberOfElements++]] = nextValue(bits, ref index, DC, out zeroes);
             while (numberOfElements < 64) {
                 int value = nextValue(bits, ref index, AC, out zeroes);
                 if (value == 0 && zeroes == 0) { //EOB
                     while (numberOfElements < 64) {
-                        values[numberOfElements++] = 0;
+                        values[zigzag[numberOfElements++]] = 0;
                     }
                 } else { //ZRL and normal
                     for (int i = 0; i < zeroes; i++) {
-                        values[numberOfElements++] = 0;
+                        values[zigzag[numberOfElements++]] = 0;
                     }
-                    values[numberOfElements++] = value;
+                    values[zigzag[numberOfElements++]] = value;
                 }
             }
 
-            return values;
+            for (int i = 1; i < values.Length; i++) {
+                int element = values[i];
+                if (element != 0) {
+                    validNumbers.Add(element);
+                }
+            }
+            
+            return validNumbers;
 
         } 
 
@@ -335,11 +401,6 @@ namespace Stegosaurus {
                         code += (ushort)(bitArr[arrPos] ? 1 : 0);
                     }
                     short s = lookupValue(code, category);
-                    if (s < -100 || s > 100) {
-                        Console.WriteLine(s);
-                        Console.WriteLine(Convert.ToString(code, 2));
-                        Console.WriteLine(category);
-                    }
                     listOfShorts.Add(lookupValue(code, category));
                 }
             }
