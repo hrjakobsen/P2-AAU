@@ -13,13 +13,12 @@ namespace Stegosaurus {
 
         public List<Edge> DoSwitches() {
             List<Edge> sortedEdges = Edges.OrderBy(x => x.Weight).ToList();
-            List<Edge> chosen = new List<Edge>();
+            List<Edge> chosenEdges = new List<Edge>();
             while (sortedEdges.Any()) {
-                chosen.Add(sortedEdges[0]);
+                chosenEdges.Add(sortedEdges[0]);
                 removeEdge(sortedEdges, sortedEdges[0]);
             }
-
-            return chosen;
+            return chosenEdges;
         }
         
         private void removeEdge(List<Edge> list, Edge e) {
