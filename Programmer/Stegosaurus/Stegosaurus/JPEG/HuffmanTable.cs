@@ -21,7 +21,17 @@ namespace Stegosaurus {
             return numberOfCodes;
         }
 
+        public HuffmanElement HasCode(ushort code, int length) {
+            foreach (KeyValuePair<byte, HuffmanElement> element in Elements) {
+                if (element.Value.CodeWord == code && element.Value.Length == length) {
+                    return element.Value;
+                }
+            }
+            return null;
+        }
+
         public override string ToString() {
+            Elements = Elements.OrderBy(x => x.Value.RunSize).ToDictionary(x => x.Key, x=> x.Value);
             return Elements.Aggregate("", (current, huffmanElement) => current + (huffmanElement + "\n"));
         }
 

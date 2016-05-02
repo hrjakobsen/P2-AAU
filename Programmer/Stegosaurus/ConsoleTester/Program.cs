@@ -7,16 +7,16 @@ using System.Linq;
 namespace ConsoleTester {
     class Program {
         static void Main(string[] args) {
-            IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100, 2);
+            //IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100, 4);
 
-            byte[] msg = "hej".Select(x => (byte)x).ToArray();
-            Console.WriteLine(msg.Length);
+            //byte[] msg = "hej".Select(x => (byte)x).ToArray();
+            //Console.WriteLine(msg.Length);
 
-            ji.Encode(msg);
-            ji.Save(@"output.jpg");
-            
-            //IImageDecoder jid = new Decoder("output.jpg");
-            //jid.Decode();
+            //ji.Encode(msg);
+            //ji.Save(@"output.jpg");
+
+            IImageDecoder jid = new Decoder("output.jpg");
+            jid.Decode();
 
             //debugGraph();
 

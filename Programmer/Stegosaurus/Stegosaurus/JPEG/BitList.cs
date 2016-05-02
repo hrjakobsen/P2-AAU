@@ -56,6 +56,18 @@ namespace Stegosaurus {
             }
         }
 
+        public BitList SubList(int startindex, int endindex) {
+            int length = endindex - startindex;
+            if (length <= 0) {
+                throw new IndexOutOfRangeException();
+            }
+            BitList b = new BitList(length);
+            for (int i = startindex; i < endindex + 1; i++) {
+                b.Add(this[i]);
+            }
+            return b;
+        }
+
         private readonly BitArray _latestEntries = new BitArray(8);
         private int _addCounter;
 

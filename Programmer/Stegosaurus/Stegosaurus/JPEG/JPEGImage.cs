@@ -479,6 +479,16 @@ namespace Stegosaurus {
 
         private void testOutput() {
             List<int> validNumbers = new List<int>();
+
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    Console.Write(_quantizedBlocks[0].Item1[j, i] + " ");
+                }
+                Console.WriteLine();
+            }
+
+            Console.WriteLine(_quantizedBlocks[0].Item2);
+            
             int len = _quantizedBlocks.Count * 64;
             for (int i = 0; i < len; i++) {
                 int array = i / 64;
@@ -488,6 +498,10 @@ namespace Stegosaurus {
                 if (xpos + ypos != 0 && _quantizedBlocks[array].Item1[xpos, ypos] != 0) {
                     validNumbers.Add(_quantizedBlocks[array].Item1[xpos, ypos]);
                 }
+            }
+
+            for (int i = 0; i < 16; i++) {
+                Console.WriteLine(validNumbers[i]);
             }
             ushort length = 0;
             byte mvalue = 0;
