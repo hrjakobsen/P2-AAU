@@ -25,7 +25,7 @@
         }
 
         public QuantizationTable Scale(int quality) {
-            double scale = ((100 - quality) / 53 + 0.125);
+            double scale = ((double)(100 - quality) / 53 + 0.125);
             byte[] scaledEntries = new byte[64];
             for (int entryIndex = 0; entryIndex < 64; entryIndex++) {
                 scaledEntries[entryIndex] = (byte)(Entries[entryIndex] * scale);
