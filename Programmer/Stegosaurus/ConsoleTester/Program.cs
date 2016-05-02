@@ -7,9 +7,9 @@ using System.Linq;
 namespace ConsoleTester {
     class Program {
         static void Main(string[] args) {
-            IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100, 4);
+            IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100, 2);
 
-            byte[] msg = "Hej med dig jeg hedder Henrik, dette er mit forsøg på at askrive 140 karaktererererererererer..... ahhhhh der skal flere til flere igen omg.".Select(x => (byte)x).ToArray();
+            byte[] msg = "hej".Select(x => (byte)x).ToArray();
             Console.WriteLine(msg.Length);
 
             ji.Encode(msg);
@@ -43,32 +43,36 @@ namespace ConsoleTester {
                     }
                 }
 
-                foreach (Vertex currentVertex in g.Vertices) {
-                    foreach (Vertex otherVertex in g.Vertices.Where(v => v != currentVertex)) {
-                        if ((currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(4) == currentVertex.Message &&
-                            (currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(4) == otherVertex.Message) {
-                            Edge e = new Edge(currentVertex, otherVertex, true, true);
-                            g.Edges.Add(e);
-                        }
-                        if ((currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(4) == currentVertex.Message &&
-                            (currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(4) == otherVertex.Message) {
-                            Edge e = new Edge(currentVertex, otherVertex, true, false);
-                            g.Edges.Add(e);
-                        }
-                        if ((currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(4) == currentVertex.Message &&
-                            (currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(4) == otherVertex.Message) {
-                            Edge e = new Edge(currentVertex, otherVertex, false, false);
-                            g.Edges.Add(e);
-                        }
-                        if ((currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(4) == currentVertex.Message &&
-                            (currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(4) == otherVertex.Message) {
-                            Edge e = new Edge(currentVertex, otherVertex, false, true);
-                            g.Edges.Add(e);
-                        }
+            foreach (Vertex currentVertex in g.Vertices) {
+                foreach (Vertex otherVertex in g.Vertices.Where(otherVertex => currentVertex != otherVertex)) {
+                    int weight = Math.Abs(currentVertex.SampleValue1 - otherVertex.SampleValue1);
+                    if (weight < 5 && ((currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(4) == currentVertex.Message) &&
+                        ((currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(4) == otherVertex.Message)) {
+                        Edge e = new Edge(currentVertex, otherVertex, weight, true, true);
+                        g.Edges.Add(e);
+                    }
+                    weight = Math.Abs(currentVertex.SampleValue1 - otherVertex.SampleValue2);
+                    if (weight < 5 && ((currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(4) == currentVertex.Message) &&
+                        ((currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(4) == otherVertex.Message)) {
+                        Edge e = new Edge(currentVertex, otherVertex, weight, true, false);
+                        g.Edges.Add(e);
+                    }
+                    weight = Math.Abs(currentVertex.SampleValue2 - otherVertex.SampleValue2);
+                    if (weight < 5 && ((currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(4) == currentVertex.Message) &&
+                        ((currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(4) == otherVertex.Message)) {
+                        Edge e = new Edge(currentVertex, otherVertex, weight, false, false);
+                        g.Edges.Add(e);
+                    }
+                    weight = Math.Abs(currentVertex.SampleValue2 - otherVertex.SampleValue1);
+                    if (weight < 5 && ((currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(4) == currentVertex.Message) &&
+                        ((currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(4) == otherVertex.Message)) {
+                        Edge e = new Edge(currentVertex, otherVertex, weight, false, true);
+                        g.Edges.Add(e);
                     }
                 }
+            }
 
-                Console.WriteLine("Nothing done yet!");
+            Console.WriteLine("Nothing done yet!");
                 int a = 0;
                 foreach (Vertex sample in samples) {
                     a++;

@@ -437,41 +437,37 @@ namespace Stegosaurus {
             //World's worst loops (O(n^2) shiet)
             //Find alle the possible switches between vertices and add them as edges
             foreach (Vertex currentVertex in graph.Vertices) {
-                foreach (Vertex otherVertex in graph.Vertices) {
-                    if (currentVertex == otherVertex) {
-                        continue;
+                foreach (Vertex otherVertex in graph.Vertices.Where(otherVertex => currentVertex != otherVertex)) {
+                    int weight = Math.Abs(currentVertex.SampleValue1 - otherVertex.SampleValue1);
+                    if (weight < 5 && 
+                        (currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message &&
+                        (currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message) {
+                        Edge e = new Edge(currentVertex, otherVertex, weight, true, true);
+                        graph.Edges.Add(e);
                     }
-                    if (((currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message ) &&
-                        ((currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message)) {
-                        Edge e = new Edge(currentVertex, otherVertex, true, true);
-                        if (e.Weight < 5) {
-                            graph.Edges.Add(e);
-                        }
+                    weight = Math.Abs(currentVertex.SampleValue1 - otherVertex.SampleValue2);
+                    if(weight < 5 && 
+                        (currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message &&
+                        (currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message) {
+                        Edge e = new Edge(currentVertex, otherVertex, weight, true, false);
+                        graph.Edges.Add(e);
                     }
-                    if (((currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message ) &&
-                        ((currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message)) {
-                        Edge e = new Edge(currentVertex, otherVertex, true, false);
-                        if (e.Weight < 5) {
-                            graph.Edges.Add(e);
-                        }
+                    weight = Math.Abs(currentVertex.SampleValue2 - otherVertex.SampleValue2);
+                    if (weight < 5 && 
+                        (currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message &&
+                        (currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message) {
+                        Edge e = new Edge(currentVertex, otherVertex, weight, false, false);
+                        graph.Edges.Add(e);
                     }
-                    if (((currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message ) &&
-                        ((currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message )) {
-                        Edge e = new Edge(currentVertex, otherVertex, false, false);
-                        if (e.Weight < 5) {
-                            graph.Edges.Add(e);
-                        }
-                    }
-                    if (((currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message ) &&
-                        ((currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message )) {
-                        Edge e = new Edge(currentVertex, otherVertex, false, true);
-                        if (e.Weight < 5) {
-                            graph.Edges.Add(e);
-                        }
+                    weight = Math.Abs(currentVertex.SampleValue2 - otherVertex.SampleValue1);
+                    if (weight < 5 && 
+                        (currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message  &&
+                        (currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message) {
+                        Edge e = new Edge(currentVertex, otherVertex, weight, false, true);
+                        graph.Edges.Add(e);
                     }
                 }
             }
-
             //Swap values and force the rest
             _refactorGraph(graph);
 
@@ -550,23 +546,6 @@ namespace Stegosaurus {
             }
         }
 
-        private void _forceSampleChange(Vertex vertex) {
-            int error = (vertex.SampleValue1 + vertex.SampleValue2).Mod(M) - vertex.Message;
-
-            if (vertex.SampleValue1 - error <= 127 && vertex.SampleValue1 - error >= -128 && vertex.SampleValue1 - error != 0) {
-                vertex.SampleValue1 -= error;
-            } else if (vertex.SampleValue2 - error <= 127 && vertex.SampleValue2 - error >= -128 && vertex.SampleValue2 - error != 0) {
-                vertex.SampleValue2 -= error;
-            } else {
-                vertex.SampleValue1 += 4 - error;
-            }
-
-            if (vertex.SampleValue1 == 0 || vertex.SampleValue2 == 0) {
-                Console.WriteLine("We done fucked up");
-            }
-            
-        }
-
         private void _swapVertexData(Edge e) {
             int temp;
             if (e.vStartFirst) {
@@ -589,6 +568,20 @@ namespace Stegosaurus {
                     e.VStart.SampleValue2 = e.VEnd.SampleValue2;
                     e.VEnd.SampleValue2 = temp;
                 }
+            }
+        }
+
+        private void _forceSampleChange(Vertex vertex) {
+            int error = (vertex.SampleValue1 + vertex.SampleValue2).Mod(M) - vertex.Message;
+
+            if (vertex.SampleValue1 - error <= 127 && vertex.SampleValue1 - error >= -128 &&
+                vertex.SampleValue1 - error != 0) {
+                vertex.SampleValue1 -= error;
+            } else if (vertex.SampleValue2 - error <= 127 && vertex.SampleValue2 - error >= -128 &&
+                       vertex.SampleValue2 - error != 0) {
+                vertex.SampleValue2 -= error;
+            } else {
+                vertex.SampleValue1 += 4 - error;
             }
         }
 
