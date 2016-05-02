@@ -1,13 +1,16 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
 \section{Design of the JPEG image class}
 
-The JPEG image class will implement the interface \lstinline|IImageEncoder| as this is the class which will convert a bitmap image into a JPEG as well as embed data into the saved image. Implementing the interface means that the JPEGImage class will have the following public methods.
+The JPEG image class will implement the interface \lstinline|IImageEncoder|, as this is the class which will convert a bitmap image into a JPEG-image, as well as embed data into the saved image.
+Implementing the interface means that the \lstinline|JPEGImage| class will have the following public methods:
 
 \begin{itemize}
-	\item \lstinline|public void Save(string path)| which saves the image to a file at the given path
-	\item \lstinline|public void Encode(byte[] message)| which embeds a message into the image
-	\item \lstinline|public int GetCapacity()| which will calculate how much information which can be stored in the image. 
+	\item \lstinline|public void Save(string path)| which saves the image to a file at the given path.
+	\item \lstinline|public void Encode(byte[] message)| which embeds a message into the image.
+	\item \lstinline|public int GetCapacity()| which calculates how much information can be stored in the image. 
 \end{itemize}
 
-The reason for this interface is such that we can keep working on the actual implementation of the JPEG encoder, while the ITC group can build their system around the interface. Using an interface also mean that we could later expand the system with other types of image encoders. An example of this could be an PNG image encoder using LSB to embed data, this class would also implement the interface, and would make switching between the two very easy. 
-
+The reason for the use of \lstinline|IImageEncoder| is that we can keep working on the actual implementation of the JPEG-encoder, while the ITC-group can build their system around the interface.
+Using an interface also means that we can later expand the system with other types of image encoders.
+An example of this could be a PNG-encoder using an LSB-method to embed data.
+This class would also implement \lstinline|IImageEncoder|, and would make switching between the two very easy. 
