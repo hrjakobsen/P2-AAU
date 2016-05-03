@@ -7,21 +7,25 @@ using System.Linq;
 namespace ConsoleTester {
     class Program {
         static void Main(string[] args) {
-
-            //IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100, 4);
+            IImageEncoder ji = new JpegImage(new Bitmap(@"cat2.jpg"), 100, 4);
             
             //Console.WriteLine(ji.GetCapacity());
 
-            byte[] msg = "Kurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleased".Select(x => (byte)x).ToArray();
+            //byte[] msg = "Hej".Select(x => (byte)x).ToArray();
 
-            //Console.WriteLine(msg.Length);
+            int len = 10;
+            byte[] msg = new byte[len];
+            for (int i = 0; i < len; i++) {
+                msg[i] = (byte)'a';
+            }
 
-            //ji.Encode(msg);
-            //ji.Save(@"output.jpg");
-
-            IImageDecoder jid = new Decoder("output.jpg");
-            byte[] message = jid.Decode();
-            Console.WriteLine(new string(message.Select(x => (char)x).ToArray()));
+            ji.Encode(msg);
+            ;
+            ji.Save(@"output.jpg");
+            
+            //IImageDecoder jid = new Decoder("output.jpg");
+            //byte[] message = jid.Decode();
+            //Console.WriteLine(new string(message.Select(x => (char)x).ToArray()));
 
             //debugGraph();
 

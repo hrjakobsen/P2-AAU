@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Stegosaurus {
     public class JpegImage : IImageEncoder{
@@ -318,8 +320,6 @@ namespace Stegosaurus {
             _jw.WriteBytes(_flush(bits));
         }
         
-       
-
         private byte[] _flush(BitList bits) {
             while (bits.Count % 8 != 0) {
                 bits.Add(false);
@@ -389,19 +389,28 @@ namespace Stegosaurus {
         }
 
         private void _encodeBlocks(double[][,] MCU) {
-            for (int i = 0; i < 4; i++) {
-                double[,] YBlock = _block16ToBlock8(MCU[0], i);
-                _quantizedBlocks.Add(new Tuple<int[,], HuffmanTable, HuffmanTable, int>(
-                    _encodeBlocksSubMethod(YBlock, YQuantizationTable), YDCHuffman, YACHuffman, 0));
-            }
+            Tuple<int[,], HuffmanTable, HuffmanTable, int>[] temp = new Tuple<int[,], HuffmanTable, HuffmanTable, int>[6]; 
 
-            double[,] CbDownSampled = _downSample(MCU[1]);
-            _quantizedBlocks.Add(new Tuple<int[,], HuffmanTable, HuffmanTable, int>(
-                _encodeBlocksSubMethod(CbDownSampled, ChrQuantizationTable), ChrDCHuffman, ChrACHuffman, 1));
-            
-            double[,] CrDownSampled = _downSample(MCU[2]);
-            _quantizedBlocks.Add(new Tuple<int[,], HuffmanTable, HuffmanTable, int>(
-                _encodeBlocksSubMethod(CrDownSampled, ChrQuantizationTable), ChrDCHuffman, ChrACHuffman, 2));
+            Parallel.For(0, 6, i => {
+                switch (i) {
+                    case 4:
+                        double[,] CbDownSampled = _downSample(MCU[1]);
+                        temp[i] = new Tuple<int[,], HuffmanTable, HuffmanTable, int>(_encodeBlocksSubMethod(CbDownSampled, ChrQuantizationTable), ChrDCHuffman, ChrACHuffman, 1);
+                        break;
+                    case 5:
+                        double[,] CrDownSampled = _downSample(MCU[2]);
+                        temp[i] = new Tuple<int[,], HuffmanTable, HuffmanTable, int>(_encodeBlocksSubMethod(CrDownSampled, ChrQuantizationTable), ChrDCHuffman, ChrACHuffman, 2);
+                        break;
+                    default:
+                        double[,] YBlock = _block16ToBlock8(MCU[0], i);
+                        temp[i] = new Tuple<int[,], HuffmanTable, HuffmanTable, int>(_encodeBlocksSubMethod(YBlock, YQuantizationTable), YDCHuffman, YACHuffman, 0);
+                        break;
+                }
+            });
+
+            for (int i = 0; i < 6; i++) {
+                _quantizedBlocks.Add(temp[i]);
+            }
         }
 
         private int[,] _encodeBlocksSubMethod(double[,] blocks, QuantizationTable table) {
@@ -418,15 +427,6 @@ namespace Stegosaurus {
             }
 
             return quantizedValues;
-        }
-        
-        private void AddEdge(bool firstFirst, bool secondFirst, Vertex first, Vertex second, int threshold, Graph g) {
-            int weight = Math.Abs(firstFirst ? first.SampleValue1 : first.SampleValue2) - (secondFirst ? second.SampleValue1 : second.SampleValue2);
-
-            bool valid = weight < threshold && ((firstFirst ? first.SampleValue1 : first.SampleValue2) + (secondFirst ? second.SampleValue1 : second.SampleValue2)).Mod(M) == first.Message && ((firstFirst ? first.SampleValue2 : first.SampleValue1) + (secondFirst ? second.SampleValue2 : second.SampleValue1)).Mod(M) == second.Message;
-            if (valid) {
-                g.Edges.Add(new Edge(first, second, weight, firstFirst, secondFirst));
-            }
         }
 
         private void _encodeMessage() {
@@ -460,32 +460,40 @@ namespace Stegosaurus {
                     //    (currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message &&
                     //    (currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message) {
                     //    Edge e = new Edge(currentVertex, otherVertex, weight, true, true);
-                    //    graph.Edges.Add(e);
+                    //    lock (graph) {
+                    //        graph.Edges.Add(e);
+                    //    }
                     //}
                     //weight = Math.Abs(currentVertex.SampleValue1 - otherVertex.SampleValue2);
                     //if (weight < 5 &&
                     //    (currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message &&
                     //    (currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message) {
                     //    Edge e = new Edge(currentVertex, otherVertex, weight, true, false);
-                    //    graph.Edges.Add(e);
+                    //    lock (graph) {
+                    //        graph.Edges.Add(e);
+                    //    }
                     //}
                     //weight = Math.Abs(currentVertex.SampleValue2 - otherVertex.SampleValue2);
                     //if (weight < 5 &&
                     //    (currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message &&
                     //    (currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message) {
                     //    Edge e = new Edge(currentVertex, otherVertex, weight, false, false);
-                    //    graph.Edges.Add(e);
+                    //    lock (graph) {
+                    //        graph.Edges.Add(e);
+                    //    }
                     //}
                     //weight = Math.Abs(currentVertex.SampleValue2 - otherVertex.SampleValue1);
                     //if (weight < 5 &&
                     //    (currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message &&
                     //    (currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message) {
                     //    Edge e = new Edge(currentVertex, otherVertex, weight, false, true);
-                    //    graph.Edges.Add(e);
+                    //    lock (graph) {
+                    //        graph.Edges.Add(e);
+                    //    }
                     //}
                 }
-
             }
+
             //Swap values and force the rest
             _refactorGraph(graph);
 
@@ -493,6 +501,15 @@ namespace Stegosaurus {
             _mergeGraphAndQuantizedValues(graph);
 
             //testOutput();
+        }
+
+        private void AddEdge(bool firstFirst, bool secondFirst, Vertex first, Vertex second, int threshold, Graph g) {
+            int weight = Math.Abs(firstFirst ? first.SampleValue1 : first.SampleValue2) - (secondFirst ? second.SampleValue1 : second.SampleValue2);
+
+            bool valid = weight < threshold && ((firstFirst ? first.SampleValue1 : first.SampleValue2) + (secondFirst ? second.SampleValue1 : second.SampleValue2)).Mod(M) == first.Message && ((firstFirst ? first.SampleValue2 : first.SampleValue1) + (secondFirst ? second.SampleValue2 : second.SampleValue1)).Mod(M) == second.Message;
+            if (valid) {
+                g.Edges.Add(new Edge(first, second, weight, firstFirst, secondFirst));
+            }
         }
 
         private void testOutput() {
@@ -635,11 +652,12 @@ namespace Stegosaurus {
 
         private double[,] _discreteCosineTransform(double[,] block8) {
             double[,] cosineValues = new double[8, 8];
-
+            
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
                     double tempSum = 0.0;
                     double cCoefficient = c(i, j);
+                    //double cCoefficient = i == 0 ? (j == 0 ? 0.125 : 0.17677) : (j == 0 ? 0.17677 : 0.25);
                     for (int x = 0; x < 8; x++) {
                         for (int y = 0; y < 8; y++) {
                             tempSum += cCoefficient * block8[x, y] * _cosineCoefficients[x, i] * _cosineCoefficients[y, j];
@@ -648,9 +666,10 @@ namespace Stegosaurus {
                     cosineValues[i, j] = tempSum;
                 }
             }
+            
             return cosineValues;
         }
-
+        
         private double c(int i, int j) {
             if (i == 0) {
                 if (j == 0) {
@@ -686,12 +705,15 @@ namespace Stegosaurus {
         }
 
         private double[][,] _splitToChannels(Bitmap image) {
+            int imageWidth = image.Width, imageHeight = image.Height;
             double[][,] channels = new double[3][,];
+            
             for (int i = 0; i < 3; i++) {
-                channels[i] = new double[image.Width,image.Height];
+                channels[i] = new double[imageWidth,imageHeight];
             }
-            for (int y = 0; y < image.Height; y++) {
-                for (int x = 0; x < image.Width; x++) {
+
+            for (int y = 0; y < imageHeight; y++) {
+                for (int x = 0; x < imageWidth; x++) {
                     Color pixel = image.GetPixel(x, y);
                     channels[0][x, y] = 0.299 * pixel.R + 0.587 * pixel.G + 0.114 * pixel.B - 128;
                     channels[1][x, y] = -0.168736 * pixel.R - 0.331264 * pixel.G + 0.5 * pixel.B;
@@ -703,34 +725,41 @@ namespace Stegosaurus {
         }
 
         private Bitmap _padCoverImage() {
-            int newWidth = CoverImage.Width, newHeight = CoverImage.Height;
-            if (CoverImage.Width % 16 != 0) {
-                newWidth = CoverImage.Width + (16 - CoverImage.Width % 16);
+            int oldWidth = CoverImage.Width, oldHeight = CoverImage.Height;
+            int newWidth = oldWidth, newHeight = oldHeight;
+
+            if (oldWidth % 16 != 0) {
+                newWidth = oldWidth + (16 - oldWidth % 16);
             }
-            if (CoverImage.Height % 16 != 0) {
-                newHeight = CoverImage.Height + (16 - CoverImage.Height % 16);
+            if (oldHeight % 16 != 0) {
+                newHeight = oldHeight + (16 - oldHeight % 16);
             }
+
+            if (newWidth == oldWidth && newHeight == oldHeight) {
+                return CoverImage;
+            }
+
             Bitmap paddedCoverImage = new Bitmap(newWidth, newHeight);
-            for (int coverHeight = 0; coverHeight < CoverImage.Height; coverHeight++) { //Copy all of cover image to paddedimage
-                for (int coverWidth = 0; coverWidth < CoverImage.Width; coverWidth++) {
+            for (int coverHeight = 0; coverHeight < oldHeight; coverHeight++) { //Copy all of cover image to paddedimage
+                for (int coverWidth = 0; coverWidth < oldWidth; coverWidth++) {
                     paddedCoverImage.SetPixel(coverWidth, coverHeight, CoverImage.GetPixel(coverWidth, coverHeight));
                 }
             }
-            for (int rows = 0; rows < CoverImage.Height; rows++) {
-                for (int extraPixelsX = CoverImage.Width; extraPixelsX < paddedCoverImage.Width; extraPixelsX++) {
-                    paddedCoverImage.SetPixel(extraPixelsX, rows, CoverImage.GetPixel(CoverImage.Width - 1, rows));
+            for (int rows = 0; rows < oldHeight; rows++) {
+                for (int extraPixelsX = oldWidth; extraPixelsX < newWidth; extraPixelsX++) {
+                    paddedCoverImage.SetPixel(extraPixelsX, rows, CoverImage.GetPixel(oldWidth - 1, rows));
                 }
             }
 
-            for (int extraPixelsY = CoverImage.Height; extraPixelsY < paddedCoverImage.Height; extraPixelsY++) {
-                for (int columns = 0; columns < CoverImage.Width; columns++) {
-                    paddedCoverImage.SetPixel(columns, extraPixelsY, CoverImage.GetPixel(columns, CoverImage.Height - 1));
+            for (int extraPixelsY = oldHeight; extraPixelsY < newHeight; extraPixelsY++) {
+                for (int columns = 0; columns < oldWidth; columns++) {
+                    paddedCoverImage.SetPixel(columns, extraPixelsY, CoverImage.GetPixel(columns, oldHeight - 1));
                 }
             }
 
-            for (int smallBoxY = CoverImage.Height; smallBoxY < paddedCoverImage.Height; smallBoxY++) {
-                for (int smallBoxX = CoverImage.Width; smallBoxX < paddedCoverImage.Width; smallBoxX++) {
-                    paddedCoverImage.SetPixel(smallBoxX, smallBoxY, CoverImage.GetPixel(CoverImage.Width - 1, CoverImage.Height - 1));
+            for (int smallBoxY = oldHeight; smallBoxY < newHeight; smallBoxY++) {
+                for (int smallBoxX = oldWidth; smallBoxX < newWidth; smallBoxX++) {
+                    paddedCoverImage.SetPixel(smallBoxX, smallBoxY, CoverImage.GetPixel(oldWidth - 1, oldHeight - 1));
                 }
             }
 
