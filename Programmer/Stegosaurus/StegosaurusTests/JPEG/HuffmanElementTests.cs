@@ -9,34 +9,28 @@ using System.Threading.Tasks;
 namespace Stegosaurus.Tests
 {
     [TestFixture()]
-    public class HuffmanTableTests
+    public class HuffmanElementTests
     {
         [Test()]
-        public void HuffmanTableTest()
+        public void HuffmanElementTest()
         {
             Assert.Fail();
         }
 
         [Test()]
-        public void CombinationsTest()
+        public void CompareToTest()
         {
             Assert.Fail();
         }
 
         [Test()]
-        public void HasCodeTest()
+        public void CodeWordToBytesTest()
         {
             Assert.Fail();
         }
 
         [Test()]
         public void ToStringTest()
-        {
-            Assert.Fail();
-        }
-
-        [Test()]
-        public void GetElementFromRunSizeTest()
         {
             Assert.Fail();
         }
