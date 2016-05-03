@@ -423,6 +423,15 @@ namespace Stegosaurus {
             return quantizedValues;
         }
 
+        private void AddEdge(bool firstFirst, bool secondFirst, Vertex first, Vertex second, int threshold, Graph g) {
+            int weight = Math.Abs(firstFirst ? first.SampleValue1 : first.SampleValue2) - (secondFirst ? second.SampleValue1 : second.SampleValue2);
+
+            bool valid = weight < threshold && ((firstFirst ? first.SampleValue1 : first.SampleValue2) + (secondFirst ? second.SampleValue1 : second.SampleValue2)).Mod(M) == first.Message && ((firstFirst ? first.SampleValue2 : first.SampleValue1) + (secondFirst ? second.SampleValue2 : second.SampleValue1)).Mod(M) == second.Message;
+            if (valid) {
+                g.Edges.Add(new Edge(first, second, weight, firstFirst, secondFirst));
+            }
+        }
+
         private void _encodeMessage() {
             Graph graph = new Graph();
 
@@ -438,37 +447,44 @@ namespace Stegosaurus {
 
             //World's worst loops (O(n^2) shiet)
             //Find alle the possible switches between vertices and add them as edges
+            int threshold = 5;
             foreach (Vertex currentVertex in graph.Vertices) {
                 foreach (Vertex otherVertex in graph.Vertices.Where(otherVertex => currentVertex != otherVertex)) {
-                    int weight = Math.Abs(currentVertex.SampleValue1 - otherVertex.SampleValue1);
-                    if (weight < 5 && 
-                        (currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message &&
-                        (currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message) {
-                        Edge e = new Edge(currentVertex, otherVertex, weight, true, true);
-                        graph.Edges.Add(e);
-                    }
-                    weight = Math.Abs(currentVertex.SampleValue1 - otherVertex.SampleValue2);
-                    if(weight < 5 && 
-                        (currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message &&
-                        (currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message) {
-                        Edge e = new Edge(currentVertex, otherVertex, weight, true, false);
-                        graph.Edges.Add(e);
-                    }
-                    weight = Math.Abs(currentVertex.SampleValue2 - otherVertex.SampleValue2);
-                    if (weight < 5 && 
-                        (currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message &&
-                        (currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message) {
-                        Edge e = new Edge(currentVertex, otherVertex, weight, false, false);
-                        graph.Edges.Add(e);
-                    }
-                    weight = Math.Abs(currentVertex.SampleValue2 - otherVertex.SampleValue1);
-                    if (weight < 5 && 
-                        (currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message  &&
-                        (currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message) {
-                        Edge e = new Edge(currentVertex, otherVertex, weight, false, true);
-                        graph.Edges.Add(e);
-                    }
+                    AddEdge(true, true, currentVertex, otherVertex, threshold, graph);
+                    AddEdge(true, false, currentVertex, otherVertex, threshold, graph);
+                    AddEdge(false, true, currentVertex, otherVertex, threshold, graph);
+                    AddEdge(false, false, currentVertex, otherVertex, threshold, graph);
+
+                    //int weight = Math.Abs(currentVertex.SampleValue1 - otherVertex.SampleValue1);
+                    //if (weight < 5 && 
+                    //    (currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message &&
+                    //    (currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message) {
+                    //    Edge e = new Edge(currentVertex, otherVertex, weight, true, true);
+                    //    graph.Edges.Add(e);
+                    //}
+                    //weight = Math.Abs(currentVertex.SampleValue1 - otherVertex.SampleValue2);
+                    //if(weight < 5 && 
+                    //    (currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message &&
+                    //    (currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message) {
+                    //    Edge e = new Edge(currentVertex, otherVertex, weight, true, false);
+                    //    graph.Edges.Add(e);
+                    //}
+                    //weight = Math.Abs(currentVertex.SampleValue2 - otherVertex.SampleValue2);
+                    //if (weight < 5 && 
+                    //    (currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message &&
+                    //    (currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message) {
+                    //    Edge e = new Edge(currentVertex, otherVertex, weight, false, false);
+                    //    graph.Edges.Add(e);
+                    //}
+                    //weight = Math.Abs(currentVertex.SampleValue2 - otherVertex.SampleValue1);
+                    //if (weight < 5 && 
+                    //    (currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message  &&
+                    //    (currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message) {
+                    //    Edge e = new Edge(currentVertex, otherVertex, weight, false, true);
+                    //    graph.Edges.Add(e);
+                    //}
                 }
+
             }
             //Swap values and force the rest
             _refactorGraph(graph);
@@ -476,7 +492,7 @@ namespace Stegosaurus {
             //Put the changed values back into the QuantizedValues
             _mergeGraphAndQuantizedValues(graph);
 
-            testOutput();
+            //testOutput();
         }
 
         private void testOutput() {

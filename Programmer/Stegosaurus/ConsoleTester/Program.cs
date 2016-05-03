@@ -9,13 +9,13 @@ namespace ConsoleTester {
         static void Main(string[] args) {
             IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100, 4);
             
-            Console.WriteLine(ji.GetCapacity());
+            //Console.WriteLine(ji.GetCapacity());
 
-            //byte[] msg = "hej".Select(x => (byte)x).ToArray();
+            byte[] msg = "Kurt er pleased".Select(x => (byte)x).ToArray();
             //Console.WriteLine(msg.Length);
 
-            //ji.Encode(msg);
-            //ji.Save(@"output.jpg");
+            ji.Encode(msg);
+            ji.Save(@"output.jpg");
 
             IImageDecoder jid = new Decoder("output.jpg");
             jid.Decode();
