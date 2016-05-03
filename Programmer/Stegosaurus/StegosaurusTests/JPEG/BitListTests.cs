@@ -14,37 +14,56 @@ namespace Stegosaurus.Tests
         [Test()]
         public void BitListTest()
         {
-            Assert.Fail();
+            BitList bl = new BitList();
+
+            Assert.AreEqual(0, bl.Count);
         }
 
         [Test()]
         public void BitListTest1()
         {
-            Assert.Fail();
+            BitList bl = new BitList(1);
+
+            Assert.AreEqual(1, bl.Count);
         }
 
         [Test()]
-        public void GetEnumeratorTest()
+        public void GetEnumeratorTest() //TODO: make test which checks if yield return works, so bl should return with 8 zeros?
         {
+            BitList bl = new BitList(8);
+
+            bl.GetEnumerator();
             Assert.Fail();
         }
 
         [Test()]
         public void InsertTest()
         {
-            Assert.Fail();
+            BitList bl = new BitList(8);
+
+            bl.Insert(3, true);
+            
+            Assert.AreEqual(true, bl[3]);
         }
 
         [Test()]
-        public void AddTest()
+        public void AddTest() //TODO: Seems like Add() changes the last value in bitlist and does not add a bit to the bitlist. Don't know if this is intended
         {
-            Assert.Fail();
+            BitList bl = new BitList(8);
+
+            bl.Add(true);
+
+            Assert.AreEqual(true, bl[9]);
         }
 
         [Test()]
         public void AddTest1()
         {
-            Assert.Fail();
+            BitList bl = new BitList(8);
+
+            bl.Add(1);
+
+            Assert.AreEqual(true, bl[9]);
         }
     }
 }
