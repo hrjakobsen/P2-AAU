@@ -7,18 +7,21 @@ using System.Linq;
 namespace ConsoleTester {
     class Program {
         static void Main(string[] args) {
-            IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100, 4);
+
+            //IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100, 4);
             
             //Console.WriteLine(ji.GetCapacity());
 
-            byte[] msg = "Kurt er pleased".Select(x => (byte)x).ToArray();
+            byte[] msg = "Kurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleasedKurt er pleased".Select(x => (byte)x).ToArray();
+
             //Console.WriteLine(msg.Length);
 
-            ji.Encode(msg);
-            ji.Save(@"output.jpg");
+            //ji.Encode(msg);
+            //ji.Save(@"output.jpg");
 
             IImageDecoder jid = new Decoder("output.jpg");
-            jid.Decode();
+            byte[] message = jid.Decode();
+            Console.WriteLine(new string(message.Select(x => (char)x).ToArray()));
 
             //debugGraph();
 

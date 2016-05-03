@@ -186,10 +186,7 @@ namespace Stegosaurus {
                 (byte) (len >> 8),
                 (byte) (len & 0xFF)
             };
-
-            foreach (var b in metaDataList) {
-                Console.WriteLine(Convert.ToString(b, 2));
-            }
+            
 
             //Split the metadata
             _splitMessageIntoSmallerComponents(metaDataList, 0x3, 2);
@@ -422,7 +419,7 @@ namespace Stegosaurus {
 
             return quantizedValues;
         }
-
+        
         private void AddEdge(bool firstFirst, bool secondFirst, Vertex first, Vertex second, int threshold, Graph g) {
             int weight = Math.Abs(firstFirst ? first.SampleValue1 : first.SampleValue2) - (secondFirst ? second.SampleValue1 : second.SampleValue2);
 
@@ -449,36 +446,39 @@ namespace Stegosaurus {
             //Find alle the possible switches between vertices and add them as edges
             int threshold = 5;
             foreach (Vertex currentVertex in graph.Vertices) {
-                foreach (Vertex otherVertex in graph.Vertices.Where(otherVertex => currentVertex != otherVertex)) {
+                foreach (Vertex otherVertex in graph.Vertices) {
+                    if (currentVertex == otherVertex) {
+                        continue;
+                    }
                     AddEdge(true, true, currentVertex, otherVertex, threshold, graph);
                     AddEdge(true, false, currentVertex, otherVertex, threshold, graph);
                     AddEdge(false, true, currentVertex, otherVertex, threshold, graph);
                     AddEdge(false, false, currentVertex, otherVertex, threshold, graph);
 
                     //int weight = Math.Abs(currentVertex.SampleValue1 - otherVertex.SampleValue1);
-                    //if (weight < 5 && 
+                    //if (weight < 5 &&
                     //    (currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message &&
                     //    (currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message) {
                     //    Edge e = new Edge(currentVertex, otherVertex, weight, true, true);
                     //    graph.Edges.Add(e);
                     //}
                     //weight = Math.Abs(currentVertex.SampleValue1 - otherVertex.SampleValue2);
-                    //if(weight < 5 && 
+                    //if (weight < 5 &&
                     //    (currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message &&
                     //    (currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message) {
                     //    Edge e = new Edge(currentVertex, otherVertex, weight, true, false);
                     //    graph.Edges.Add(e);
                     //}
                     //weight = Math.Abs(currentVertex.SampleValue2 - otherVertex.SampleValue2);
-                    //if (weight < 5 && 
+                    //if (weight < 5 &&
                     //    (currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message &&
                     //    (currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message) {
                     //    Edge e = new Edge(currentVertex, otherVertex, weight, false, false);
                     //    graph.Edges.Add(e);
                     //}
                     //weight = Math.Abs(currentVertex.SampleValue2 - otherVertex.SampleValue1);
-                    //if (weight < 5 && 
-                    //    (currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message  &&
+                    //if (weight < 5 &&
+                    //    (currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message &&
                     //    (currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message) {
                     //    Edge e = new Edge(currentVertex, otherVertex, weight, false, true);
                     //    graph.Edges.Add(e);
@@ -497,15 +497,6 @@ namespace Stegosaurus {
 
         private void testOutput() {
             List<int> validNumbers = new List<int>();
-
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-                    Console.Write(_quantizedBlocks[0].Item1[j, i] + " ");
-                }
-                Console.WriteLine();
-            }
-
-            Console.WriteLine(_quantizedBlocks[0].Item2);
             
             int len = _quantizedBlocks.Count * 64;
             for (int i = 0; i < len; i++) {
@@ -516,6 +507,10 @@ namespace Stegosaurus {
                 if (xpos + ypos != 0 && _quantizedBlocks[array].Item1[xpos, ypos] != 0) {
                     validNumbers.Add(_quantizedBlocks[array].Item1[xpos, ypos]);
                 }
+            }
+
+            for (int i = 0; i < 16; i++) {
+                Console.WriteLine(validNumbers[i]);
             }
 
             ushort length = 0;
