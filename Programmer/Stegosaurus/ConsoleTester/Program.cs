@@ -7,7 +7,7 @@ using System.Linq;
 namespace ConsoleTester {
     class Program {
         static void Main(string[] args) {
-            IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100, 4);
+            IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100, 2);
             
             //Console.WriteLine(ji.GetCapacity());
 
@@ -16,16 +16,15 @@ namespace ConsoleTester {
             int len = 400;
             byte[] msg = new byte[len];
             for (int i = 0; i < len; i++) {
-                msg[i] = (byte)'a';
+                msg[i] = (byte)('a' + i % 26);
             }
 
             ji.Encode(msg);
             ji.Save(@"output.jpg");
 
-            //IImageDecoder jid = new Decoder("output.jpg");
-            //byte[] message = jid.Decode();
-            //Console.WriteLine(new string(message.Select(x => (char)x).ToArray()));
-
+            IImageDecoder jid = new Decoder("output.jpg");
+            byte[] message = jid.Decode();
+            Console.WriteLine(new string(message.Select(x => (char)x).ToArray()));
             Console.ReadKey();
         }
     }

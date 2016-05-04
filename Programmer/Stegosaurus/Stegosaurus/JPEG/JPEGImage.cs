@@ -195,7 +195,7 @@ namespace Stegosaurus {
             _splitMessageIntoSmallerComponents(metaDataList, 0x3, 2);
 
             //Split the message itself
-            _splitMessageIntoSmallerComponents(messageList, (byte)(M - 1), (int)Math.Log(M, 2));
+            _splitMessageIntoSmallerComponents(messageList, (byte) (M - 1), (int) Math.Log(M, 2));
         }
 
         private void _splitMessageIntoSmallerComponents(List<byte> list, byte mask, int steps) {
@@ -444,18 +444,23 @@ namespace Stegosaurus {
             Graph graph = new Graph();
 
             int valuesNeeded = _message.Count * 16 / (int)Math.Log(M, 2);
-            for (int i = 0; i < valuesNeeded - 1; i += 2) {
-                if (_message.Count != 0) {
-                    graph.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0]));
-                    _message.RemoveAt(0);
-                } else {
+
+            for (int i = 0; i < 15; i += 2) {
+                graph.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0], 4));
+                _message.RemoveAt(0);
+            }
+
+            for (int i = 16; i < valuesNeeded - 1; i += 2) {
+                if (_message.Count == 0) {
                     break;
                 }
+                graph.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0], M));
+                _message.RemoveAt(0);
             }
 
             //World's worst loops (O(n^2) shiet)
             //Find alle the possible switches between vertices and add them as edges
-            int threshold = 5;
+            int threshold = 2;
             s.Restart();
             Parallel.ForEach(graph.Vertices, pOptions, currentVertex => {
                 //foreach (Vertex currentVertex in graph.Vertices) {
@@ -463,47 +468,10 @@ namespace Stegosaurus {
                     if (currentVertex == otherVertex) {
                         continue;
                     }
-                    //AddEdge(true, true, currentVertex, otherVertex, threshold, graph);
-                    //AddEdge(true, false, currentVertex, otherVertex, threshold, graph);
-                    //AddEdge(false, true, currentVertex, otherVertex, threshold, graph);
-                    //AddEdge(false, false, currentVertex, otherVertex, threshold, graph);
-
-                    int weight = Math.Abs(currentVertex.SampleValue1 - otherVertex.SampleValue1);
-                    if (weight < threshold &&
-                        (currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message &&
-                        (currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message) {
-                        Edge e = new Edge(currentVertex, otherVertex, weight, true, true);
-                        lock (graph) {
-                            graph.Edges.Add(e);
-                        }
-                    }
-                    weight = Math.Abs(currentVertex.SampleValue1 - otherVertex.SampleValue2);
-                    if (weight < threshold &&
-                        (currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message &&
-                        (currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message) {
-                        Edge e = new Edge(currentVertex, otherVertex, weight, true, false);
-                        lock (graph) {
-                            graph.Edges.Add(e);
-                        }
-                    }
-                    weight = Math.Abs(currentVertex.SampleValue2 - otherVertex.SampleValue2);
-                    if (weight < threshold &&
-                        (currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message &&
-                        (currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message) {
-                        Edge e = new Edge(currentVertex, otherVertex, weight, false, false);
-                        lock (graph) {
-                            graph.Edges.Add(e);
-                        }
-                    }
-                    weight = Math.Abs(currentVertex.SampleValue2 - otherVertex.SampleValue1);
-                    if (weight < threshold &&
-                        (currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message &&
-                        (currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message) {
-                        Edge e = new Edge(currentVertex, otherVertex, weight, false, true);
-                        lock (graph) {
-                            graph.Edges.Add(e);
-                        }
-                    }
+                    AddEdge(true, true, currentVertex, otherVertex, threshold, graph);
+                    AddEdge(true, false, currentVertex, otherVertex, threshold, graph);
+                    AddEdge(false, true, currentVertex, otherVertex, threshold, graph);
+                    AddEdge(false, false, currentVertex, otherVertex, threshold, graph);
                 }
             });
             s.Stop();
@@ -515,16 +483,27 @@ namespace Stegosaurus {
             //Put the changed values back into the QuantizedValues
             _mergeGraphAndQuantizedValues(graph);
 
-            //testOutput();
         }
 
         private void AddEdge(bool firstFirst, bool secondFirst, Vertex first, Vertex second, int threshold, Graph g) {
-            int weight = Math.Abs(firstFirst ? first.SampleValue1 : first.SampleValue2) - (secondFirst ? second.SampleValue1 : second.SampleValue2);
+            int weight =
+                Math.Abs((firstFirst ? first.SampleValue1 : first.SampleValue2) -
+                         (secondFirst ? second.SampleValue1 : second.SampleValue2));
 
-            bool valid = weight < threshold && ((firstFirst ? first.SampleValue1 : first.SampleValue2) + (secondFirst ? second.SampleValue1 : second.SampleValue2)).Mod(M) == first.Message && ((firstFirst ? first.SampleValue2 : first.SampleValue1) + (secondFirst ? second.SampleValue2 : second.SampleValue1)).Mod(M) == second.Message;
-            if (valid) {
-                g.Edges.Add(new Edge(first, second, weight, firstFirst, secondFirst));
+
+            if (weight < threshold) {
+                if (
+                    ((firstFirst ? first.SampleValue2 : first.SampleValue1) +
+                     (secondFirst ? second.SampleValue1 : second.SampleValue2)).Mod(first.Modulo) == first.Message) {
+                    if (((firstFirst ? first.SampleValue1 : first.SampleValue2) +
+                         (secondFirst ? second.SampleValue2 : second.SampleValue1)).Mod(second.Modulo) == second.Message) {
+                        lock (g) {
+                            g.Edges.Add(new Edge(first, second, weight, firstFirst, secondFirst));
+                        }
+                    }
+                }
             }
+
         }
 
         private void _refactorGraph(Graph graph) {
@@ -538,7 +517,7 @@ namespace Stegosaurus {
             }
 
             foreach (Vertex vertex in graph.Vertices.Where(x => x.HasMessage)) {
-                if ((vertex.SampleValue1 + vertex.SampleValue2).Mod(M) != vertex.Message) {
+                if ((vertex.SampleValue1 + vertex.SampleValue2).Mod(vertex.Modulo) != vertex.Message) {
                     _forceSampleChange(vertex);
                 }
             }
@@ -570,7 +549,7 @@ namespace Stegosaurus {
         }
 
         private void _forceSampleChange(Vertex vertex) {
-            int error = (vertex.SampleValue1 + vertex.SampleValue2).Mod(M) - vertex.Message;
+            int error = (vertex.SampleValue1 + vertex.SampleValue2).Mod(vertex.Modulo) - vertex.Message;
 
             if (vertex.SampleValue1 - error <= 127 && vertex.SampleValue1 - error >= -128 &&
                 vertex.SampleValue1 - error != 0) {
@@ -579,7 +558,7 @@ namespace Stegosaurus {
                        vertex.SampleValue2 - error != 0) {
                 vertex.SampleValue2 -= error;
             } else {
-                vertex.SampleValue1 += 4 - error;
+                vertex.SampleValue1 += vertex.Modulo - error;
             }
         }
 
