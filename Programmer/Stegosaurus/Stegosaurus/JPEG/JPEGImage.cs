@@ -17,7 +17,7 @@ namespace Stegosaurus {
         private List<int> _nonZeroValues;
         public Bitmap CoverImage { get; }
 
-        private int maxThreads = 10;
+        private ParallelOptions pOptions = new ParallelOptions() {MaxDegreeOfParallelism = 10};
         private Stopwatch s = new Stopwatch();
         
         /// <summary>
@@ -402,7 +402,7 @@ namespace Stegosaurus {
         private void _encodeBlocks(double[][,] MCU) {
             Tuple<int[,], HuffmanTable, HuffmanTable, int>[] temp = new Tuple<int[,], HuffmanTable, HuffmanTable, int>[6]; 
 
-            Parallel.For(0, 6, new ParallelOptions { MaxDegreeOfParallelism = maxThreads }, i => {
+            Parallel.For(0, 6, pOptions, i => {
                 switch (i) {
                     case 4:
                         double[,] CbDownSampled = _downSample(MCU[1]);
@@ -457,7 +457,7 @@ namespace Stegosaurus {
             //Find alle the possible switches between vertices and add them as edges
             int threshold = 5;
             s.Restart();
-            Parallel.ForEach(graph.Vertices, new ParallelOptions { MaxDegreeOfParallelism = maxThreads }, currentVertex => {
+            Parallel.ForEach(graph.Vertices, pOptions, currentVertex => {
                 //foreach (Vertex currentVertex in graph.Vertices) {
                 foreach (Vertex otherVertex in graph.Vertices) {
                     if (currentVertex == otherVertex) {
@@ -670,7 +670,7 @@ namespace Stegosaurus {
                 channels[i] = new double[imageWidth,imageHeight];
             }
 
-            Parallel.For(0, imageHeight, new ParallelOptions { MaxDegreeOfParallelism = maxThreads }, y => {
+            Parallel.For(0, imageHeight, pOptions, y => {
 //            for (int y = 0; y < imageHeight; y++) {
                 for (int x = 0; x < imageWidth; x++) {
                     Color pixel;
