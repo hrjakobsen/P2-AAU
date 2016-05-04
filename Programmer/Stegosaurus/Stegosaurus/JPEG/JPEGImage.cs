@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Stegosaurus {
@@ -16,9 +15,11 @@ namespace Stegosaurus {
         private int _m;
         private List<Tuple<int[,], HuffmanTable, HuffmanTable, int>> _quantizedBlocks = new List<Tuple<int[,], HuffmanTable, HuffmanTable, int>>();
         private List<int> _nonZeroValues;
-
         public Bitmap CoverImage { get; }
 
+        private int maxThreads = 10;
+        private Stopwatch s = new Stopwatch();
+        
         /// <summary>
         /// Quantization table used for the Y component of the image.
         /// </summary>
@@ -312,10 +313,17 @@ namespace Stegosaurus {
         }
 
         private void _writeScanData() {
+            s.Restart();
             Bitmap paddedCoverImage = _padCoverImage();
-            double[][,] channelValues = _splitToChannels(paddedCoverImage);
-            BitList bits = new BitList();
+            s.Stop();
+            Console.WriteLine("Padding took {0} ms", s.ElapsedMilliseconds);
 
+            s.Restart();
+            double[][,] channelValues = _splitToChannels(paddedCoverImage);
+            s.Stop();
+            Console.WriteLine("Split to channels took {0} ms", s.ElapsedMilliseconds);
+
+            BitList bits = new BitList();
             _encodeMCU(bits, channelValues, paddedCoverImage.Width, paddedCoverImage.Height);
             _jw.WriteBytes(_flush(bits));
         }
@@ -355,6 +363,7 @@ namespace Stegosaurus {
         }
 
         private void _quantizeValues(double[][,] YCbCrChannels, int imageWidth, int imageHeight) {
+            s.Restart();
             _quantizedBlocks = new List<Tuple<int[,], HuffmanTable, HuffmanTable, int>>();
 
             double[][,] channels = new double[3][,];
@@ -386,12 +395,14 @@ namespace Stegosaurus {
                     _nonZeroValues.Add(_quantizedBlocks[array].Item1[xpos, ypos]);
                 }
             }
+            s.Stop();
+            Console.WriteLine("Encoding took {0} ms", s.ElapsedMilliseconds);
         }
 
         private void _encodeBlocks(double[][,] MCU) {
             Tuple<int[,], HuffmanTable, HuffmanTable, int>[] temp = new Tuple<int[,], HuffmanTable, HuffmanTable, int>[6]; 
 
-            Parallel.For(0, 6, i => {
+            Parallel.For(0, 6, new ParallelOptions { MaxDegreeOfParallelism = maxThreads }, i => {
                 switch (i) {
                     case 4:
                         double[,] CbDownSampled = _downSample(MCU[1]);
@@ -445,54 +456,58 @@ namespace Stegosaurus {
             //World's worst loops (O(n^2) shiet)
             //Find alle the possible switches between vertices and add them as edges
             int threshold = 5;
-            foreach (Vertex currentVertex in graph.Vertices) {
+            s.Restart();
+            Parallel.ForEach(graph.Vertices, new ParallelOptions { MaxDegreeOfParallelism = maxThreads }, currentVertex => {
+                //foreach (Vertex currentVertex in graph.Vertices) {
                 foreach (Vertex otherVertex in graph.Vertices) {
                     if (currentVertex == otherVertex) {
                         continue;
                     }
-                    AddEdge(true, true, currentVertex, otherVertex, threshold, graph);
-                    AddEdge(true, false, currentVertex, otherVertex, threshold, graph);
-                    AddEdge(false, true, currentVertex, otherVertex, threshold, graph);
-                    AddEdge(false, false, currentVertex, otherVertex, threshold, graph);
+                    //AddEdge(true, true, currentVertex, otherVertex, threshold, graph);
+                    //AddEdge(true, false, currentVertex, otherVertex, threshold, graph);
+                    //AddEdge(false, true, currentVertex, otherVertex, threshold, graph);
+                    //AddEdge(false, false, currentVertex, otherVertex, threshold, graph);
 
-                    //int weight = Math.Abs(currentVertex.SampleValue1 - otherVertex.SampleValue1);
-                    //if (weight < 5 &&
-                    //    (currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message &&
-                    //    (currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message) {
-                    //    Edge e = new Edge(currentVertex, otherVertex, weight, true, true);
-                    //    lock (graph) {
-                    //        graph.Edges.Add(e);
-                    //    }
-                    //}
-                    //weight = Math.Abs(currentVertex.SampleValue1 - otherVertex.SampleValue2);
-                    //if (weight < 5 &&
-                    //    (currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message &&
-                    //    (currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message) {
-                    //    Edge e = new Edge(currentVertex, otherVertex, weight, true, false);
-                    //    lock (graph) {
-                    //        graph.Edges.Add(e);
-                    //    }
-                    //}
-                    //weight = Math.Abs(currentVertex.SampleValue2 - otherVertex.SampleValue2);
-                    //if (weight < 5 &&
-                    //    (currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message &&
-                    //    (currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message) {
-                    //    Edge e = new Edge(currentVertex, otherVertex, weight, false, false);
-                    //    lock (graph) {
-                    //        graph.Edges.Add(e);
-                    //    }
-                    //}
-                    //weight = Math.Abs(currentVertex.SampleValue2 - otherVertex.SampleValue1);
-                    //if (weight < 5 &&
-                    //    (currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message &&
-                    //    (currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message) {
-                    //    Edge e = new Edge(currentVertex, otherVertex, weight, false, true);
-                    //    lock (graph) {
-                    //        graph.Edges.Add(e);
-                    //    }
-                    //}
+                    int weight = Math.Abs(currentVertex.SampleValue1 - otherVertex.SampleValue1);
+                    if (weight < threshold &&
+                        (currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message &&
+                        (currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message) {
+                        Edge e = new Edge(currentVertex, otherVertex, weight, true, true);
+                        lock (graph) {
+                            graph.Edges.Add(e);
+                        }
+                    }
+                    weight = Math.Abs(currentVertex.SampleValue1 - otherVertex.SampleValue2);
+                    if (weight < threshold &&
+                        (currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message &&
+                        (currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message) {
+                        Edge e = new Edge(currentVertex, otherVertex, weight, true, false);
+                        lock (graph) {
+                            graph.Edges.Add(e);
+                        }
+                    }
+                    weight = Math.Abs(currentVertex.SampleValue2 - otherVertex.SampleValue2);
+                    if (weight < threshold &&
+                        (currentVertex.SampleValue1 + otherVertex.SampleValue2).Mod(M) == currentVertex.Message &&
+                        (currentVertex.SampleValue2 + otherVertex.SampleValue1).Mod(M) == otherVertex.Message) {
+                        Edge e = new Edge(currentVertex, otherVertex, weight, false, false);
+                        lock (graph) {
+                            graph.Edges.Add(e);
+                        }
+                    }
+                    weight = Math.Abs(currentVertex.SampleValue2 - otherVertex.SampleValue1);
+                    if (weight < threshold &&
+                        (currentVertex.SampleValue1 + otherVertex.SampleValue1).Mod(M) == currentVertex.Message &&
+                        (currentVertex.SampleValue2 + otherVertex.SampleValue2).Mod(M) == otherVertex.Message) {
+                        Edge e = new Edge(currentVertex, otherVertex, weight, false, true);
+                        lock (graph) {
+                            graph.Edges.Add(e);
+                        }
+                    }
                 }
-            }
+            });
+            s.Stop();
+            Console.WriteLine("Adding edges took {0} ms", s.ElapsedMilliseconds);
 
             //Swap values and force the rest
             _refactorGraph(graph);
@@ -512,68 +527,12 @@ namespace Stegosaurus {
             }
         }
 
-        private void testOutput() {
-            List<int> validNumbers = new List<int>();
-            
-            int len = _quantizedBlocks.Count * 64;
-            for (int i = 0; i < len; i++) {
-                int array = i / 64;
-                int xpos = i % 8;
-                int ypos = (i % 64) / 8;
-
-                if (xpos + ypos != 0 && _quantizedBlocks[array].Item1[xpos, ypos] != 0) {
-                    validNumbers.Add(_quantizedBlocks[array].Item1[xpos, ypos]);
-                }
-            }
-
-            for (int i = 0; i < 16; i++) {
-                Console.WriteLine(validNumbers[i]);
-            }
-
-            ushort length = 0;
-            byte mvalue = 0;
-            for (int i = 0; i < 14; i += 2) {
-                int current = (validNumbers[i] + validNumbers[i + 1]).Mod(4);
-                length = (ushort)((length << 2) + current);
-            }
-
-            switch ((validNumbers[14] + validNumbers[15]).Mod(4)) {
-                case 0:
-                    mvalue = 2;
-                    break;
-                case 1:
-                    mvalue = 4;
-                    break;
-                case 2:
-                    mvalue = 16;
-                    break;
-            }
-
-            int elementsToRead = (int)(length * (8 / Math.Log(mvalue, 2))) * 2;
-
-            List<byte> messageParts = new List<byte>();
-
-            for (int i = 16; i <= elementsToRead + 16; i += 2) {
-                messageParts.Add((byte)(validNumbers[i] + validNumbers[i + 1]).Mod(mvalue));
-            }
-
-            List<byte> message = new List<byte>();
-            int steps = (int)(8 / Math.Log(mvalue, 2));
-            for (int i = 0; i < messageParts.Count - steps; i += steps) {
-                byte toAdd = 0;
-                for (int j = 0; j < steps; j++) {
-                    toAdd <<= (int)(Math.Log(mvalue, 2));
-                    toAdd += messageParts[i + j];
-                }
-                message.Add(toAdd);
-            }
-
-            string s = new string(message.Select(x => (char)x).ToArray());
-            Console.WriteLine(s);
-        }
-
         private void _refactorGraph(Graph graph) {
-            List<Edge> chosen = graph.DoSwitches();
+            s.Restart();
+            List<Edge> chosen = graph.GetSwitches();
+            s.Stop();
+            Console.WriteLine("Calculating switches took {0} ms", s.ElapsedMilliseconds);
+
             foreach (Edge edge in chosen) {
                 _swapVertexData(edge);
             }
@@ -657,7 +616,6 @@ namespace Stegosaurus {
                 for (int j = 0; j < 8; j++) {
                     double tempSum = 0.0;
                     double cCoefficient = c(i, j);
-                    //double cCoefficient = i == 0 ? (j == 0 ? 0.125 : 0.17677) : (j == 0 ? 0.17677 : 0.25);
                     for (int x = 0; x < 8; x++) {
                         for (int y = 0; y < 8; y++) {
                             tempSum += cCoefficient * block8[x, y] * _cosineCoefficients[x, i] * _cosineCoefficients[y, j];
@@ -712,14 +670,18 @@ namespace Stegosaurus {
                 channels[i] = new double[imageWidth,imageHeight];
             }
 
-            for (int y = 0; y < imageHeight; y++) {
+            Parallel.For(0, imageHeight, new ParallelOptions { MaxDegreeOfParallelism = maxThreads }, y => {
+//            for (int y = 0; y < imageHeight; y++) {
                 for (int x = 0; x < imageWidth; x++) {
-                    Color pixel = image.GetPixel(x, y);
+                    Color pixel;
+                    lock (image) {
+                        pixel = image.GetPixel(x, y);
+                    }
                     channels[0][x, y] = 0.299 * pixel.R + 0.587 * pixel.G + 0.114 * pixel.B - 128;
                     channels[1][x, y] = -0.168736 * pixel.R - 0.331264 * pixel.G + 0.5 * pixel.B;
                     channels[2][x, y] = 0.5 * pixel.R - 0.418688 * pixel.G - 0.081312 * pixel.B;
                 }
-            }
+            });
 
             return channels;
         }

@@ -13,7 +13,7 @@ namespace Stegosaurus {
             return Vertices.Aggregate("These are my vertices: \n", (current, v) => current + (v + "\n"));
         }
 
-        public List<Edge> DoSwitches() {
+        public List<Edge> GetSwitches() {
             List<Edge> sortedEdges = Edges.OrderBy(x => x.Weight).ToList();
             List<Edge> chosenEdges = new List<Edge>();
             while (sortedEdges.Any()) {
