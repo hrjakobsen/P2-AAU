@@ -1,0 +1,43 @@
+% -*- root: ../../DAT2-A423_Project_Report.tex -*-
+\section{Representing the Graph}
+There are multiple ways of representing a graph. Firstly wanted to use an adjacency list and for each vertex, keep a list of its neighbours. Having the edges implied by the adjacency list instead of having actual Edge objects that not only would the program use less memory, the process of removing all neighbours of a vertex becomes very efficient, a process we must often do in the ``graph-theoretic approach to steganography''. As efficient as this would be, there are major problems with doing this. By implying the edges instead of storing them, we cannot save any additional information about what the edge actually describes. In our case an edge means that there are a switch that would make both vertices contain the given message if the modulo operation is applied with the correct $m$-value. But having each vertex contain two values means that there are four possible switches between two vertices as shown in figure \ref{fig:graphSwitches}.
+
+\begin{figure}
+\begin {center}
+\begin {tikzpicture}[-latex ,auto ,node distance =0.5555555555555556 cm and 0.5555555555555556cm ,on grid ,
+semithick ,
+state/.style ={ circle ,top color =white ,
+draw , text=black , minimum width =0.22222222222222224 cm},
+state2/.style ={ circle ,color =white ,
+draw , text=black, opacity=0.0 , minimum width =.3 cm}]
+\node[state] (A0) {$(i,j)$};
+\node[state2] (A1) [right =of A0] {};
+\node[state2] (A2) [right =of A1] {};
+\node[state2] (A3) [right =of A2] {};
+\node[state2] (A4) [right =of A3] {};
+\node[state2] (A5) [right =of A4] {};
+\node[state2] (A6) [right =of A5] {};
+\node[state2] (A7) [right =of A6] {};
+\node[state2] (A8) [right =of A7] {};
+\node[state2] (A9) [right =of A8] {};
+\node[state2] (A10) [below =of A9] {};
+\node[state2] (A11) [below =of A10] {};
+\node[state2] (A12) [below =of A11] {};
+\node[state2] (A13) [below =of A12] {};
+\node[state2] (A14) [below =of A13] {};
+\node[state2] (A15) [below =of A14] {};
+\node[state2] (A16) [below =of A15] {};
+\node[state2] (A17) [below =of A16] {};
+\node[state] (A18) [below =of A17] {$(k,l)$};
+\path[-] (A0) edge [bend right =-45] node[] {$j\leftrightarrow l$}(A18);
+\path[-] (A0) edge [bend right =-15.000000000000002] node[] {$j\leftrightarrow k$}(A18);
+\path[-] (A0) edge [bend right =14.999999999999996] node[] {$i\leftrightarrow l$}(A18);
+\path[-] (A0) edge [bend right =45] node[] {$i\leftrightarrow k$}(A18);
+\end{tikzpicture}
+\end{center}
+\caption{Two vertices in the graph can be connected 4 different edges}
+\label{fig:graphSwitches}
+\end{figure}
+
+Another way of representing of a graph, is simply a list of vertices and a list of edges. Each edge then simply stores what vertices it connects. This makes it very easy to loop through all edges, but at the same time makes it computationally expensive to remove certain edges from the graph (ie. to remove all edges between two vertices).
+%Wait until we have checked if we can make adjacency list work

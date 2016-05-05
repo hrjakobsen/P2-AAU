@@ -5,7 +5,7 @@
 While working with JPEG images bit-patterns and bit-wise operations often occur.
 Due to hardware limitations, a single bit in the memory cannot be changed individually, and we can only address the individual bytes.
 There are now two ways that we can go about this:
-Either we use bytes to represent bits, and effectively waste 7 bits of memory for each bit, or we use the class \lstinline|BitArray| from the \lstinline|System.Collections| library.
+Either we use bytes to represent bits, and effectively waste 7 bits of memory for each bit, or we use the class \lstinline|BitArray| from the \lstinline|System.Collections| library. What this class does, is that it handles the packing of the bits into bytes, and makes you able to adress the individual bits.
 
 The \lstinline|BitArray| seemed like the way to go, and we implemented a class \lstinline|BitList| which implemented List-like features like \lstinline|Add| and \lstinline|Insert| while using the \lstinline|BitArray| to store our data.
 The implementation can be seen in appendix \ref{app:C}. 
@@ -20,10 +20,12 @@ In an example 512x512 image, we have over 750,000 bits to save, and if we were t
 All in all a very computationally expensive operation.
 
 So while the \lstinline|BitArray| seemed promising in theory, saving us a lot of memory, the need of inserting bits into the middle of the array makes using the \lstinline|BitArray| infeasible.
-We are now back at a point where it may seem worth it to waste the memory, and just use a list of bytes instead of the \lstinline|BitArray|.
-Unfortunately this brings its own problems to the table.
-Instead of having $\mathcal{O}(1)$ access time we would have $\mathcal{O}(n)$, which we want to avoid.
-We figured out a solution to these problems:
-We simply stop inserting values into the middle of the array.
-Of course it is not as easy as that, as we still need to insert 8 zeros if we happen to encode 8 consecutive ones in the scan data, but instead of doing this check after the encoding process, we do in on-the-fly instead.
-With the added method \lstinline|CheckedAdd| to \lstinline|BitList| which can be seen in appendix \ref{app:D}, we now do the check when values are added, instead of after. 
+What we need to solve this problem is to eliminate the need to shift a large part of the array. 
+One way of solving this problem is to make a data type which combines the functionality of the \lstinline|BitArray| with a linked list. 
+By splitting up the large \lstinline|BitArray| into smaller linked arrays we could shift the values in the smaller arrays. 
+We would have a slightly longer access time, but have a much faster insertion time. 
+Another way to solve the problem, and what we ended up doing was to eliminate the need of inserting the values. 
+We realised that the only time we need to insert values into the \lstinline|BitList| was when there were 8 consecutive ones in the scan data. 
+So what we did what created the method \lstinline|CheckedAdd| which we would use while writing scan data to the list. 
+This method would then keep track of the last inserted values, and insert the zeroes on-the-fly instead of after the whole process. 
+The method \lstinline|CheckedAdd| can also be seen in appendix \ref{app:C}
