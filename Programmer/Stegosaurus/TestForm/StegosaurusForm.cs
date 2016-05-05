@@ -7,25 +7,32 @@ using Stegosaurus;
 namespace TestForm{
     public partial class StegosaurusForm:Form {
         private readonly LeastSignificantBitImage StegoController;
-        private bool CoverImageSet, MessageImageSet;
+        private bool CoverImageSetLSB, MessageImageSetLSB, CoverImageSetGT, MessageFileSetGT;
+
+        public int tbarQualityValue {
+            get
+            {
+                return this.tbarQualitySlider.Value;
+            }
+            set
+            {
+                this.tbarQualitySlider.Value = value;
+            }
+        }
 
         public StegosaurusForm() {
             InitializeComponent();
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             StegoController = new LeastSignificantBitImage();
-        }
-
-        private void loadCover_Click(object sender, EventArgs e) {
-            getFileCover.ShowDialog();
-        }
-
-        private void loadMessage_Click(object sender, EventArgs e) {
-            getFileMessage.ShowDialog();
         }
 
         private void loadStego_Click(object sender, EventArgs e) {
             getFileStego.ShowDialog();
         }
 
+        /*
         private void Encode_Click(object sender, EventArgs e) {
             StegoController.Encode();
 
@@ -40,30 +47,42 @@ namespace TestForm{
             picMessage.Image = StegoController.MessageImage;
             StegoController.MessageImage.Save("./decrypted.png");
         }
-
+        */
         private void getFileCover_FileOk(object sender, CancelEventArgs e) {
-            StegoController.CoverImage = new Bitmap(getFileCover.FileName);
-            picCover.Image = StegoController.CoverImage;
-            CoverImageSet = true;
+            StegoController.InputImage = new Bitmap(getFileCoverLSB.FileName);
+            StegoController.StegoImage = new Bitmap(getFileCoverLSB.FileName);
+            picInput.Image = StegoController.InputImage;
+            CoverImageSetLSB = true;
 
-            if (MessageImageSet) {
-                Encode.Enabled = true;
+            if (MessageImageSetLSB || rdioDecode.Checked) {
+                btnProceed.Enabled = true;
             }
         }
 
         private void getFileMessage_FileOk(object sender, CancelEventArgs e) {
-            StegoController.MessageImage = new Bitmap(getFileMessage.FileName);
+            StegoController.MessageImage = new Bitmap(getFileMessageLSB.FileName);
             picMessage.Image = StegoController.MessageImage;
-            MessageImageSet = true;
+            MessageImageSetLSB = true;
 
-            if (CoverImageSet) {
-                Encode.Enabled = true;
+            if (CoverImageSetLSB) {
+                btnProceed.Enabled = true;
             }
         }
 
-        private void viewOptions_Click(object sender, EventArgs e)
+        private void loadCover_Click_1(object sender, EventArgs e)
         {
-            
+            getFileCoverLSB.ShowDialog();
+        }
+
+        private void loadMessage_Click_1(object sender, EventArgs e)
+        {
+            getFileMessageLSB.ShowDialog();
+        }
+
+        private void viewOptionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OptionsForm optionsForm = new OptionsForm();
+            optionsForm.ShowDialog();
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -72,11 +91,142 @@ namespace TestForm{
             aboutForm.Show();
         }
 
+        private void showHelpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            HelpForm helpForm = new HelpForm();
+            helpForm.Show();
+        }
+
+        private void tbarQualityChanged(object sender, EventArgs e)
+        {
+            tbarQualityValue = tbarQualitySlider.Value;
+            lblQuality.Text = tbarQualityValue.ToString();
+        }
+
+        private void DisplayLoadMessage(object sender, EventArgs e)
+        {
+            if (rdioEncode.Checked == true)
+            {
+                btnLoadMessage.Enabled = true;
+                btnProceed.Text = "Encode";
+                if (!MessageImageSetLSB)
+                {
+                    btnProceed.Enabled = false;
+                }
+            }
+            else
+            {
+                btnLoadMessage.Enabled = false;
+                picMessage.Image = null;
+                MessageImageSetLSB = false;
+                btnProceed.Text = "Decode";
+                if (CoverImageSetLSB)
+                {
+                    btnProceed.Enabled = true;
+                }
+            }
+        }
+
+        //encode or decode
+        private void btProceed_Click(object sender, EventArgs e) 
+        {
+            if (rdioEncode.Checked == true)
+            {
+                Cursor.Current = Cursors.WaitCursor;
+                StegoController.Encode();
+                Cursor.Current = Cursors.Default;
+
+                picResult.Image = StegoController.StegoImage;
+                StegoController.StegoImage.Save("./encrypted.png");
+            }
+            else if (rdioDecode.Checked == true)
+            {
+                Cursor.Current = Cursors.WaitCursor;
+                StegoController.Decode();
+                Cursor.Current = Cursors.Default;
+
+                picResult.Image = StegoController.MessageImage;
+                StegoController.MessageImage.Save("./decrypted.png");
+            }
+        }
+
         private void getFileStego_FileOk(object sender, CancelEventArgs e) {
             StegoController.StegoImage = new Bitmap(getFileStego.FileName);
-            picStego.Image = StegoController.StegoImage;
+            picResult.Image = StegoController.StegoImage;
             
             Decode.Enabled = true;
+        }
+
+        private void btnGTLoadMessageFile_Click(object sender, EventArgs e)
+        {
+            GetFileMessageGT.ShowDialog();
+        }
+
+        private void GetFileMessageGT_FileOk(object sender, CancelEventArgs e)
+        {
+            textBox1.Text = GetFileMessageGT.SafeFileName;
+            MessageFileSetGT = true;
+
+            if (CoverImageSetGT || rdioGTEncode.Checked)
+            {
+                btnGTProceed.Enabled = true;
+            }
+        }
+
+        private void rdioGTEncode_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rdioGTEncode.Checked == true)
+            {
+                btnGTLoadMessageFile.Enabled = true;
+                btnGTProceed.Text = "Encode";
+                if (!MessageFileSetGT)
+                {
+                    btnProceed.Enabled = false;
+                }
+            }
+            else if (rdioGTDecode.Checked == true)
+            {
+                btnGTLoadMessageFile.Enabled = false;
+                textBox1.Text = null;
+                MessageImageSetLSB = false;
+                btnGTProceed.Text = "Decode";
+                if (CoverImageSetGT)
+                {
+                    btnGTProceed.Enabled = true;
+                }
+            }
+        }
+
+        private void btnGTLoadInput_Click(object sender, EventArgs e)
+        {
+            getFileInputGT.ShowDialog();
+        }
+
+        private void getFileInputGT_FileOk(object sender, CancelEventArgs e)
+        {
+            CoverImageSetGT = true;
+            //picGTInput.Image =
+
+            if (MessageFileSetGT || rdioGTDecode.Checked)
+            {
+                btnGTProceed.Enabled = true;
+            }
+        }
+
+
+
+        //'Escape' closes form
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape)
+            {
+                DialogResult dialogResult = MessageBox.Show("Do you want to close Stegosaurus?", "", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    this.Close();
+                }
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
     }
 }

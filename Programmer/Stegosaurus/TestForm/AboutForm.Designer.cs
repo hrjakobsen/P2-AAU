@@ -51,7 +51,7 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(28, 146);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(314, 52);
+            this.label2.Size = new System.Drawing.Size(308, 52);
             this.label2.TabIndex = 8;
             this.label2.Text = resources.GetString("label2.Text");
             // 
@@ -93,8 +93,10 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lblName);
             this.Controls.Add(this.line);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "AboutForm";
-            this.Text = "About";
+            this.Text = "Stegosaurus - About";
+            this.Load += new System.EventHandler(this.AboutForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
