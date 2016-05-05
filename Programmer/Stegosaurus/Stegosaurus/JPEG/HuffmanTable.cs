@@ -6,7 +6,6 @@ namespace Stegosaurus {
     public class HuffmanTable {
 
         public Dictionary<byte, HuffmanElement> Elements = new Dictionary<byte, HuffmanElement>();
-
         public HuffmanTable(params HuffmanElement[] elements) {
             foreach (HuffmanElement huffmanElement in elements) {
                 Elements.Add(huffmanElement.RunSize, huffmanElement);
@@ -22,7 +21,17 @@ namespace Stegosaurus {
             return numberOfCodes;
         }
 
+        public HuffmanElement HasCode(ushort code, int length) {
+            foreach (KeyValuePair<byte, HuffmanElement> element in Elements) {
+                if (element.Value.CodeWord == code && element.Value.Length == length) {
+                    return element.Value;
+                }
+            }
+            return null;
+        }
+
         public override string ToString() {
+            Elements = Elements.OrderBy(x => x.Value.RunSize).ToDictionary(x => x.Key, x=> x.Value);
             return Elements.Aggregate("", (current, huffmanElement) => current + (huffmanElement + "\n"));
         }
 
@@ -30,6 +39,7 @@ namespace Stegosaurus {
             byte runSize = (byte)((run << 4) | size);
             return Elements[runSize];
         }
+
 #region DefaultTables
         // ReSharper disable once InconsistentNaming
         public static HuffmanTable JpegHuffmanTableYDC = new HuffmanTable(

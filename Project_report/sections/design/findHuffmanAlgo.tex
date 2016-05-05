@@ -1,0 +1,40 @@
+\begin{algorithm}
+\caption{Find Huffman table in a jpeg file}
+\label{alg2}
+\begin{algorithmic}
+\REQUIRE Binary Reader, which is reading a JPEG file, and an output parameter so the caller knows the table's ID and Class
+\ENSURE A Huffman Table fully constructed from the bytes in the JPEG file
+
+\STATE{$insideHuffmanTable := false$}
+\WHILE {$insideHuffmanTable = false$}
+	\STATE {$marker =$ read byte from stream}
+	\IF {$marker = 0xFF$}
+		\STATE {$marker =$ read byte from stream}
+		\IF {$marker = 0xC4$}
+			\STATE{$insideHuffmanTable := true$}
+		\ENDIF
+	\ENDIF
+\ENDWHILE
+\STATE{$length :=$ read byte from stream $<< 8 +$ read byte from stream $- 19$}
+\STATE{$ClassAndID :=$ read byte from stream}
+\FOR{$i:=1$ \TO $i=16$}
+	\STATE{array of lengths spot i $:=$ read byte from stream}
+\ENDFOR
+	\STATE{elements of current length $:=$ array of length spot 1}
+	\STATE{current code representation $:=0$}
+	\STATE{current code length $:= 0$}
+	\FOR {$i:=1$ \TO $i = length$}
+		\WHILE{elements of current length $= 0$ \AND current code length $< 17$}
+			\STATE{current code length $+ 1$}
+			\STATE{current code representation $<< 1 $}
+			\STATE{elements of current length $:= $ array of lengths spot current code length}
+			
+		\ENDWHILE
+		\STATE{Create new Huffman element from the next read byte in the stream, with the same code as the current code representation and with the length from the array of lengths from the spot current code length}
+		\STATE{Add Huffman element to table}
+		\STATE{elements of current length $- 1 $ }
+		\STATE{current code representation $+ 1$}
+	\ENDFOR
+\RETURN $Huffman Table$
+\end{algorithmic}
+\end{algorithm}

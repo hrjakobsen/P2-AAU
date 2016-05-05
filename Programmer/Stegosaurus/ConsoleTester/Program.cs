@@ -1,16 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
 using Stegosaurus;
 using System.Drawing;
+using System.Linq;
 
 namespace ConsoleTester {
     class Program {
         static void Main(string[] args) {
-           IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100);
-            IDecoder jid = new Decoder();
-            jid.Decode(@"output.jpg");
+            IImageEncoder ji = new JpegImage(new Bitmap(@"cat.jpg"), 100, 2);
+            
+            //Console.WriteLine(ji.GetCapacity());
 
-            //ji.Encode(new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
-            //ji.Save(@"output.jpg");
+            //byte[] msg = "Hej".Select(x => (byte)x).ToArray();
+
+            int len = 400;
+            byte[] msg = new byte[len];
+            for (int i = 0; i < len; i++) {
+                msg[i] = (byte)('a' + i % 26);
+            }
+
+            ji.Encode(msg);
+            ji.Save(@"output.jpg");
+
+            IImageDecoder jid = new Decoder("output.jpg");
+            byte[] message = jid.Decode();
+            Console.WriteLine(new string(message.Select(x => (char)x).ToArray()));
             Console.ReadKey();
         }
     }
