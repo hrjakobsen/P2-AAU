@@ -35,13 +35,13 @@ The first runs and the control for our further tests are shown in table \ref{fig
         \hline
         Code segment    & \multicolumn{3}{c|}{Processor} \\ \hline
                         & Intel\textsuperscript{\textregistered} \newline i5-4670K & AMD\textsuperscript{\textregistered} \newline A6-3420M & None \\ \hline
-        Image padding   & 7099 ms               & 38426 ms              & 0000 ms           \\ \hline
-        Channel split   & 3265 ms               & 20761 ms              & 0000 ms           \\ \hline
-        Encoding        & 4297 ms               & 27858 ms              & 0000 ms           \\ \hline
-        Adding edges    & 124 ms                & 987 ms                & 0000 ms           \\ \hline
-        Get switches    & 364 ms                & 2383 ms               & 0000 ms           \\ \hline
-        Huffman         & 668 ms                & 3202 ms               & 0000 ms           \\ \hline
-        Total run time  & \textbf{16031 ms}     & \textbf{94627 ms}     & \textbf{0000 ms}  \\ \hline
+        Image padding   & 7099 ms               & 39654 ms              & 0000 ms           \\ \hline
+        Channel split   & 3265 ms               & 20355 ms              & 0000 ms           \\ \hline
+        Encoding        & 4297 ms               & 28045 ms              & 0000 ms           \\ \hline
+        Adding edges    & 124 ms                & 1020 ms                & 0000 ms           \\ \hline
+        Get switches    & 364 ms                & 2720 ms               & 0000 ms           \\ \hline
+        Huffman         & 668 ms                & 3568 ms               & 0000 ms           \\ \hline
+        Total run time  & \textbf{16031 ms}     & \textbf{96385 ms}     & \textbf{0000 ms}  \\ \hline
         Time covered    & \textit{98.7 \%}      & \textit{98.9 \%}      & \textit{00.0 \%}  \\ \hline
     \end{tabular}
     }
@@ -74,13 +74,13 @@ This reduced the calls to the Pixel's getter, which had a positive impact on the
         \hline
         Code segment    & \multicolumn{6}{c|}{Processor and performance increase} \\ \hline
                         & Intel\textsuperscript{\textregistered} \newline i5-4670K & Increase\tnote{\textdagger} & AMD\textsuperscript{\textregistered} \newline A6-3420M & Increase\tnote{\textdagger} & None & Increase\tnote{\textdagger} \\ \hline
-        Image padding   & 87 ms     & 8079 \%   & 526 ms     & 7200 \%    & 7099 ms   & 10 \%      \\ \hline
-        Channel split   & 3089 ms   & 6 \%      & 20074 ms   & 3 \%       & 7099 ms   & 10 \%      \\ \hline
-        Encoding        & 4297 ms   & 0 \%      & 28921 ms   & -4 \%      & 7099 ms   & 10 \%      \\ \hline
-        Adding edges    & 125 ms    & -1 \%     & 995 ms     & -1 \%      & 7099 ms   & 10 \%      \\ \hline
-        Get switches    & 365 ms    & 0 \%      & 2797 ms    & -15 \%     & 7099 ms   & 10 \%      \\ \hline
-        Huffman         & 650 ms    & 3 \%      & 3604 ms    & -11 \%     & 7099 ms   & 10 \%      \\ \hline
-        Total run time  & \textbf{8828 ms} & \textbf{82 \%} & \textbf{57973 ms}& \textbf{63 \%}  & \textbf{0000 ms} & \textbf{10 \%}  \\ \hline
+        Image padding   & 87 ms     & 8079 \%   & 526 ms     & 7433 \%    & 7099 ms   & 10 \%      \\ \hline
+        Channel split   & 3089 ms   & 6 \%      & 20074 ms   & 1 \%       & 7099 ms   & 10 \%      \\ \hline
+        Encoding        & 4297 ms   & 0 \%      & 28921 ms   & -3 \%      & 7099 ms   & 10 \%      \\ \hline
+        Adding edges    & 125 ms    & -1 \%     & 995 ms     & 3 \%      & 7099 ms   & 10 \%      \\ \hline
+        Get switches    & 365 ms    & 0 \%      & 2797 ms    & 3 \%     & 7099 ms   & 10 \%      \\ \hline
+        Huffman         & 650 ms    & 3 \%      & 3604 ms    & -1 \%     & 7099 ms   & 10 \%      \\ \hline
+        Total run time  & \textbf{8828 ms} & \textbf{82 \%} & \textbf{57973 ms}& \textbf{66 \%}  & \textbf{0000 ms} & \textbf{10 \%}  \\ \hline
         Time covered    & \textit{97.6 \%} &    & \textit{98.2 \%} &      & \textit{00.0 \%} &     \\ \hline
     \end{tabular}
     }
@@ -114,13 +114,13 @@ This saved a few operations at a later time, when the edges were ordered by weig
         \hline
         Code segment    & \multicolumn{6}{c|}{Processor and performance increase} \\ \hline
                         & Intel\textsuperscript{\textregistered} \newline i5-4670K & Increase\tnote{\textdagger} & AMD\textsuperscript{\textregistered} \newline A6-3420M & Increase\tnote{\textdagger} & None & Increase\tnote{\textdagger} \\ \hline
-        Image padding   & 86        & 8126 \%    & 503       & 7536 \%    & 7099      & 10 \%     \\ \hline
-        Channel split   & 318       & 926 \%     & 5009      & 315 \%     & 7099      & 10 \%     \\ \hline
-        Encoding        & 4279      & 0 \%       & 28539     & 2 \%       & 7099      & 10 \%     \\ \hline
-        Adding edges    & 100       & 23 \%      & 628       & 57 \%      & 7099      & 10 \%     \\ \hline
-        Get switches    & 349       & 4 \%       & 2719      & -12 \%     & 7099      & 10 \%     \\ \hline
-        Huffman         & 642       & 4 \%       & 3712      & -14 \%     & 7099      & 10 \%     \\ \hline
-        Total run time  & \textbf{5987} & \textbf{168 \%} & \textbf{42208} & \textbf{124 \%} & \textbf{0000} & \textbf{10 \%} \\ \hline
+        Image padding   & 86        & 8126 \%    & 503       & 7780 \%    & 7099      & 10 \%     \\ \hline
+        Channel split   & 318       & 926 \%     & 5009      & 306 \%     & 7099      & 10 \%     \\ \hline
+        Encoding        & 4279      & 0 \%       & 28539     & -2 \%       & 7099      & 10 \%     \\ \hline
+        Adding edges    & 100       & 23 \%      & 628       & 63 \%      & 7099      & 10 \%     \\ \hline
+        Get switches    & 349       & 4 \%       & 2719      & 0 \%     & 7099      & 10 \%     \\ \hline
+        Huffman         & 642       & 4 \%       & 3712      & -4 \%     & 7099      & 10 \%     \\ \hline
+        Total run time  & \textbf{5987} & \textbf{168 \%} & \textbf{42208} & \textbf{128 \%} & \textbf{0000} & \textbf{10 \%} \\ \hline
         Time covered    & \textit{96.5 \%} &     & \textit{97.4 \%} &     & \textit{00.0 \%} &      \\ \hline
     \end{tabular}
     }
@@ -162,13 +162,13 @@ This did not seem to have an effect, so it is quite likely that the compiler alr
         \hline
         Code segment    & \multicolumn{6}{c|}{Processor and performance increase} \\ \hline
                         & Intel\textsuperscript{\textregistered} \newline i5-4670K & Increase\tnote{\textdagger} & AMD\textsuperscript{\textregistered} \newline A6-3420M & Increase\tnote{\textdagger} & None & Increase\tnote{\textdagger} \\ \hline
-        Image padding   & 88        & 7995 \%    & 521       & 7277 \%    & 7099      & 10 \%     \\ \hline
-        Channel split   & 109       & 2884 \%    & 769       & 2599 \%    & 7099      & 10 \%     \\ \hline
-        Encoding        & 1782      & 141 \%     & 6977      & 299 \%     & 7099      & 10 \%     \\ \hline
-        Adding edges    & 50        & 148 \%     & 190       & 421 \%     & 7099      & 10 \%     \\ \hline
-        Get switches    & 324       & 12 \%      & 2295      & 4 \%       & 7099      & 10 \%     \\ \hline
-        Huffman         & 651       & 3 \%       & 3914      & -18 \%     & 7099      & 10 \%     \\ \hline
-        Total run time  & \textbf{3214} & \textbf{399 \%} & \textbf{15801} & \textbf{499 \%} & \textbf{0000} & \textbf{10 \%} \\ \hline
+        Image padding   & 88        & 7995 \%    & 521       & 7513 \%    & 7099      & 10 \%     \\ \hline
+        Channel split   & 109       & 2884 \%    & 769       & 2546 \%    & 7099      & 10 \%     \\ \hline
+        Encoding        & 1782      & 141 \%     & 6977      & 302 \%     & 7099      & 10 \%     \\ \hline
+        Adding edges    & 50        & 148 \%     & 190       & 438 \%     & 7099      & 10 \%     \\ \hline
+        Get switches    & 324       & 12 \%      & 2295      & 19 \%       & 7099      & 10 \%     \\ \hline
+        Huffman         & 651       & 3 \%       & 3914      & -9 \%     & 7099      & 10 \%     \\ \hline
+        Total run time  & \textbf{3214} & \textbf{399 \%} & \textbf{15801} & \textbf{510 \%} & \textbf{0000} & \textbf{10 \%} \\ \hline
         Time covered    & \textit{93.4 \%} &     & \textit{92.8 \%} &     & \textit{00.0 \%} &     \\ \hline
     \end{tabular}
     }
