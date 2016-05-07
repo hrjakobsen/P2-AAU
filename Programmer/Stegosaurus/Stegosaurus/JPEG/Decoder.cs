@@ -5,7 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 namespace Stegosaurus {
-    public class Decoder : IImageDecoder {
+    public class Decoder:IImageDecoder {
 
         /// <summary>
         /// Huffman table used for the DC coefficient of the Y component of the image.
@@ -30,9 +30,9 @@ namespace Stegosaurus {
         private BinaryReader file;
         List<HuffmanTable> huffmanTables = new List<HuffmanTable>();
 
-        
+
         public Decoder(string path) {
-            
+
             StreamReader sr = new StreamReader(path);
             file = new BinaryReader(sr.BaseStream);
             for (int i = 0; i < 4; i++) {
@@ -45,12 +45,12 @@ namespace Stegosaurus {
                         ChrDCHuffman = temp;
                     }
                 } else if ((byte)(ClassAndID & 0x0f) == 0) {
-                    YACHuffman = temp; 
+                    YACHuffman = temp;
                 } else {
                     ChrACHuffman = temp;
                 }
             }
-            
+
         }
 
         /// <summary>
@@ -78,21 +78,21 @@ namespace Stegosaurus {
             for (int i = 0; i < 16; i++) {
                 byteArr[i] = file.ReadByte();
             }
-            
+
             /* creates the huffman table from the file */
             length = length - offset;
             byte currentLength = 0;
             ushort code = 0;
             byte elementsOfLengthLeft = byteArr[currentLength];
             for (int i = 0; i < length; i++) {
-                while(elementsOfLengthLeft <= 0 && currentLength != 15) {
+                while (elementsOfLengthLeft <= 0 && currentLength != 15) {
                     currentLength++;
                     code <<= 1;
                     elementsOfLengthLeft = byteArr[currentLength];
                 }
-                huffmanElements.Add(new HuffmanElement(file.ReadByte(), code, (byte)(currentLength+1)));
+                huffmanElements.Add(new HuffmanElement(file.ReadByte(), code, (byte)(currentLength + 1)));
                 elementsOfLengthLeft--;
-                code++;                
+                code++;
             }
             return new HuffmanTable(huffmanElements.ToArray());
         }
@@ -114,7 +114,7 @@ namespace Stegosaurus {
             for (int i = 0; i < 12; i++) {
                 file.ReadByte();
             }
-            
+
             List<byte> listOfBytes = new List<byte>();
             while (file.BaseStream.Position != file.BaseStream.Length) {
                 a = file.ReadByte();
@@ -126,10 +126,10 @@ namespace Stegosaurus {
                     }
                 }
                 listOfBytes.Add(a);
-                
+
             }
 
-            
+
             BitList bits = new BitList();
             foreach (byte current in listOfBytes) {
                 byte mask = 1;
@@ -147,13 +147,13 @@ namespace Stegosaurus {
             while (validNumbers.Count < 16) {
                 _addNextMCU(validNumbers, bits, ref index);
             }
-            
+
 
             int length = getLength(validNumbers);
             int modulo = getModulo(validNumbers);
 
             validNumbers.RemoveRange(0, 16);
-            
+
 
             int elementsToRead = (int)(length * (8 / Math.Log(modulo, 2))) * 2;
 
@@ -163,7 +163,7 @@ namespace Stegosaurus {
 
             List<byte> messageParts = new List<byte>();
 
-            for (int i = 0; i <= elementsToRead; i += 2) {
+            for (int i = 0; i < elementsToRead; i += 2) {
                 messageParts.Add((byte)(validNumbers[i] + validNumbers[i + 1]).Mod(modulo));
             }
 
@@ -245,10 +245,10 @@ namespace Stegosaurus {
                     validNumbers.Add(element);
                 }
             }
-            
+
             return validNumbers;
 
-        } 
+        }
 
         private int nextValue(BitList bits, ref int index, HuffmanTable huffmanTable, out int zeroes) {
             HuffmanElement e = null;
@@ -276,7 +276,7 @@ namespace Stegosaurus {
                 value += (ushort)(bits[index] ? 1 : 0);
                 index++;
             }
-            
+
 
             return lookupValue(value, category);
         }
