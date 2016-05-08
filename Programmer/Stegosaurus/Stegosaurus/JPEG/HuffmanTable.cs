@@ -10,7 +10,7 @@ namespace Stegosaurus {
             foreach (HuffmanElement huffmanElement in elements) {
                 Elements.Add(huffmanElement.RunSize, huffmanElement);
             }
-        } 
+        }
 
         public byte[] Combinations() {
             byte[] numberOfCodes = new byte[16];
@@ -31,7 +31,7 @@ namespace Stegosaurus {
         }
 
         public override string ToString() {
-            Elements = Elements.OrderBy(x => x.Value.RunSize).ToDictionary(x => x.Key, x=> x.Value);
+            Elements = Elements.OrderBy(x => x.Value.RunSize).ToDictionary(x => x.Key, x => x.Value);
             return Elements.Aggregate("", (current, huffmanElement) => current + (huffmanElement + "\n"));
         }
 
@@ -40,8 +40,7 @@ namespace Stegosaurus {
             return Elements[runSize];
         }
 
-#region DefaultTables
-        // ReSharper disable once InconsistentNaming
+        #region DefaultTables
         public static HuffmanTable JpegHuffmanTableYDC = new HuffmanTable(
             new HuffmanElement(0x00, 0x00, 2),
             new HuffmanElement(0x01, 0x02, 3),
@@ -57,7 +56,6 @@ namespace Stegosaurus {
             new HuffmanElement(0x0b, 0x1fe, 9)
         );
 
-        // ReSharper disable once InconsistentNaming
         public static HuffmanTable JpegHuffmanTableYAC = new HuffmanTable(
             new HuffmanElement(0x00, 0xa, 4),
             new HuffmanElement(0x01, 0x0, 2),
@@ -223,7 +221,6 @@ namespace Stegosaurus {
             new HuffmanElement(0xfa, 0xfffe, 16)
         );
 
-        // ReSharper disable once InconsistentNaming
         public static HuffmanTable JpegHuffmanTableChrDC = new HuffmanTable(
             new HuffmanElement(0x00, 0x00, 2),
             new HuffmanElement(0x01, 0x01, 2),
@@ -239,7 +236,6 @@ namespace Stegosaurus {
             new HuffmanElement(0x0b, 0x7fe, 11)
         );
 
-        // ReSharper disable once InconsistentNaming
         public static HuffmanTable JpegHuffmanTableChrAC = new HuffmanTable(
             new HuffmanElement(0x00, 0x0, 2),
             new HuffmanElement(0x01, 0x1, 2),
@@ -404,11 +400,10 @@ namespace Stegosaurus {
             new HuffmanElement(0xf9, 0xfffd, 16),
             new HuffmanElement(0xfa, 0xfffe, 16)
         );
-#endregion
+        #endregion
     }
 
-
-    public class HuffmanElement : IComparable<HuffmanElement> {
+    public class HuffmanElement:IComparable<HuffmanElement> {
         public byte RunSize { get; }
         public byte Length { get; }
         public ushort CodeWord { get; }
@@ -425,14 +420,6 @@ namespace Stegosaurus {
             } else {
                 return Length - other.Length;
             }
-        }
-
-        public byte[] CodeWordToBytes() {
-            byte[] bytes = new byte[2];
-            bytes[0] = (byte)(CodeWord >> 8);
-            bytes[1] = (byte)CodeWord;
-
-            return bytes;
         }
 
         public override string ToString() {
