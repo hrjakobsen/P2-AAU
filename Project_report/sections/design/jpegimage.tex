@@ -1,6 +1,22 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
-\section{Design of the JPEG image class}
+\section{Design of the JPEG image encoder}
+In section \ref{sec:jpegStudy} we examined how a JPEG image is encoded and saved to a file. In this section we will use this knowledge to design a JPEG encoder that can be implemented into our program. Our goal of this encoder is, that we can create a valid JFIF file where we have also implemented the graph theoretical approach as described in section \ref{sec:graphJPEG}. As we can recall from section \ref{sec:jpegStudy}, the conversion from a bitmap image to a JPEG image is the result from the following process:
 
+\begin{enumerate}
+	\item The image is split into three channels (Y, Cb and Cr)
+	\item The image is divided into MCU's where a down-sampling may take place
+	\item DCT is performed on all 8x8 blocks in the MCU's
+	\item Each new 8x8 block of DCT coefficients is quantized
+	\item All 8x8 quantized values are then Huffman-coded and saved to a file using zero-runlength encoding.
+\end{enumerate}
+
+Some of these processes such as DCT are simply mathematical formulas performed on the data, and will not change from one image to another, but other processes such as Huffman coding and quantization can yield very different result, depending on what Huffman- or quantization tables were used. If a quantization table with low values are used, the quality of the image would be higher, as the quantization process wont make as many of the entries in the 8x8 block zeroes. A downside of a quantization values being low is that because of the low amount of zeroes in the 8x8 blocks, the zero-runlength encoding would not be as efficient, which would mean a higher file-size. 
+
+Because the Huffman- and quantization tables has such a tremendous impact on the resulting JPEG image, it would make sense to have the user able to change these to their liking. Because of this we will both the quantization tables and the Huffman tables will be created as classes of their own, and because of this, changing the tables in the encoder will become as easy as changing a property.
+
+Furthermore, a Huffman table is a collection of run-sizes and a bitstring of how to encode the run-size. These bitstrings can be saved in an unsigned data type, but because these bitstrings can start with the bit 0, there is no way to tell the length from the unsigned data type alone. Because of this, a class \lstinline|HuffmanElement| was created. The class then contains the unsigned data type along with the length of the bitstring. All in all this means that our Huffman Table must contain a dictionary where the key is the run/size byte and the value is the \lstinline|HuffmanElement|.
+
+\iffalse
 The JPEG image class will implement the interface \lstinline|IImageEncoder|, as this is the class which will convert a bitmap image into a JPEG-image, as well as embed data into the saved image.
 Implementing the interface means that the \lstinline|JPEGImage| class will have the following public methods:
 
@@ -13,4 +29,6 @@ Implementing the interface means that the \lstinline|JPEGImage| class will have 
 The reason for the use of \lstinline|IImageEncoder| is that we can keep working on the actual implementation of the JPEG-encoder, while the ITC-group can build their system around the interface.
 Using an interface also means that we can later expand the system with other types of image encoders.
 An example of this could be a PNG-encoder using an LSB-method to embed data.
-This class would also implement \lstinline|IImageEncoder|, and would make switching between the two very easy. 
+This class would then also implement \lstinline|IImageEncoder|, andswitching between the two would be very easy. 
+
+\fi
