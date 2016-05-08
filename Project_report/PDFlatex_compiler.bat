@@ -36,6 +36,8 @@ del *.out /S /Q /F
 del *.thm /S /Q /F
 del *.tdo /S /Q /F
 del *.xml /S /Q /F
+del *.cb /S /Q /F
+del *.cb2 /S /Q /F
 del *blx.bib /S /Q /F
 @echo -------------------------------------------------
 @echo 		Cleanup Done!
