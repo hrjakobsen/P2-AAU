@@ -58,9 +58,8 @@ namespace Stegosaurus {
         /// </summary>
         /// <param name="path"></param>
         public byte[] Decode() {
-            int modulo = 0;
             BitList bits = findScanData();
-            return decodeScanData(bits, ref modulo);
+            return decodeScanData(bits);
         }
 
         private HuffmanTable getHuffmanTable(ref byte ClassAndID) {
@@ -140,7 +139,7 @@ namespace Stegosaurus {
             return bits;
         }
 
-        private byte[] decodeScanData(BitList bits, ref int mod) {
+        private byte[] decodeScanData(BitList bits) {
             List<int> validNumbers = new List<int>();
             int index = 0;
 
