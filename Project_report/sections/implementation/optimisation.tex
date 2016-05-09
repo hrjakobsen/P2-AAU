@@ -34,7 +34,7 @@ The first runs and the control for our further tests are shown in table \ref{fig
     \begin{tabular}{|p{3cm}|p{3.2cm}|p{3.2cm}|p{3.2cm}|}
         \hline
         Code segment    & \multicolumn{3}{c|}{Processor} \\ \hline
-                        & Intel\textsuperscript{\textregistered} \newline i5-4670K & AMD\textsuperscript{\textregistered} \newline A6-3420M & i7-4700HQ \\ \hline
+                        & Intel\textsuperscript{\textregistered} \newline i5-4670K & AMD\textsuperscript{\textregistered} \newline A6-3420M & Intel\textsuperscript{\textregistered} \newline i7-4700HQ \\ \hline
         Image padding   & 7099 ms               & 39654 ms              & 8183 ms           \\ \hline
         Channel split   & 3265 ms               & 20355 ms              & 3756 ms           \\ \hline
         Encoding        & 4297 ms               & 28045 ms              & 4861 ms           \\ \hline
@@ -73,7 +73,7 @@ This reduced the calls to the Pixel's getter, which had a positive impact on the
     \begin{tabular}{|p{2.8cm}|p{1.8cm}|p{1.5cm}|p{1.8cm}|p{1.5cm}|p{1.8cm}|p{1.5cm}|}
         \hline
         Code segment    & \multicolumn{6}{c|}{Processor and performance increase} \\ \hline
-                        & Intel\textsuperscript{\textregistered} \newline i5-4670K & Increase\tnote{\textdagger} & AMD\textsuperscript{\textregistered} \newline A6-3420M & Increase\tnote{\textdagger} & i7-4700HQ & Increase\tnote{\textdagger} \\ \hline
+                        & Intel\textsuperscript{\textregistered} \newline i5-4670K & Increase\tnote{\textdagger} & AMD\textsuperscript{\textregistered} \newline A6-3420M & Increase\tnote{\textdagger} & Intel\textsuperscript{\textregistered} \newline i7-4700HQ & Increase\tnote{\textdagger} \\ \hline
         Image padding   & 87 ms     & 8079 \%   & 526 ms     & 7433 \%    & 97 ms   & 8336 \%      \\ \hline
         Channel split   & 3089 ms   & 6 \%      & 20074 ms   & 1 \%       & 3577 ms   & 5 \%      \\ \hline
         Encoding        & 4297 ms   & 0 \%      & 28921 ms   & -3 \%      & 4811 ms   & 1 \%      \\ \hline
@@ -113,7 +113,7 @@ This saved a few operations at a later time, when the edges were ordered by weig
     \begin{tabular}{|p{2.8cm}|p{1.8cm}|p{1.5cm}|p{1.8cm}|p{1.5cm}|p{1.8cm}|p{1.5cm}|}
         \hline
         Code segment    & \multicolumn{6}{c|}{Processor and performance increase} \\ \hline
-                        & Intel\textsuperscript{\textregistered} \newline i5-4670K & Increase\tnote{\textdagger} & AMD\textsuperscript{\textregistered} \newline A6-3420M & Increase\tnote{\textdagger} & i7-4700HQ & Increase\tnote{\textdagger} \\ \hline
+                        & Intel\textsuperscript{\textregistered} \newline i5-4670K & Increase\tnote{\textdagger} & AMD\textsuperscript{\textregistered} \newline A6-3420M & Increase\tnote{\textdagger} & Intel\textsuperscript{\textregistered} \newline i7-4700HQ & Increase\tnote{\textdagger} \\ \hline
         Image padding   & 86        & 8126 \%    & 503       & 7780 \%    & 96      & 8406 \%     \\ \hline
         Channel split   & 318       & 926 \%     & 5009      & 306 \%     & 388      & 867 \%     \\ \hline
         Encoding        & 4279      & 0 \%       & 28539     & -2 \%       & 4806      & 1 \%     \\ \hline
@@ -161,7 +161,7 @@ This did not seem to have an effect, so it is quite likely that the compiler alr
     \begin{tabular}{|p{2.8cm}|p{1.8cm}|p{1.5cm}|p{1.8cm}|p{1.5cm}|p{1.8cm}|p{1.5cm}|}
         \hline
         Code segment    & \multicolumn{6}{c|}{Processor and performance increase} \\ \hline
-                        & Intel\textsuperscript{\textregistered} \newline i5-4670K & Increase\tnote{\textdagger} & AMD\textsuperscript{\textregistered} \newline A6-3420M & Increase\tnote{\textdagger} & i7-4700HQ & Increase\tnote{\textdagger} \\ \hline
+                        & Intel\textsuperscript{\textregistered} \newline i5-4670K & Increase\tnote{\textdagger} & AMD\textsuperscript{\textregistered} \newline A6-3420M & Increase\tnote{\textdagger} & Intel\textsuperscript{\textregistered} \newline i7-4700HQ & Increase\tnote{\textdagger} \\ \hline
         Image padding   & 88        & 7995 \%    & 521       & 7513 \%    & 99      & 8199 \%     \\ \hline
         Channel split   & 109       & 2884 \%    & 769       & 2546 \%    & 78      & 4691 \%     \\ \hline
         Encoding        & 1782      & 141 \%     & 6977      & 302 \%     & 2445      & 99 \%     \\ \hline
