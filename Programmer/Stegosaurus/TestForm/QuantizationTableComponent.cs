@@ -53,17 +53,10 @@ namespace TestForm
         
         public QuantizationTable saveTable()
         {
-            throw new NotImplementedException();
+            byte[] entries = QuantizationBoxes.Select(x => Convert.ToByte(x.Text, 16)).ToArray();
+            QuantizationTable Q = new QuantizationTable(entries);
 
-            //QuantizationTable Q = new QuantizationTable();
-
-            //for (int i = 0; i < QuantizationBoxes.Count(); i++)
-            //{
-            //    byte runSize = byte.Parse(runSizeBoxes[i].Text);
-            //    H.Elements.Add(runSize, new HuffmanElement(runSize, Convert.ToUInt16(codeWordsBoxes[i].Text, 2), (byte)codeWordsBoxes[i].Text.Length));
-            //}
-
-            //return H;
+            return Q;
         }
     }
 }

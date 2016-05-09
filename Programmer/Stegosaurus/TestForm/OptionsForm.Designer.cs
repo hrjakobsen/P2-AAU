@@ -34,15 +34,6 @@
             this.OptionsBox = new System.Windows.Forms.ListBox();
             this.pnlOptionsHuffman = new System.Windows.Forms.Panel();
             this.btnHuffmanAddRow = new System.Windows.Forms.Button();
-            this.grpCustomHuffman = new System.Windows.Forms.GroupBox();
-            this.pnlHuffmanY_DC = new System.Windows.Forms.Panel();
-            this.pnlHuffmanY_AC = new System.Windows.Forms.Panel();
-            this.pnlHuffmanChr_DC = new System.Windows.Forms.Panel();
-            this.rdioHuffmanY_DC = new System.Windows.Forms.RadioButton();
-            this.rdioHuffmanY_AC = new System.Windows.Forms.RadioButton();
-            this.rdioHuffmanChr_DC = new System.Windows.Forms.RadioButton();
-            this.pnlHuffmanChr_AC = new System.Windows.Forms.Panel();
-            this.rdioHuffmanChr_AC = new System.Windows.Forms.RadioButton();
             this.pnlOptionsQuality = new System.Windows.Forms.Panel();
             this.tbarQualitySlider = new System.Windows.Forms.TrackBar();
             this.grpQualityDesc = new System.Windows.Forms.GroupBox();
@@ -60,8 +51,16 @@
             this.button1 = new System.Windows.Forms.Button();
             this.tbSaveLocation = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.pnlHuffmanY_DC = new System.Windows.Forms.Panel();
+            this.rdioHuffmanChr_AC = new System.Windows.Forms.RadioButton();
+            this.pnlHuffmanChr_AC = new System.Windows.Forms.Panel();
+            this.rdioHuffmanY_AC = new System.Windows.Forms.RadioButton();
+            this.rdioHuffmanY_DC = new System.Windows.Forms.RadioButton();
+            this.pnlHuffmanChr_DC = new System.Windows.Forms.Panel();
+            this.pnlHuffmanY_AC = new System.Windows.Forms.Panel();
+            this.grpCustomHuffman = new System.Windows.Forms.GroupBox();
+            this.rdioHuffmanChr_DC = new System.Windows.Forms.RadioButton();
             this.pnlOptionsHuffman.SuspendLayout();
-            this.grpCustomHuffman.SuspendLayout();
             this.pnlOptionsQuality.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbarQualitySlider)).BeginInit();
             this.grpQuality.SuspendLayout();
@@ -69,6 +68,7 @@
             this.grpQuantization.SuspendLayout();
             this.pnlOptionsGeneral.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.grpCustomHuffman.SuspendLayout();
             this.SuspendLayout();
             // 
             // line
@@ -126,101 +126,6 @@
             this.btnHuffmanAddRow.UseVisualStyleBackColor = true;
             this.btnHuffmanAddRow.Click += new System.EventHandler(this.btnHuffmanAddRow_Click);
             // 
-            // grpCustomHuffman
-            // 
-            this.grpCustomHuffman.Controls.Add(this.pnlHuffmanY_AC);
-            this.grpCustomHuffman.Controls.Add(this.pnlHuffmanChr_DC);
-            this.grpCustomHuffman.Controls.Add(this.rdioHuffmanY_DC);
-            this.grpCustomHuffman.Controls.Add(this.rdioHuffmanY_AC);
-            this.grpCustomHuffman.Controls.Add(this.rdioHuffmanChr_DC);
-            this.grpCustomHuffman.Controls.Add(this.pnlHuffmanChr_AC);
-            this.grpCustomHuffman.Controls.Add(this.rdioHuffmanChr_AC);
-            this.grpCustomHuffman.Controls.Add(this.pnlHuffmanY_DC);
-            this.grpCustomHuffman.Location = new System.Drawing.Point(9, 0);
-            this.grpCustomHuffman.Margin = new System.Windows.Forms.Padding(2);
-            this.grpCustomHuffman.Name = "grpCustomHuffman";
-            this.grpCustomHuffman.Padding = new System.Windows.Forms.Padding(2);
-            this.grpCustomHuffman.Size = new System.Drawing.Size(421, 277);
-            this.grpCustomHuffman.TabIndex = 23;
-            this.grpCustomHuffman.TabStop = false;
-            this.grpCustomHuffman.Text = "Huffman Tables:";
-            // 
-            // pnlHuffmanY_DC
-            // 
-            this.pnlHuffmanY_DC.AutoScroll = true;
-            this.pnlHuffmanY_DC.Location = new System.Drawing.Point(4, 30);
-            this.pnlHuffmanY_DC.Name = "pnlHuffmanY_DC";
-            this.pnlHuffmanY_DC.Size = new System.Drawing.Size(410, 244);
-            this.pnlHuffmanY_DC.TabIndex = 137;
-            // 
-            // pnlHuffmanY_AC
-            // 
-            this.pnlHuffmanY_AC.AutoScroll = true;
-            this.pnlHuffmanY_AC.Location = new System.Drawing.Point(4, 30);
-            this.pnlHuffmanY_AC.Name = "pnlHuffmanY_AC";
-            this.pnlHuffmanY_AC.Size = new System.Drawing.Size(410, 244);
-            this.pnlHuffmanY_AC.TabIndex = 136;
-            // 
-            // pnlHuffmanChr_DC
-            // 
-            this.pnlHuffmanChr_DC.AutoScroll = true;
-            this.pnlHuffmanChr_DC.Location = new System.Drawing.Point(4, 30);
-            this.pnlHuffmanChr_DC.Name = "pnlHuffmanChr_DC";
-            this.pnlHuffmanChr_DC.Size = new System.Drawing.Size(410, 244);
-            this.pnlHuffmanChr_DC.TabIndex = 1;
-            // 
-            // rdioHuffmanY_DC
-            // 
-            this.rdioHuffmanY_DC.AutoSize = true;
-            this.rdioHuffmanY_DC.Location = new System.Drawing.Point(355, 10);
-            this.rdioHuffmanY_DC.Name = "rdioHuffmanY_DC";
-            this.rdioHuffmanY_DC.Size = new System.Drawing.Size(53, 17);
-            this.rdioHuffmanY_DC.TabIndex = 135;
-            this.rdioHuffmanY_DC.Text = "Y_DC";
-            this.rdioHuffmanY_DC.UseVisualStyleBackColor = true;
-            this.rdioHuffmanY_DC.CheckedChanged += new System.EventHandler(this.HuffmannChannelCheckedChanged_DisplayCorrectTable);
-            // 
-            // rdioHuffmanY_AC
-            // 
-            this.rdioHuffmanY_AC.AutoSize = true;
-            this.rdioHuffmanY_AC.Location = new System.Drawing.Point(297, 10);
-            this.rdioHuffmanY_AC.Name = "rdioHuffmanY_AC";
-            this.rdioHuffmanY_AC.Size = new System.Drawing.Size(52, 17);
-            this.rdioHuffmanY_AC.TabIndex = 134;
-            this.rdioHuffmanY_AC.Text = "Y_AC";
-            this.rdioHuffmanY_AC.UseVisualStyleBackColor = true;
-            this.rdioHuffmanY_AC.CheckedChanged += new System.EventHandler(this.HuffmannChannelCheckedChanged_DisplayCorrectTable);
-            // 
-            // rdioHuffmanChr_DC
-            // 
-            this.rdioHuffmanChr_DC.AutoSize = true;
-            this.rdioHuffmanChr_DC.Location = new System.Drawing.Point(229, 10);
-            this.rdioHuffmanChr_DC.Name = "rdioHuffmanChr_DC";
-            this.rdioHuffmanChr_DC.Size = new System.Drawing.Size(62, 17);
-            this.rdioHuffmanChr_DC.TabIndex = 133;
-            this.rdioHuffmanChr_DC.Text = "Chr_DC";
-            this.rdioHuffmanChr_DC.UseVisualStyleBackColor = true;
-            this.rdioHuffmanChr_DC.CheckedChanged += new System.EventHandler(this.HuffmannChannelCheckedChanged_DisplayCorrectTable);
-            // 
-            // pnlHuffmanChr_AC
-            // 
-            this.pnlHuffmanChr_AC.AutoScroll = true;
-            this.pnlHuffmanChr_AC.Location = new System.Drawing.Point(4, 30);
-            this.pnlHuffmanChr_AC.Name = "pnlHuffmanChr_AC";
-            this.pnlHuffmanChr_AC.Size = new System.Drawing.Size(410, 244);
-            this.pnlHuffmanChr_AC.TabIndex = 0;
-            // 
-            // rdioHuffmanChr_AC
-            // 
-            this.rdioHuffmanChr_AC.AutoSize = true;
-            this.rdioHuffmanChr_AC.Location = new System.Drawing.Point(162, 10);
-            this.rdioHuffmanChr_AC.Name = "rdioHuffmanChr_AC";
-            this.rdioHuffmanChr_AC.Size = new System.Drawing.Size(61, 17);
-            this.rdioHuffmanChr_AC.TabIndex = 132;
-            this.rdioHuffmanChr_AC.Text = "Chr_AC";
-            this.rdioHuffmanChr_AC.UseVisualStyleBackColor = true;
-            this.rdioHuffmanChr_AC.CheckedChanged += new System.EventHandler(this.HuffmannChannelCheckedChanged_DisplayCorrectTable);
-            // 
             // pnlOptionsQuality
             // 
             this.pnlOptionsQuality.Controls.Add(this.tbarQualitySlider);
@@ -242,7 +147,6 @@
             this.tbarQualitySlider.Size = new System.Drawing.Size(219, 30);
             this.tbarQualitySlider.TabIndex = 26;
             this.tbarQualitySlider.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.tbarQualitySlider.ValueChanged += new System.EventHandler(this.tbarQualitySlider2_ValueChanged);
             // 
             // grpQualityDesc
             // 
@@ -400,6 +304,101 @@
             this.label3.TabIndex = 16;
             this.label3.Text = "Choose save location:";
             // 
+            // pnlHuffmanY_DC
+            // 
+            this.pnlHuffmanY_DC.AutoScroll = true;
+            this.pnlHuffmanY_DC.Location = new System.Drawing.Point(4, 30);
+            this.pnlHuffmanY_DC.Name = "pnlHuffmanY_DC";
+            this.pnlHuffmanY_DC.Size = new System.Drawing.Size(410, 244);
+            this.pnlHuffmanY_DC.TabIndex = 137;
+            // 
+            // rdioHuffmanChr_AC
+            // 
+            this.rdioHuffmanChr_AC.AutoSize = true;
+            this.rdioHuffmanChr_AC.Location = new System.Drawing.Point(281, 10);
+            this.rdioHuffmanChr_AC.Name = "rdioHuffmanChr_AC";
+            this.rdioHuffmanChr_AC.Size = new System.Drawing.Size(61, 17);
+            this.rdioHuffmanChr_AC.TabIndex = 132;
+            this.rdioHuffmanChr_AC.Text = "Chr_AC";
+            this.rdioHuffmanChr_AC.UseVisualStyleBackColor = true;
+            this.rdioHuffmanChr_AC.CheckedChanged += new System.EventHandler(this.HuffmannChannelCheckedChanged_DisplayCorrectTable);
+            // 
+            // pnlHuffmanChr_AC
+            // 
+            this.pnlHuffmanChr_AC.AutoScroll = true;
+            this.pnlHuffmanChr_AC.Location = new System.Drawing.Point(4, 30);
+            this.pnlHuffmanChr_AC.Name = "pnlHuffmanChr_AC";
+            this.pnlHuffmanChr_AC.Size = new System.Drawing.Size(410, 244);
+            this.pnlHuffmanChr_AC.TabIndex = 0;
+            // 
+            // rdioHuffmanY_AC
+            // 
+            this.rdioHuffmanY_AC.AutoSize = true;
+            this.rdioHuffmanY_AC.Location = new System.Drawing.Point(165, 10);
+            this.rdioHuffmanY_AC.Name = "rdioHuffmanY_AC";
+            this.rdioHuffmanY_AC.Size = new System.Drawing.Size(52, 17);
+            this.rdioHuffmanY_AC.TabIndex = 134;
+            this.rdioHuffmanY_AC.Text = "Y_AC";
+            this.rdioHuffmanY_AC.UseVisualStyleBackColor = true;
+            this.rdioHuffmanY_AC.CheckedChanged += new System.EventHandler(this.HuffmannChannelCheckedChanged_DisplayCorrectTable);
+            // 
+            // rdioHuffmanY_DC
+            // 
+            this.rdioHuffmanY_DC.AutoSize = true;
+            this.rdioHuffmanY_DC.Location = new System.Drawing.Point(223, 10);
+            this.rdioHuffmanY_DC.Name = "rdioHuffmanY_DC";
+            this.rdioHuffmanY_DC.Size = new System.Drawing.Size(53, 17);
+            this.rdioHuffmanY_DC.TabIndex = 135;
+            this.rdioHuffmanY_DC.Text = "Y_DC";
+            this.rdioHuffmanY_DC.UseVisualStyleBackColor = true;
+            this.rdioHuffmanY_DC.CheckedChanged += new System.EventHandler(this.HuffmannChannelCheckedChanged_DisplayCorrectTable);
+            // 
+            // pnlHuffmanChr_DC
+            // 
+            this.pnlHuffmanChr_DC.AutoScroll = true;
+            this.pnlHuffmanChr_DC.Location = new System.Drawing.Point(4, 30);
+            this.pnlHuffmanChr_DC.Name = "pnlHuffmanChr_DC";
+            this.pnlHuffmanChr_DC.Size = new System.Drawing.Size(410, 244);
+            this.pnlHuffmanChr_DC.TabIndex = 1;
+            // 
+            // pnlHuffmanY_AC
+            // 
+            this.pnlHuffmanY_AC.AutoScroll = true;
+            this.pnlHuffmanY_AC.Location = new System.Drawing.Point(4, 30);
+            this.pnlHuffmanY_AC.Name = "pnlHuffmanY_AC";
+            this.pnlHuffmanY_AC.Size = new System.Drawing.Size(410, 244);
+            this.pnlHuffmanY_AC.TabIndex = 136;
+            // 
+            // grpCustomHuffman
+            // 
+            this.grpCustomHuffman.Controls.Add(this.pnlHuffmanY_AC);
+            this.grpCustomHuffman.Controls.Add(this.pnlHuffmanChr_DC);
+            this.grpCustomHuffman.Controls.Add(this.rdioHuffmanY_DC);
+            this.grpCustomHuffman.Controls.Add(this.rdioHuffmanY_AC);
+            this.grpCustomHuffman.Controls.Add(this.rdioHuffmanChr_DC);
+            this.grpCustomHuffman.Controls.Add(this.pnlHuffmanChr_AC);
+            this.grpCustomHuffman.Controls.Add(this.rdioHuffmanChr_AC);
+            this.grpCustomHuffman.Controls.Add(this.pnlHuffmanY_DC);
+            this.grpCustomHuffman.Location = new System.Drawing.Point(9, 0);
+            this.grpCustomHuffman.Margin = new System.Windows.Forms.Padding(2);
+            this.grpCustomHuffman.Name = "grpCustomHuffman";
+            this.grpCustomHuffman.Padding = new System.Windows.Forms.Padding(2);
+            this.grpCustomHuffman.Size = new System.Drawing.Size(421, 277);
+            this.grpCustomHuffman.TabIndex = 23;
+            this.grpCustomHuffman.TabStop = false;
+            this.grpCustomHuffman.Text = "Huffman Tables:";
+            // 
+            // rdioHuffmanChr_DC
+            // 
+            this.rdioHuffmanChr_DC.AutoSize = true;
+            this.rdioHuffmanChr_DC.Location = new System.Drawing.Point(347, 10);
+            this.rdioHuffmanChr_DC.Name = "rdioHuffmanChr_DC";
+            this.rdioHuffmanChr_DC.Size = new System.Drawing.Size(62, 17);
+            this.rdioHuffmanChr_DC.TabIndex = 133;
+            this.rdioHuffmanChr_DC.Text = "Chr_DC";
+            this.rdioHuffmanChr_DC.UseVisualStyleBackColor = true;
+            this.rdioHuffmanChr_DC.CheckedChanged += new System.EventHandler(this.HuffmannChannelCheckedChanged_DisplayCorrectTable);
+            // 
             // OptionsForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -407,18 +406,16 @@
             this.Controls.Add(this.line);
             this.Controls.Add(this.Okay);
             this.Controls.Add(this.OptionsBox);
+            this.Controls.Add(this.pnlOptionsHuffman);
             this.Controls.Add(this.pnlOptionsQuantization);
             this.Controls.Add(this.pnlOptionsGeneral);
             this.Controls.Add(this.pnlOptionsQuality);
-            this.Controls.Add(this.pnlOptionsHuffman);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "OptionsForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Stegosaurus - Options";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormClosing_SaveOptions);
             this.pnlOptionsHuffman.ResumeLayout(false);
-            this.grpCustomHuffman.ResumeLayout(false);
-            this.grpCustomHuffman.PerformLayout();
             this.pnlOptionsQuality.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.tbarQualitySlider)).EndInit();
             this.grpQuality.ResumeLayout(false);
@@ -429,6 +426,8 @@
             this.pnlOptionsGeneral.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.grpCustomHuffman.ResumeLayout(false);
+            this.grpCustomHuffman.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -438,7 +437,6 @@
         private System.Windows.Forms.Button Okay;
         private System.Windows.Forms.ListBox OptionsBox;
         private System.Windows.Forms.Panel pnlOptionsHuffman;
-        private System.Windows.Forms.GroupBox grpCustomHuffman;
         private System.Windows.Forms.Panel pnlOptionsQuality;
         private System.Windows.Forms.GroupBox grpQualityDesc;
         private System.Windows.Forms.GroupBox grpQuality;
@@ -453,17 +451,18 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.RadioButton rdioQuantizationChrChannel;
         private System.Windows.Forms.RadioButton rdioQuantizationYChannel;
-        private System.Windows.Forms.Panel pnlHuffmanChr_AC;
         private System.Windows.Forms.TextBox tbSaveLocation;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label lblQuantizationDescription;
         private System.Windows.Forms.Button btnHuffmanAddRow;
-        private System.Windows.Forms.RadioButton rdioHuffmanChr_DC;
-        private System.Windows.Forms.RadioButton rdioHuffmanChr_AC;
-        private System.Windows.Forms.RadioButton rdioHuffmanY_DC;
-        private System.Windows.Forms.RadioButton rdioHuffmanY_AC;
-        private System.Windows.Forms.Panel pnlHuffmanY_DC;
+        private System.Windows.Forms.GroupBox grpCustomHuffman;
         private System.Windows.Forms.Panel pnlHuffmanY_AC;
         private System.Windows.Forms.Panel pnlHuffmanChr_DC;
+        private System.Windows.Forms.RadioButton rdioHuffmanY_DC;
+        private System.Windows.Forms.RadioButton rdioHuffmanY_AC;
+        private System.Windows.Forms.RadioButton rdioHuffmanChr_DC;
+        private System.Windows.Forms.Panel pnlHuffmanChr_AC;
+        private System.Windows.Forms.RadioButton rdioHuffmanChr_AC;
+        private System.Windows.Forms.Panel pnlHuffmanY_DC;
     }
 }

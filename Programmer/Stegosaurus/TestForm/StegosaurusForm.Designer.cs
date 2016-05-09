@@ -42,8 +42,6 @@
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.showHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tbarQualitySlider = new System.Windows.Forms.TrackBar();
-            this.lblQuality = new System.Windows.Forms.Label();
             this.rdioDecode = new System.Windows.Forms.RadioButton();
             this.rdioEncode = new System.Windows.Forms.RadioButton();
             this.btnProceed = new System.Windows.Forms.Button();
@@ -56,10 +54,10 @@
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.tcMethod = new System.Windows.Forms.TabControl();
             this.tpMethodLSB = new System.Windows.Forms.TabPage();
-            this.lblQualityS = new System.Windows.Forms.Label();
             this.tpMethodGT = new System.Windows.Forms.TabPage();
+            this.tbGTMessage = new System.Windows.Forms.TextBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.tbGTMessageFilePath = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -74,7 +72,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.picMessage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picInput)).BeginInit();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbarQualitySlider)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picGTInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picGTResult)).BeginInit();
@@ -236,27 +233,6 @@
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
-            // tbarQualitySlider
-            // 
-            this.tbarQualitySlider.Location = new System.Drawing.Point(248, 239);
-            this.tbarQualitySlider.Maximum = 100;
-            this.tbarQualitySlider.Name = "tbarQualitySlider";
-            this.tbarQualitySlider.Size = new System.Drawing.Size(104, 45);
-            this.tbarQualitySlider.TabIndex = 25;
-            this.tbarQualitySlider.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.ttStegosaurus.SetToolTip(this.tbarQualitySlider, "Set the encoding quality from which\r\nthe amount of data you can hide varries");
-            this.tbarQualitySlider.ValueChanged += new System.EventHandler(this.tbarQualityChanged);
-            // 
-            // lblQuality
-            // 
-            this.lblQuality.AutoSize = true;
-            this.lblQuality.Location = new System.Drawing.Point(312, 225);
-            this.lblQuality.Name = "lblQuality";
-            this.lblQuality.Size = new System.Drawing.Size(13, 13);
-            this.lblQuality.TabIndex = 5;
-            this.lblQuality.Text = "0";
-            this.lblQuality.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // rdioDecode
             // 
             this.rdioDecode.AutoSize = true;
@@ -318,7 +294,7 @@
             // btnGTLoadMessageFile
             // 
             this.btnGTLoadMessageFile.Enabled = false;
-            this.btnGTLoadMessageFile.Location = new System.Drawing.Point(248, 91);
+            this.btnGTLoadMessageFile.Location = new System.Drawing.Point(250, 125);
             this.btnGTLoadMessageFile.Name = "btnGTLoadMessageFile";
             this.btnGTLoadMessageFile.Size = new System.Drawing.Size(86, 23);
             this.btnGTLoadMessageFile.TabIndex = 32;
@@ -342,7 +318,7 @@
             // picGTResult
             // 
             this.picGTResult.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.picGTResult.Location = new System.Drawing.Point(385, 6);
+            this.picGTResult.Location = new System.Drawing.Point(380, 6);
             this.picGTResult.Name = "picGTResult";
             this.picGTResult.Size = new System.Drawing.Size(216, 216);
             this.picGTResult.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -373,9 +349,7 @@
             // tpMethodLSB
             // 
             this.tpMethodLSB.BackColor = System.Drawing.SystemColors.Menu;
-            this.tpMethodLSB.Controls.Add(this.lblQualityS);
             this.tpMethodLSB.Controls.Add(this.picInput);
-            this.tpMethodLSB.Controls.Add(this.lblQuality);
             this.tpMethodLSB.Controls.Add(this.picMessage);
             this.tpMethodLSB.Controls.Add(this.btnLoadMessage);
             this.tpMethodLSB.Controls.Add(this.btnLoadCover);
@@ -383,7 +357,6 @@
             this.tpMethodLSB.Controls.Add(this.Encode);
             this.tpMethodLSB.Controls.Add(this.Decode);
             this.tpMethodLSB.Controls.Add(this.picResult);
-            this.tpMethodLSB.Controls.Add(this.tbarQualitySlider);
             this.tpMethodLSB.Location = new System.Drawing.Point(4, 22);
             this.tpMethodLSB.Name = "tpMethodLSB";
             this.tpMethodLSB.Padding = new System.Windows.Forms.Padding(3);
@@ -391,21 +364,12 @@
             this.tpMethodLSB.TabIndex = 0;
             this.tpMethodLSB.Text = "LSB";
             // 
-            // lblQualityS
-            // 
-            this.lblQualityS.AutoSize = true;
-            this.lblQualityS.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.lblQualityS.Location = new System.Drawing.Point(268, 225);
-            this.lblQualityS.Name = "lblQualityS";
-            this.lblQualityS.Size = new System.Drawing.Size(42, 13);
-            this.lblQualityS.TabIndex = 26;
-            this.lblQualityS.Text = "Quality:";
-            // 
             // tpMethodGT
             // 
             this.tpMethodGT.BackColor = System.Drawing.SystemColors.Menu;
+            this.tpMethodGT.Controls.Add(this.tbGTMessage);
             this.tpMethodGT.Controls.Add(this.checkBox1);
-            this.tpMethodGT.Controls.Add(this.textBox1);
+            this.tpMethodGT.Controls.Add(this.tbGTMessageFilePath);
             this.tpMethodGT.Controls.Add(this.label1);
             this.tpMethodGT.Controls.Add(this.picGTInput);
             this.tpMethodGT.Controls.Add(this.label2);
@@ -423,22 +387,37 @@
             this.tpMethodGT.TabIndex = 1;
             this.tpMethodGT.Text = "GT";
             // 
+            // tbGTMessage
+            // 
+            this.tbGTMessage.ForeColor = System.Drawing.SystemColors.MenuText;
+            this.tbGTMessage.Location = new System.Drawing.Point(232, 16);
+            this.tbGTMessage.Multiline = true;
+            this.tbGTMessage.Name = "tbGTMessage";
+            this.tbGTMessage.Size = new System.Drawing.Size(142, 72);
+            this.tbGTMessage.TabIndex = 40;
+            this.tbGTMessage.Text = "Enter the message you would like to encode into your image.";
+            this.tbGTMessage.TextChanged += new System.EventHandler(this.tbGTMessage_TextChanged);
+            this.tbGTMessage.Leave += new System.EventHandler(this.tbGTMessage_Leave);
+            this.tbGTMessage.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.tbGTMessage_MouseDoubleClick);
+            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
             this.checkBox1.Enabled = false;
-            this.checkBox1.Location = new System.Drawing.Point(341, 96);
+            this.checkBox1.Location = new System.Drawing.Point(343, 130);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(15, 14);
             this.checkBox1.TabIndex = 39;
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
-            // textBox1
+            // tbGTMessageFilePath
             // 
-            this.textBox1.Location = new System.Drawing.Point(249, 65);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(102, 20);
-            this.textBox1.TabIndex = 38;
+            this.tbGTMessageFilePath.Enabled = false;
+            this.tbGTMessageFilePath.Location = new System.Drawing.Point(251, 99);
+            this.tbGTMessageFilePath.Name = "tbGTMessageFilePath";
+            this.tbGTMessageFilePath.Size = new System.Drawing.Size(102, 20);
+            this.tbGTMessageFilePath.TabIndex = 38;
+            this.tbGTMessageFilePath.Text = "Your filepath";
             // 
             // label1
             // 
@@ -465,7 +444,7 @@
             this.groupBox2.Controls.Add(this.btnGTProceed);
             this.groupBox2.Controls.Add(this.rdioGTEncode);
             this.groupBox2.Controls.Add(this.rdioGTDecode);
-            this.groupBox2.Location = new System.Drawing.Point(230, 150);
+            this.groupBox2.Location = new System.Drawing.Point(232, 150);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(142, 72);
             this.groupBox2.TabIndex = 27;
@@ -481,6 +460,7 @@
             this.btnGTProceed.TabIndex = 2;
             this.btnGTProceed.Text = "Procceed";
             this.btnGTProceed.UseVisualStyleBackColor = false;
+            this.btnGTProceed.Click += new System.EventHandler(this.btnGTProceed_Click);
             // 
             // rdioGTEncode
             // 
@@ -553,7 +533,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.picInput)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbarQualitySlider)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picGTInput)).EndInit();
@@ -561,7 +540,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.tcMethod.ResumeLayout(false);
             this.tpMethodLSB.ResumeLayout(false);
-            this.tpMethodLSB.PerformLayout();
             this.tpMethodGT.ResumeLayout(false);
             this.tpMethodGT.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -590,8 +568,6 @@
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem showHelpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private System.Windows.Forms.TrackBar tbarQualitySlider;
-        private System.Windows.Forms.Label lblQuality;
         private System.Windows.Forms.RadioButton rdioDecode;
         private System.Windows.Forms.RadioButton rdioEncode;
         private System.Windows.Forms.Button btnProceed;
@@ -600,9 +576,8 @@
         private System.Windows.Forms.TabControl tcMethod;
         private System.Windows.Forms.TabPage tpMethodLSB;
         private System.Windows.Forms.TabPage tpMethodGT;
-        private System.Windows.Forms.Label lblQualityS;
         private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox tbGTMessageFilePath;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox picGTInput;
         private System.Windows.Forms.Label label2;
@@ -618,6 +593,7 @@
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.OpenFileDialog getFileInputGT;
         private System.Windows.Forms.OpenFileDialog GetFileMessageGT;
+        private System.Windows.Forms.TextBox tbGTMessage;
     }
 }
 
