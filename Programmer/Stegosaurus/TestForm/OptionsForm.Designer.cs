@@ -34,7 +34,7 @@
             this.OptionsBox = new System.Windows.Forms.ListBox();
             this.pnlOptionsHuffman = new System.Windows.Forms.Panel();
             this.btnHuffmanAddRow = new System.Windows.Forms.Button();
-            this.grpCustormHuffman = new System.Windows.Forms.GroupBox();
+            this.grpCustomHuffman = new System.Windows.Forms.GroupBox();
             this.pnlHuffmanY_DC = new System.Windows.Forms.Panel();
             this.pnlHuffmanY_AC = new System.Windows.Forms.Panel();
             this.pnlHuffmanChr_DC = new System.Windows.Forms.Panel();
@@ -49,7 +49,7 @@
             this.grpQuality = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
             this.pnlOptionsQuantization = new System.Windows.Forms.Panel();
-            this.grpQuantizationY = new System.Windows.Forms.GroupBox();
+            this.grpQuantization = new System.Windows.Forms.GroupBox();
             this.lblQuantizationDescription = new System.Windows.Forms.Label();
             this.rdioQuantizationChrChannel = new System.Windows.Forms.RadioButton();
             this.rdioQuantizationYChannel = new System.Windows.Forms.RadioButton();
@@ -61,12 +61,12 @@
             this.tbSaveLocation = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.pnlOptionsHuffman.SuspendLayout();
-            this.grpCustormHuffman.SuspendLayout();
+            this.grpCustomHuffman.SuspendLayout();
             this.pnlOptionsQuality.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbarQualitySlider)).BeginInit();
             this.grpQuality.SuspendLayout();
             this.pnlOptionsQuantization.SuspendLayout();
-            this.grpQuantizationY.SuspendLayout();
+            this.grpQuantization.SuspendLayout();
             this.pnlOptionsGeneral.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.SuspendLayout();
@@ -110,7 +110,7 @@
             // pnlOptionsHuffman
             // 
             this.pnlOptionsHuffman.Controls.Add(this.btnHuffmanAddRow);
-            this.pnlOptionsHuffman.Controls.Add(this.grpCustormHuffman);
+            this.pnlOptionsHuffman.Controls.Add(this.grpCustomHuffman);
             this.pnlOptionsHuffman.Location = new System.Drawing.Point(169, 20);
             this.pnlOptionsHuffman.Name = "pnlOptionsHuffman";
             this.pnlOptionsHuffman.Size = new System.Drawing.Size(442, 311);
@@ -126,24 +126,24 @@
             this.btnHuffmanAddRow.UseVisualStyleBackColor = true;
             this.btnHuffmanAddRow.Click += new System.EventHandler(this.btnHuffmanAddRow_Click);
             // 
-            // grpCustormHuffman
+            // grpCustomHuffman
             // 
-            this.grpCustormHuffman.Controls.Add(this.pnlHuffmanY_DC);
-            this.grpCustormHuffman.Controls.Add(this.pnlHuffmanY_AC);
-            this.grpCustormHuffman.Controls.Add(this.pnlHuffmanChr_DC);
-            this.grpCustormHuffman.Controls.Add(this.rdioHuffmanY_DC);
-            this.grpCustormHuffman.Controls.Add(this.rdioHuffmanY_AC);
-            this.grpCustormHuffman.Controls.Add(this.rdioHuffmanChr_DC);
-            this.grpCustormHuffman.Controls.Add(this.pnlHuffmanChr_AC);
-            this.grpCustormHuffman.Controls.Add(this.rdioHuffmanChr_AC);
-            this.grpCustormHuffman.Location = new System.Drawing.Point(9, 0);
-            this.grpCustormHuffman.Margin = new System.Windows.Forms.Padding(2);
-            this.grpCustormHuffman.Name = "grpCustormHuffman";
-            this.grpCustormHuffman.Padding = new System.Windows.Forms.Padding(2);
-            this.grpCustormHuffman.Size = new System.Drawing.Size(421, 277);
-            this.grpCustormHuffman.TabIndex = 23;
-            this.grpCustormHuffman.TabStop = false;
-            this.grpCustormHuffman.Text = "Huffman Tables:";
+            this.grpCustomHuffman.Controls.Add(this.pnlHuffmanY_AC);
+            this.grpCustomHuffman.Controls.Add(this.pnlHuffmanChr_DC);
+            this.grpCustomHuffman.Controls.Add(this.rdioHuffmanY_DC);
+            this.grpCustomHuffman.Controls.Add(this.rdioHuffmanY_AC);
+            this.grpCustomHuffman.Controls.Add(this.rdioHuffmanChr_DC);
+            this.grpCustomHuffman.Controls.Add(this.pnlHuffmanChr_AC);
+            this.grpCustomHuffman.Controls.Add(this.rdioHuffmanChr_AC);
+            this.grpCustomHuffman.Controls.Add(this.pnlHuffmanY_DC);
+            this.grpCustomHuffman.Location = new System.Drawing.Point(9, 0);
+            this.grpCustomHuffman.Margin = new System.Windows.Forms.Padding(2);
+            this.grpCustomHuffman.Name = "grpCustomHuffman";
+            this.grpCustomHuffman.Padding = new System.Windows.Forms.Padding(2);
+            this.grpCustomHuffman.Size = new System.Drawing.Size(421, 277);
+            this.grpCustomHuffman.TabIndex = 23;
+            this.grpCustomHuffman.TabStop = false;
+            this.grpCustomHuffman.Text = "Huffman Tables:";
             // 
             // pnlHuffmanY_DC
             // 
@@ -279,7 +279,7 @@
             // 
             // pnlOptionsQuantization
             // 
-            this.pnlOptionsQuantization.Controls.Add(this.grpQuantizationY);
+            this.pnlOptionsQuantization.Controls.Add(this.grpQuantization);
             this.pnlOptionsQuantization.Enabled = false;
             this.pnlOptionsQuantization.Location = new System.Drawing.Point(169, 20);
             this.pnlOptionsQuantization.Name = "pnlOptionsQuantization";
@@ -287,21 +287,21 @@
             this.pnlOptionsQuantization.TabIndex = 26;
             this.pnlOptionsQuantization.Visible = false;
             // 
-            // grpQuantizationY
+            // grpQuantization
             // 
-            this.grpQuantizationY.Controls.Add(this.lblQuantizationDescription);
-            this.grpQuantizationY.Controls.Add(this.rdioQuantizationChrChannel);
-            this.grpQuantizationY.Controls.Add(this.rdioQuantizationYChannel);
-            this.grpQuantizationY.Controls.Add(this.pnlQuantizationY);
-            this.grpQuantizationY.Controls.Add(this.pnlQuantizationChr);
-            this.grpQuantizationY.Location = new System.Drawing.Point(9, 0);
-            this.grpQuantizationY.Margin = new System.Windows.Forms.Padding(2);
-            this.grpQuantizationY.Name = "grpQuantizationY";
-            this.grpQuantizationY.Padding = new System.Windows.Forms.Padding(2);
-            this.grpQuantizationY.Size = new System.Drawing.Size(413, 269);
-            this.grpQuantizationY.TabIndex = 8;
-            this.grpQuantizationY.TabStop = false;
-            this.grpQuantizationY.Text = "Custom Quantization";
+            this.grpQuantization.Controls.Add(this.lblQuantizationDescription);
+            this.grpQuantization.Controls.Add(this.rdioQuantizationChrChannel);
+            this.grpQuantization.Controls.Add(this.rdioQuantizationYChannel);
+            this.grpQuantization.Controls.Add(this.pnlQuantizationY);
+            this.grpQuantization.Controls.Add(this.pnlQuantizationChr);
+            this.grpQuantization.Location = new System.Drawing.Point(9, 0);
+            this.grpQuantization.Margin = new System.Windows.Forms.Padding(2);
+            this.grpQuantization.Name = "grpQuantization";
+            this.grpQuantization.Padding = new System.Windows.Forms.Padding(2);
+            this.grpQuantization.Size = new System.Drawing.Size(413, 269);
+            this.grpQuantization.TabIndex = 8;
+            this.grpQuantization.TabStop = false;
+            this.grpQuantization.Text = "Custom Quantization";
             // 
             // lblQuantizationDescription
             // 
@@ -407,26 +407,25 @@
             this.Controls.Add(this.line);
             this.Controls.Add(this.Okay);
             this.Controls.Add(this.OptionsBox);
-            this.Controls.Add(this.pnlOptionsHuffman);
             this.Controls.Add(this.pnlOptionsQuantization);
             this.Controls.Add(this.pnlOptionsGeneral);
             this.Controls.Add(this.pnlOptionsQuality);
+            this.Controls.Add(this.pnlOptionsHuffman);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "OptionsForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Stegosaurus - Options";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormClosing_SaveQuantization);
-            this.Load += new System.EventHandler(this.OptionsForm_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormClosing_SaveOptions);
             this.pnlOptionsHuffman.ResumeLayout(false);
-            this.grpCustormHuffman.ResumeLayout(false);
-            this.grpCustormHuffman.PerformLayout();
+            this.grpCustomHuffman.ResumeLayout(false);
+            this.grpCustomHuffman.PerformLayout();
             this.pnlOptionsQuality.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.tbarQualitySlider)).EndInit();
             this.grpQuality.ResumeLayout(false);
             this.grpQuality.PerformLayout();
             this.pnlOptionsQuantization.ResumeLayout(false);
-            this.grpQuantizationY.ResumeLayout(false);
-            this.grpQuantizationY.PerformLayout();
+            this.grpQuantization.ResumeLayout(false);
+            this.grpQuantization.PerformLayout();
             this.pnlOptionsGeneral.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
@@ -439,13 +438,13 @@
         private System.Windows.Forms.Button Okay;
         private System.Windows.Forms.ListBox OptionsBox;
         private System.Windows.Forms.Panel pnlOptionsHuffman;
-        private System.Windows.Forms.GroupBox grpCustormHuffman;
+        private System.Windows.Forms.GroupBox grpCustomHuffman;
         private System.Windows.Forms.Panel pnlOptionsQuality;
         private System.Windows.Forms.GroupBox grpQualityDesc;
         private System.Windows.Forms.GroupBox grpQuality;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel pnlOptionsQuantization;
-        private System.Windows.Forms.GroupBox grpQuantizationY;
+        private System.Windows.Forms.GroupBox grpQuantization;
         private System.Windows.Forms.TrackBar tbarQualitySlider;
         private System.Windows.Forms.Panel pnlQuantizationY;
         private System.Windows.Forms.Panel pnlQuantizationChr;

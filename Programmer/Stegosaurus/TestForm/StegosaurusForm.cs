@@ -3,11 +3,18 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using Stegosaurus;
+using System.Collections.Generic;
 
 namespace TestForm{
     public partial class StegosaurusForm:Form {
+        public HuffmanTable huffmanTableChr_AC;
+        public HuffmanTable huffmanTableChr_DC;
+        public HuffmanTable huffmanTableY_AC;
+        public HuffmanTable huffmanTableY_DC;
+
         private readonly LeastSignificantBitImage StegoController;
         private bool CoverImageSetLSB, MessageImageSetLSB, CoverImageSetGT, MessageFileSetGT;
+
 
         public int tbarQualityValue {
             get
@@ -157,6 +164,7 @@ namespace TestForm{
             Decode.Enabled = true;
         }
 
+        #region Graph Theoretic
         private void btnGTLoadMessageFile_Click(object sender, EventArgs e)
         {
             GetFileMessageGT.ShowDialog();
@@ -202,6 +210,7 @@ namespace TestForm{
             getFileInputGT.ShowDialog();
         }
 
+
         private void getFileInputGT_FileOk(object sender, CancelEventArgs e)
         {
             CoverImageSetGT = true;
@@ -212,7 +221,7 @@ namespace TestForm{
                 btnGTProceed.Enabled = true;
             }
         }
-
+        #endregion
 
 
         //'Escape' closes form

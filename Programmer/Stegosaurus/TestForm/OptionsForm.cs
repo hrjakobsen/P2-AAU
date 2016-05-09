@@ -20,8 +20,14 @@ namespace TestForm
         List<TextBox> huffmanBoxesChr_DC = new List<TextBox>();
         List<TextBox> huffmanBoxesY_AC = new List<TextBox>();
         List<TextBox> huffmanBoxesY_DC = new List<TextBox>();
+        HuffmanTableComponent huffmanTableY_AC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableYAC);
+        HuffmanTableComponent huffmanTableY_DC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableYDC);
+        HuffmanTableComponent huffmanTableChr_AC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableChrAC);
+        HuffmanTableComponent huffmanTableChr_DC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableChrDC);
+        QuantizationTableComponent quantizationTableY = new QuantizationTableComponent(QuantizationTable.JpegDefaultYTable);
+        QuantizationTableComponent quantizationTableChr = new QuantizationTableComponent(QuantizationTable.JpegDefaultChrTable);
 
-        #region
+        #region default Tables
         string[] defaultQuantizationTableY = {
             "0x10", "0x0b", "0x0a", "0x10", "0x18", "0x28", "0x33", "0x3d",
             "0x0c", "0x0c", "0x0e", "0x13", "0x1a", "0x3a", "0x3c", "0x37",
@@ -44,8 +50,20 @@ namespace TestForm
             "0x63", "0x63", "0x63", "0x63", "0x63", "0x63", "0x63", "0x63"
         };
 
+        //FORKERT
         string[] defaultHuffmanTableChr_AC = {
-
+            "0x00", "0x00", "2",
+            "0x01", "0x01", "2",
+            "0x02", "0x02", "2",
+            "0x03", "0x06", "3",
+            "0x04", "0x0e", "4",
+            "0x05", "0x1e", "5",
+            "0x06", "0x3e", "6",
+            "0x07", "0x7e", "7",
+            "0x08", "0xfe", "8",
+            "0x09", "0x1fe", "9",
+            "0x0a", "0x3fe", "10",
+            "0x0b", "0x7fe", "11"
         };
 
         string[] defaultHuffmanTableChr_DC = {
@@ -62,12 +80,24 @@ namespace TestForm
             "0x0a", "0x3fe", "10",
             "0x0b", "0x7fe", "11"
         };
-        /*
+
+        //FORKERT
         string[] defaultHuffmanTableY_AC =
         {
-            
-        }
-        */
+            "0x00", "0x00", "2",
+            "0x01", "0x01", "2",
+            "0x02", "0x02", "2",
+            "0x03", "0x06", "3",
+            "0x04", "0x0e", "4",
+            "0x05", "0x1e", "5",
+            "0x06", "0x3e", "6",
+            "0x07", "0x7e", "7",
+            "0x08", "0xfe", "8",
+            "0x09", "0x1fe", "9",
+            "0x0a", "0x3fe", "10",
+            "0x0b", "0x7fe", "11"
+        };
+        
 
         string[] defaultHuffmanTableY_DC = {
             "0x00", "0x00", "2",
@@ -89,104 +119,75 @@ namespace TestForm
         public OptionsForm()
         {
             InitializeComponent();
+            initializeQuantizationTable(quantizationTableY);
+            initializeQuantizationTable(quantizationTableChr);
+            initializeHuffmanTable(huffmanTableY_AC);
+            initializeHuffmanTable(huffmanTableY_DC);
+            initializeHuffmanTable(huffmanTableChr_AC);
+            initializeHuffmanTable(huffmanTableChr_DC);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             tbarQualitySlider.Value = stegosaurusForm.tbarQualityValue;
-            initializeQuantizationBoxesY();
-            initializeQuantizationBoxesChr();
-            initializeHuffmanBoxesChr_AC();
-            initializeHuffmanBoxesChr_DC();
-            initializeHuffmanBoxesY_AC();
-            initializeHuffmanBoxesY_DC();
+
+            
+
+            initializeQuantizationBoxes(pnlQuantizationY, QuantizationBoxesY, defaultQuantizationTableY);
+            initializeQuantizationBoxes(pnlQuantizationChr, QuantizationBoxesChr, defaultQuantizationTableChr);
+
             rdioQuantizationYChannel.Checked = true;
             rdioHuffmanChr_AC.Checked = true;
         }
 
-        private void initializeHuffmanBoxesChr_AC()
+        //Adds defaultTable.Length amount of textboxes to a given Huffman panel and saves each in an array (to be looped through), sets
+        //the size and position of each textbox and writes the default Quantization values in these.
+        private void initializeHuffmanTable(HuffmanTableComponent huffmanTableComponent)
         {
-            int amount = 63;
-            createHuffmanBoxes(pnlHuffmanChr_AC, huffmanBoxesChr_AC, amount);
-            for (int i = 0; i < amount; i++)
-            {
-                huffmanBoxesChr_AC[i].Text = (i + 1).ToString() + "C";
-            }
+            grpCustomHuffman.Controls.Add(huffmanTableComponent);
+            huffmanTableComponent.Location = new Point(4, 30);
+            huffmanTableComponent.AutoScroll = Enabled;
+            huffmanTableComponent.BringToFront();
         }
 
-        private void initializeHuffmanBoxesChr_DC()
+        private void initializeQuantizationTable(QuantizationTableComponent quantizationTableComponent)
         {
-            int amount = defaultHuffmanTableChr_DC.Length;
-            createHuffmanBoxes(pnlHuffmanChr_DC, huffmanBoxesChr_DC, amount);
-            for (int i = 0; i < amount; i++)
-            {
-                huffmanBoxesChr_DC[i].Text = defaultHuffmanTableChr_DC[i];
-            }
+            grpQuantization.Controls.Add(quantizationTableComponent);
+            quantizationTableComponent.Location = new Point(4, 30);
+            quantizationTableComponent.BringToFront();
         }
 
-        private void initializeHuffmanBoxesY_AC()
+        /*
+        private void initializeHuffmanBoxes(Panel huffmanPanel, List<TextBox> huffmanBoxes, string[] defaultTable)
         {
-            int amount = 63;
-            createHuffmanBoxes(pnlHuffmanY_AC, huffmanBoxesY_AC, amount);
-            for (int i = 0; i < amount; i++)
-            {
-                huffmanBoxesY_AC[i].Text = (i + 1).ToString() + "C";
-            }
-        }
-
-        private void initializeHuffmanBoxesY_DC()
-        {
-            int amount = defaultHuffmanTableY_DC.Length;
-            createHuffmanBoxes(pnlHuffmanY_DC, huffmanBoxesY_DC, amount);
-            for (int i = 0; i < amount; i++)
-            {
-                huffmanBoxesY_DC[i].Text = defaultHuffmanTableY_DC[i];
-            }
-        }
-
-        private void createHuffmanBoxes(Panel huffmanPanel, List<TextBox> huffmanBoxes, int amount)
-        {
-            for (int i = 0; i < amount; i++)
+            for (int i = 0; i < defaultTable.Length; i++)
             {
                 huffmanBoxes.Add(new TextBox());
                 huffmanPanel.Controls.Add(huffmanBoxes[i]);
                 huffmanBoxes[i].Size = new Size(76, 20);
                 huffmanBoxes[i].Left = 8 + (i % 3) * 85;
                 huffmanBoxes[i].Top = 5 + (i / 3) * 25;
+                huffmanBoxes[i].Text = defaultTable[i];
             }
         }
+        */
 
-        private void initializeQuantizationBoxesY()
+        //Adds 64 (defaultTable length amount) textboxes to a quantization panel and saves each in an array (to be looped through), sets
+        //the size and position of each textbox and writes the default Quantization values in these.
+        private void initializeQuantizationBoxes(Panel quantizationPanel, TextBox[] QuantizationBoxes, string[] defaultTable)
         {
-            createQuantizationBoxes(pnlQuantizationY, QuantizationBoxesY);
-
-            for (int i = 0; i < 64; i++)
-            {
-                QuantizationBoxesY[i].Text = defaultQuantizationTableY[i];
-            }
-        }
-
-        private void initializeQuantizationBoxesChr()
-        {
-            createQuantizationBoxes(pnlQuantizationChr, QuantizationBoxesChr);
-            for (int i = 0; i < 64; i++)
-            {
-                QuantizationBoxesChr[i].Text = defaultQuantizationTableChr[i];
-            }
-        }
-
-        private void createQuantizationBoxes(Panel quantizationPanel, TextBox[] QuantizationBoxes)
-        {
-            for (int i = 0; i < 64; i++)
+            for (int i = 0; i < defaultTable.Length; i++)
             {
                 QuantizationBoxes[i] = new TextBox();
                 quantizationPanel.Controls.Add(QuantizationBoxes[i]);
                 QuantizationBoxes[i].Size = new Size(38, 20);
                 QuantizationBoxes[i].Left = 8 + (i % 8) * 47;
                 QuantizationBoxes[i].Top = 5 + (i / 8) * 25;
+                QuantizationBoxes[i].Text = defaultTable[i];
             }
             
         }
 
+        //The selected Options-panel is enabled and made visible, the opposite is done to the rest.
         private void OptionsBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             deselectAllOptionPanels();
@@ -243,44 +244,27 @@ namespace TestForm
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        /*
-        private void saveQuantization(TextBox[] quantizationBoxes)
-        {
-            foreach (TextBox tb in quantizationBoxes)
-            {
-                foreach (char character in tb.Text)
-                {
-                    character
-                }
-                quantizationBoxes[tb].Text;
-            }
-        }
-        */
-        private void OptionsForm_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void tbarQualitySlider2_ValueChanged(object sender, EventArgs e)
         {
             stegosaurusForm.tbarQualityValue = tbarQualitySlider.Value;
         }
 
+        //The selected Quantization-table is enabled and made visible, the opposite is done to the other.
         private void yQuantizationChannelChecked_DisplayYOrChrTable(object sender, EventArgs e)
         {
             if (rdioQuantizationYChannel.Checked)
             {
-                pnlQuantizationChr.Visible = false;
-                pnlQuantizationChr.Enabled = false;
-                pnlQuantizationY.Visible = true;
-                pnlQuantizationY.Enabled = true;
+                quantizationTableChr.Visible = false;
+                quantizationTableChr.Enabled = false;
+                quantizationTableY.Visible = true;
+                quantizationTableY.Enabled = true;
             }
             else if (rdioQuantizationChrChannel.Checked)
             {
-                pnlQuantizationY.Visible = false;
-                pnlQuantizationY.Enabled = false;
-                pnlQuantizationChr.Visible = true;
-                pnlQuantizationChr.Enabled = true;
+                quantizationTableY.Visible = false;
+                quantizationTableY.Enabled = false;
+                quantizationTableChr.Visible = true;
+                quantizationTableChr.Enabled = true;
             }
         }
 
@@ -289,11 +273,33 @@ namespace TestForm
             this.Close();
         }
 
-        private void FormClosing_SaveQuantization(object sender, FormClosingEventArgs e)
+        //Asks the user whether they wish to save the currently shown setttings and saves these if 'yes' is clicked.
+        //This event is run when OptionsForm is closing.
+        private void FormClosing_SaveOptions(object sender, FormClosingEventArgs e)
         {
-            //saveQuantization();
+            DialogResult dialogResult = MessageBox.Show("Do you wish to save current options?", "", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                saveQuantization();
+                saveHuffmanTables();
+            }
 
         }
+
+        private void saveQuantization()
+        {
+            quantizationTableY.saveTable();
+            quantizationTableChr.saveTable();
+        }
+
+        private void saveHuffmanTables()
+        {
+            stegosaurusForm.huffmanTableY_AC = huffmanTableY_AC.saveTable();
+            stegosaurusForm.huffmanTableY_DC = huffmanTableY_DC.saveTable();
+            stegosaurusForm.huffmanTableChr_AC = huffmanTableChr_AC.saveTable();
+            stegosaurusForm.huffmanTableChr_AC = huffmanTableChr_AC.saveTable();
+        }
+
 
         private void HuffmannChannelCheckedChanged_DisplayCorrectTable(object sender, EventArgs e)
         {
@@ -301,95 +307,60 @@ namespace TestForm
 
             if (rdioHuffmanChr_AC.Checked)
             {
-                pnlHuffmanChr_AC.Visible = true;
-                pnlHuffmanChr_AC.Enabled = true;
+                huffmanTableChr_AC.Visible = true;
+                huffmanTableChr_AC.Enabled = true;
             }
             else if (rdioHuffmanChr_DC.Checked)
             {
-                pnlHuffmanChr_DC.Visible = true;
-                pnlHuffmanChr_DC.Enabled = true;
+                huffmanTableChr_DC.Visible = true;
+                huffmanTableChr_DC.Enabled = true;
             }
             else if (rdioHuffmanY_AC.Checked)
             {
-                pnlHuffmanY_AC.Visible = true;
-                pnlHuffmanY_AC.Enabled = true;
+                huffmanTableY_AC.Visible = true;
+                huffmanTableY_AC.Enabled = true;
             }
             else if (rdioHuffmanY_DC.Checked)
             {
-                pnlHuffmanY_DC.Visible = true;
-                pnlHuffmanY_DC.Enabled = true;
+                huffmanTableY_DC.Visible = true;
+                huffmanTableY_DC.Enabled = true;
             }
         }
-
-        RadioButton GetCheckedRadio(Control container)
-        {
-            foreach (var control in container.Controls)
-            {
-                RadioButton radio = control as RadioButton;
-
-                if (radio != null && radio.Checked)
-                {
-                    return radio;
-                }
-            }
-
-            return null;
-        }
-
+        
         private void deselectHuffmanTables()
         {
-            pnlHuffmanChr_AC.Visible = false;
-            pnlHuffmanChr_AC.Enabled = false;
+            huffmanTableChr_AC.Visible = false;
+            huffmanTableChr_AC.Enabled = false;
 
-            pnlHuffmanChr_DC.Visible = false;
-            pnlHuffmanChr_DC.Enabled = false;
+            huffmanTableChr_DC.Visible = false;
+            huffmanTableChr_DC.Enabled = false;
 
-            pnlHuffmanY_AC.Visible = false;
-            pnlHuffmanY_AC.Enabled = false;
+            huffmanTableY_AC.Visible = false;
+            huffmanTableY_AC.Enabled = false;
 
-            pnlHuffmanY_DC.Visible = false;
-            pnlHuffmanY_DC.Enabled = false;
+            huffmanTableY_DC.Visible = false;
+            huffmanTableY_DC.Enabled = false;
         }
 
+        //Adds a row to the selected Huffman-table when btnHuffmanAddRow is clicked
         private void btnHuffmanAddRow_Click(object sender, EventArgs e)
         {
-            RadioButton checkedRadio = GetCheckedRadio(grpCustormHuffman);
-            if (checkedRadio == rdioHuffmanChr_AC)
+            if (rdioHuffmanChr_AC.Checked)
             {
-                addRowToHuffmanTable(pnlHuffmanChr_AC, huffmanBoxesChr_AC);
+                huffmanTableChr_AC.addRow();
             }
-            else if (checkedRadio == rdioHuffmanChr_DC)
+            else if (rdioHuffmanChr_DC.Checked)
             {
-                addRowToHuffmanTable(pnlHuffmanChr_DC, huffmanBoxesChr_DC);
+                huffmanTableChr_DC.addRow();
             }
-            else if (checkedRadio == rdioHuffmanY_AC)
+            else if (rdioHuffmanY_AC.Checked)
             {
-                addRowToHuffmanTable(pnlHuffmanY_AC, huffmanBoxesY_AC);
+                huffmanTableY_AC.addRow();
             }
-            else if (checkedRadio == rdioHuffmanY_DC)
+            else if (rdioHuffmanY_DC.Checked)
             {
-                addRowToHuffmanTable(pnlHuffmanY_DC, huffmanBoxesY_DC);
+                huffmanTableY_DC.addRow();
             }
-        }
-
-        private void addRowToHuffmanTable(Panel huffmanPanel, List<TextBox> huffmanBoxes)
-        {
-            int numOfHuffmanBoxes = huffmanBoxes.Count();
-            int scrollPos = huffmanPanel.VerticalScroll.Value;
-            huffmanBoxes[0].Select();
-            huffmanPanel.VerticalScroll.Value = 0;
-
-            for (int i = 0; i < 3; i++)
-            {
-                int j = i + numOfHuffmanBoxes;
-                huffmanBoxes.Add(new TextBox());
-                huffmanPanel.Controls.Add(huffmanBoxes[j]);
-                huffmanBoxes[j].Size = new Size(76, 20);
-                huffmanBoxes[j].Left = 8 + (j % 3) * 85;
-                huffmanBoxes[j].Top = 5 + (j / 3) * 25;
-                huffmanBoxes[j].Text = "0x";
-            }
-            huffmanBoxes[huffmanBoxes.Count() - 1].Select();
         }
     }
 }
