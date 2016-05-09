@@ -13,8 +13,9 @@ namespace TestForm{
         public HuffmanTable huffmanTableY_DC;
 
         private readonly LeastSignificantBitImage StegoController;
-        private bool CoverImageSetLSB, MessageImageSetLSB, CoverImageSetGT, MessageFileSetGT;
+        private bool InputImageSetLSB, MessageImageSetLSB, InputImageSetGT, MessageFileSetGT;
         private string noMessageWritten = "Enter the message you would like to encode into your image.";
+        public string ImageSavePath { get; set; }
 
         public StegosaurusForm() {
             InitializeComponent();
@@ -45,11 +46,11 @@ namespace TestForm{
             StegoController.MessageImage.Save("./decrypted.png");
         }
         */
-        private void getFileCover_FileOk(object sender, CancelEventArgs e) {
-            StegoController.InputImage = new Bitmap(getFileCoverLSB.FileName);
-            StegoController.StegoImage = new Bitmap(getFileCoverLSB.FileName);
-            picInput.Image = StegoController.InputImage;
-            CoverImageSetLSB = true;
+        private void getFileInput_FileOk(object sender, CancelEventArgs e) {
+            StegoController.CoverImage = new Bitmap(getFileInputLSB.FileName);
+            StegoController.StegoImage = new Bitmap(getFileInputLSB.FileName);
+            picInput.Image = StegoController.StegoImage;
+            InputImageSetLSB = true;
 
             if (MessageImageSetLSB || rdioDecode.Checked) {
                 btnProceed.Enabled = true;
@@ -61,14 +62,14 @@ namespace TestForm{
             picMessage.Image = StegoController.MessageImage;
             MessageImageSetLSB = true;
 
-            if (CoverImageSetLSB) {
+            if (InputImageSetLSB) {
                 btnProceed.Enabled = true;
             }
         }
 
-        private void loadCover_Click_1(object sender, EventArgs e)
+        private void loadInputImage_Click_1(object sender, EventArgs e)
         {
-            getFileCoverLSB.ShowDialog();
+            getFileInputLSB.ShowDialog();
         }
 
         private void loadMessage_Click_1(object sender, EventArgs e)
@@ -111,7 +112,7 @@ namespace TestForm{
                 picMessage.Image = null;
                 MessageImageSetLSB = false;
                 btnProceed.Text = "Decode";
-                if (CoverImageSetLSB)
+                if (InputImageSetLSB)
                 {
                     btnProceed.Enabled = true;
                 }
@@ -128,7 +129,7 @@ namespace TestForm{
                 Cursor.Current = Cursors.Default;
 
                 picResult.Image = StegoController.StegoImage;
-                StegoController.StegoImage.Save("./encrypted.png");
+                StegoController.StegoImage.Save(ImageSavePath + "./encrypted.png");
             }
             else if (rdioDecode.Checked == true)
             {
@@ -137,7 +138,7 @@ namespace TestForm{
                 Cursor.Current = Cursors.Default;
 
                 picResult.Image = StegoController.MessageImage;
-                StegoController.MessageImage.Save("./decrypted.png");
+                StegoController.MessageImage.Save(ImageSavePath + "./decrypted.png");
             }
         }
 
@@ -159,7 +160,7 @@ namespace TestForm{
             tbGTMessageFilePath.Text = GetFileMessageGT.SafeFileName;
             MessageFileSetGT = true;
 
-            if (CoverImageSetGT || rdioGTEncode.Checked)
+            if (InputImageSetGT || rdioGTEncode.Checked)
             {
                 btnGTProceed.Enabled = true;
             }
@@ -183,7 +184,7 @@ namespace TestForm{
                 tbGTMessage.Enabled = false;
                 MessageImageSetLSB = false;
                 btnGTProceed.Text = "Decode";
-                if (CoverImageSetGT)
+                if (InputImageSetGT)
                 {
                     btnGTProceed.Enabled = true;
                 }
@@ -228,7 +229,7 @@ namespace TestForm{
 
         private void getFileInputGT_FileOk(object sender, CancelEventArgs e)
         {
-            CoverImageSetGT = true;
+            InputImageSetGT = true;
             //picGTInput.Image =
 
             if (MessageFileSetGT || rdioGTDecode.Checked)

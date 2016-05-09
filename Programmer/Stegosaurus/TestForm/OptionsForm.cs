@@ -14,18 +14,13 @@ namespace TestForm
     public partial class OptionsForm : Form
     {
         readonly StegosaurusForm stegosaurusForm = new StegosaurusForm();
-        TextBox[] QuantizationBoxesY = new TextBox[64];
-        TextBox[] QuantizationBoxesChr = new TextBox[64];
-        List<TextBox> huffmanBoxesChr_AC = new List<TextBox>();
-        List<TextBox> huffmanBoxesChr_DC = new List<TextBox>();
-        List<TextBox> huffmanBoxesY_AC = new List<TextBox>();
-        List<TextBox> huffmanBoxesY_DC = new List<TextBox>();
-        HuffmanTableComponent huffmanTableY_AC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableYAC);
-        HuffmanTableComponent huffmanTableY_DC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableYDC);
-        HuffmanTableComponent huffmanTableChr_AC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableChrAC);
-        HuffmanTableComponent huffmanTableChr_DC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableChrDC);
-        QuantizationTableComponent quantizationTableY = new QuantizationTableComponent(QuantizationTable.JpegDefaultYTable);
-        QuantizationTableComponent quantizationTableChr = new QuantizationTableComponent(QuantizationTable.JpegDefaultChrTable);
+        private HuffmanTableComponent huffmanTableY_AC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableYAC);
+        private HuffmanTableComponent huffmanTableY_DC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableYDC);
+        private HuffmanTableComponent huffmanTableChr_AC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableChrAC);
+        private HuffmanTableComponent huffmanTableChr_DC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableChrDC);
+        private QuantizationTableComponent quantizationTableY = new QuantizationTableComponent(QuantizationTable.JpegDefaultYTable);
+        private QuantizationTableComponent quantizationTableChr = new QuantizationTableComponent(QuantizationTable.JpegDefaultChrTable);
+        private string ImageSavePath;
 
         #region default Tables
         string[] defaultQuantizationTableY = {
@@ -129,11 +124,8 @@ namespace TestForm
             this.MaximizeBox = false;
             this.MinimizeBox = false;            
 
-            initializeQuantizationBoxes(pnlQuantizationY, QuantizationBoxesY, defaultQuantizationTableY);
-            initializeQuantizationBoxes(pnlQuantizationChr, QuantizationBoxesChr, defaultQuantizationTableChr);
-
             rdioQuantizationYChannel.Checked = true;
-            rdioHuffmanChr_AC.Checked = true;
+            rdioHuffmanY_AC.Checked = true;
         }
 
         //Adds defaultTable.Length amount of textboxes to a given Huffman panel and saves each in an array (to be looped through), sets
@@ -170,19 +162,6 @@ namespace TestForm
 
         //Adds 64 (defaultTable length amount) textboxes to a quantization panel and saves each in an array (to be looped through), sets
         //the size and position of each textbox and writes the default Quantization values in these.
-        private void initializeQuantizationBoxes(Panel quantizationPanel, TextBox[] QuantizationBoxes, string[] defaultTable)
-        {
-            for (int i = 0; i < defaultTable.Length; i++)
-            {
-                QuantizationBoxes[i] = new TextBox();
-                quantizationPanel.Controls.Add(QuantizationBoxes[i]);
-                QuantizationBoxes[i].Size = new Size(38, 20);
-                QuantizationBoxes[i].Left = 8 + (i % 8) * 47;
-                QuantizationBoxes[i].Top = 5 + (i / 8) * 25;
-                QuantizationBoxes[i].Text = defaultTable[i];
-            }
-            
-        }
 
         //The selected Options-panel is enabled and made visible, the opposite is done to the rest.
         private void OptionsBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -272,6 +251,7 @@ namespace TestForm
             DialogResult dialogResult = MessageBox.Show("Do you wish to save current options?", "", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
             {
+                stegosaurusForm.ImageSavePath = ImageSavePath;
                 saveQuantization();
                 saveHuffmanTables();
             }
@@ -352,6 +332,22 @@ namespace TestForm
             else if (rdioHuffmanY_DC.Checked)
             {
                 huffmanTableY_DC.addRow();
+            }
+        }
+
+        private void selectOutputFolder_HelpRequest(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void btnSelectOutputFolder_Click(object sender, EventArgs e)
+        {
+            DialogResult result = selectOutputFolder.ShowDialog();
+
+            if (!string.IsNullOrWhiteSpace(selectOutputFolder.SelectedPath))
+            {
+                ImageSavePath = selectOutputFolder.SelectedPath;
+                tbSaveLocation.Text = ImageSavePath;
             }
         }
     }

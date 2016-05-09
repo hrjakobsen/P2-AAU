@@ -98,7 +98,7 @@ namespace TestForm
 
             for (int i = 0; i < codeWordsBoxes.Count; i++)
             {
-                byte runSize = byte.Parse(runSizeBoxes[i].Text);
+                byte runSize = Convert.ToByte(runSizeBoxes[i].Text, 16);
                 H.Elements.Add(runSize, new HuffmanElement(runSize, Convert.ToUInt16(codeWordsBoxes[i].Text, 2), (byte) codeWordsBoxes[i].Text.Length));
             }
 

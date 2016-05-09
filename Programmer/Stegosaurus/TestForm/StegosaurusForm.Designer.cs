@@ -25,7 +25,7 @@
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StegosaurusForm));
-            this.getFileCoverLSB = new System.Windows.Forms.OpenFileDialog();
+            this.getFileInputLSB = new System.Windows.Forms.OpenFileDialog();
             this.getFileMessageLSB = new System.Windows.Forms.OpenFileDialog();
             this.getFileStego = new System.Windows.Forms.OpenFileDialog();
             this.line = new System.Windows.Forms.Label();
@@ -33,7 +33,7 @@
             this.Decode = new System.Windows.Forms.Button();
             this.Encode = new System.Windows.Forms.Button();
             this.btnLoadMessage = new System.Windows.Forms.Button();
-            this.btnLoadCover = new System.Windows.Forms.Button();
+            this.btnLoadInput = new System.Windows.Forms.Button();
             this.picMessage = new System.Windows.Forms.PictureBox();
             this.picInput = new System.Windows.Forms.PictureBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -82,10 +82,10 @@
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // getFileCoverLSB
+            // getFileInputLSB
             // 
-            this.getFileCoverLSB.FileName = "Select an image to be the Cover";
-            this.getFileCoverLSB.FileOk += new System.ComponentModel.CancelEventHandler(this.getFileCover_FileOk);
+            this.getFileInputLSB.FileName = "Select an image to be the Cover";
+            this.getFileInputLSB.FileOk += new System.ComponentModel.CancelEventHandler(this.getFileInput_FileOk);
             // 
             // getFileMessageLSB
             // 
@@ -149,17 +149,17 @@
             this.btnLoadMessage.UseVisualStyleBackColor = true;
             this.btnLoadMessage.Click += new System.EventHandler(this.loadMessage_Click_1);
             // 
-            // btnLoadCover
+            // btnLoadInput
             // 
-            this.btnLoadCover.Location = new System.Drawing.Point(71, 228);
-            this.btnLoadCover.Name = "btnLoadCover";
-            this.btnLoadCover.Size = new System.Drawing.Size(86, 23);
-            this.btnLoadCover.TabIndex = 18;
-            this.btnLoadCover.Text = "Load image";
-            this.ttStegosaurus.SetToolTip(this.btnLoadCover, "Choose the image you would like to hide\r\ndata in (cover-image) or retrieve data \r" +
+            this.btnLoadInput.Location = new System.Drawing.Point(71, 228);
+            this.btnLoadInput.Name = "btnLoadInput";
+            this.btnLoadInput.Size = new System.Drawing.Size(86, 23);
+            this.btnLoadInput.TabIndex = 18;
+            this.btnLoadInput.Text = "Load image";
+            this.ttStegosaurus.SetToolTip(this.btnLoadInput, "Choose the image you would like to hide\r\ndata in (cover-image) or retrieve data \r" +
         "\nfrom (decode)");
-            this.btnLoadCover.UseVisualStyleBackColor = true;
-            this.btnLoadCover.Click += new System.EventHandler(this.loadCover_Click_1);
+            this.btnLoadInput.UseVisualStyleBackColor = true;
+            this.btnLoadInput.Click += new System.EventHandler(this.loadInputImage_Click_1);
             // 
             // picMessage
             // 
@@ -352,7 +352,7 @@
             this.tpMethodLSB.Controls.Add(this.picInput);
             this.tpMethodLSB.Controls.Add(this.picMessage);
             this.tpMethodLSB.Controls.Add(this.btnLoadMessage);
-            this.tpMethodLSB.Controls.Add(this.btnLoadCover);
+            this.tpMethodLSB.Controls.Add(this.btnLoadInput);
             this.tpMethodLSB.Controls.Add(this.groupBox1);
             this.tpMethodLSB.Controls.Add(this.Encode);
             this.tpMethodLSB.Controls.Add(this.Decode);
@@ -389,6 +389,7 @@
             // 
             // tbGTMessage
             // 
+            this.tbGTMessage.Enabled = false;
             this.tbGTMessage.ForeColor = System.Drawing.SystemColors.MenuText;
             this.tbGTMessage.Location = new System.Drawing.Point(232, 16);
             this.tbGTMessage.Multiline = true;
@@ -551,7 +552,7 @@
 
         #endregion
 
-        private System.Windows.Forms.OpenFileDialog getFileCoverLSB;
+        private System.Windows.Forms.OpenFileDialog getFileInputLSB;
         private System.Windows.Forms.OpenFileDialog getFileMessageLSB;
         private System.Windows.Forms.OpenFileDialog getFileStego;
         private System.Windows.Forms.Label line;
@@ -559,7 +560,7 @@
         private System.Windows.Forms.Button Decode;
         private System.Windows.Forms.Button Encode;
         private System.Windows.Forms.Button btnLoadMessage;
-        private System.Windows.Forms.Button btnLoadCover;
+        private System.Windows.Forms.Button btnLoadInput;
         private System.Windows.Forms.PictureBox picMessage;
         private System.Windows.Forms.PictureBox picInput;
         private System.Windows.Forms.MenuStrip menuStrip1;
