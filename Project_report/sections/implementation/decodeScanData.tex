@@ -3,7 +3,7 @@ The function \lstinline|decodeScanData(BitList)| takes a \lstinline|BitList| as 
 The function got multiple subfunction, each assisting the \lstinline|decodeScanData| function in finding the message. The functions are split up as follows, with their own functionality.
 \begin{itemize}
 	\item \lstinline|_addNextMCU(List<int>, BitList, ref int)| which finds four Y-component blocks, and two chrominance blocks. Finding the blocks is taken care of by the \lstinline|getBlock| function. The values returned by \lstinline|getBlock|, will be added to \lstinline|List<int>|, which it received as input.
-	\item \lstinline|getBlock(BitList, ref int, HuffmanDC table, HuffmanAC table)| which iterate through the scandata saved in the \lstinline|BitList|, and for each bit it has read, will look up the first value in the AC Huffman table, and will look up the remaining 63 values in the AC table, or until the EOB value is found.
+	\item \lstinline|getBlock(BitList, ref int, HuffmanTable, HuffmanTable)| which iterate through the scandata saved in the \lstinline|BitList|, and for each bit it has read, will look up the first value in the AC Huffman table, and will look up the remaining 63 values in the AC table, or until the EOB value is found.
 	These values will be saved in an \lstinline|int[]| in zigzag ordering.
 	Once all 64 values or EOB has been found, all values that are not 0, will be added to a \lstinline|List<int>|, then returned to the caller.
 \end{itemize}
