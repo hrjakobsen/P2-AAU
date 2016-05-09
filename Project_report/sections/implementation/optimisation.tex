@@ -10,7 +10,7 @@ To show this we created a Stopwatch object in JPEGImage, which allowed us to kee
 In order to ensure that we could compare the timings from different runs, it was important to establish some base rules to follow.
 We used the same image and message for every run. 
 The image is a 4K resolution jpg image of a landscape with a hot air balloon in it. 
-To ensure that we ran the method \lstinline|_padCoverImage| we removed eight pixels from the right and bottom sides of the image, bringing the resolution to 3832x2152
+To ensure that we ran the method \lstinline|_padCoverImage| we removed eight pixels from the right and bottom sides of the image, bringing the resolution to 3832x2152.
 The message consisted of 320 bytes representing the ASCII character \textit{A}. 
 This is the length of two regular textmessages end-to-end.
 
@@ -38,10 +38,10 @@ The first runs and the control for our further tests are shown in table \ref{fig
         Image padding   & 7099 ms               & 39654 ms              & 8183 ms           \\ \hline
         Channel split   & 3265 ms               & 20355 ms              & 3756 ms           \\ \hline
         Encoding        & 4297 ms               & 28045 ms              & 4861 ms           \\ \hline
-        Adding edges    & 124 ms                & 1020 ms               & 141 ms           \\ \hline
-        Get switches    & 364 ms                & 2720 ms               & 414 ms           \\ \hline
-        Huffman         & 668 ms                & 3568 ms               & 760 ms           \\ \hline
-        Total run time  & \textbf{16031 ms}     & \textbf{96385 ms}     & \textbf{18357 ms}  \\ \hline
+        Adding edges    & 124 ms                & 1020 ms               & 141 ms			\\ \hline
+        Get switches    & 364 ms                & 2720 ms               & 414 ms			\\ \hline
+        Huffman         & 668 ms                & 3568 ms               & 760 ms			\\ \hline
+        Total run time  & \textbf{16031 ms}     & \textbf{96385 ms}     & \textbf{18357 ms} \\ \hline
         Time covered    & \textit{98.7 \%}      & \textit{98.9 \%}      & \textit{98.7 \%}  \\ \hline
     \end{tabular}
     }
@@ -59,9 +59,9 @@ This was done in two nested for-loops that ran from zero the width and zero to t
 On the 3832x2152 image used, this amounted to 8,246,464 iterations. 
 Every iteration was using the \lstinline|Bitmap| class' methods \lstinline|GetPixel| and \lstinline|SetPixel|.
 It is very likely that there is more to the property than simply returning a value and therefore quite a bit of overhead.
-Using the \lstinline|Grapics| class and the method described here: https://msdn.microsoft.com/en-us/library/aa457087.aspx we were able to copy portions of \lstinline|Bitmaps| much more efficiently, as can be seen in figure \ref{fig:1genoptimised}
+Using the \lstinline|Grapics| class we were able to copy portions of \lstinline|Bitmap|s much more efficiently,\citep{MSDNBitmap} as can be seen in figure \ref{fig:1genoptimised}
 
-Seeing this overhead on the \lstinline|Bitmap|class, made us suspected the same of the related \lstinline|Pixel| class. 
+Seeing this overhead on the \lstinline|Bitmap| class, made us suspected the same of the related \lstinline|Pixel| class. 
 During \lstinline|_splitToChannels| we also looped through every pixel of the image and saved it in a temporary variable. 
 From this we used the bytes \lstinline|R|, \lstinline|G| and \lstinline|B| three times each. 
 On the second runs we saved these values to bytes instead of getting them from the saved pixel each time they were needed.
@@ -85,7 +85,7 @@ This reduced the calls to the Pixel's getter, which had a positive impact on the
     \end{tabular}
     }
     \begin{tablenotes}
-        \footnotesize{\item[\textdagger] Compared to the respective timings in table \ref{fig:0genoptimised}}
+        \footnotesize{\item[\textdagger] Performance increase compared to the respective timings in table \ref{fig:0genoptimised}}
     \end{tablenotes}
     \caption{First round of optimisations. Improved \lstinline|Bitmap| copying and fewer calls to the properties of \lstinline|Pixel|.}
     \label{fig:1genoptimised}
@@ -93,8 +93,8 @@ This reduced the calls to the Pixel's getter, which had a positive impact on the
 
 While there was a slight speed-up by not accessing the properties of the \lstinline|Pixel| as much, it did not do much.
 It was apparant that any use of \lstinline|GetPixel| was going to cause problems on larger images.
-Using the method described here: https://msdn.microsoft.com/en-us/library/system.drawing.imaging.bitmapdata.aspx we were able to use an \lstinline|IntPtr| to point at the data in memory.
-The reason for doing this instead of using an actual pointer, is the fact that pointers in C\# requirs the code they are used in, to be wrapped in the \lstinline|Unsafe| keyword. 
+Using \lstinline|LocBits| we were able to use an \lstinline|IntPtr| to point at the data in memory.\citep{MSDNIntPtr}
+The reason for doing this instead of using an actual pointer, is the fact that pointers in C\# requirs the code they are used in, to be wrapped in the \lstinline|unsafe| keyword. 
 We could not be entirely sure of the implications of this on an Android device, since it can require a different privileges on different platforms.
 Using this method to get the \lstinline|R|, \lstinline|G| and \lstinline|B| components of the source \lstinline|Bitmap| was beneficial to the program's execution time.
 In fact it was almost eight times faster than the previously used method, as seen on figure \ref{fig:2genoptimised}.
@@ -125,7 +125,7 @@ This saved a few operations at a later time, when the edges were ordered by weig
     \end{tabular}
     }
     \begin{tablenotes}
-        \footnotesize{\item[\textdagger] Compared to the respective timings in table \ref{fig:0genoptimised}}
+        \footnotesize{\item[\textdagger] Performance increase compared to the respective timings in table \ref{fig:0genoptimised}}
     \end{tablenotes}
     \caption{Second round of optimisations. Using a pointer to recieve \lstinline|Bitmap| data directly and improved edge adding logic.}
     \label{fig:2genoptimised}
@@ -173,7 +173,7 @@ This did not seem to have an effect, so it is quite likely that the compiler alr
     \end{tabular}
     }
     \begin{tablenotes}
-        \footnotesize{\item[\textdagger] Compared to the respective timings in table \ref{fig:0genoptimised}}
+        \footnotesize{\item[\textdagger] Performance increase compared to the respective timings in table \ref{fig:0genoptimised}}
     \end{tablenotes}
     \caption{Third and last round of optimisations. Memory optimisations and multithreading of several methods.}
     \label{fig:3genoptimised}
