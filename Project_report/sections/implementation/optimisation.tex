@@ -1,6 +1,6 @@
 \section{Optimisation}
 We had managed to implement several complex algorithms in our program. 
-This was immediately visible if the JPEG-encoder was run with larger images (such as the 4K resolution images that the camera in many smart phones output) or if long messages of several hundred bytes were embedded in the image.
+This was immediately visible if the JPEG-encoder was run with larger images (such as the 4K (3840x2160) resolution images that the camera in many smart phones output) or if long messages of several hundred bytes were embedded in the image.
 Doing so, took upwards of several minutes on slower computers.
 Since, ideally, our program was to be used on a smart phone running Android, some optimisation of the code was clearly needed.
 
@@ -56,7 +56,7 @@ If an image does not fulfill this, the last pixel is copied up to 15 times in th
 Since the \lstinline|Bitmap| class does not allow for resizing of images, we needed to copy the entire image before being able to pad its bottom and right side.
 We did this by looping through every pixel and copying it to the new \lstinline|Bitmap|.
 This was done in two nested for-loops that ran from zero the width and zero to the height respectively.
-On the 3832x2152 image used, this amounted to 8246464 iterations. 
+On the 3832x2152 image used, this amounted to 8,246,464 iterations. 
 Every iteration was using the \lstinline|Bitmap| class' methods \lstinline|GetPixel| and \lstinline|SetPixel|.
 It is very likely that there is more to the property than simply returning a value and therefore quite a bit of overhead.
 Using the \lstinline|Grapics| class and the method described here: https://msdn.microsoft.com/en-us/library/aa457087.aspx we were able to copy portions of \lstinline|Bitmaps| much more efficiently, as can be seen in figure \ref{fig:1genoptimised}
