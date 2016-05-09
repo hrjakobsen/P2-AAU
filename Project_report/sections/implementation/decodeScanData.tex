@@ -12,15 +12,15 @@ Once this is done, we can find the length of the message, modulo and can thus st
 To get the length and modulo, the following is done
 \begin{enumerate}
 	\item Call \lstinline|getLength(List<int>)|, which finds the length of the message by adding the first 14 values together in pairs of two, then doing modulo 4 of that value. 
-	This value will be added to a \lstinline|ushort| value, which will first be bitshifted left twice. 
+	This value will be added to a \lstinline|ushort| value, which first will be bitshifted left twice. 
 	After running this loop seven times, the \lstinline|ushort|, will be the length of the encoded message.
-	\item Call \lstinline|getModulo(List<int>)|, which will add the 14'th and 15'th value together, then after doing modulo 4 on the result, look through a switch with 3 values in it, then return the right modulo based on the result of the operation.
+	\item Call \lstinline|getModulo(List<int>)|, which will add the 14th and 15th value together, then after doing modulo 4 on the result, look through a switch with 3 values in it, then return the right modulo based on the result of the operation.
 \end{enumerate}
-With the values from these two functions, it's now just a matter of calling \lstinline|_addNextMCU| until the values containing the message, has been found.
+With the values from these two functions, it is now just a matter of calling \lstinline|_addNextMCU| until the values containing the message has been found.
 When all the required values has been read and saved in the \lstinline|List<int>| variable, the message can be found by doing the following
 \begin{enumerate}
-	\item add all the values in pairs of two together, then do the modulo operation on them using the value of modulo found with the \lstinline|getModulo| function.
-	\item iterate through the message bits, adding them together to a single value, then shift the value to the left depending on the value of modulo.
-	This will be done until the value can no longer be stored in a single byte, then added to a \lstinline|List<byte>| variable, and continue from where we left off until there's no longer any message bits left.
+	\item Add all the values in pairs of two together, then do the modulo operation on them using the value of modulo found with the \lstinline|getModulo| function.
+	\item Iterate through the message bits, adding them together to a single value, then shift the value to the left depending on the value of modulo.
+	This will be done until the value can no longer be stored in a single byte, then added to a \lstinline|List<byte>| variable, and continue from where we left off until there is no longer any message bits left.
 	\item The \lstinline|List<byte>| variable now contains the decoded message and will be returned to the caller of \lstinline|decodeScanData()|, as a \lstinline|byte[]|
 \end{enumerate}

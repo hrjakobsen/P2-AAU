@@ -23,9 +23,9 @@ The following methods and procedures constitute just under 99 \% of time spent b
 \lstinline|_padCoverImage|, \lstinline|_splitToChannels|, \lstinline|_encodeAndQuantizeValues|, Adding edges to the graph, \lstinline|GetSwitches| and \lstinline|_huffmanEncoding|.
 All numbers are averages based on ten consectutive runs, following a single "warm-up run", whose results were not saved.
 This was done to get more stable timings, seeing as the first run always had slightly different times than the remaining.
-It is quite possible that this was caused by the garbage collector, since it changes behaviour depending on the patterns of code being run.
-Therefore, running the program once without saving the data allowed it to learn the memory allocation patterns of the code and react in the same way the next ten times it was run.
-The warm-up run also allowed us to run the decoder to make sure that the message was being encoded properly in the image and that our optimisations had not changed the program's output.
+It is quite possible that this was caused by the garbage collector, since it changes its behaviour depending on the patterns of code being run.
+Therefore, running the programme once without saving the data allowed it to learn the memory allocation patterns of the code and react in the same way the next ten times it was run.
+The warm-up run also allowed us to run the decoder to make sure that the message was being encoded properly in the image and that our optimisations had not changed the programme's output.
 The first runs and the control for our further tests are shown in table \ref{fig:0genoptimised}
 
 \begin{threeparttable}[]
@@ -57,11 +57,11 @@ Since the \lstinline|Bitmap| class does not allow for resizing of images, we nee
 We did this by looping through every pixel and copying it to the new \lstinline|Bitmap|.
 This was done in two nested for-loops that ran from zero the width and zero to the height respectively.
 On the 3832x2152 image used, this amounted to 8,246,464 iterations. 
-Every iteration was using the \lstinline|Bitmap| class' methods \lstinline|GetPixel| and \lstinline|SetPixel|.
+Every iteration used the \lstinline|Bitmap| class' methods \lstinline|GetPixel| and \lstinline|SetPixel|.
 It is very likely that there is more to the property than simply returning a value and therefore quite a bit of overhead.
 Using the \lstinline|Grapics| class we were able to copy portions of \lstinline|Bitmap|s much more efficiently,\citep{MSDNBitmap} as can be seen in figure \ref{fig:1genoptimised}
 
-Seeing this overhead on the \lstinline|Bitmap| class, made us suspected the same of the related \lstinline|Pixel| class. 
+Seeing this overhead on the \lstinline|Bitmap| class, made us suspect the same of the related \lstinline|Pixel| class. 
 During \lstinline|_splitToChannels| we also looped through every pixel of the image and saved it in a temporary variable. 
 From this we used the bytes \lstinline|R|, \lstinline|G| and \lstinline|B| three times each. 
 On the second runs we saved these values to bytes instead of getting them from the saved pixel each time they were needed.
@@ -94,10 +94,10 @@ This reduced the calls to the Pixel's getter, which had a positive impact on the
 While there was a slight speed-up by not accessing the properties of the \lstinline|Pixel| as much, it did not do much.
 It was apparant that any use of \lstinline|GetPixel| was going to cause problems on larger images.
 Using \lstinline|LocBits| we were able to use an \lstinline|IntPtr| to point at the data in memory.\citep{MSDNIntPtr}
-The reason for doing this instead of using an actual pointer, is the fact that pointers in C\# requirs the code they are used in, to be wrapped in the \lstinline|unsafe| keyword. 
+The reason for doing this instead of using an actual pointer, is the fact that pointers in C\# requires the code they are used in to be wrapped in the \lstinline|unsafe| keyword. 
 We could not be entirely sure of the implications of this on an Android device, since it can require a different privileges on different platforms.
 Using this method to get the \lstinline|R|, \lstinline|G| and \lstinline|B| components of the source \lstinline|Bitmap| was beneficial to the program's execution time.
-In fact it was almost eight times faster than the previously used method, as seen on figure \ref{fig:2genoptimised}.
+In fact, it was almost eight times faster than the previously used method, as seen on figure \ref{fig:2genoptimised}.
 
 Slight changes to the two nested loops, which added edges to the graph, netted a less drastical improvement.
 The algorithm had complexety $O(n^2)$ so even though it did not constitute more than 1-2 \% of the overall time of these tests, a longer message could have quite an impact on that.
@@ -133,7 +133,7 @@ This saved a few operations at a later time, when the edges were ordered by weig
 
 The final optimisations we did, had the potential to make a big difference on some systems.
 Taking advantage of the multi-core design of most modern processors, we made some of the intensive parts of our code run in parallel on different cores.
-The effects of this can vary widely depending on the processor architechture and not all smart phones are be able to take advantage of it.
+The effects of this can vary widely depending on the processor architechture and not all smart phones would be able to take advantage of it.
 The ones that can should be able to see a dramatic increase in performance of some parts of the code.
 
 Running loops in parallel as we did required seeing the code and its data dependencies in a different way than usually.
@@ -142,11 +142,11 @@ The data dependencies follow the same pattern.
 When it comes to multi-threaded code though, this pattern changes, since the same lines of code can potentially be accessed by different threads at the same time.
 This can lead to race-conditions, where the result of code can change depending on which thread gets to make changes first.
 Data can potentially be overwritten, since the same parts of memory can be written to at the same time.
-In a high-level language such as C\# this would most likely cause a run-time exception instead.
+In a high-level language such as C\#, this would most likely cause a run-time exception instead.
 
 Because of these dangers, it is important that one manages any and all of these synchronisation issues properly.
-This is not always possible to use the same data-structure as single-threaded code does, and since we implemented multi-threading after making the code single-threaded we were not able to convert all the code.
-Specifically Huffman-encoding proved to cumbersome to efficiently multi-thread.
+It is not always possible to use the same data-structure as single-threaded code does, and since we implemented multi-threading after making the code single-threaded we were not able to convert all the code.
+Specifically Huffman-encoding proved too cumbersome to efficiently multi-thread.
 However, DCT-calculation, quantization, adding edges and splitting the image to YCbCr-channels where succefully rewritten to allow for the code to run in parallel on several cores with the same output.
 
 By using the smallest data types capable of holding our data and properly unloading large unused variables, we effectively reduced peak memory usage from almost 400MB to around 100MB.
