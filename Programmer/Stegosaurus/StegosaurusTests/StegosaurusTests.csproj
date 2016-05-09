@@ -53,7 +53,9 @@
   </Choose>
   <ItemGroup>
     <Compile Include="JPEG\BitListTests.cs" />
+    <Compile Include="JPEG\EdgeTests.cs" />
     <Compile Include="JPEG\ExtensionMethodsTests.cs" />
+    <Compile Include="JPEG\GraphTests.cs" />
     <Compile Include="JPEG\HuffmanElementTests.cs" />
     <Compile Include="JPEG\HuffmanTableTests.cs" />
     <Compile Include="JPEG\JpegImageTests.cs" />
