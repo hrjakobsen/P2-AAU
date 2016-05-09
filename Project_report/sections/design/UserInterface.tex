@@ -1,6 +1,6 @@
 \section{User Interface}
 
-The user interface (UI) for Stegosaurus is going to be created in Visual Studio using C# and Windows Forms.
+The user interface (UI) for Stegosaurus is going to be created in Visual Studio using C\# and Windows Forms.
 In some of our previous experiments, we have created a very basic UI. 
 The only function these UIs could was to show the cover image, the hidden image and then the output.
 In this example, the user had no visual cue on whether the programme had done as it was supposed to.
@@ -52,12 +52,19 @@ Likewise, another feature, that we deem to be a rather important visual represen
 Therefore, we have decided to have a slider to show what level of quality the programme will produce.
 
 The following list is what the user interface will include:
+<<<<<<< HEAD
 \begin{list}
 \item{Main form}
 The encode and decode buttons work as they are. But if we also want to have our buttons to work as an option on whether the image has to be encoded or decoded, radio buttons, where encode or decode get selected, and thereby when decode is selected then the message image load button, will not be applicable for selection. 
+=======
+\begin{description}
+    \item[Main form]
+The encode and decode buttons work as they are. But if we also want to have our buttons to work as an option on whether the image has to be encoded or decoded, radio buttons, where encode or decode get selected, and thereby when decode is selected then the message image load button, will not be applicable for selection. {Insert some pictures that help explain this}
+>>>>>>> b92109565e8f7d08eb23c9cd56a94b2669c766bc
 
 In our original design, we had a maximize and minimise button next to close. We have since decided on changing this, so that the maximise and minimise buttons are disabled. This is to stop any change of size in the programme, so that all features of the programme retain their original size.
 
+<<<<<<< HEAD
 \item{LSB or Graph Theory Method}
 The user will be able to switch between methods by clicking on a tab that will be shown at the top of the main form. This idea seems more effective than our initial idea of having the option of selecting which method in an options form. Having the option on the main form makes it much clearer what this programme can do.
 \begin{figure}
@@ -73,8 +80,12 @@ The user will be able to switch between methods by clicking on a tab that will b
 	\caption{This is how the user will meet our graph theoretical method, where there is no longer an option for inserting an image to be encoded.}
 	\label{fig:StegoGTAMain}
 \end{figure}
+=======
+\item[LSB or Graph Theory Method]
+The user will be able to switch between methods by clicking on a tab that will be shown at the top of the main form. This idea seems more effective than our initial idea of having the option of selecting which method in an options form. Having the option on the main form makes it much clearer what theis programme can do. Each of these forms are connected to 
+>>>>>>> b92109565e8f7d08eb23c9cd56a94b2669c766bc
 
-\item{Quantization Tables}
+\item[Quantization Tables]
 A difficulty that arose when deciding on these features were: how we were going to make it possible for a user to input their custom quantization and huffman codes.
 An initial idea included a CSV-file (Comma Separated Values file), but we decided that for quantization tables, it was ideal and no trouble to have the user input their table by typing it in text boxes as the size of each quantization table is the same for both the luminance and chromium channels. This can be seen in \figurename{StegoOptionQuant}.
 \begin{figure}
@@ -84,7 +95,7 @@ An initial idea included a CSV-file (Comma Separated Values file), but we decide
 	\label{fig:StegoOptionQuant}
 \end{figure}
 
-\item{Huffman Tables}
+\item[Huffman Tables]
 Huffman tables requires a similar form to quantization tables. There are four radio buttons to switch between the four different channels. Text boxes have been set up to be able to take in a string from the user. However, as the sizes of the huffman tables vary, it is necessary to have a function that allows the user to add rows as needed.
 \begin{figure}
 	\centering
@@ -93,15 +104,15 @@ Huffman tables requires a similar form to quantization tables. There are four ra
 	\label{fig:StegoOptionHuff}
 \end{figure}
 
-\item{Quality setting}
+\item[Quality setting]
 Our initial idea was a slider that would be shown on the main form and in our options form. This slider would then tell us what the quality settings were set to, from 0 to 100. This slider was initially planned to be a part of the main form, but has since been moved to options setting, as we decided it was as much a custom option as the Huffman and quantization tables.
 
-\item{Progress bar}
+\item[Progress bar]
 The original idea of showing the user what was happening with the programme by having a pop-up window has been replaced by having a loading sign by the cursor. This is also a way of showing the viewer that something is happening. If the implementation took more than a few minutes, it would maybe be more of a requirement, but as the programme works rather quickly, it does not seem necessary.
 
-\item{Help form}
+\item[Help form]
 A very general description of what the programme does and descriptions of the different settings in the options form. We believe this to be important to the overall understanding of how the programme is to be used; something that our previous experiments have not had.
-\end{list}
+\end{description}
 
 \subsection{Possible Improvements}
 There are some things with the UI that can be seen as problematic. As the programme is now, there is no option to save one's custom settings when the programme is closed. This could have been a useful tool, as some of the components are quite time consuming, especially writing each value in the Huffman Tables and quantization table forms.
