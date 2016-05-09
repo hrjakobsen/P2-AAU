@@ -149,7 +149,7 @@ This is not always possible to use the same data-structure as single-threaded co
 Specifically Huffman-encoding proved to cumbersome to efficiently multi-thread.
 However, DCT-calculation, quantization, adding edges and splitting the image to YCbCr-channels where succefully rewritten to allow for the code to run in parallel on several cores with the same output.
 
-By using the smallest data types capable of holding our data and properly unloading large unused variables, we effectively reduced peak memory usage from almost 400mb to around 100 mb.
+By using the smallest data types capable of holding our data and properly unloading large unused variables, we effectively reduced peak memory usage from almost 400MB to around 100MB.
 This improved the spacial locality of the data, which had the potential of leading to better utilization of the different levels of caches, all in all leading to a better performing program.
 
 Since we knew that there was a certain overhead on function calls, we tried to force the compiler to inline some of the most called functions we had. 
