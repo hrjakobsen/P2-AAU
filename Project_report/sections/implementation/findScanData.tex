@@ -1,0 +1,6 @@
+\subsection{findScanData}
+The function \lstinline|findScanData()|, reads through the input until it meets the marker 0xFFDA, then skips the next 12 bytes which contains information about the scandata section.
+Once this is done, the function will add every single byte in the scandata section to a \lstinline|List<byte>| list until a marker is found.
+Since the decoding-process works on a bit-level, we'll need to convert this list of bytes into an array of bits instead. To do this, we've got the \lstinline|BitList| class, which suits our needs.
+To do this, we apply eight different masks to each byte to get the value for each bit, then add a true or false value to a new list of bits. 
+This list, will be the list returned by \lstinline|findScanData()|
