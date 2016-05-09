@@ -20,7 +20,7 @@ While a very simple thing to do, this did have some visible results in a few are
 We ran several trials before this stage to get a better understanding of which methods, where most time-consuming.
 
 The following methods and procedures constitute just under 99 \% of time spent by our mostly unoptimised program, when run with the aforementioned parameters:
-\lstinline|_padCoverImage|, \lstinline|_splitToChannels|, \lstinline|_encodeAndQuantizeValues|, Adding edges to the graph, \lstinline|GetSwitches| and \lstinline|_Huffmanencoding|.
+\lstinline|_padCoverImage|, \lstinline|_splitToChannels|, \lstinline|_encodeAndQuantizeValues|, Adding edges to the graph, \lstinline|GetSwitches| and \lstinline|_huffmanEncoding|.
 All numbers are averages based on ten consectutive runs, following a single "warm-up run", whose results were not saved.
 This was done to get more stable timings, seeing as the first run always had slightly different times than the remaining.
 It is quite possible that this was caused by the garbage collector, since it changes behaviour depending on the patterns of code being run.
