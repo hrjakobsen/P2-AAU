@@ -127,10 +127,7 @@ namespace TestForm
             initializeHuffmanTable(huffmanTableChr_DC);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            tbarQualitySlider.Value = stegosaurusForm.tbarQualityValue;
-
-            
+            this.MinimizeBox = false;            
 
             initializeQuantizationBoxes(pnlQuantizationY, QuantizationBoxesY, defaultQuantizationTableY);
             initializeQuantizationBoxes(pnlQuantizationChr, QuantizationBoxesChr, defaultQuantizationTableChr);
@@ -242,11 +239,6 @@ namespace TestForm
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);
-        }
-
-        private void tbarQualitySlider2_ValueChanged(object sender, EventArgs e)
-        {
-            stegosaurusForm.tbarQualityValue = tbarQualitySlider.Value;
         }
 
         //The selected Quantization-table is enabled and made visible, the opposite is done to the other.

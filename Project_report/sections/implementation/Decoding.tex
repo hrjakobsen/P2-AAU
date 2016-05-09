@@ -2,7 +2,7 @@
 As mentioned in section \ref{sec:DesignHuffman}, a \lstinline|StreamReader| reads from a file from the beginning towards the end.
 Thus, the first thing we did in the decoding process was to read the Huffman tables from the JPEG file. 
 \input{sections/implementation/Huffman.tex}
-We do this four times, since we got four Huffman Tables.
+We do this four times, since we got four Huffman tables.
 
 If the public method called \lstinline|decode()| is called, the method will call appropriate functions and sub-functions to decode the message hidden in the jpeg image with the Graph-Theoretic-Approach to Steganography.
 The function \lstinline|findScanData()| returns a bitlist, which will be used by the function \lstinline|decodeScanData()|, and then return the message to the user who called the method.

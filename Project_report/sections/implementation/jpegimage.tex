@@ -2,7 +2,7 @@
 \section{Implementation of a JPEG image}
 
 \subsection{Working with bits}
-While working with JPEG images bit-patterns and bit-wise operations often occur.
+While working with JPEG images, bit-patterns and bit-wise operations often occur.
 Due to hardware limitations, a single bit in the memory cannot be changed individually, and we can only address the individual bytes.
 There are now two ways that we can go about this:
 Either we use bytes to represent bits, and effectively waste 7 bits of memory for each bit, or we use the class \lstinline|BitArray| from the \lstinline|System.Collections| library. What this class does, is that it handles the packing of the bits into bytes, and makes you able to adress the individual bits.

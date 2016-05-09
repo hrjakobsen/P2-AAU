@@ -14,21 +14,11 @@ namespace TestForm{
 
         private readonly LeastSignificantBitImage StegoController;
         private bool CoverImageSetLSB, MessageImageSetLSB, CoverImageSetGT, MessageFileSetGT;
-
-
-        public int tbarQualityValue {
-            get
-            {
-                return this.tbarQualitySlider.Value;
-            }
-            set
-            {
-                this.tbarQualitySlider.Value = value;
-            }
-        }
+        private string noMessageWritten = "Enter the message you would like to encode into your image.";
 
         public StegosaurusForm() {
             InitializeComponent();
+            tbGTMessage.Text = noMessageWritten;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -104,12 +94,6 @@ namespace TestForm{
             helpForm.Show();
         }
 
-        private void tbarQualityChanged(object sender, EventArgs e)
-        {
-            tbarQualityValue = tbarQualitySlider.Value;
-            lblQuality.Text = tbarQualityValue.ToString();
-        }
-
         private void DisplayLoadMessage(object sender, EventArgs e)
         {
             if (rdioEncode.Checked == true)
@@ -172,7 +156,7 @@ namespace TestForm{
 
         private void GetFileMessageGT_FileOk(object sender, CancelEventArgs e)
         {
-            textBox1.Text = GetFileMessageGT.SafeFileName;
+            tbGTMessageFilePath.Text = GetFileMessageGT.SafeFileName;
             MessageFileSetGT = true;
 
             if (CoverImageSetGT || rdioGTEncode.Checked)
@@ -186,6 +170,7 @@ namespace TestForm{
             if (rdioGTEncode.Checked == true)
             {
                 btnGTLoadMessageFile.Enabled = true;
+                tbGTMessage.Enabled = true;
                 btnGTProceed.Text = "Encode";
                 if (!MessageFileSetGT)
                 {
@@ -195,7 +180,7 @@ namespace TestForm{
             else if (rdioGTDecode.Checked == true)
             {
                 btnGTLoadMessageFile.Enabled = false;
-                textBox1.Text = null;
+                tbGTMessage.Enabled = false;
                 MessageImageSetLSB = false;
                 btnGTProceed.Text = "Decode";
                 if (CoverImageSetGT)
@@ -203,6 +188,36 @@ namespace TestForm{
                     btnGTProceed.Enabled = true;
                 }
             }
+        }
+
+        private void tbGTMessage_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            tbGTMessage.SelectAll();
+        }
+
+        private void tbGTMessage_TextChanged(object sender, EventArgs e)
+        {
+            tbGTMessage.ForeColor = SystemColors.MenuText;
+        }
+
+        private void tbGTMessage_Leave(object sender, EventArgs e)
+        {
+            if (tbGTMessage.Text == "")
+            {
+                tbGTMessage.Text = noMessageWritten;
+            }
+        }
+
+        private void btnGTProceed_Click(object sender, EventArgs e)
+        {
+            if (tbGTMessage.Text != noMessageWritten)
+            {
+
+            }
+            //else if (Image = null)
+            //{
+
+            //}
         }
 
         private void btnGTLoadInput_Click(object sender, EventArgs e)
