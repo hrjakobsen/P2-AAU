@@ -1,0 +1,26 @@
+\section{Discussion}
+We started out by using the relatively simple LSB-method for hiding data in an image.
+Specifically we saved an image inside of another PNG-image.
+While the differences in the image with and without the message-image were hardly noticeable to the human eye, we did find that comparing colour histograms of the two images revealed the fact that changes had been made.
+In an effort to diminish this problem, the graph-theoretical approach we implemented attempted to move pixels around in the image, rather than change their values.
+This meant that colour histograms of the image before and after the message had been encoded should look very similar, almost identical.
+Any changes would come from the SMALL?!?! (25-40%????) percentage of the quantized DCT values used in the encoding that we did not find any interchangeable values for.
+When this happened we were forced to change the individual values, which led to a change in the colour composition of the image.
+Using this method we expected the change to be small enough that it would not immediately draw attention to the image, if it was being subjected to a colour histogram.
+
+An entirely different way of looking for changes in an image is by looking at the Euclidean distance of them.
+This can be done by calculating the distance between the colour values of each pixel in two equally sized images.
+The sum of all these distances can be used as measure of the change from one image to the other.
+We used this same method for determining what changes were imposed on images of different size and format, when uploaded to various social media and image-sharing websites.
+
+Comparing these results directly with the ones obtained from the LSB-method would be folly.
+While the LSB-method would certainly incur a smaller difference in the Euclidean distance it would not neccesarily make it any better.
+First of all using this method required that the user was in possesion of both the original and the stego image.
+This would indeed be possible if the parties sharing secret messages in the images, where using images they found on the internet and tampered with them.
+They could completely foil this risk of being compromised then, by simply using images that they took themselves.
+The other reason for the differences being larger is due to how the JPEG-file format is encoded.
+Using the LSB of every pixel there is only the potential to change the value of each pixel by one.
+Using the graph-theoretical approach with an M value of four, means that each individual value can be changed by four. 
+This change is applied after the quantization step to avoid losing the data again.
+This in turn means that the small change of up to four is multiplied by the quantization table, when the image is shown.
+Bla bla something something green is less than the other

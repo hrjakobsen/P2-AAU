@@ -648,7 +648,7 @@ namespace Stegosaurus {
             //Add vertices for each part of the message
             _addVertices(graph);
 
-            int threshold = 5;
+            int threshold = _m;
             //Find alle the possible switches between vertices and add them as edges
             Parallel.ForEach(graph.Vertices, currentVertex => {
                 foreach (Vertex otherVertex in graph.Vertices.Where(otherVertex => currentVertex != otherVertex)) {
@@ -672,41 +672,56 @@ namespace Stegosaurus {
                 _message.RemoveAt(0);
             }
 
-            int valuesNeeded = _message.Count * 16 / (int)Math.Log(M, 2) - 1;
-            for (int i = 16; i < valuesNeeded; i += 2) {
-                if (_message.Count == 0) {
-                    break;
+            //for (int i = 16; _message.Any(); i += 2) {
+            //    g.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0], M));
+            //    _message.RemoveAt(0);
+            //}
+
+            int lastMsgIndex = 0;
+            int len = _message.Count * 4 + 16;
+            for (int i = 16; i < len ; i += 2) {
+                if (_message.Any()) {
+                    g.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0], M));
+                    _message.RemoveAt(0);
+                    lastMsgIndex = i;
+                } else {
+                    g.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], 0, M, false));
                 }
-                g.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0], M));
-                _message.RemoveAt(0);
             }
+            Console.WriteLine(lastMsgIndex);
         }
 
         private static void _addEdge(bool startFirst, bool endFirst, Vertex first, Vertex second, int threshold, Graph g) {
             short weight = (short)Math.Abs((startFirst ? first.SampleValue1 : first.SampleValue2) - (endFirst ? second.SampleValue1 : second.SampleValue2));
             if (weight < threshold) {
-                if (((startFirst ? first.SampleValue2 : first.SampleValue1) + (endFirst ? second.SampleValue1 : second.SampleValue2)).Mod(first.Modulo) == first.Message) {
-                    if (((startFirst ? first.SampleValue1 : first.SampleValue2) + (endFirst ? second.SampleValue2 : second.SampleValue1)).Mod(second.Modulo) == second.Message) {
+                if (((startFirst ? first.SampleValue2 : first.SampleValue1) + (endFirst ? second.SampleValue1 : second.SampleValue2)).Mod(first.Modulo) == first.Message || !first.HasMessage) {
+                    if (((startFirst ? first.SampleValue1 : first.SampleValue2) + (endFirst ? second.SampleValue2 : second.SampleValue1)).Mod(second.Modulo) == second.Message || !second.HasMessage) {
                         lock (g) {
                             g.Edges.Add(new Edge(first, second, weight, startFirst, endFirst));
                         }
                     }
                 }
-            }
+           }
         }
 
-        private void _refactorGraph(Graph graph) {
+        private static void _refactorGraph(Graph graph) {
             List<Edge> chosen = graph.GetSwitches();
+
+            int swaps = 0, forces = 0;
 
             foreach (Edge edge in chosen) {
                 _swapVertexData(edge);
+                swaps++;
             }
 
             foreach (Vertex vertex in graph.Vertices) {
                 if ((vertex.SampleValue1 + vertex.SampleValue2).Mod(vertex.Modulo) != vertex.Message) {
                     _forceSampleChange(vertex);
+                    forces++;
                 }
             }
+
+            Console.WriteLine($"Did {swaps} swaps and {forces} forces. ({(double)forces / (forces + swaps) * 100} %)");
         }
 
         private static void _swapVertexData(Edge e) {
@@ -762,6 +777,9 @@ namespace Stegosaurus {
                 int ypos = (i % 64) / 8;
 
                 if (xpos + ypos != 0 && _quantizedBlocks[array].Item1[xpos, ypos] != 0) {
+                    if (!graph.Vertices[vertexPos].HasMessage) {
+                        continue;
+                    }
                     if (firstValue) {
                         _quantizedBlocks[array].Item1[xpos, ypos] = graph.Vertices[vertexPos].SampleValue1;
                         firstValue = false;
