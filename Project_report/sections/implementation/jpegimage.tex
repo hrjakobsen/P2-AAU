@@ -32,7 +32,10 @@ public void Encode(byte[] message) {
 From here on, we need to perform all of the regular steps JPEG encoding up until just before the Huffman encoding.
 We start out with splitting the image into Y, Cb and Cr channels instead of the \lstinline|Bitmap|'s RGB channels, and then in the method \lstinline|void _encodeAndQuantizeValues(sbyte[][,], int, int)| we have the loop which can be seen in listing \ref{JPEGEncodeAndQuantize}.
 While these nested loops may seem very computationally heavy, what it actually does is that it loops through the three channels of every pixel in the 16x16 MCU's.
-So while we have five nested for loops, we only run through every pixel 3 times. After every 16x16 MCU has been filled with values, the MCU must be encoded. As the name Minimum Encoded Unit implies, we can encode one MCU without depending on the other. That means that after we fill one MCU, we can encode that directly, we do that by invoking the method \lstinline|void _encodeBlocks(float[][,])|
+So while we have five nested for loops, we only run through every pixel 3 times.
+After every 16x16 MCU has been filled with values, the MCU must be encoded.
+As the name Minimum Encoded Unit implies, we can encode one MCU without depending on the other.
+That means that after we fill one MCU, we can encode that directly, we do that by invoking the method \lstinline|void _encodeBlocks(float[][,])|
 
 \begin{lstlisting}[firstnumber=525, label=JPEGEncodeAndQuantize]
 for (int MCUY = 0; MCUY < imageHeight; MCUY += 16) {
@@ -49,7 +52,10 @@ for (int MCUY = 0; MCUY < imageHeight; MCUY += 16) {
 }
 \end{lstlisting}
 
-In this method, we split the MCU into 8x8 blocks. As we have a fixed sampling of 4:2:0 that means that we split the Y channel into four 8x8 blocks and effectively save all information about the luminance channel, the Cr and Cb channels, we down-sample from a 16x16 block to a 8x8 blocks. As we implemented this, we had two ways of doing so. One way of doing it, is taking every 4th value in the block as seen on figure \ref{fig:downsampling4th}, and the other way of doing it, is taking an average of each 2x2 block in the 16x16 MCU as seen on figure \ref{fig:downsamplingAverage}.
+In this method, we split the MCU into 8x8 blocks.
+As we have a fixed sampling of 4:2:0 that means that we split the Y channel into four 8x8 blocks and effectively save all information about the luminance channel, the Cr and Cb channels, we down-sample from a 16x16 block to a 8x8 blocks.
+As we implemented this, we had two ways of doing so.
+One way of doing it, is taking every 4th value in the block as seen on figure \ref{fig:downsampling4th}, and the other way of doing it, is taking an average of each 2x2 block in the 16x16 MCU as seen on figure \ref{fig:downsamplingAverage}.
 
 \begin{figure}
     \centering
@@ -75,7 +81,7 @@ In this method, we split the MCU into 8x8 blocks. As we have a fixed sampling of
         \caption{Downsampling by choosing only every 4th value}
         \label{fig:downsampling4th}
     \end{subfigure}
-    \qquad %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc. 
+    \qquad %add desired spacing between images, e.g.~, \quad, \qquad, \hfill etc. 
       %(or a blank line to force the subfigure onto a new line)
     \begin{subfigure}[b]{0.3\textwidth}
         \begin{tikzpicture}
@@ -102,18 +108,151 @@ In this method, we split the MCU into 8x8 blocks. As we have a fixed sampling of
 \end{figure}
 
 
+In our implementation we chose to use the average.
+While it does take some more calculations we do get better image quality.
+The problem with using just one value for every 2x2 block is, that if the image contains sharp edges, those lines will become distorted.
+If using the average instead, the lines will at most become a bit blurry.
+
+After the down sampling process, only the DCT and Quantization processes are left before we can start embedding the message.
+On each 8x8 block we perform DCT as seen in listing \ref{JPEGEncodeDCT}.
+The DCT formula was described in section \ref{sec:jpegStudy}, but one thing we realised about the formula was, that the we could calculate the cosines only once, and use these instead of repetitively calculating the trigonometric function, therefore we calculate these results before even beginning the DCT process, and then just reuse the results in the DCT method.
+ 
+
+\begin{lstlisting}[firstnumber=603,label=JPEGEncodeDCT]
+private static float[,] _discreteCosineTransform(float[,] block8) {
+    float[,] cosineValues = new float[8, 8];
+
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            float tempSum = 0.0f;
+            float cCoefficient = _c(i, j);
+            for (int x = 0; x < 8; x++) {
+                for (int y = 0; y < 8; y++) {
+                    tempSum += cCoefficient * block8[x, y] * CosinesCoefficients[x, i] * CosinesCoefficients[y, j];
+                }
+            }
+            cosineValues[i, j] = tempSum;
+        }
+    }
+    return cosineValues;
+}
+\end{lstlisting}
+
+After calculating the DCT coefficients, it is simply a matter of dividing each entry in the 8x8 block with the corresponding value in the quantization table.
+The result of this process are saved to the private field \lstinline|_quantizedValues|.
+
+So now we are ready to perform the actual encoding of the data, before saving the image data to a file.
+We use procedure \ref{algJPEG} to find the valid entries from our newly filled \lstinline|_quantizedValues|.
+The first 16 values from our valid entries, we add as vertices to the graph, with a modulo of 4 as the length and modulo value always will be encoded with modulo 4 so that it can be decoded.
+Then we keep on adding vertices, until we are certain that we have enough vertices to embed all the data in the \lstinline|byte[]|.
+After adding the vertices, we use the private method \lstinline|void _addEdge(bool, bool, Vertex, Vertex, int, Graph)| to determine whether an edge between the two specified vertices would result in a perfect pair.
+If the edge would result in a perfect pair, the edge is added to the graph.
+
+We run this method 4 times for every distinctive pair of vertices in the graph, for each of the possible switches shown earlier in figure \ref{fig:graphSwitches}.
+In procedure \ref{algJPEGEncode} we would loop every vertex, for each vertex.
+If we had the vertices $\{a,b,c,d\}$ we would get the pairs $\{(a,b),(a,c),(a,d)(b,a),(b,c),(b,d),(c,a),(c,b),(c,d),(d,a),(d,b),(d,c)\}$.
+To find all possible switches, there is no need to check both $(a,b)$ and $(b,a)$, as those two vertices would have the same switches.
+In fact, we only need to check the switches $\{(a,b),(a,c),(a,d),(b,c),(b,d),(c,d)\}$ which is half the original pairs.
+We implemented this as seen in listing \ref{implementationPairs}.
+The inner loop starts at the vertex following the current vertex in the outer loop.
+This way, we do not find the reversed counterparts of already found pairs.
+This particular piece is still $\mathcal{O}(n^2)$, but instead of checking $n(n-1)=n^2-n$ pairs, we only need to check $(n\cdot\frac{n}{2})=\frac{n^2}{2}$ where $n$ is the number of vertices. 
 
 
+\begin{lstlisting}[firstnumber=655,label=implementationPairs]
+Parallel.For(0, length, i => {
+    for (int j = i + 1; j < length; j++) {
+        _addEdge(true, true, toBeChanged[i], toBeChanged[j], threshold, graph);
+        _addEdge(true, false, toBeChanged[i], toBeChanged[j], threshold, graph);
+        _addEdge(false, true, toBeChanged[i], toBeChanged[j], threshold, graph);
+        _addEdge(false, false, toBeChanged[i], toBeChanged[j], threshold, graph);
+    }
+});
+\end{lstlisting}
+
+After adding the edges, we need to determine what edges to keep, where each edge describes a switch between two vertices.
+We do that by sorting our edges by weight then choose the edge with the lowest weight, then remove all other edges connected to the two vertices connected by the chosen edge, and then repeat the process.
+All of this is implemented as seen in listing \ref{graphDoSwitches}.
+
+\begin{lstlisting}[firstnumber=14,label=graphDoSwitches]
+public List<Edge> GetSwitches() {
+    Edges.Sort();
+    List<Edge> chosenEdges = new List<Edge>();
+    while (Edges.Any()) {
+        chosenEdges.Add(Edges[0]);
+        _removeEdge(Edges, Edges[0]);
+    }
+    return chosenEdges;
+}
+
+private static void _removeEdge(List<Edge> list, Edge e) {
+    list.RemoveAll(x => x.VStart == e.VStart || x.VStart == e.VEnd || x.VEnd == e.VStart || x.VEnd == e.VEnd);
+
+\end{lstlisting}
+
+After running the \lstinline|List<Edge> GetSwitches| method on the graph, it was simply a matter of switching the values in the vertices appointed by the chosen edges, and then running through all of the vertices in the graph, and for every vertex not containing the right message, forcibly change the sample values so that the right message is contained.
 
 
+The only thing needed before saving the image to the file, is the Huffman encoding.
+The process of doing this is relatively trivial.
+We start out by encoding the DC entry by first finding the difference from the last DC entry (in the current MCU), then finding the Huffman code from the DC Huffman table, before saving the bits to the image.
 
+\begin{lstlisting}
+short diff = (short)(block8[0, 0] - _lastDc[DCIndex]);
+_lastDc[DCIndex] += diff;
+
+if (diff != 0) {
+    byte category = _bitCost(diff);
+    HuffmanElement huffmanCode = huffmanDC.GetElementFromRunSize(0, category);
+    _ushortToBits(bits, huffmanCode.CodeWord, huffmanCode.Length);
+
+    _ushortToBits(bits, _numberEncoder(diff), category);
+} else {
+    HuffmanElement EOB = huffmanDC.GetElementFromRunSize(0x00, 0x00);
+    _ushortToBits(bits, EOB.CodeWord, EOB.Length);
+}
+\end{lstlisting}
+
+Now the next part of the Huffman encoding is simply to run through the 63 AC values in zigzag.
+If we find a zero, we count that, but otherwise keep on going as that zero must be encoded as EOB, ZRL or as part of the next non-zero value.
+If we have more than 16 zeroes before the next non-zero value we encode the ZRL, and if the rest of the block consists of only zeroes, we encode the EOB.
+
+\begin{lstlisting}
+int zeroesCounter = 0;
+for (int i = 1; i < 64; i++) {
+    int x = QuantizationTable.RoadPoints[i, 0], y = QuantizationTable.RoadPoints[i, 1];
+    if (block8[x, y] == 0) {
+        zeroesCounter++;
+        continue;
+    }
+    while (zeroesCounter >= 16) {
+        HuffmanElement ZRL = huffmanAC.GetElementFromRunSize(0x0F, 0x00);
+        _ushortToBits(bits, ZRL.CodeWord, ZRL.Length);
+        zeroesCounter -= 16;
+    }
+
+    byte cost = _bitCost(Math.Abs(block8[x, y]));
+    HuffmanElement codeElement = huffmanAC.GetElementFromRunSize((byte)zeroesCounter, cost);
+    zeroesCounter = 0;
+    _ushortToBits(bits, codeElement.CodeWord, codeElement.Length);
+
+    _ushortToBits(bits, _numberEncoder(block8[x, y]), cost);
+}
+
+if (zeroesCounter != 0) { //EOB
+    HuffmanElement EOB = huffmanAC.GetElementFromRunSize(0x00, 0x00);
+    _ushortToBits(bits, EOB.CodeWord, EOB.Length);
+}
+\end{lstlisting}
+
+After the Huffman encoding, it is simply a matter of adding the EOI marker at the end of the image, and saving the bytes to a file. 
 
 \subsection{Working with bits}
-While working with JPEG images, bit-patterns and bit-wise operations often occur.
+While working with JPEG images we found that bit-patterns and bit-wise operations often occur.
 Due to hardware limitations, a single bit in the memory cannot be changed individually, and we can only address the individual bytes.
 There are now two ways that we can go about this:
 Either we use bytes to represent bits, and effectively waste 7 bits of memory for each bit, or we use the class \lstinline|BitArray| from the \lstinline|System.Collections| library.
-What this class does, is that it handles the packing of the bits into bytes, and makes you able to adress the individual bits.
+What this class does, is that it handles the packing of the bits into bytes, and makes you able to address the individual bits.
 
 The \lstinline|BitArray| seemed like the way to go, and we implemented a class \lstinline|BitList| which implemented List-like features like \lstinline|Add| and \lstinline|Insert| while using the \lstinline|BitArray| to store our data.
 The implementation can be seen in appendix \ref{app:C}. 
