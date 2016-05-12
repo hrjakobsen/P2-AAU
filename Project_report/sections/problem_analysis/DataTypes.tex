@@ -5,17 +5,17 @@ This section will study different image formats and how they can be used as both
 Image file formats are a standardized ways for storing and organizing digital images.
 Image files may store data in uncompressed, compressed or vector formats, though once rasterized the image becomes a grid of pixels each with a number of bits to designate its colour.
 
-\subsubsection*{Bitmap}
+\subsubsection{Bitmap}
 The BMP file format is capable of storing two-dimensional digital images of arbitrary width, height and resolution, both monochrome and colour, in various colour depths.
 One can also use data compression, alpha channels and colour profiles if needed.
 All of these options make it easy to work with in regard to steganography, the problem arises in that the file size of these images can become quite large in comparison to other more used image formats, and because of this, it is not used as widely as the other aforementioned image formats.
 
-\subsubsection*{Joint Photographic Experts Group}
+\subsubsection{Joint Photographic Experts Group}
 JPEG is a widely used image format, which stems from the compression method used, as it is able to reduce the file size of an image substantially.
 This compression has a drawback though, in that it is a lossy compression method, meaning a compression will remove data from the original image and therefore degrade the image quality.
 Because the JPEG compression method is lossy, we cannot use simple methods like LSB for JPEG steganography because we do not have a good control over each individual pixel.
 
-\subsubsection*{Portable Network Graphics} %TODO: add sources
+\subsubsection{Portable Network Graphics} %TODO: add sources
 PNG was created in 1996 as a better alternative to the Graphics Interchange Format (GIF).
 PNG offers a wide range of colour depths, from 24-bit (8 bits per channel) to 48-bit (16 bits per channel) and even up to 64-bit when an alpha channel is added.
 The compression method used for the PNG image format is lossless, so no data is lost under compression.
