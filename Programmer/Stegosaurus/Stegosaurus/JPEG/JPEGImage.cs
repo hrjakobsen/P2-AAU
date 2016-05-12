@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -687,11 +686,7 @@ namespace Stegosaurus {
                 if (((startFirst ? first.SampleValue2 : first.SampleValue1) + (endFirst ? second.SampleValue1 : second.SampleValue2)).Mod(first.Modulo) == first.Message) {
                     if (((startFirst ? first.SampleValue1 : first.SampleValue2) + (endFirst ? second.SampleValue2 : second.SampleValue1)).Mod(second.Modulo) == second.Message) {
                         lock (g) {
-                            Edge e = new Edge(first, second, weight, startFirst, endFirst);
-                            g.Edges.Add(e);
-                            if (e.ID == 123) {
-                                Console.WriteLine("break");
-                            }
+                            g.Edges.Add(new Edge(first, second, weight, startFirst, endFirst));
                         }
                     }
                 }
@@ -703,8 +698,7 @@ namespace Stegosaurus {
 
             int swaps = 0, forces = 0, good = 0;
 
-            for (int i = 0; i < chosen.Count; i++) {
-                Edge edge = chosen[i];
+            foreach (Edge edge in chosen) {
                 _swapVertexData(edge);
                 swaps+=2;
             }
@@ -724,9 +718,6 @@ namespace Stegosaurus {
 
         private static void _swapVertexData(Edge e) {
             short temp;
-            if (e.ID == 123) {
-                Console.WriteLine("Break swap");
-            }
             if (e.VStartFirst) {
                 if (e.VEndFirst) {
                     temp = e.VStart.SampleValue1;
