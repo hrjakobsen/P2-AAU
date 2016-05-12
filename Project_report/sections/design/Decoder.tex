@@ -1,6 +1,8 @@
-\section{Decoding of the Message}
+\section{Decoding}
 To find the encoded text using the Graph-Theoretic Approach, the first step is to read in the Huffman tables from the JPEG-file, making it possible to look up the code written in the scan-data session of the file. 
 \input{sections/design/FindHuffmanTable.tex}
+
+\subsection*{Decoding the Huffman-encoded Values}
 As explained in section \ref{sec:graphJPEG}, the hidden message will be hidden in pairs of two quantized values in a certain modulo.
 To get the data out, we would have to first read the first 16 AC values that are not 0, in order to find what modulo the message is hidden with, and the length of the message, to not decode the whole image, and to give back the actual message as an output.
 Finding the length of message, as well as the value of modulo, requires you to decode the scan data as follows
@@ -17,10 +19,12 @@ To decode the huffman-encoded values according to the table shown in section \re
 
 To get the negative values, we'll have to do some calculations. 
 First, we notice how with each category, the minimum number is the same as adding one to the $2^n$ negative value, and the higher the bit-value becomes, the higher the actual value becomes as well. 
-Based on this information, we've derived the following algorithm
+Based on this information, we've derived algorithm \ref{algDecodeHuffmanValue}
 \input{sections/design/decodeHuffmanValue.tex}
 These values, and the preceding zeroes, will have to be read into an array in zig-zag ordering.
-Once that's done, and at least 16 values that are not 0 has been read, it's possible to find the length by doing the following
+
+\subsection*{Decoding the Message}
+We'll need 16 non-zero values in order to find the length of the encoded message, and the value of modulo, which we'll need to use in order to decode it. To find the length, we need to do the following:
 \begin{enumerate}
 	\item Bitshift a variable which starts being equal to 0, two times to the left
 	\item Add two elements together
@@ -37,6 +41,7 @@ The possible values will be as follows
 	\item 2. Value of modulo is 16
 	\item 3. Value of modulo is 256
 \end{itemize}
-Once the length has been found, we can keep decoding the scan data segment until enough AC coefficient has been read to decode the full message, using the module value we just found.
-When enough values has been read, the decoding process of the message is the same as listed earlier, except the value of modulo may be different. 
+Once the length has been found, we can keep decoding the scan data segment until enough AC coefficient has been read to decode the full message, using the modulo value we just found.
+
+When enough values has been read, the decoding process of the message is the same as listed in the beginning of thus subsection, except the value of modulo may be different. 
 Each letter will then have to be written to an array and returned to the user, since this array, will contain the message that was encoded in the JPEG picture.

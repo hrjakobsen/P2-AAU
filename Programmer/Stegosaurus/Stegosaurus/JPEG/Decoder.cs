@@ -289,14 +289,15 @@ namespace Stegosaurus {
 
             return lookupValue(value, category);
         }
-
+        
         // Returns the decoded Huffman value
         private short lookupValue(ushort value, int category) {
             short valueToReturn = 0;
             if (value >> (category - 1) == 1) {
                 valueToReturn = (short)value;
             } else {
-                valueToReturn = (short)(value - (1 << category) + 1);
+                // subtracting 2^n from the value and adding 1, will give us the decoded value
+                valueToReturn = (short)(value - (1 << category) + 1); 
             }
             return valueToReturn;
         }
