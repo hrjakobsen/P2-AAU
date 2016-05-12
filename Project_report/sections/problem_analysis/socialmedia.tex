@@ -1,28 +1,36 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
 \clearpage
-\section{Using Social Media for Activism}
+
+\section{Social Media}
+This section will focus on social media, specifically whether it is possible to retrieve messages hidden in images shared on various social media websites.
+We will be looking at how some of the most popular social media sites process user-uploaded images, and if it hinders easy distribution of hidden messages.
+In the end, it will be concluded whether or not it is worth dedicating the project to social media based on the knowledge acquired in this section.
+
+\subsection{Using Social Media for Activism}
 \label{sec:socialmedia}
 Social media play a big role in activism.
-It has been argued that the Egyptian Revolution in 2011 was made possible partly due to the ease of sharing information on social media \citep{IJoC1242}. 
+It has been argued that the Egyptian Revolution in 2011 was made possible partly due to the ease of sharing information on social media \citep{IJoC1242}.
 These networks could be used for readily sharing critical information such as staging protests and keeping the outside world updated on the status of the country.
-The large amount of users on social media makes them an obvious platform for activists, as they can easily reach their target audience. 
+The large amount of users on social media makes them an obvious platform for activists, as they can easily reach their target audience.
 
-The same reasoning can be used for using social networks for sharing embedded information using steganography. 
+The same reasoning can be used for using social networks for sharing embedded information using steganography.
 By sharing information on social networks, the information can quickly be distributed to several other activists, though by being embedded in something inconspicuous, avoids detection by the opponents of the cause.
 
 Most social media rely on video, images and text as the main components in information sharing.
 Because of this, the following section will examine how the social media process images uploaded to their sites, and if it is possible to send embedded data through them.
 
-\section{Image Sharing on Social Media}
-To test the level of compression on different social media, images encoded in different file formats were uploaded to multiple social media. 
+\subsection{Image Sharing on Social Media}
+To test the level of compression on different social media, images encoded in different file formats were uploaded to multiple social media.
 After being uploaded, the compressed file was then downloaded and examined.
 To examine how much the compression algorithms distorted the images, the euclidean distance between the original image and the compressed version was calculated as described by Wang et. Al \citep{Wang2005}.
 
-The results of using images saved with JPEG encoding can be seen in table \ref{tab:JPEG-compression}. 
-As can be seen in the results, some images were scaled in the encoding process, which makes computing the euclidean distance impossible without scaling the resulting image or the original image. Seen from the perspective of the sender, who sends hidden data embedded in an image it does not make sense to scale the original image, as the embedded data will be lost. Instead the resulting image is rescaled to the original width and height, before computing the euclidean distance.
+The results of using images saved with JPEG encoding can be seen in table \ref{tab:JPEG-compression}.
+As can be seen in the results, some images were scaled in the encoding process, which makes computing the euclidean distance impossible without scaling the resulting image or the original image.
+Seen from the perspective of the sender, who sends hidden data embedded in an image it does not make sense to scale the original image, as the embedded data will be lost.
+Instead the resulting image is rescaled to the original width and height, before computing the euclidean distance.
 
 From the results it can clearly be seen on JPEG images that Twitter compresses the file the most in terms of both file size and resolution.
-Combined, this results in a higher euclidean distance, as the image loses more information. 
+Combined, this results in a higher euclidean distance, as the image loses more information.
 
 On the other hand, the image sharing site Imgur changed next to nothing in the uploaded JPEG image, and when downloaded again, all of the images reached a euclidean distance of 0, which means that every pixel in the images were equal.
 
@@ -53,12 +61,12 @@ Imgur          & jpg          & 3648x2432        & 2.33 MB    & jpg          & 3
 
 
 After the initial tests of the compression systems, the same test was run with images saved with PNG encoding.
-This time, however, embedded in the images, using the LSB method described in section \ref{sec:lsb-implementation}, was a secret image. 
+This time, however, embedded in the images, using the LSB method described in section \ref{sec:lsb-implementation}, was a secret image.
 The results from these tests are shown in table \ref{tab:PNG-compression}.
 From the results, it is clear that being able to preserve all pixels is a rare occurrence, when sharing images on social media.
 In only two of the nine tested images the hidden image could be extracted.
-These images were the lowest in both resolution and file size, which shows that a threshold for when the social media compress the uploaded images exists. 
-Below these thresholds both Twitter and Imgur could be used to send data without it being compressed. 
+These images were the lowest in both resolution and file size, which shows that a threshold for when the social media compress the uploaded images exists.
+Below these thresholds both Twitter and Imgur could be used to send data without it being compressed.
 In the tests conducted, the highest amount transferred was $912\text{ pixels} \cdot 608\text{ pixels} \cdot 3\text{ bytes/pixel} \cdot 2\text{ bits/byte} = 3.327\cdot 10^6\text{ bits}$ which is enough to save $415,872$ characters using their ASCII value.\\ 
 
 
@@ -88,9 +96,8 @@ Imgur          & png          & 3648x2432        & 18.1 MB    & jpg          & 3
 \end{threeparttable}
 
 From the tests conducted it is clear that when using social media to share information embedded in conventional image files, it is critical to understand how the social medium processes the file, before serving it to the users of the site.
-Otherwise you can very easily end up with your data being scrambled beyond repair, and the secret message lost.
+Otherwise you can very easily end up with your data being scrambled beyond repair, and the secret message lost.\vspace*{12pt}
 
-\subsubsection*{Conclusion}
-After looking at the various social media, we have become aware that the most widely shared file format is image files.
+\noindent After looking at the various social media, we have become aware that the most widely shared file format is image files.
 It does not take that long to upload a picture, and social media relies heavily on images as a large component of information sharing.
 This is the reason for the focus on images in the following section on image compression in social media.

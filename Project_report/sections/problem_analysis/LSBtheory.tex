@@ -1,15 +1,29 @@
 \section{Least Significant Bit Method}
-A common way of digitally hiding information within other information is using the least significant bit (LSB) of the cover, which is to contain the information.
+During the beginning of the project, to learn more about and understand how steganography works, we investigated and implemented a relatively simple method of steganography with the ability to conceal an image within another image.
+The focus of this section is on explaining in detail how this method works, and how our implementation is implemented.
+
+The implementation should not be confused with the group's final product; this is simply made to understand and test simple steganography.
+
+\subsection{Theory}
+A common way of digitally hiding information within other information is using the least significant bit (referred to as LSB) of the cover, which is to contain the information.
 The LSB is the bit position of a binary integer, which gives it its unit value, since it is also the bit with the lowest bit weight in base-2: $2^0$.
 
-Using this bit is a very straightforward way of making it difficult for interceptors to see the information. This is because changing only this bit to a desired value can only change the integer stored in the bits by one, which is not a very noticeable difference if it is a large integer. If the integer, for example, represents an ASCII character, however, the change would be obvious.
+Using this bit is a very straightforward way of making it difficult for interceptors to see the information.
+This is because changing only this bit to a desired value can only change the integer stored in the bits by one, which is not a very noticeable difference if it is a large integer.
+If the integer, for example, represents an ASCII character, however, the change would be obvious.
 
-In a true-colour bitmap image for example, each pixel contains three bytes. Each of these carry information about the amount of red, green and blue colours in the pixel in question.
-Since it is stored in a byte, there are 256 possible values for each colour. Adjusting this value by one has very little effect on the image as a whole. The difference is hardly noticeable by the human eye.
+In a true-colour bitmap image for example, each pixel contains three bytes.
+Each of these carry information about the amount of red, green and blue colours in the pixel in question.
+Since it is stored in a byte, there are 256 possible values for each colour.
+Adjusting this value by one has very little effect on the image as a whole.
+The difference is hardly noticeable by the human eye.
 
-Because digitally stored data is saved as binary numbers it is an obvious choice to use the LSB for storing a secret message. This, however, also makes it easier for any interceptors to find the hidden information.
-This is a problem, because even though the human eye can not perceive the faint differences in nuance created by changing the LSB in an image, computers can. 
-Relatively simple statistical analyses, such as first-order statistics can be used on an image in a similar way to how frequency analysis is used in cryptography \citep{Hetzl2005}. 
-Comparing the frequency of certain colours in an image containing hidden information with an average value for an image of the same style, will bring out any discrepancies in the stego image. This will be described in greater detail in section \ref{steganalysis}
+Because digitally stored data is saved as binary numbers it is an obvious choice to use the LSB for storing a secret message.
+This, however, also makes it easier for any interceptors to find the hidden information.
+This is a problem, because even though the human eye can not perceive the faint differences in nuance created by changing the LSB in an image, computers can.
+Relatively simple statistical analyses, such as first-order statistics can be used on an image in a similar way to how frequency analysis is used in cryptography \citep{Hetzl2005}.
+Comparing the frequency of certain colours in an image containing hidden information with an average value for an image of the same style, will bring out any discrepancies in the stego image.
+This will be described in greater detail in section \ref{steganalysis}
 
-It might still be difficult to actually extract the information, but it is certainly not impossible. A steganographic method, and therefore any communication channel that uses it, is to be considered compromised if there exists a way to predict if something contains a hidden message more reliably than random guessing \citep{Bohme2004}.
+It might still be difficult to actually extract the information, but it is certainly not impossible.
+A steganographic method, and therefore any communication channel that uses it, is to be considered compromised if there exists a way to predict if something contains a hidden message more reliably than random guessing \citep{Bohme2004}.
