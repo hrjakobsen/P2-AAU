@@ -30,9 +30,10 @@ namespace Stegosaurus {
         private BinaryReader file;
         List<HuffmanTable> huffmanTables = new List<HuffmanTable>();
 
-
+        /// <summary>
+        /// Takes a filepath to a JPEG file.
+        /// </summary>
         public Decoder(string path) {
-
             StreamReader sr = new StreamReader(path);
             file = new BinaryReader(sr.BaseStream);
             for (int i = 0; i < 4; i++) {
@@ -66,7 +67,7 @@ namespace Stegosaurus {
             List<HuffmanElement> huffmanElements = new List<HuffmanElement>();
             /* length of the huffman table also contains the length of the elements, as well as the length itself
                subtracting the offset from the length, ensures we only read all the huffman elements, and not from outside the huffmantable */
-            int offset = 19; // 16 (counter for each bitlength) + 2 (length bytes) + 1 (class byte)?
+            int offset = 19; // 16 (counter for each bitlength) + 2 (length bytes) + 1 (class byte)
 
             findMarker(0xc4);
 
@@ -114,8 +115,10 @@ namespace Stegosaurus {
                 file.ReadByte();
             }
 
-            List<byte> listOfBytes = new List<byte>();
-            while (file.BaseStream.Position != file.BaseStream.Length) {
+        //  Writes scandata to List
+            List<byte> scanData = new List<byte>();
+            int length = (int)file.BaseStream.Length;
+            while (file.BaseStream.Position < length) {
                 a = file.ReadByte();
 
                 if (a == 0xff) {
@@ -124,13 +127,12 @@ namespace Stegosaurus {
                         break;
                     }
                 }
-                listOfBytes.Add(a);
-
+                scanData.Add(a);
             }
-
-
+        
+        //  Convert each byte to bits
             BitList bits = new BitList();
-            foreach (byte current in listOfBytes) {
+            foreach (byte current in scanData) {
                 byte mask = 1;
                 for (int i = 0; i < 8; i++) {
                     bits.Add((current & (mask << (7 - i))) >> (7 - i));
@@ -142,20 +144,20 @@ namespace Stegosaurus {
         private byte[] decodeScanData(BitList bits) {
             List<int> validNumbers = new List<int>();
             int index = 0;
-
+        
+        //  16 values are needed in order to find the value of modulo and the length of the encoded message
             while (validNumbers.Count < 16) {
                 _addNextMCU(validNumbers, bits, ref index);
             }
-
-
+        
             int length = getLength(validNumbers);
             int modulo = getModulo(validNumbers);
 
             validNumbers.RemoveRange(0, 16);
 
+            int elementsToRead = (int)(length * (8 / Math.Log(modulo, 2))) * 2; // what
 
-            int elementsToRead = (int)(length * (8 / Math.Log(modulo, 2))) * 2;
-
+        //  Only read in the values we need to decode in order to decode the message
             while (validNumbers.Count < elementsToRead) {
                 _addNextMCU(validNumbers, bits, ref index);
             }
@@ -166,6 +168,7 @@ namespace Stegosaurus {
                 messageParts.Add((byte)(validNumbers[i] + validNumbers[i + 1]).Mod(modulo));
             }
 
+        //  Combines each part of each character together, to fully decode the message
             List<byte> message = new List<byte>();
             int steps = (int)(8 / Math.Log(modulo, 2));
             for (int i = 0; i < messageParts.Count - steps; i += steps) {
@@ -204,6 +207,7 @@ namespace Stegosaurus {
             }
         }
 
+        // Read an MCU consisting of 4 Y blocks, 1 block for cb, and 1 block for cr
         private void _addNextMCU(List<int> validNumbers, BitList bits, ref int index) {
             for (int i = 0; i < 4; i++) {
                 validNumbers.AddRange(getBlock(bits, ref index, YDCHuffman, YACHuffman));
