@@ -648,7 +648,7 @@ namespace Stegosaurus {
             //Add vertices for each part of the message
             _addVertices(graph);
 
-            int threshold = _m;
+            int threshold = 5;
             //Find alle the possible switches between vertices and add them as edges
             Parallel.ForEach(graph.Vertices, currentVertex => {
                 foreach (Vertex otherVertex in graph.Vertices.Where(otherVertex => currentVertex != otherVertex)) {
@@ -672,23 +672,22 @@ namespace Stegosaurus {
                 _message.RemoveAt(0);
             }
 
-            //for (int i = 16; _message.Any(); i += 2) {
-            //    g.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0], M));
-            //    _message.RemoveAt(0);
+            for (int i = 16; _message.Any(); i += 2) {
+                g.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0], M));
+                _message.RemoveAt(0);
+            }
+
+
+            //int len = _message.Count * 2 + 16;
+            //for (int i = 16; i < len ; i += 2) {
+            //    if (_message.Any()) {
+            //        g.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0], M));
+            //        _message.RemoveAt(0);
+            //    } else {
+            //        g.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], 0, M, false));
+            //    }
             //}
 
-            int lastMsgIndex = 0;
-            int len = _message.Count * 4 + 16;
-            for (int i = 16; i < len ; i += 2) {
-                if (_message.Any()) {
-                    g.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0], M));
-                    _message.RemoveAt(0);
-                    lastMsgIndex = i;
-                } else {
-                    g.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], 0, M, false));
-                }
-            }
-            Console.WriteLine(lastMsgIndex);
         }
 
         private static void _addEdge(bool startFirst, bool endFirst, Vertex first, Vertex second, int threshold, Graph g) {
@@ -721,7 +720,7 @@ namespace Stegosaurus {
                 }
             }
 
-            Console.WriteLine($"Did {swaps} swaps and {forces} forces. ({(double)forces / (forces + swaps) * 100} %)");
+            Console.WriteLine($"Did {swaps} swaps and {forces} forces. ({swaps+forces}) ({(double)forces / (forces + swaps) * 100} %)");
         }
 
         private static void _swapVertexData(Edge e) {
