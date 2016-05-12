@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Stegosaurus {
@@ -11,17 +12,20 @@ namespace Stegosaurus {
         }
         
         public List<Edge> GetSwitches() {
-            List<Edge> sortedEdges = new List<Edge>(Edges.OrderBy(x => x.Weight).ToList());
+            Edges.Sort();
             List<Edge> chosenEdges = new List<Edge>();
-            while (sortedEdges.Any()) {
-                chosenEdges.Add(sortedEdges[0]);
-                _removeEdge(sortedEdges, sortedEdges[0]);
+            while (Edges.Any()) {
+                if (Edges[0].ID == 123) {
+                    Console.WriteLine("BREAK2");
+                }
+                chosenEdges.Add(Edges[0]);
+                _removeEdge(Edges, Edges[0]);
             }
             return chosenEdges;
         }
 
         private static void _removeEdge(List<Edge> list, Edge e) {
-            list.RemoveAll(x => x.VStart == e.VStart || x.VEnd == e.VStart || x.VEnd == e.VEnd || x.VEnd == e.VStart);
+            list.RemoveAll(x => x.VStart == e.VStart || x.VStart == e.VEnd || x.VEnd == e.VStart || x.VEnd == e.VEnd);
         }
     }
 }
