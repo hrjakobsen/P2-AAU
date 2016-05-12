@@ -4,8 +4,8 @@ Thus, the first thing we did in the decoding process was to read the Huffman tab
 \input{sections/implementation/Huffman.tex}
 We do this four times, since we got four Huffman tables.
 
-If the public method called \lstinline|decode()| is called, the method will call appropriate functions and sub-functions to decode the message hidden in the jpeg image with the Graph-Theoretic-Approach to Steganography.
-The function \lstinline|findScanData()| returns a bitlist, which will be used by the function \lstinline|decodeScanData()|, and then return the message to the user who called the method.
+If the public method called \lstinline|decode()| is called, the method will call appropriate methods and sub-methods to decode the message hidden in the jpeg image with the Graph-Theoretic-Approach to Steganography.
+The method \lstinline|findScanData()| returns a bitlist, which will be used by the method \lstinline|decodeScanData()|, and then return the message to the user who called the method.
 \input{sections/implementation/findScanData.tex}
 \input{sections/implementation/decodeScanData.tex}
 The value of the \lstinline|decodeScanData()| method, will be returned to the caller of the \lstinline|decode()| method.

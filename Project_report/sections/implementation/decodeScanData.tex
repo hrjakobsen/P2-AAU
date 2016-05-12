@@ -1,8 +1,8 @@
 \subsection{decodeScanData}
-The function \lstinline|decodeScanData(BitList)| takes a \lstinline|BitList| as input, and returns the encoded message.
-The function got multiple subfunction, each assisting the \lstinline|decodeScanData| function in finding the message. The functions are split up as follows, with their own functionality.
+The method \lstinline|decodeScanData(BitList)| takes a \lstinline|BitList| as input, and returns the encoded message.
+The method got multiple submethod, each assisting the \lstinline|decodeScanData| method in finding the message. The methods are split up as follows, with their own functionality.
 \begin{itemize}
-	\item \lstinline|_addNextMCU(List<int>, BitList, ref int)| which finds four Y-component blocks, and two chrominance blocks. Finding the blocks is taken care of by the \lstinline|getBlock| function. The values returned by \lstinline|getBlock|, will be added to \lstinline|List<int>|, which it received as input.
+	\item \lstinline|_addNextMCU(List<int>, BitList, ref int)| which finds four Y-component blocks, and two chrominance blocks. Finding the blocks is taken care of by the \lstinline|getBlock| method. The values returned by \lstinline|getBlock|, will be added to \lstinline|List<int>|, which it received as input.
 	\item \lstinline|getBlock(BitList, ref int, HuffmanTable, HuffmanTable)| which iterate through the scandata saved in the \lstinline|BitList|, and for each bit it has read, will look up the first value in the DC Huffman table and disregard it, then look up the remaining 63 values in the AC table, or until the EOB value is found.
 	These values will be saved in an \lstinline|int[]| in zigzag ordering.
 	Once all 64 values or EOB has been found, all values that are not 0, will be added to a \lstinline|List<int>|, then returned to the caller.
@@ -10,7 +10,7 @@ The function got multiple subfunction, each assisting the \lstinline|decodeScanD
 	\item \lstinline|lookupValue(ushort, int)| decodes the Huffman value.
 \end{itemize}
 
-Since the length of the message, and what modulo is needed to decode the message, is hidden within the first 16 values, the function \lstinline|_addNextMCU|, will have to be called until we at least have 16 values.
+Since the length of the message, and what modulo is needed to decode the message, is hidden within the first 16 values, the method \lstinline|_addNextMCU|, will have to be called until we at least have 16 values.
 Once this is done, we can find the length of the message, modulo and can thus start reading in the remaining values by calling \lstinline|_addNextMCU| the appropriate amount of times.
 To get the length and modulo, the following is done
 \begin{enumerate}
@@ -19,10 +19,10 @@ To get the length and modulo, the following is done
 	After running this loop seven times, the \lstinline|ushort|, will be the length of the encoded message.
 	\item Call \lstinline|getModulo(List<int>)|, which will add the 14th and 15th value together, then after doing modulo 4 on the result, look through a switch with 3 values in it, then return the right modulo based on the result of the operation.
 \end{enumerate}
-With the values from these two functions, it is now just a matter of calling \lstinline|_addNextMCU| until the values containing the message has been found.
+With the values from these two methods, it is now just a matter of calling \lstinline|_addNextMCU| until the values containing the message has been found.
 When all the required values has been read and saved in the \lstinline|List<int>| variable, the message can be found by doing the following
 \begin{enumerate}
-	\item Add all the values in pairs of two together, then do the modulo operation on them using the value of modulo found with the \lstinline|getModulo| function.
+	\item Add all the values in pairs of two together, then do the modulo operation on them using the value of modulo found with the \lstinline|getModulo| method.
 	\item Iterate through the message bits, adding them together to a single value, then shift the value to the left depending on the value of modulo.
 	This will be done until the value can no longer be stored in a single byte, then added to a \lstinline|List<byte>| variable, and continue from where we left off until there is no longer any message bits left.
 	\item The \lstinline|List<byte>| variable now contains the decoded message and will be returned to the caller of \lstinline|decodeScanData()|, as a \lstinline|byte[]|
