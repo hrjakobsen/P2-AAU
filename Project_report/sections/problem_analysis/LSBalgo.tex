@@ -3,11 +3,11 @@
 \caption{Using the Two Least Significant Bits for Storing Data in an Image}
 \label{alg1}
 \begin{algorithmic}
-\REQUIRE True-color bitmap images $c = \{c^1,c^2\ldots c^{WH}\}$ with size $W \times H$ where $c^{xW+y}$ is the pixel at location $(x,y)$ and $m  = \{m^1,m^2\ldots m^{(WH)/4}\}$ with size $W/2 \times H/2$ where $m^{xW/2+y}$ is the pixel at location $(x,y)$
-\ENSURE True-color bitmap image $s  = \{s^1,s^2\ldots s^{WH}\}$ of size $W \times H$ and where $s^{xW+y}$ is the pixel at location $(x,y)$ and where $m$ is embedded in $c$
+\REQUIRE True-color bitmap images $c = \{c_1,c_2\ldots c_{WH}\}$ with size $W \times H$ where $c_{xW+y}$ is the pixel at location $(x,y)$ and $m  = \{m_1,m_2\ldots m_{\frac{WH}{4}}\}$ with size $\frac{W}{2} \times \frac{H}{2}$ where $m_{xW/2+y}$ is the pixel at location $(x,y)$
+\ENSURE True-color bitmap image $s  = \{s_1,s_2\ldots s_{WH}\}$ of size $W \times H$ and where $s_{xW+y}$ is the pixel at location $(x,y)$ and where $m$ is embedded in $c$
 
 \STATE{$k := 1$}
-\FOR {$i:=1$ \TO $i=(WH)/4$}
+\FOR {$i:=1$ \TO $i=\frac{WH}{4}$}
 	\FOR {$j:=1$ \TO $j=4$}
 		\STATE{Set the first 6 bits in the R, G and B bytes $k$th element of $s$ to be the first 6 bits of the R, G and B bytes of the $k$th element of $c$}
 

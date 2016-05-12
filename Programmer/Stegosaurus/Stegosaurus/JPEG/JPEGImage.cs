@@ -650,12 +650,14 @@ namespace Stegosaurus {
 
             int threshold = 5;
             //Find alle the possible switches between vertices and add them as edges
-            Parallel.ForEach(graph.Vertices, currentVertex => {
-                foreach (Vertex otherVertex in graph.Vertices.Where(otherVertex => currentVertex != otherVertex)) {
-                    _addEdge(true, true, currentVertex, otherVertex, threshold, graph);
-                    _addEdge(true, false, currentVertex, otherVertex, threshold, graph);
-                    _addEdge(false, true, currentVertex, otherVertex, threshold, graph);
-                    _addEdge(false, false, currentVertex, otherVertex, threshold, graph);
+            List<Vertex> toBeChanged = graph.Vertices.Where(x => (x.SampleValue1 + x.SampleValue2).Mod(x.Modulo) != x.Message).ToList();
+            int length = toBeChanged.Count;
+            Parallel.For(0, length, i => {
+                for (int j = i + 1; j < length; j++) {
+                    _addEdge(true, true, toBeChanged[i], toBeChanged[j], threshold, graph);
+                    _addEdge(true, false, toBeChanged[i], toBeChanged[j], threshold, graph);
+                    _addEdge(false, true, toBeChanged[i], toBeChanged[j], threshold, graph);
+                    _addEdge(false, false, toBeChanged[i], toBeChanged[j], threshold, graph);
                 }
             });
 
@@ -671,32 +673,25 @@ namespace Stegosaurus {
                 g.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0], 4));
                 _message.RemoveAt(0);
             }
-
-            for (int i = 16; _message.Any(); i += 2) {
-                g.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0], M));
+            int j;
+            for (j = 16; _message.Any(); j += 2) {
+                g.Vertices.Add(new Vertex(_nonZeroValues[j], _nonZeroValues[j + 1], _message[0], M));
                 _message.RemoveAt(0);
             }
-
-
-            //int len = _message.Count * 2 + 16;
-            //for (int i = 16; i < len ; i += 2) {
-            //    if (_message.Any()) {
-            //        g.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0], M));
-            //        _message.RemoveAt(0);
-            //    } else {
-            //        g.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], 0, M, false));
-            //    }
-            //}
-
         }
 
         private static void _addEdge(bool startFirst, bool endFirst, Vertex first, Vertex second, int threshold, Graph g) {
+            
             short weight = (short)Math.Abs((startFirst ? first.SampleValue1 : first.SampleValue2) - (endFirst ? second.SampleValue1 : second.SampleValue2));
             if (weight < threshold) {
-                if (((startFirst ? first.SampleValue2 : first.SampleValue1) + (endFirst ? second.SampleValue1 : second.SampleValue2)).Mod(first.Modulo) == first.Message || !first.HasMessage) {
-                    if (((startFirst ? first.SampleValue1 : first.SampleValue2) + (endFirst ? second.SampleValue2 : second.SampleValue1)).Mod(second.Modulo) == second.Message || !second.HasMessage) {
+                if (((startFirst ? first.SampleValue2 : first.SampleValue1) + (endFirst ? second.SampleValue1 : second.SampleValue2)).Mod(first.Modulo) == first.Message) {
+                    if (((startFirst ? first.SampleValue1 : first.SampleValue2) + (endFirst ? second.SampleValue2 : second.SampleValue1)).Mod(second.Modulo) == second.Message) {
                         lock (g) {
-                            g.Edges.Add(new Edge(first, second, weight, startFirst, endFirst));
+                            Edge e = new Edge(first, second, weight, startFirst, endFirst);
+                            g.Edges.Add(e);
+                            if (e.ID == 123) {
+                                Console.WriteLine("break");
+                            }
                         }
                     }
                 }
@@ -706,25 +701,32 @@ namespace Stegosaurus {
         private static void _refactorGraph(Graph graph) {
             List<Edge> chosen = graph.GetSwitches();
 
-            int swaps = 0, forces = 0;
+            int swaps = 0, forces = 0, good = 0;
 
-            foreach (Edge edge in chosen) {
+            for (int i = 0; i < chosen.Count; i++) {
+                Edge edge = chosen[i];
                 _swapVertexData(edge);
-                swaps++;
+                swaps+=2;
             }
 
             foreach (Vertex vertex in graph.Vertices) {
                 if ((vertex.SampleValue1 + vertex.SampleValue2).Mod(vertex.Modulo) != vertex.Message) {
                     _forceSampleChange(vertex);
                     forces++;
+                } else {
+                    good++;
                 }
+
             }
 
-            Console.WriteLine($"Did {swaps} swaps and {forces} forces. ({swaps+forces}) ({(double)forces / (forces + swaps) * 100} %)");
+            Console.WriteLine($"Did {swaps} swaps and {forces} forces. ({forces + good}) ({(double)forces / (good + forces) * 100} %)");
         }
 
         private static void _swapVertexData(Edge e) {
             short temp;
+            if (e.ID == 123) {
+                Console.WriteLine("Break swap");
+            }
             if (e.VStartFirst) {
                 if (e.VEndFirst) {
                     temp = e.VStart.SampleValue1;
@@ -776,9 +778,6 @@ namespace Stegosaurus {
                 int ypos = (i % 64) / 8;
 
                 if (xpos + ypos != 0 && _quantizedBlocks[array].Item1[xpos, ypos] != 0) {
-                    if (!graph.Vertices[vertexPos].HasMessage) {
-                        continue;
-                    }
                     if (firstValue) {
                         _quantizedBlocks[array].Item1[xpos, ypos] = graph.Vertices[vertexPos].SampleValue1;
                         firstValue = false;
