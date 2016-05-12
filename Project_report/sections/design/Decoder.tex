@@ -29,7 +29,7 @@ We'll need 16 non-zero values in order to find the length of the encoded message
 	\item Bitshift a variable which starts being equal to 0, two times to the left
 	\item Add two elements together
 	\item Take modulo 4 of the result
-	\item Add the result to the variable mentioned in step one
+	\item Add the result to the variable mentioned in step 1
 	\item Repeat steps 1-4 six more times
 \end{enumerate}
 The value of modulo is hidden within the remaining two values, which can be found by doing steps 2 and 3. This value however, will just tell us what value modulo should be, thus we will need to implement a switch, which assigns the right value for the modulo variable.
