@@ -13,14 +13,14 @@ namespace ConsoleTester {
 
             //byte[] msg = "Hej".Select(x => (byte)x).ToArray();
 
-            //int len = 400;
-            //byte[] msg = new byte[len];
-            //for (int i = 0; i < len; i++) {
-            //    msg[i] = (byte)('a' + i % 26);
-            //}
+            int len = 400;
+            byte[] msg = new byte[len];
+            for (int i = 0; i < len; i++) {
+                msg[i] = (byte)('a' + i % 26);
+            }
 
-            //ji.Encode(msg);
-            //ji.Save(@"cat2Out.jpg");
+            ji.Encode(msg);
+            ji.Save(@"cat2Out.jpg");
 
             IImageDecoder jid = new Decoder("cat2Out.jpg");
             byte[] message = jid.Decode();

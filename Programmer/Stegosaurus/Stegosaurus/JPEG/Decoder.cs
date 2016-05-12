@@ -164,7 +164,7 @@ namespace Stegosaurus {
 
             List<byte> messageParts = new List<byte>();
 
-            for (int i = 0; i < elementsToRead; i += 2) {
+            for (int i = 0; i <= elementsToRead; i += 2) {
                 messageParts.Add((byte)(validNumbers[i] + validNumbers[i + 1]).Mod(modulo));
             }
 
