@@ -1,14 +1,14 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
 \section{Using the Graph Theoretical Approach on JPEG images}
 \label{sec:graphJPEG}
-In section \ref{sec:graphtheory} we took a closer look at the Graph-Theoretic Approach for Steganography. 
+In section \ref{sec:graphtheory}, we took a closer look at the Graph-Theoretic Approach for Steganography. 
 The goal of this section is to understand how the technique can be modified to work on JPEG images instead of grey-scale Bitmap images. 
 The authors of the method define the following about using the technique on JPEG images\citep{hetzl_2005}:
 
 \begin{itemize}
 	\item The samples (i.e. 
 	where the data will be embedded) are the coefficients of the DCT operation. 
-	\item The DC component must not be used for embedding data, as these are often large numbers and and would result in visible distortion of the image, if those were to be altered.
+	\item The DC component must not be used for embedding data, as these are often large numbers and would result in visible distortion of the image, if those were to be altered.
 	\item AC components with a value of 0 must not be used for embedding data. 
 	If they were to be used, the Run/Length encoding step would be useless, as there will be very few consecutive zeros in the scan data.
 \end{itemize}
@@ -31,9 +31,9 @@ Having few vertices in the graph, means that there are not very many switches th
 The more difficult way of encoding the data is to combine all valid (AC and non-zero) quantization coefficients into a list, and use this list for embedding the data. 
 This means that we will not work on the individual 8x8 matrix, but instead on the values from all 8x8 matrices. 
 This allows us to obtain a much larger graph, with more edges, and more possible switches of values in the vertices. 
-A downside of using this method is, that we cannot do the encoding of the message on-the-fly, as we will have to find all valid coefficients before we can start the encoding process.
+A downside of using this method is that we cannot do the encoding of the message on-the-fly, as we will have to find all valid coefficients before we can start the encoding process.
 
-Each method has its pros and cons, but ultimately we have chosen to go with the latter, as the first method limits the graph in such a way that it becomes close to just using LSB, as we will have very few switches, and a lot of forced changes.
+Each method has its pros and cons, but ultimately, we have chosen to go with the latter, as the first method limits the graph in such a way that it becomes close to just using LSB, as we will have very few switches, and a lot of forced changes.
 
 Now that we have chosen the dataset in which we will encode the data, we must find a way to get the data. 
 Procedure \ref{algJPEG} shows how to obtain the values, after the quantization process. 
@@ -69,18 +69,18 @@ So the number of quantized matrices can be calculated as seen in equation \ref{e
 \end{algorithmic}
 \end{algorithm}
 
-After finding the data in which we hide our message, we can encode the actual message as seen in procedure \ref{algJPEGEncode}. 
-After this procedure we have a list of the valid coefficients with adjusted values, such that they contain the message. 
+After finding the data in which we hide our message, we can encode the actual message, as seen in procedure \ref{algJPEGEncode}. 
+After this procedure, we have a list of the valid coefficients with adjusted values, such that they contain the message. 
 To save this to the file, we must first reverse the process of procedure \ref{algJPEG} to replace the values in the quantized values, so that when they are saved to a file, they contain the same values as we have calculated. 
-This process would work for all data, but there is still one problem, when decoding the data, we wont know where to stop, also the decoder does not know what $m$ value that was used while embedding the data. 
-Lets tackle the problem about length first. 
+This process would work for all data, but there is still one problem when decoding the data. We do not know where to stop and the decoder does not know what $m$ value that was used while embedding the data. 
+Let's tackle the problem about length first. 
 One often used technique is to have a certain marker to look for, and when that marker is encountered, the end of the data has been reached. 
 This exact method is actually used in JPEG; when reading through the scan data, we keep on reading until we reach the EOF (End of File) marker. 
 And when that marker is encountered, we have read all of the available scan data. 
 But as we want our image to be able to contain arbitrary data, we do not want our implementation to depend on a sequence of bits or bytes, that could be randomly found in the data we are embedding. 
 So instead, we have to make sure that the decoder knows how much data to read before it starts to actually read it. 
 
-That's why we have decided to use the first 2 bytes of hidden data to contain information about the rest of the data. 
+That is why we have decided to use the first 2 bytes of hidden data to contain information about the rest of the data. 
 These bytes must also contain information about what $m$ value is used in the data embedding. 
 We have chosen to use 14 bits to indicate the length of the message (in bytes) and the last 2 bits to indicate what $m$ value was used (00 = 2, 01 = 4, 10 = 16). 
 This leads to a obvious problem, how do we know how to decode the first two bytes, if the information about the $m$ value is hidden in these bytes? To overcome this problem, we have decided to always embed the first two bytes of information using $m = 4$. 

@@ -88,12 +88,15 @@ namespace Stegosaurus {
             }
             _latestEntries[_addCounter % 8] = (val == 1);
             Add(val == 1);
-            bool allOne = true;
+            bool allOne = false;
 
-            for (int i = 0; i < 8; i++) {
-                if (!_latestEntries[i]) {
-                    allOne = false;
-                    break;
+            if (_addCounter % 8 == 7) {
+                allOne = true;
+                for (int i = 0; i < 8; i++) {
+                    if (!_latestEntries[i]) {
+                        allOne = false;
+                        break;
+                    }
                 }
             }
 
