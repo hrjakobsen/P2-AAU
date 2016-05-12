@@ -32,7 +32,10 @@ public void Encode(byte[] message) {
 From here on, we need to perform all of the regular steps JPEG encoding up until just before the Huffman encoding.
 We start out with splitting the image into Y, Cb and Cr channels instead of the \lstinline|Bitmap|'s RGB channels, and then in the method \lstinline|void _encodeAndQuantizeValues(sbyte[][,], int, int)| we have the loop which can be seen in listing \ref{JPEGEncodeAndQuantize}.
 While these nested loops may seem very computationally heavy, what it actually does is that it loops through the three channels of every pixel in the 16x16 MCU's.
-So while we have five nested for loops, we only run through every pixel 3 times. After every 16x16 MCU has been filled with values, the MCU must be encoded. As the name Minimum Encoded Unit implies, we can encode one MCU without depending on the other. That means that after we fill one MCU, we can encode that directly, we do that by invoking the method \lstinline|void _encodeBlocks(float[][,])|
+So while we have five nested for loops, we only run through every pixel 3 times.
+After every 16x16 MCU has been filled with values, the MCU must be encoded.
+As the name Minimum Encoded Unit implies, we can encode one MCU without depending on the other.
+That means that after we fill one MCU, we can encode that directly, we do that by invoking the method \lstinline|void _encodeBlocks(float[][,])|
 
 \begin{lstlisting}[firstnumber=525, label=JPEGEncodeAndQuantize]
 for (int MCUY = 0; MCUY < imageHeight; MCUY += 16) {
@@ -49,7 +52,10 @@ for (int MCUY = 0; MCUY < imageHeight; MCUY += 16) {
 }
 \end{lstlisting}
 
-In this method, we split the MCU into 8x8 blocks. As we have a fixed sampling of 4:2:0 that means that we split the Y channel into four 8x8 blocks and effectively save all information about the luminance channel, the Cr and Cb channels, we down-sample from a 16x16 block to a 8x8 blocks. As we implemented this, we had two ways of doing so. One way of doing it, is taking every 4th value in the block as seen on figure \ref{fig:downsampling4th}, and the other way of doing it, is taking an average of each 2x2 block in the 16x16 MCU as seen on figure \ref{fig:downsamplingAverage}.
+In this method, we split the MCU into 8x8 blocks.
+As we have a fixed sampling of 4:2:0 that means that we split the Y channel into four 8x8 blocks and effectively save all information about the luminance channel, the Cr and Cb channels, we down-sample from a 16x16 block to a 8x8 blocks.
+As we implemented this, we had two ways of doing so.
+One way of doing it, is taking every 4th value in the block as seen on figure \ref{fig:downsampling4th}, and the other way of doing it, is taking an average of each 2x2 block in the 16x16 MCU as seen on figure \ref{fig:downsamplingAverage}.
 
 \begin{figure}
     \centering
@@ -75,7 +81,7 @@ In this method, we split the MCU into 8x8 blocks. As we have a fixed sampling of
         \caption{Downsampling by choosing only every 4th value}
         \label{fig:downsampling4th}
     \end{subfigure}
-    \qquad %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc. 
+    \qquad %add desired spacing between images, e.g.~, \quad, \qquad, \hfill etc. 
       %(or a blank line to force the subfigure onto a new line)
     \begin{subfigure}[b]{0.3\textwidth}
         \begin{tikzpicture}
@@ -102,10 +108,46 @@ In this method, we split the MCU into 8x8 blocks. As we have a fixed sampling of
 \end{figure}
 
 
+In our implementation we chose to use the average.
+While it does take some more calculations we do get better image quality.
+The problem with using just one value for every 2x2 block is, that if the image contains sharp edges, those lines will become distorted.
+If using the average instead, the lines will at most become a bit blurry.
 
+After the down sampling process, only the DCT and Quantization processes are left before we can start embedding the message.
+On each 8x8 block we perform DCT as seen in listing \ref{JPEGEncodeDCT}.
+The DCT formula was described in section \ref{sec:jpegStudy}, but one thing we realised about the formula was, that the we could calculate the cosines only once, and use these instead of repetitively calculating the trigonometric function, therefore we calculate these results before even beginning the DCT process, and then just reuse the results in the DCT method.
+ 
 
+\begin{lstlisting}[firstnumber=603,label=JPEGEncodeDCT]
+private static float[,] _discreteCosineTransform(float[,] block8) {
+    float[,] cosineValues = new float[8, 8];
 
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            float tempSum = 0.0f;
+            float cCoefficient = _c(i, j);
+            for (int x = 0; x < 8; x++) {
+                for (int y = 0; y < 8; y++) {
+                    tempSum += cCoefficient * block8[x, y] * CosinesCoefficients[x, i] * CosinesCoefficients[y, j];
+                }
+            }
+            cosineValues[i, j] = tempSum;
+        }
+    }
+    return cosineValues;
+}
+\end{lstlisting}
 
+After calculating the DCT coefficients, it is simply a matter of dividing each entry in the 8x8 block with the corresponding value in the quantization table.
+The result of this process are saved to the private field \lstinline|_quantizedValues|.
+
+So now we are ready to perform the actual encoding of the data, before saving the image data to a file.
+We use procedure \ref{algJPEG} to find the valid entries from our newly filled \lstinline|_quantizedValues|.
+The first 16 values from our valid entries, we add as vertices to the graph, with a modulo of 4 as the length and modulo value always will be encoded with modulo 4 so that it can be decoded.
+Then we keep on adding vertices, until we are certain that we have enough vertices to embed all the data in the \lstinline|byte[]|.
+After adding the vertices, we use the private method \lstinline|void _addEdge(bool, bool, Vertex, Vertex, int, Graph)| to determine whether an edge between the two specified vertices would result in a perfect pair. If the edge would result in a perfect pair, the edge is added to the graph.
+
+We run this method 4 times for every distinctive pair of vertices in the graph, for each of the possible switches shown earlier in figure \ref{fig:graphSwitches}. 
 
 
 \subsection{Working with bits}
