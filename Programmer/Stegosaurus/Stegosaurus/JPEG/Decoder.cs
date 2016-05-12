@@ -171,7 +171,8 @@ namespace Stegosaurus {
         //  Combines each part of each character together, to fully decode the message
             List<byte> message = new List<byte>();
             int steps = (int)(8 / Math.Log(modulo, 2));
-            for (int i = 0; i < messageParts.Count - steps; i += steps) {
+            length = messageParts.Count - steps;
+            for (int i = 0; i < length; i += steps) {
                 byte toAdd = 0;
                 for (int j = 0; j < steps; j++) {
                     toAdd <<= (int)(Math.Log(modulo, 2));
@@ -217,6 +218,7 @@ namespace Stegosaurus {
             }
         }
 
+        // Read one block in zigzag ordering
         private List<int> getBlock(BitList bits, ref int index, HuffmanTable DC, HuffmanTable AC) {
             List<int> validNumbers = new List<int>();
             int[] values = new int[64];
@@ -227,7 +229,11 @@ namespace Stegosaurus {
             };
             int numberOfElements = 0;
             int zeroes = 0;
+
+            // Disregard the DC coefficients 
             values[zigzag[numberOfElements++]] = nextValue(bits, ref index, DC, out zeroes);
+
+            // Read the remaining 63 AC coefficients in zigzag ordering
             while (numberOfElements < 64) {
                 int value = nextValue(bits, ref index, AC, out zeroes);
                 if (value == 0 && zeroes == 0) { //EOB
@@ -242,6 +248,7 @@ namespace Stegosaurus {
                 }
             }
 
+            // Adds all the values that's not zeroes to the array-to-be-returned
             for (int i = 1; i < values.Length; i++) {
                 int element = values[i];
                 if (element != 0) {
@@ -250,9 +257,9 @@ namespace Stegosaurus {
             }
 
             return validNumbers;
-
         }
 
+        // Gets the runsize and returns the amount of read zeroes and the decoded huffman value
         private int nextValue(BitList bits, ref int index, HuffmanTable huffmanTable, out int zeroes) {
             HuffmanElement e = null;
             int i;
@@ -269,8 +276,8 @@ namespace Stegosaurus {
             if (e == null) {
                 throw new ArgumentNullException();
             }
-            zeroes = (e.RunSize & 0xF0) >> 4;
 
+            zeroes = (e.RunSize & 0xF0) >> 4;
             int category = e.RunSize & 0xF;
 
             ushort value = 0;
@@ -280,17 +287,16 @@ namespace Stegosaurus {
                 index++;
             }
 
-
             return lookupValue(value, category);
         }
 
+        // Returns the decoded Huffman value
         private short lookupValue(ushort value, int category) {
-            //  Console.WriteLine($"{value}, {category}");
             short valueToReturn = 0;
             if (value >> (category - 1) == 1) {
                 valueToReturn = (short)value;
             } else {
-                valueToReturn = (short)(value - (Math.Pow(2, category)) + 1); //what?
+                valueToReturn = (short)(value - (1 << category) + 1);
             }
             return valueToReturn;
         }

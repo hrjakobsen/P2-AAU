@@ -1,0 +1,15 @@
+\begin{algorithm}
+\caption{Decode the huffman-encoded value}
+\label{algDecodeHuffmanValue}
+\begin{algorithmic}
+\REQUIRE A bitstring $s$ of 15 bits or less, and a category $n$
+\ENSURE A decoded huffman value
+
+\STATE{$returnValue := 0$}
+\IF {most-significant bit of $s = 1$}
+	\RETURN s
+\ENDIF
+\STATE{$returnValue := s + 1 - 2^n$}
+\RETURN $returnValue$
+\end{algorithmic}
+\end{algorithm}
