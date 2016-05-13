@@ -1,14 +1,16 @@
 \section{Optimisation}
-We had managed to implement several complex algorithms in our program. 
+We had managed to implement several complex algorithms in our program.
 This was immediately visible if the JPEG-encoder was run with larger images (such as the 4K (3840x2160) resolution images that the camera in many smart phones output) or if long messages of several hundred bytes were embedded in the image.
 Doing so, took upwards of several minutes on slower computers, so some optimisation of the code was clearly needed.
+This section will focus on how these optimisations were implemented.
+\vspace*{12pt}
 
 To see what kinds of optimisations were useful and where they were needed, it was neccesary to objectively measure their worth.
 The easiest way to do this, was by timing how long different parts of the code took to complete.
 To show this we created a Stopwatch object in JPEGImage, which allowed us to keep track of how many milliseconds something took.
 In order to ensure that we could compare the timings from different runs, it was important to establish some base rules to follow.
-We used the same image and message for every run. 
-The image is a 4K resolution jpg image of a landscape with a hot air balloon in it. 
+We used the same image and message for every run.
+The image is a 4K resolution jpg image of a landscape with a hot air balloon in it.
 To ensure that we ran the method \lstinline|_padCoverImage| we removed eight pixels from the right and bottom sides of the image, bringing the resolution to 3832x2152.
 The message consisted of 640 bytes of the ASCII characters \textit{A-Z}.
 This was equivalent of the length of four regular SMS messages end-to-end, and therefore constituted what we believed to
@@ -119,8 +121,8 @@ This meant that our list of edges was halved, which effectively reduced the runn
 On a smaller note, we also changed the order in which the three checks that took place in \lstinline|_addEdge|.
 Two of these check were more computationally demanding than the third.
 By moving the least demanding check so it was the first evaluated, meant the more demanding checks were not performed as often.
-This allowed us to save quite a few operations on each iteration. 
-Furthermore we added the calculated edge weights to the edges instead of having a property that calculated them everytime. 
+This allowed us to save quite a few operations on each iteration.
+Furthermore we added the calculated edge weights to the edges instead of having a property that calculated them everytime.
 This saved a few operations at a later time, when the edges were ordered by weight.
 
 \vspace{12pt}

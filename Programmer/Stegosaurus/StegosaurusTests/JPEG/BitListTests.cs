@@ -17,7 +17,7 @@ namespace Stegosaurus.Tests
         {
             BitList bl = new BitList();
 
-            Assert.AreEqual(0, bl.Count);
+            NUnit.Framework.Assert.AreEqual(0, bl.Count);
         }
 
         [Test()]
@@ -25,7 +25,7 @@ namespace Stegosaurus.Tests
         {
             BitList bl = new BitList(1);
 
-            Assert.AreEqual(1, bl.Count);
+            NUnit.Framework.Assert.AreEqual(1, bl.Count);
         }
 
         [Test()]
@@ -37,7 +37,7 @@ namespace Stegosaurus.Tests
             }
             catch (ArgumentOutOfRangeException)
             {
-                Assert.Pass();
+                NUnit.Framework.Assert.Pass();
             }
 
         }
@@ -48,7 +48,7 @@ namespace Stegosaurus.Tests
             BitList bl = new BitList(8);
 
             bl.GetEnumerator();
-            Assert.Fail();
+            NUnit.Framework.Assert.Fail();
         }
 
         [Test()]
@@ -58,7 +58,7 @@ namespace Stegosaurus.Tests
 
             bl.Insert(3, true);
             
-            Assert.AreEqual(true, bl[3]);
+            NUnit.Framework.Assert.AreEqual(true, bl[3]);
         }
 
         [Test()]
@@ -68,7 +68,7 @@ namespace Stegosaurus.Tests
 
             bl.Add(true);
 
-            Assert.AreEqual(true, bl[8]);
+            NUnit.Framework.Assert.AreEqual(true, bl[8]);
         }
 
         [Test()]
@@ -78,7 +78,7 @@ namespace Stegosaurus.Tests
 
             bl.Add(1);
 
-            Assert.AreEqual(true, bl[8]);
+            NUnit.Framework.Assert.AreEqual(true, bl[8]);
         }
     }
 }

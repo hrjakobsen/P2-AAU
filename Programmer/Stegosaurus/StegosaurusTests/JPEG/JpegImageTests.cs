@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.IO;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Stegosaurus.Tests
 {
@@ -16,7 +17,7 @@ namespace Stegosaurus.Tests
         [Test]
         public void JpegImage_Test_if_constructor_throws_exception_when_image_is_null() //Test if JpegImage constructor throws exception when cover image is null
         {
-            Assert.Throws<ArgumentNullException>(() => new JpegImage(null, 100, 4));
+            NUnit.Framework.Assert.Throws<ArgumentNullException>(() => new JpegImage(null, 100, 4));
         }
 
         [Test()]
@@ -28,7 +29,7 @@ namespace Stegosaurus.Tests
             Bitmap bm = new Bitmap(imageWidth, imageHeight);
             JpegImage ji = new JpegImage(bm, 100, 4);
 
-            Assert.AreEqual(imageWidth, ji.CoverImage.Width);
+            NUnit.Framework.Assert.AreEqual(imageWidth, ji.CoverImage.Width);
         }
 
         [Test()]
@@ -40,25 +41,29 @@ namespace Stegosaurus.Tests
             Bitmap bm = new Bitmap(imageWidth, imageHeight);
             JpegImage ji = new JpegImage(bm, 100, 4);
 
-            Assert.AreEqual(imageHeight, ji.CoverImage.Height);
+            NUnit.Framework.Assert.AreEqual(imageHeight, ji.CoverImage.Height);
         }
         
         [Test()]
         public void EncodeTest()
         {
-            Assert.Fail();
+            JpegImage ji = new JpegImage(new Bitmap(200, 100), 100, 4);
+            PrivateObject obj = new PrivateObject(ji);
+            NUnit.Framework.Assert.Fail();
+            NUnit.Framework.Assert.Fail();
+           
         }
 
         [Test()]
         public void SaveTest()
         {
-            Assert.Fail();
+            NUnit.Framework.Assert.Fail();
         }
 
         [Test()]
         public void GetCapacityTest()
         {
-            Assert.Fail();
+            NUnit.Framework.Assert.Fail();
         }
     }
 }

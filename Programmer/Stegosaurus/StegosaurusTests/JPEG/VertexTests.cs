@@ -21,7 +21,7 @@ namespace Stegosaurus.Tests
 
             Vertex vertex1 = new Vertex(SampleInput1, SampleInput2, messageInput, modulo);
 
-            Assert.AreEqual("(5,6)", vertex1.ToString());
+            NUnit.Framework.Assert.AreEqual("(5,6)", vertex1.ToString());
         }
     }
 }

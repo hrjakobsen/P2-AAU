@@ -22,7 +22,7 @@ namespace TestForm
         {
             Table = huffmanTable;
             var elementList = Table.Elements.ToList();
-            this.Size = new Size(410, 244);
+            Size = new Size(410, 244);
 
             for (int i = 0; i < Table.Elements.Count; i++)
             {
@@ -66,7 +66,7 @@ namespace TestForm
         }
 
         //Adds a row (3 textboxes) to a Huffman-table and focuses on the latest added textbox
-        public void addRow()
+        public void AddRow()
         {
             int j = codeWordsBoxes.Count();
 
@@ -92,17 +92,27 @@ namespace TestForm
             codeWordsBoxes[runSizeBoxes.Count() - 1].Select();
         }
 
-        public HuffmanTable saveTable()
+        public HuffmanTable SaveTable()
         {
-            HuffmanTable H = new HuffmanTable();
+            HuffmanTable h = new HuffmanTable();
 
             for (int i = 0; i < codeWordsBoxes.Count; i++)
             {
-                byte runSize = byte.Parse(runSizeBoxes[i].Text);
-                H.Elements.Add(runSize, new HuffmanElement(runSize, Convert.ToUInt16(codeWordsBoxes[i].Text, 2), (byte) codeWordsBoxes[i].Text.Length));
+                byte runSize = Convert.ToByte(runSizeBoxes[i].Text, 16);
+                h.Elements.Add(runSize, new HuffmanElement(runSize, Convert.ToUInt16(codeWordsBoxes[i].Text, 2), (byte) codeWordsBoxes[i].Text.Length));
             }
 
-            return H;
+            return h;
         }
+        /*
+        public override string ToString()
+        {
+            //return base.ToString();
+            string HuffmanTable
+            for (int i = 0; i < codeWordsBoxes.Count; i++)
+            {
+                
+            }
+        }*/
     }
 }

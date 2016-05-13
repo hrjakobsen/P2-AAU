@@ -33,7 +33,7 @@ namespace Stegosaurus.Tests
             graph1.Vertices.Add(vertex1);
             graph1.Vertices.Add(vertex2);
 
-            Assert.AreEqual("These are my vertices: \n(5,6)\n(7,8)\n", graph1.ToString());
+            NUnit.Framework.Assert.AreEqual("These are my vertices: \n(5,6)\n(7,8)\n", graph1.ToString());
         }
 
         [Test()]
@@ -68,7 +68,7 @@ namespace Stegosaurus.Tests
             List<Edge> outputCheckEdges = new List<Edge>();
             outputCheckEdges.Add(edge1);
 
-            Assert.AreEqual(outputCheckEdges, graph1.GetSwitches());
+            NUnit.Framework.Assert.AreEqual(outputCheckEdges, graph1.GetSwitches());
         }
     }
 }
