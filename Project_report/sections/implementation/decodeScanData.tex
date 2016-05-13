@@ -20,10 +20,5 @@ To get the length and modulo, the following is done
 	\item Call \lstinline|getModulo(List<int>)|, which will add the 14th and 15th value together, then after doing modulo 4 on the result, look through a switch with 3 values in it, then return the right modulo based on the result of the operation.
 \end{enumerate}
 With the values from these two methods, it is now just a matter of calling \lstinline|_addNextMCU| until the values containing the message has been found.
-When all the required values has been read and saved in the \lstinline|List<int>| variable, the message can be found by doing the following
-\begin{enumerate}
-	\item Add all the values in pairs of two together, then do the modulo operation on them using the value of modulo found with the \lstinline|getModulo| method.
-	\item Iterate through the message bits, adding them together to a single value, then shift the value to the left depending on the value of modulo.
-	This will be done until the value can no longer be stored in a single byte, then added to a \lstinline|List<byte>| variable, and continue from where we left off until there is no longer any message bits left.
-	\item The \lstinline|List<byte>| variable now contains the decoded message and will be returned to the caller of \lstinline|decodeScanData()|, as a \lstinline|byte[]|
-\end{enumerate}
+When all the required values has been read and saved in the \lstinline|List<int>| variable, the message is found according to Listing \ref{code:decodeMessage}
+\lstinputlisting[firstline=164, firstnumber=164, lastline=184, label={code:decodeMessage}, caption={Decodes the message encoded into the JPEG image using the Graph-Theoretic Approach}]{../Programmer/Stegosaurus/Stegosaurus/JPEG/Decoder.cs}
