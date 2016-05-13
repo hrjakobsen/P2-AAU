@@ -8,7 +8,7 @@ namespace Stegosaurus {
         private Bitmap _stegoImage;
 
         /* Setter for the CoverImage property checks the input */
-        public Bitmap InputImage {
+        public Bitmap CoverImage {
             get { return _coverImage; }
             set {
                 if (value == null) {
@@ -25,10 +25,7 @@ namespace Stegosaurus {
         public Bitmap MessageImage {
             get { return _messageImage; }
             set {
-                if (value == null) {
-                    throw new ArgumentNullException(nameof(value));
-                }
-                if (InputImage != null && (value.Width * 2 != InputImage.Width || value.Height * 2 != InputImage.Height)) {
+                if (value != null && CoverImage != null && (value.Width * 2 != CoverImage.Width || value.Height * 2 != CoverImage.Height)) {
                     throw new ArgumentException(nameof(value), "The width and height of the message image must be exactly half those of the cover image!");
                 }
                 _messageImage = value;
@@ -45,19 +42,19 @@ namespace Stegosaurus {
                 _stegoImage = value;
             }
         }
-        
+
         public override void Encode() {
             int messageArrIndex = 0;
 
 
             /* Flatten cover image */
-            Color[] coverArr = ImageToArray(InputImage);
+            Color[] coverArr = ImageToArray(CoverImage);
 
             /* Flatten message image */
             Color[] messageArr = ImageToArray(MessageImage);
 
             /* Array for holding the flattened decoded image */
-            Color[] decodedArr = new Color[InputImage.Width * InputImage.Height];
+            Color[] decodedArr = new Color[CoverImage.Width * CoverImage.Height];
 
             for (int coverArrIndex = 0; coverArrIndex < coverArr.Length; coverArrIndex += 4) {
                 for (int messageBytePos = 0; messageBytePos < 4; messageBytePos++) {
@@ -70,7 +67,7 @@ namespace Stegosaurus {
             }
 
             /* Convert the created array into a bitmap */
-            StegoImage = ArrayToImage(InputImage.Width, InputImage.Height, decodedArr);
+            StegoImage = ArrayToImage(CoverImage.Width, CoverImage.Height, decodedArr);
         }
 
         private byte _encodeComponent(byte component, byte toEncode, int messageBytePos ) {
@@ -98,7 +95,7 @@ namespace Stegosaurus {
             }
 
             /* Convert the created array into a bitmap */
-            MessageImage = ArrayToImage(InputImage.Width / 2, InputImage.Height / 2, plainArr);
+            MessageImage = ArrayToImage(CoverImage.Width / 2, CoverImage.Height / 2, plainArr);
         }
 
         private byte _toComponent(byte component, int stegoBitPos) {
