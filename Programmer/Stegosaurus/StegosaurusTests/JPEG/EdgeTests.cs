@@ -12,7 +12,7 @@ namespace Stegosaurus.Tests
     public class EdgeTests
     {
         [Test()]
-        public void ToStringTest()
+        public void Edge_ToStringTest()
         {
             short SampleInput1 = 5;
             short SampleInput2 = 6;
