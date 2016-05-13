@@ -12,13 +12,13 @@ The method got multiple submethod, each assisting the \lstinline|decodeScanData|
 
 Since the length of the message, and what modulo is needed to decode the message, is hidden within the first 16 values, the method \lstinline|_addNextMCU|, will have to be called until we at least have 16 values.
 Once this is done, we can find the length of the message, modulo and can thus start reading in the remaining values by calling \lstinline|_addNextMCU| the appropriate amount of times.
-To get the length and modulo, the following is done
+To get the length and modulo, the following is done:
 \begin{enumerate}
 	\item Call \lstinline|getLength(List<int>)|, which finds the length of the message by adding the first 14 values together in pairs of two, then doing modulo 4 of that value. 
 	This value will be added to a \lstinline|ushort| value, which first will be bitshifted left twice. 
 	After running this loop seven times, the \lstinline|ushort|, will be the length of the encoded message.
 	\item Call \lstinline|getModulo(List<int>)|, which will add the 14th and 15th value together, then after doing modulo 4 on the result, look through a switch with 3 values in it, then return the right modulo based on the result of the operation.
 \end{enumerate}
-With the values from these two methods, it is now just a matter of calling \lstinline|_addNextMCU| until the values containing the message has been found.
-When all the required values has been read and saved in the \lstinline|List<int>| variable, the message is found according to Listing \ref{code:decodeMessage}
+With the values from these two methods, it is now just a matter of calling \lstinline|_addNextMCU| until the values containing the message have been found.
+When all the required values have been read and saved in the \lstinline|List<int>| variable, the message is found according to Listing \ref{code:decodeMessage}
 \lstinputlisting[firstline=164, firstnumber=164, lastline=184, label={code:decodeMessage}, caption={Decodes the message encoded into the JPEG image using the Graph-Theoretic Approach}]{../Programmer/Stegosaurus/Stegosaurus/JPEG/Decoder.cs}

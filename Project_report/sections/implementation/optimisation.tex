@@ -1,24 +1,24 @@
 \section{Optimisation}
 We had managed to implement several complex algorithms in our program.
 This was immediately visible if the JPEG-encoder was run with larger images (such as the 4K (3840x2160) resolution images that the camera in many smart phones output) or if long messages of several hundred bytes were embedded in the image.
-Doing so, took upwards of several minutes on slower computers, so some optimisation of the code was clearly needed.
+Doing so took upwards of several minutes on slower computers, so some optimisation of the code was clearly a requirement.
 This section will focus on how these optimisations were implemented.
 \vspace*{12pt}
 
 To see what kinds of optimisations were useful and where they were needed, it was neccesary to objectively measure their worth.
 The easiest way to do this, was by timing how long different parts of the code took to complete.
-To show this we created a Stopwatch object in JPEGImage, which allowed us to keep track of how many milliseconds something took.
+To show this, we created a Stopwatch object in JPEGImage, which allowed us to keep track of how many milliseconds something took.
 In order to ensure that we could compare the timings from different runs, it was important to establish some base rules to follow.
 We used the same image and message for every run.
 The image is a 4K resolution jpg image of a landscape with a hot air balloon in it.
 To ensure that we ran the method \lstinline|_padCoverImage| we removed eight pixels from the right and bottom sides of the image, bringing the resolution to 3832x2152.
 The message consisted of 640 bytes of the ASCII characters \textit{A-Z}.
-This was equivalent of the length of four regular SMS messages end-to-end, and therefore constituted what we believed to
+This was equivalent of the length of four regular SMS messages end-to-end, and therefore constituted what we believed to(???)
 
-All runs were done on the with the \textit{Release} option in Visual Studio, as there seemed to be siginificant overhead on \textit{Debug}.
-Some basic optimisations such as moving the calculation of the upper-bound outside the decleration of for-loops had already been done at this point.
-While a very simple thing to do, this did have some visible results in a few areas.
-We ran several trials before this stage to get a better understanding of which methods, where most time-consuming.
+All runs were done on the with the \textit{Release} option in Visual Studio, as there seemed to be a siginificant overhead on \textit{Debug}.
+Some basic optimisations such as moving the calculation of the upper-bound outside the declaration of for-loops had already been done at this point.
+While being a very simple thing to do, this did have some visible results in a few areas.
+We ran several trials before this stage to get a better understanding of which methods, were most time-consuming.
 
 We used a profiler to get a better understanding of which parts of the code took a substantial amount of time to run.
 The following methods and procedures constituted around 90 \% of the total time spent by our mostly unoptimised program, when run with the aforementioned parameters:
@@ -107,7 +107,7 @@ It was apparant that any use of \lstinline|GetPixel| was going to cause problems
 Using \lstinline|LockBits| we were able to use an \lstinline|IntPtr| to point at the data in memory. \citep{MSDNIntPtr}
 The reason for doing this instead of using an actual pointer, is the fact that pointers in C\# requires the code they are used in to be wrapped in the \lstinline|unsafe| keyword. 
 We could not be entirely sure of the implications of this on an Android device, since it can require a different privileges on different platforms.
-Using this method to get the \lstinline|R|, \lstinline|G| and \lstinline|B| components of the source \lstinline|Bitmap| was beneficial to the program's execution time.
+Using this method to get the \lstinline|R|, \lstinline|G| and \lstinline|B| components of the source \lstinline|Bitmap| was beneficial to the programme's execution time.
 In fact, it was almost eight times faster than the previously used method, as seen on figure \ref{fig:2genoptimised}.
 
 Several changes to the two nested loops, which added edges to the graph, resulted in an improvement as to the Adding edges step as well as \lstinline|GetSwitches|.
@@ -120,9 +120,9 @@ This meant that our list of edges was halved, which effectively reduced the runn
 
 On a smaller note, we also changed the order in which the three checks that took place in \lstinline|_addEdge|.
 Two of these check were more computationally demanding than the third.
-By moving the least demanding check so it was the first evaluated, meant the more demanding checks were not performed as often.
+By moving the least demanding check so it was the first one evaluated, it meant the more demanding checks were not performed as often.
 This allowed us to save quite a few operations on each iteration.
-Furthermore we added the calculated edge weights to the edges instead of having a property that calculated them everytime.
+Furthermore we added the calculated edge weights to the edges instead of having a property that calculated them every time.
 This saved a few operations at a later time, when the edges were ordered by weight.
 
 \vspace{12pt}
@@ -156,7 +156,7 @@ Taking advantage of the multi-core design of most modern processors, we made som
 The effects of this can vary widely depending on the processor architechture and not all smart phones would be able to take advantage of it.
 The ones that can should be able to see a dramatic increase in performance of some parts of the code.
 
-Running loops in parallel as we did required seeing the code and its data dependencies in a different way than usually.
+Running loops in parallel as we did required seeing the code and its data dependencies in a different way than we usually do.
 With the exception of loops, normally code is run from the top to the bottom.
 The data dependencies follow the same pattern.
 When it comes to multi-threaded code though, this pattern changes, since the same lines of code can potentially be accessed by different threads at the same time.
@@ -167,13 +167,13 @@ In a high-level language such as C\#, this would most likely cause a run-time ex
 Because of these dangers, it is important that one manages any and all of these synchronisation issues properly.
 It is not always possible to use the same data-structure as single-threaded code does, and since we implemented multi-threading after making the code single-threaded we were not able to convert all the code.
 Specifically Huffman-encoding proved too cumbersome to efficiently multi-thread.
-However, DCT-calculation, quantization, adding edges and splitting the image to YCbCr-channels where succefully rewritten to allow for the code to run in parallel on several cores with the same output.
+However, DCT-calculation, quantization, adding edges and splitting the image to YCbCr-channels were successfully rewritten to allow for the code to run in parallel on several cores with the same output.
 
 By using the smallest data types capable of holding our data and properly unloading large unused variables, we effectively reduced peak memory usage from almost 400MB to around 100MB.
-This improved the spacial locality of the data, which had the potential of leading to better utilization of the different levels of caches, all in all leading to a better performing program.
+This improved the spacial locality of the data, which had the potential of leading to better utilisation of the different levels of caches, all in all leading to a better performing programme.
 
-Since we knew that there was a certain overhead on function calls, we tried to force the compiler to inline some of the most called functions we had. 
-This did not seem to have an effect, so it is quite likely that the compiler already inlined the functions we had tried it on.
+Since we knew that there was a certain overhead on function calls, we tried to force the compiler to in-line some of the most called functions we had. 
+This did not seem to have an effect, so it is quite likely that the compiler already in-lined the functions we had tried it on.
 
 \vspace{12pt}
 \begin{threeparttable}[]
