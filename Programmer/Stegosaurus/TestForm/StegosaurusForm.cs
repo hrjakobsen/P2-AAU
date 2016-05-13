@@ -4,83 +4,64 @@ using System.Drawing;
 using System.Windows.Forms;
 using Stegosaurus;
 using System.Collections.Generic;
+using System.Linq;
+using System.IO;
 
 namespace TestForm{
     public partial class StegosaurusForm:Form {
-        public HuffmanTable huffmanTableChr_AC;
-        public HuffmanTable huffmanTableChr_DC;
-        public HuffmanTable huffmanTableY_AC;
-        public HuffmanTable huffmanTableY_DC;
+        private HuffmanTable _huffmanTableChrAC;
+        private HuffmanTable _huffmanTableChrDC;
+        private HuffmanTable _huffmanTableYAC;
+        private HuffmanTable _huffmanTableYDC;
+        private QuantizationTable _quantizationTableY;
+        private QuantizationTable _quantizationTableChr;
 
-        private readonly LeastSignificantBitImage StegoController;
-        private bool InputImageSetLSB, MessageImageSetLSB, InputImageSetGT, MessageFileSetGT;
-        private string noMessageWritten = "Enter the message you would like to encode into your image.";
-        public string ImageSavePath { get; set; }
+        private readonly LeastSignificantBitImage _stegoLsbController;
+        private IImageEncoder _stegoGtEncoderController;
+        private IImageDecoder _stegoGtDecoderController;
+        private bool _inputImageSetLsb, _messageImageSetLsb, _inputImageSetGt, _messageFileSetGt, _messageTextSetGt;
+        private int _messageLength;
+        private byte[] _message;
+        private const string NoMessageWrittenMessage = "Enter the message you would like to encode into your image.";
+
+        public static int QualityGT { get; set; }
+        //public string ImagesSavePath { get; set; }
+        private string myVar;
+
+        private string ImagesSavePath
+        {
+            get { return myVar; }
+            set
+            {
+                string s = value;
+
+               // s = s.Replace("\\", "/");
+
+                myVar = s;
+            }
+        }
+
+
+        private Bitmap CoverImageGT { get; set; }
+        private Bitmap StegoImageGt { get; set; }
 
         public StegosaurusForm() {
             InitializeComponent();
-            tbGTMessage.Text = noMessageWritten;
+            tbGTMessage.Text = NoMessageWrittenMessage;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            StegoController = new LeastSignificantBitImage();
-        }
-
-        private void loadStego_Click(object sender, EventArgs e) {
-            getFileStego.ShowDialog();
-        }
-
-        /*
-        private void Encode_Click(object sender, EventArgs e) {
-            StegoController.Encode();
-
-            picStego.Image = StegoController.StegoImage;
-            Decode.Enabled = true;
-            StegoController.StegoImage.Save("./encrypted.png");
-        }
-
-        private void Decode_Click(object sender, EventArgs e) {
-            StegoController.Decode();
-
-            picMessage.Image = StegoController.MessageImage;
-            StegoController.MessageImage.Save("./decrypted.png");
-        }
-        */
-        private void getFileInput_FileOk(object sender, CancelEventArgs e) {
-            StegoController.CoverImage = new Bitmap(getFileInputLSB.FileName);
-            StegoController.StegoImage = new Bitmap(getFileInputLSB.FileName);
-            picInput.Image = StegoController.StegoImage;
-            InputImageSetLSB = true;
-
-            if (MessageImageSetLSB || rdioDecode.Checked) {
-                btnProceed.Enabled = true;
-            }
-        }
-
-        private void getFileMessage_FileOk(object sender, CancelEventArgs e) {
-            StegoController.MessageImage = new Bitmap(getFileMessageLSB.FileName);
-            picMessage.Image = StegoController.MessageImage;
-            MessageImageSetLSB = true;
-
-            if (InputImageSetLSB) {
-                btnProceed.Enabled = true;
-            }
-        }
-
-        private void loadInputImage_Click_1(object sender, EventArgs e)
-        {
-            getFileInputLSB.ShowDialog();
-        }
-
-        private void loadMessage_Click_1(object sender, EventArgs e)
-        {
-            getFileMessageLSB.ShowDialog();
+            _stegoLsbController = new LeastSignificantBitImage();
         }
 
         private void viewOptionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OptionsForm optionsForm = new OptionsForm();
             optionsForm.ShowDialog();
+            if (OptionsForm.SaveEnabled)
+            {
+                loadSettings();
+            }
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -95,13 +76,42 @@ namespace TestForm{
             helpForm.Show();
         }
 
+        private void loadSettings()
+        {
+
+            //Make variable that determines wether the options should be saved (In OptionsForm??)
+            if (!string.IsNullOrWhiteSpace(OptionsForm.ImagesSavePath))
+            {
+                ImagesSavePath = OptionsForm.ImagesSavePath;
+            }
+            tbarGTEncodingQuality.Value = OptionsForm.QualityGT;
+            _huffmanTableYAC = OptionsForm.HuffmanTableYAC.SaveTable();
+            _huffmanTableYDC = OptionsForm.HuffmanTableYDC.SaveTable();
+            _huffmanTableChrAC = OptionsForm.HuffmanTableChrAC.SaveTable();
+            _huffmanTableChrDC = OptionsForm.HuffmanTableChrDC.SaveTable();
+            _quantizationTableY = OptionsForm.QuantizationTableY.SaveTable();
+            _quantizationTableChr = OptionsForm.QuantizationTableChr.SaveTable();
+        }
+
+        #region LSB
+
+        private void loadInputImage_Click_1(object sender, EventArgs e)
+        {
+            getFileInputLSB.ShowDialog();
+        }
+
+        private void loadMessage_Click_1(object sender, EventArgs e)
+        {
+            getFileMessageLSB.ShowDialog();
+        }
+
         private void DisplayLoadMessage(object sender, EventArgs e)
         {
-            if (rdioEncode.Checked == true)
+            if (rdioEncode.Checked)
             {
                 btnLoadMessage.Enabled = true;
-                btnProceed.Text = "Encode";
-                if (!MessageImageSetLSB)
+                btnProceed.Text = @"Encode";
+                if (!_messageImageSetLsb)
                 {
                     btnProceed.Enabled = false;
                 }
@@ -110,44 +120,69 @@ namespace TestForm{
             {
                 btnLoadMessage.Enabled = false;
                 picMessage.Image = null;
-                MessageImageSetLSB = false;
-                btnProceed.Text = "Decode";
-                if (InputImageSetLSB)
+                _messageImageSetLsb = false;
+                btnProceed.Text = @"Decode";
+                if (_inputImageSetLsb)
                 {
                     btnProceed.Enabled = true;
                 }
             }
         }
 
+        private void getFileInput_FileOk(object sender, CancelEventArgs e) {
+            _stegoLsbController.CoverImage = new Bitmap(getFileInputLSB.FileName);
+            _stegoLsbController.StegoImage = new Bitmap(getFileInputLSB.FileName);
+            picInput.Image = _stegoLsbController.StegoImage;
+            _inputImageSetLsb = true;
+
+            if (_messageImageSetLsb || rdioDecode.Checked) {
+                btnProceed.Enabled = true;
+            }
+        }
+
+        private void getFileMessage_FileOk(object sender, CancelEventArgs e) {
+            _stegoLsbController.MessageImage = new Bitmap(getFileMessageLSB.FileName);
+            picMessage.Image = _stegoLsbController.MessageImage;
+            _messageImageSetLsb = true;
+
+            if (_inputImageSetLsb) {
+                btnProceed.Enabled = true;
+            }
+        }
+
         //encode or decode
-        private void btProceed_Click(object sender, EventArgs e) 
+        private void btProceed_Click(object sender, EventArgs e)
         {
-            if (rdioEncode.Checked == true)
+            Cursor.Current = Cursors.WaitCursor;
+            if (rdioEncode.Checked)
             {
-                Cursor.Current = Cursors.WaitCursor;
-                StegoController.Encode();
-                Cursor.Current = Cursors.Default;
+                Bitmap oldStegoImage = _stegoLsbController.StegoImage;
+                _stegoLsbController.Encode();
 
-                picResult.Image = StegoController.StegoImage;
-                StegoController.StegoImage.Save(ImageSavePath + "./encrypted.png");
+                picResult.Image = _stegoLsbController.StegoImage;
+                _stegoLsbController.StegoImage.Save(ImagesSavePath + "./encryptedImageLSB.png");
+                _stegoLsbController.StegoImage = oldStegoImage;
             }
-            else if (rdioDecode.Checked == true)
+            else if (rdioDecode.Checked)
             {
-                Cursor.Current = Cursors.WaitCursor;
-                StegoController.Decode();
-                Cursor.Current = Cursors.Default;
+                _stegoLsbController.Decode();
 
-                picResult.Image = StegoController.MessageImage;
-                StegoController.MessageImage.Save(ImageSavePath + "./decrypted.png");
+                picResult.Image = _stegoLsbController.MessageImage;
+                _stegoLsbController.MessageImage.Save(ImagesSavePath + "./decryptedImageLSB.png");
+                _stegoLsbController.MessageImage = null;
             }
+            Cursor.Current = Cursors.Default;
         }
+        /*
+        private void getFileStego_FileOk(object sender, CancelEventArgs e)
+        {
+            StegoLSBController.StegoImage = new Bitmap(getFileStego.FileName);
+            picResult.Image = StegoLSBController.StegoImage;
 
-        private void getFileStego_FileOk(object sender, CancelEventArgs e) {
-            StegoController.StegoImage = new Bitmap(getFileStego.FileName);
-            picResult.Image = StegoController.StegoImage;
-            
             Decode.Enabled = true;
-        }
+        }*/
+
+        #endregion
 
         #region Graph Theoretic
         private void btnGTLoadMessageFile_Click(object sender, EventArgs e)
@@ -155,36 +190,25 @@ namespace TestForm{
             GetFileMessageGT.ShowDialog();
         }
 
-        private void GetFileMessageGT_FileOk(object sender, CancelEventArgs e)
-        {
-            tbGTMessageFilePath.Text = GetFileMessageGT.SafeFileName;
-            MessageFileSetGT = true;
-
-            if (InputImageSetGT || rdioGTEncode.Checked)
-            {
-                btnGTProceed.Enabled = true;
-            }
-        }
-
         private void rdioGTEncode_CheckedChanged(object sender, EventArgs e)
         {
-            if (rdioGTEncode.Checked == true)
+            if (rdioGTEncode.Checked)
             {
                 btnGTLoadMessageFile.Enabled = true;
                 tbGTMessage.Enabled = true;
-                btnGTProceed.Text = "Encode";
-                if (!MessageFileSetGT)
+                btnGTProceed.Text = @"Encode";
+                if (!_messageFileSetGt)
                 {
                     btnProceed.Enabled = false;
                 }
             }
-            else if (rdioGTDecode.Checked == true)
+            else if (rdioGTDecode.Checked)
             {
                 btnGTLoadMessageFile.Enabled = false;
                 tbGTMessage.Enabled = false;
-                MessageImageSetLSB = false;
-                btnGTProceed.Text = "Decode";
-                if (InputImageSetGT)
+                _messageImageSetLsb = false;
+                btnGTProceed.Text = @"Decode";
+                if (_inputImageSetGt)
                 {
                     btnGTProceed.Enabled = true;
                 }
@@ -196,29 +220,12 @@ namespace TestForm{
             tbGTMessage.SelectAll();
         }
 
-        private void tbGTMessage_TextChanged(object sender, EventArgs e)
-        {
-            tbGTMessage.ForeColor = SystemColors.MenuText;
-        }
-
         private void tbGTMessage_Leave(object sender, EventArgs e)
         {
             if (tbGTMessage.Text == "")
             {
-                tbGTMessage.Text = noMessageWritten;
+                tbGTMessage.Text = NoMessageWrittenMessage;
             }
-        }
-
-        private void btnGTProceed_Click(object sender, EventArgs e)
-        {
-            if (tbGTMessage.Text != noMessageWritten)
-            {
-
-            }
-            //else if (Image = null)
-            //{
-
-            //}
         }
 
         private void btnGTLoadInput_Click(object sender, EventArgs e)
@@ -226,19 +233,118 @@ namespace TestForm{
             getFileInputGT.ShowDialog();
         }
 
+        private void tbarGTEncodingQuality_ValueChanged(object sender, EventArgs e)
+        {
+            QualityGT = tbarGTEncodingQuality.Value;
+            lblGTEncodingQualityValue.Text = QualityGT.ToString();
+        }
+
+        private void tbGTMessage_TextChanged(object sender, EventArgs e)
+        {
+            tbGTMessage.ForeColor = SystemColors.MenuText;
+            if (tbGTMessage.Text != NoMessageWrittenMessage && tbGTMessage.Text != "" && !_messageFileSetGt)
+            {
+                _messageTextSetGt = true;
+                btnGTLoadMessageFile.Enabled = false;
+                if (_inputImageSetGt)
+                {
+                    _messageLength = tbGTMessage.Text.Length;
+                    btnGTProceed.Enabled = true;
+                }
+            }
+            else
+            {
+                btnGTProceed.Enabled = false;
+                if (rdioGTEncode.Checked)
+                {
+                    btnGTLoadMessageFile.Enabled = true;
+                }
+            }
+        }
+
+        private void StegosaurusForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveToFile("./savedSettings.txt");
+        }
 
         private void getFileInputGT_FileOk(object sender, CancelEventArgs e)
         {
-            InputImageSetGT = true;
-            //picGTInput.Image =
+            CoverImageGT = new Bitmap(getFileInputGT.FileName);
 
-            if (MessageFileSetGT || rdioGTDecode.Checked)
+            picGTInput.Image = _stegoLsbController.StegoImage;
+            _inputImageSetGt = true;
+            picGTInput.Image = CoverImageGT;
+
+            if (_messageFileSetGt || _messageTextSetGt)
             {
                 btnGTProceed.Enabled = true;
             }
         }
+
+        private void GetFileMessageGT_FileOk(object sender, CancelEventArgs e)
+        {
+            tbGTMessage.Enabled = false;
+            tbGTMessageFilePath.Text = GetFileMessageGT.SafeFileName;
+            _messageFileSetGt = true;
+            _message = File.ReadAllBytes(GetFileMessageGT.FileName);
+            _messageLength = _message.Length;
+
+            if (_inputImageSetGt || _messageFileSetGt)
+            {
+                btnGTProceed.Enabled = true;
+            }
+        }
+
+        private void btnGTProceed_Click(object sender, EventArgs e)
+        {
+            Cursor.Current = Cursors.WaitCursor;
+            if (rdioGTEncode.Checked)
+            {
+                //_stegoGtEncoderController = new JpegImage(CoverImageGT, QualityGT, 4);
+                _stegoGtEncoderController = new JpegImage(CoverImageGT, QualityGT, 4, _quantizationTableY, _quantizationTableChr, _huffmanTableYDC, _huffmanTableYAC, _huffmanTableChrDC, _huffmanTableChrAC);
+                byte[] msg = new byte[_messageLength];
+
+                
+                if (_messageTextSetGt)
+                {
+                    for (int i = 0; i < _messageLength; i++)
+                    {
+                        msg[i] = (byte)(tbGTMessage.Text.ToCharArray()[i]);
+                    }
+                }
+                else if (_messageFileSetGt)
+                {
+                    for (int i = 0; i < _messageLength; i++)
+                    {
+                        msg[i] = _message[i];
+                    }
+                }
+
+                _stegoGtEncoderController.Encode(msg);
+                _stegoGtEncoderController.Save(ImagesSavePath + "encryptedImageGT.jpg");
+                picGTResult.Image = Image.FromFile(ImagesSavePath + "encryptedImageGT.jpg");
+
+            }
+            else if (rdioGTDecode.Checked)
+            {
+                picGTResult.Image = null;
+                _stegoGtDecoderController = new Decoder(ImagesSavePath + "encryptedImage.jpg");
+                byte[] message = _stegoGtDecoderController.Decode();
+                tbGTMessage.Text = (new string(message.Select(x => (char)x).ToArray()) + " AND IT WOOOOORKS!");
+            }
+            Cursor.Current = Cursors.Default;
+        }
         #endregion
 
+        public void SaveToFile(string filePath)
+        {
+            using (StreamWriter sw = File.CreateText(filePath))
+            {
+                sw.WriteLine("Foo ");
+                sw.WriteLine();
+
+            }
+        }
 
         //'Escape' closes form
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

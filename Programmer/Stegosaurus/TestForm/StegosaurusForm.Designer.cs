@@ -51,21 +51,21 @@
             this.btnGTLoadMessageFile = new System.Windows.Forms.Button();
             this.btnGTLoadInput = new System.Windows.Forms.Button();
             this.picGTResult = new System.Windows.Forms.PictureBox();
-            this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.tbarGTEncodingQuality = new System.Windows.Forms.TrackBar();
             this.tcMethod = new System.Windows.Forms.TabControl();
-            this.tpMethodLSB = new System.Windows.Forms.TabPage();
             this.tpMethodGT = new System.Windows.Forms.TabPage();
             this.tbGTMessage = new System.Windows.Forms.TextBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.tbGTMessageFilePath = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lblGTEncodingQuality = new System.Windows.Forms.Label();
+            this.lblGTEncodingQualityValue = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnGTProceed = new System.Windows.Forms.Button();
             this.rdioGTEncode = new System.Windows.Forms.RadioButton();
             this.rdioGTDecode = new System.Windows.Forms.RadioButton();
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
+            this.tpMethodLSB = new System.Windows.Forms.TabPage();
             this.getFileInputGT = new System.Windows.Forms.OpenFileDialog();
             this.GetFileMessageGT = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.picResult)).BeginInit();
@@ -75,11 +75,11 @@
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picGTInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picGTResult)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbarGTEncodingQuality)).BeginInit();
             this.tcMethod.SuspendLayout();
-            this.tpMethodLSB.SuspendLayout();
             this.tpMethodGT.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.tpMethodLSB.SuspendLayout();
             this.SuspendLayout();
             // 
             // getFileInputLSB
@@ -95,7 +95,6 @@
             // getFileStego
             // 
             this.getFileStego.FileName = "Select an Encodeed photo to extract a photo from";
-            this.getFileStego.FileOk += new System.ComponentModel.CancelEventHandler(this.getFileStego_FileOk);
             // 
             // line
             // 
@@ -326,43 +325,26 @@
             this.picGTResult.TabStop = false;
             this.ttStegosaurus.SetToolTip(this.picGTResult, "Result-image");
             // 
-            // trackBar1
+            // tbarGTEncodingQuality
             // 
-            this.trackBar1.Location = new System.Drawing.Point(248, 239);
-            this.trackBar1.Maximum = 100;
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(104, 45);
-            this.trackBar1.TabIndex = 36;
-            this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.ttStegosaurus.SetToolTip(this.trackBar1, "Set the encoding quality from which\r\nthe amount of data you can hide varries");
+            this.tbarGTEncodingQuality.Location = new System.Drawing.Point(248, 239);
+            this.tbarGTEncodingQuality.Maximum = 100;
+            this.tbarGTEncodingQuality.Name = "tbarGTEncodingQuality";
+            this.tbarGTEncodingQuality.Size = new System.Drawing.Size(104, 45);
+            this.tbarGTEncodingQuality.TabIndex = 36;
+            this.tbarGTEncodingQuality.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.ttStegosaurus.SetToolTip(this.tbarGTEncodingQuality, "Set the encoding quality from which\r\nthe amount of data you can hide varries");
+            this.tbarGTEncodingQuality.ValueChanged += new System.EventHandler(this.tbarGTEncodingQuality_ValueChanged);
             // 
             // tcMethod
             // 
-            this.tcMethod.Controls.Add(this.tpMethodLSB);
             this.tcMethod.Controls.Add(this.tpMethodGT);
+            this.tcMethod.Controls.Add(this.tpMethodLSB);
             this.tcMethod.Location = new System.Drawing.Point(4, 30);
             this.tcMethod.Name = "tcMethod";
             this.tcMethod.SelectedIndex = 0;
             this.tcMethod.Size = new System.Drawing.Size(615, 291);
             this.tcMethod.TabIndex = 26;
-            // 
-            // tpMethodLSB
-            // 
-            this.tpMethodLSB.BackColor = System.Drawing.SystemColors.Menu;
-            this.tpMethodLSB.Controls.Add(this.picInput);
-            this.tpMethodLSB.Controls.Add(this.picMessage);
-            this.tpMethodLSB.Controls.Add(this.btnLoadMessage);
-            this.tpMethodLSB.Controls.Add(this.btnLoadInput);
-            this.tpMethodLSB.Controls.Add(this.groupBox1);
-            this.tpMethodLSB.Controls.Add(this.Encode);
-            this.tpMethodLSB.Controls.Add(this.Decode);
-            this.tpMethodLSB.Controls.Add(this.picResult);
-            this.tpMethodLSB.Location = new System.Drawing.Point(4, 22);
-            this.tpMethodLSB.Name = "tpMethodLSB";
-            this.tpMethodLSB.Padding = new System.Windows.Forms.Padding(3);
-            this.tpMethodLSB.Size = new System.Drawing.Size(607, 265);
-            this.tpMethodLSB.TabIndex = 0;
-            this.tpMethodLSB.Text = "LSB";
             // 
             // tpMethodGT
             // 
@@ -370,16 +352,16 @@
             this.tpMethodGT.Controls.Add(this.tbGTMessage);
             this.tpMethodGT.Controls.Add(this.checkBox1);
             this.tpMethodGT.Controls.Add(this.tbGTMessageFilePath);
-            this.tpMethodGT.Controls.Add(this.label1);
+            this.tpMethodGT.Controls.Add(this.lblGTEncodingQuality);
             this.tpMethodGT.Controls.Add(this.picGTInput);
-            this.tpMethodGT.Controls.Add(this.label2);
+            this.tpMethodGT.Controls.Add(this.lblGTEncodingQualityValue);
             this.tpMethodGT.Controls.Add(this.btnGTLoadMessageFile);
             this.tpMethodGT.Controls.Add(this.btnGTLoadInput);
             this.tpMethodGT.Controls.Add(this.groupBox2);
             this.tpMethodGT.Controls.Add(this.button4);
             this.tpMethodGT.Controls.Add(this.button5);
             this.tpMethodGT.Controls.Add(this.picGTResult);
-            this.tpMethodGT.Controls.Add(this.trackBar1);
+            this.tpMethodGT.Controls.Add(this.tbarGTEncodingQuality);
             this.tpMethodGT.Location = new System.Drawing.Point(4, 22);
             this.tpMethodGT.Name = "tpMethodGT";
             this.tpMethodGT.Padding = new System.Windows.Forms.Padding(3);
@@ -420,25 +402,25 @@
             this.tbGTMessageFilePath.TabIndex = 38;
             this.tbGTMessageFilePath.Text = "Your filepath";
             // 
-            // label1
+            // lblGTEncodingQuality
             // 
-            this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.label1.Location = new System.Drawing.Point(268, 225);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(42, 13);
-            this.label1.TabIndex = 37;
-            this.label1.Text = "Quality:";
+            this.lblGTEncodingQuality.AutoSize = true;
+            this.lblGTEncodingQuality.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.lblGTEncodingQuality.Location = new System.Drawing.Point(268, 225);
+            this.lblGTEncodingQuality.Name = "lblGTEncodingQuality";
+            this.lblGTEncodingQuality.Size = new System.Drawing.Size(42, 13);
+            this.lblGTEncodingQuality.TabIndex = 37;
+            this.lblGTEncodingQuality.Text = "Quality:";
             // 
-            // label2
+            // lblGTEncodingQualityValue
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(312, 225);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(13, 13);
-            this.label2.TabIndex = 28;
-            this.label2.Text = "0";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblGTEncodingQualityValue.AutoSize = true;
+            this.lblGTEncodingQualityValue.Location = new System.Drawing.Point(312, 225);
+            this.lblGTEncodingQualityValue.Name = "lblGTEncodingQualityValue";
+            this.lblGTEncodingQualityValue.Size = new System.Drawing.Size(13, 13);
+            this.lblGTEncodingQualityValue.TabIndex = 28;
+            this.lblGTEncodingQualityValue.Text = "0";
+            this.lblGTEncodingQualityValue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // groupBox2
             // 
@@ -508,6 +490,24 @@
             this.button5.Text = "button5";
             this.button5.UseVisualStyleBackColor = false;
             // 
+            // tpMethodLSB
+            // 
+            this.tpMethodLSB.BackColor = System.Drawing.SystemColors.Menu;
+            this.tpMethodLSB.Controls.Add(this.picInput);
+            this.tpMethodLSB.Controls.Add(this.picMessage);
+            this.tpMethodLSB.Controls.Add(this.btnLoadMessage);
+            this.tpMethodLSB.Controls.Add(this.btnLoadInput);
+            this.tpMethodLSB.Controls.Add(this.groupBox1);
+            this.tpMethodLSB.Controls.Add(this.Encode);
+            this.tpMethodLSB.Controls.Add(this.Decode);
+            this.tpMethodLSB.Controls.Add(this.picResult);
+            this.tpMethodLSB.Location = new System.Drawing.Point(4, 22);
+            this.tpMethodLSB.Name = "tpMethodLSB";
+            this.tpMethodLSB.Padding = new System.Windows.Forms.Padding(3);
+            this.tpMethodLSB.Size = new System.Drawing.Size(607, 265);
+            this.tpMethodLSB.TabIndex = 0;
+            this.tpMethodLSB.Text = "LSB";
+            // 
             // getFileInputGT
             // 
             this.getFileInputGT.FileName = "Select an image to be the Cover";
@@ -529,6 +529,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "StegosaurusForm";
             this.Text = "Stegosaurus";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.StegosaurusForm_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.picResult)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picMessage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picInput)).EndInit();
@@ -538,13 +539,13 @@
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picGTInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picGTResult)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbarGTEncodingQuality)).EndInit();
             this.tcMethod.ResumeLayout(false);
-            this.tpMethodLSB.ResumeLayout(false);
             this.tpMethodGT.ResumeLayout(false);
             this.tpMethodGT.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.tpMethodLSB.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -579,9 +580,9 @@
         private System.Windows.Forms.TabPage tpMethodGT;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.TextBox tbGTMessageFilePath;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblGTEncodingQuality;
         private System.Windows.Forms.PictureBox picGTInput;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblGTEncodingQualityValue;
         private System.Windows.Forms.Button btnGTLoadMessageFile;
         private System.Windows.Forms.Button btnGTLoadInput;
         private System.Windows.Forms.GroupBox groupBox2;
@@ -591,7 +592,7 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.PictureBox picGTResult;
-        private System.Windows.Forms.TrackBar trackBar1;
+        private System.Windows.Forms.TrackBar tbarGTEncodingQuality;
         private System.Windows.Forms.OpenFileDialog getFileInputGT;
         private System.Windows.Forms.OpenFileDialog GetFileMessageGT;
         private System.Windows.Forms.TextBox tbGTMessage;

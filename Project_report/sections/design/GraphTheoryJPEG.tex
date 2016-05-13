@@ -3,7 +3,7 @@
 \label{sec:graphJPEG}
 In section \ref{sec:graphtheory} we took a closer look at the Graph-Theoretic Approach for Steganography. 
 The goal of this section is to understand how the technique can be modified to work on JPEG images instead of grey-scale Bitmap images. 
-The authors of the method define the following about using the technique on JPEG images\cite{hetzl_2005}:
+The authors of the method define the following about using the technique on JPEG images\citep{hetzl_2005}:
 
 \begin{itemize}
 	\item The samples (i.e. 
@@ -31,7 +31,7 @@ Having few vertices in the graph, means that there are not very many switches th
 The more difficult way of encoding the data is to combine all valid (AC and non-zero) quantization coefficients into a list, and use this list for embedding the data. 
 This means that we will not work on the individual 8x8 matrix, but instead on the values from all 8x8 matrices. 
 This allows us to obtain a much larger graph, with more edges, and more possible switches of values in the vertices. 
-A downside of using this method is, that we cannot do the encoding of the message on-the-fly, as we will have to find all valid coefficients, before we can start the encoding process.
+A downside of using this method is, that we cannot do the encoding of the message on-the-fly, as we will have to find all valid coefficients before we can start the encoding process.
 
 Each method has its pros and cons, but ultimately we have chosen to go with the latter, as the first method limits the graph in such a way that it becomes close to just using LSB, as we will have very few switches, and a lot of forced changes.
 
@@ -72,13 +72,13 @@ So the number of quantized matrices can be calculated as seen in equation \ref{e
 After finding the data in which we hide our message, we can encode the actual message as seen in procedure \ref{algJPEGEncode}. 
 After this procedure we have a list of the valid coefficients with adjusted values, such that they contain the message. 
 To save this to the file, we must first reverse the process of procedure \ref{algJPEG} to replace the values in the quantized values, so that when they are saved to a file, they contain the same values as we have calculated. 
-This process would work for all data, but there is still one problem, when decoding the data, we wont know where to stop, also the decoder doesn't know what $m$ value that was used while embedding the data. 
+This process would work for all data, but there is still one problem, when decoding the data, we wont know where to stop, also the decoder does not know what $m$ value that was used while embedding the data. 
 Lets tackle the problem about length first. 
 One often used technique is to have a certain marker to look for, and when that marker is encountered, the end of the data has been reached. 
 This exact method is actually used in JPEG; when reading through the scan data, we keep on reading until we reach the EOF (End of File) marker. 
 And when that marker is encountered, we have read all of the available scan data. 
 But as we want our image to be able to contain arbitrary data, we do not want our implementation to depend on a sequence of bits or bytes, that could be randomly found in the data we are embedding. 
-So instead we have to make sure that the decoder knows how much data to read, before it starts to actually read it. 
+So instead, we have to make sure that the decoder knows how much data to read before it starts to actually read it. 
 
 That's why we have decided to use the first 2 bytes of hidden data to contain information about the rest of the data. 
 These bytes must also contain information about what $m$ value is used in the data embedding. 

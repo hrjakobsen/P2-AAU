@@ -5,14 +5,14 @@ After this, it is now time to read in all the bytes from the scan-data section. 
 Working on the \lstinline|BitArray| is the fastest possible solution, since we will read each bit from start to end and will not have to add additional bits in the future. The \lstinline|BitArray| implementation however, lists each bit in reverse order, meaning we will have to read from the array in reverse as well, which will likely affect performance considering how caches work.
 To avoid this, we will instead use the \lstinline|BitList| class again, which will add each bit in the correct order, and since a \lstinline|List| is just an array whose size can be dynamically increased as required. 
 
-The Decoder implements an interface, which specifies the decoder to have four properties, each containing the respective Huffmantable, and the method \lstinline|decode()|, which returns a \lstinline|byte| array. 
-The Huffmantables will be read from a stream from a given filepath. This stream will be assigned to a \lstinline|BinaryReader|, since what we will read, will be bytes. 
+The Decoder implements an interface, which specifies the decoder to have four properties, each containing the respective Huffman table, and the method \lstinline|decode()|, which returns a \lstinline|byte| array. 
+The Huffman tables will be read from a stream from a given filepath. This stream will be assigned to a \lstinline|BinaryReader|, since what we will read, will be bytes. 
 To get the Huffman tables, we do the following
 \begin{enumerate}
-\item We will first read the file until we get to the DHT marker, then read the length of the whole Huffmantable into a variable.
-\item Read sixteen bytes, which tells us how many of each code is of a certain length, and store this in an \lstinline|byte[]|
+\item We will first read the file until we get to the DHT marker, then read the length of the whole Huffman table into a variable.
+\item Read 16 bytes, which tells us how many of each code is of a certain length, and store this in an \lstinline|byte[]|.
 \item Read in the Class and ID from the file, which are both stored in a single byte. This value will be stored in the reference variable and contains what Huffman table was read so it can be written to the right property.
 \end{enumerate}
-Now that we have read all we need, the next we will be reading, is the runsize of the Huffmancodes. To get the correct code, we will bitshift the current value we have by one to the left, once there is no more huffmancodes to read of the current length, then increment the current length by 1.
+Now that we have read all we need, the next we will be reading, is the runsize of the Huffmancodes. To get the correct code, we will bitshift the current value we have by one to the left, once there are no more huffmancodes to read of the current length, then increment the current length by 1.
 After reading in a Huffman code with the runsize from the file, the codeword from the value we bitshift to the left with one for each new length we are reading, and the current length, we increment the codeword by 1.
 Once we have read the amount of bytes coresponding to the length of the Huffman Table, we are left with a huffmantable we can store in the right property.

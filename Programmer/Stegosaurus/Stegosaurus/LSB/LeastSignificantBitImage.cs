@@ -25,10 +25,7 @@ namespace Stegosaurus {
         public Bitmap MessageImage {
             get { return _messageImage; }
             set {
-                if (value == null) {
-                    throw new ArgumentNullException(nameof(value));
-                }
-                if (CoverImage != null && (value.Width * 2 != CoverImage.Width || value.Height * 2 != CoverImage.Height)) {
+                if (value != null && CoverImage != null && (value.Width * 2 != CoverImage.Width || value.Height * 2 != CoverImage.Height)) {
                     throw new ArgumentException(nameof(value), "The width and height of the message image must be exactly half those of the cover image!");
                 }
                 _messageImage = value;
