@@ -16,7 +16,7 @@ namespace Stegosaurus {
         private readonly List<Tuple<short[,], HuffmanTable, HuffmanTable, int>> _quantizedBlocks = new List<Tuple<short[,], HuffmanTable, HuffmanTable, int>>();
         private readonly List<short> _nonZeroValues = new List<short>();
         private static readonly float[,] CosinesCoefficients = new float[8, 8];
-
+        
         /// <summary>
         /// Quantization table used for the Y component of the image.
         /// </summary>
@@ -62,7 +62,7 @@ namespace Stegosaurus {
                         _m = value;
                         break;
                     default:
-                        throw new ArgumentException("M must 2, 4, 16 or 256!");
+                        throw new ArgumentException("M must 2, 4, or 16!");
                 }
             }
         }

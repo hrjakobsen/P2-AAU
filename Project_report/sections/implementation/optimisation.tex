@@ -19,6 +19,7 @@ Some basic optimisations such as moving the calculation of the upper-bound outsi
 While a very simple thing to do, this did have some visible results in a few areas.
 We ran several trials before this stage to get a better understanding of which methods, where most time-consuming.
 
+We used a profiler to get a better understanding of which parts of the code took a substantial amount of time to run.
 The following methods and procedures constitute just under 99 \% of time spent by our mostly unoptimised program, when run with the aforementioned parameters:
 \lstinline|_padCoverImage|, \lstinline|_splitToChannels|, \lstinline|_encodeAndQuantizeValues|, Adding edges to the graph, \lstinline|GetSwitches| and \lstinline|_huffmanEncoding|.
 All numbers are averages based on ten consectutive runs, following a single "warm-up run", whose results were not saved.
@@ -49,6 +50,7 @@ The first runs and the control for our further tests are shown in table \ref{fig
     \label{fig:0genoptimised}
 \end{threeparttable}
 
+\subsection{First round of optimisations}
 It was quite obvious that \lstinline|_padCoverImage|, \lstinline|_splitToChannels| and \lstinline|_splitToChannels| were the most time-consuming.
 The first thing we focused on was \lstinline|_padCoverImage|, simply because it took almost twice as long as the second most time-consuming method.
 JPEG-encoding requires images with both a width and a height that is divisible by 16.
@@ -92,6 +94,7 @@ We also managed to get a slight increase in performance on the Huffman-encoding,
     \label{fig:1genoptimised}
 \end{threeparttable}
 
+\subsection{Second round of optimisations}
 While there was a slight speed-up by not accessing the properties of the \lstinline|Pixel| as much, it did not do much.
 It was apparant that any use of \lstinline|GetPixel| was going to cause problems on larger images.
 Using \lstinline|LocBits| we were able to use an \lstinline|IntPtr| to point at the data in memory.\citep{MSDNIntPtr}
@@ -139,6 +142,7 @@ This saved a few operations at a later time, when the edges were ordered by weig
     \label{fig:2genoptimised}
 \end{threeparttable}
 
+\subsection{Third round of optimisations}
 The final optimisations we did, had the potential to make a big difference on some systems.
 Taking advantage of the multi-core design of most modern processors, we made some of the intensive parts of our code run in parallel on different cores.
 The effects of this can vary widely depending on the processor architechture and not all smart phones would be able to take advantage of it.
@@ -170,12 +174,12 @@ This did not seem to have an effect, so it is quite likely that the compiler alr
         \hline
         Code segment    & \multicolumn{6}{c|}{Processor and performance increase} \\ \hline
                         & Intel\textsuperscript{\textregistered} \newline i5-4670K & Increase\tnote{\textdagger} & AMD\textsuperscript{\textregistered} \newline A6-3420M & Increase\tnote{\textdagger} & Intel\textsuperscript{\textregistered} \newline i7-4700HQ & Increase\tnote{\textdagger} \\ \hline
-        Image padding   & 87        & 7995 \%    & 521       & 7513 \%    & 99      & 8199 \%     \\ \hline
-        Channel split   & 143       & 2884 \%    & 769       & 2546 \%    & 78      & 4691 \%     \\ \hline
-        Encoding        & 1788      & 141 \%     & 6977      & 302 \%     & 2445      & 99 \%     \\ \hline
-        Adding edges    & 48        & 148 \%     & 190       & 438 \%     & 60      & 136 \%     \\ \hline
-        Get switches    & 294       & 12 \%      & 2295      & 19 \%      & 347      & 19 \%     \\ \hline
-        Huffman         & 527       & 3 \%       & 3914      & -9 \%	  & 739      & 3 \%     \\ \hline
+        Image padding   & 87        & 7995 \%    & 521       & 7513 \%    & 99      & 8199 \%	\\ \hline
+        Channel split   & 143       & 2884 \%    & 769       & 2546 \%    & 78      & 4691 \%	\\ \hline
+        Encoding        & 1788      & 141 \%     & 6977      & 302 \%     & 2445	& 99 \%     \\ \hline
+        Adding edges    & 48        & 148 \%     & 190       & 438 \%     & 60      & 136 \%	\\ \hline
+        Get switches    & 294       & 12 \%      & 2295      & 19 \%      & 347		& 19 \%     \\ \hline
+        Huffman         & 527       & 3 \%       & 3914      & -9 \%	  & 739		& 3 \%		\\ \hline
         Total run time  & \textbf{3103} & \textbf{450 \%} & \textbf{15801} & \textbf{510 \%} & \textbf{4006} & \textbf{358 \%} \\ \hline
         Time covered    & \textit{93.0 \%} &     & \textit{92.8 \%} &     & \textit{94.1 \%} &     \\ \hline
     \end{tabular}
