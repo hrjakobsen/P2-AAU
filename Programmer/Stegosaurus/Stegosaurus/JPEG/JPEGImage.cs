@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -17,7 +16,7 @@ namespace Stegosaurus {
         private readonly List<Tuple<short[,], HuffmanTable, HuffmanTable, int>> _quantizedBlocks = new List<Tuple<short[,], HuffmanTable, HuffmanTable, int>>();
         private readonly List<short> _nonZeroValues = new List<short>();
         private static readonly float[,] CosinesCoefficients = new float[8, 8];
-
+        
         /// <summary>
         /// Quantization table used for the Y component of the image.
         /// </summary>
@@ -63,7 +62,7 @@ namespace Stegosaurus {
                         _m = value;
                         break;
                     default:
-                        throw new ArgumentException("M must 2, 4, 16 or 256!");
+                        throw new ArgumentException("M must 2, 4, or 16!");
                 }
             }
         }
@@ -650,12 +649,14 @@ namespace Stegosaurus {
 
             int threshold = 5;
             //Find alle the possible switches between vertices and add them as edges
-            Parallel.ForEach(graph.Vertices, currentVertex => {
-                foreach (Vertex otherVertex in graph.Vertices.Where(otherVertex => currentVertex != otherVertex)) {
-                    _addEdge(true, true, currentVertex, otherVertex, threshold, graph);
-                    _addEdge(true, false, currentVertex, otherVertex, threshold, graph);
-                    _addEdge(false, true, currentVertex, otherVertex, threshold, graph);
-                    _addEdge(false, false, currentVertex, otherVertex, threshold, graph);
+            List<Vertex> toBeChanged = graph.Vertices.Where(x => (x.SampleValue1 + x.SampleValue2).Mod(x.Modulo) != x.Message).ToList();
+            int length = toBeChanged.Count;
+            Parallel.For(0, length, i => {
+                for (int j = i + 1; j < length; j++) {
+                    _addEdge(true, true, toBeChanged[i], toBeChanged[j], threshold, graph);
+                    _addEdge(true, false, toBeChanged[i], toBeChanged[j], threshold, graph);
+                    _addEdge(false, true, toBeChanged[i], toBeChanged[j], threshold, graph);
+                    _addEdge(false, false, toBeChanged[i], toBeChanged[j], threshold, graph);
                 }
             });
 
@@ -671,18 +672,15 @@ namespace Stegosaurus {
                 g.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0], 4));
                 _message.RemoveAt(0);
             }
-
-            int valuesNeeded = _message.Count * 16 / (int)Math.Log(M, 2) - 1;
-            for (int i = 16; i < valuesNeeded; i += 2) {
-                if (_message.Count == 0) {
-                    break;
-                }
-                g.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0], M));
+            int j;
+            for (j = 16; _message.Any(); j += 2) {
+                g.Vertices.Add(new Vertex(_nonZeroValues[j], _nonZeroValues[j + 1], _message[0], M));
                 _message.RemoveAt(0);
             }
         }
 
         private static void _addEdge(bool startFirst, bool endFirst, Vertex first, Vertex second, int threshold, Graph g) {
+            
             short weight = (short)Math.Abs((startFirst ? first.SampleValue1 : first.SampleValue2) - (endFirst ? second.SampleValue1 : second.SampleValue2));
             if (weight < threshold) {
                 if (((startFirst ? first.SampleValue2 : first.SampleValue1) + (endFirst ? second.SampleValue1 : second.SampleValue2)).Mod(first.Modulo) == first.Message) {
@@ -692,21 +690,30 @@ namespace Stegosaurus {
                         }
                     }
                 }
-            }
+           }
         }
 
-        private void _refactorGraph(Graph graph) {
+        private static void _refactorGraph(Graph graph) {
             List<Edge> chosen = graph.GetSwitches();
+
+            int swaps = 0, forces = 0, good = 0;
 
             foreach (Edge edge in chosen) {
                 _swapVertexData(edge);
+                swaps+=2;
             }
 
             foreach (Vertex vertex in graph.Vertices) {
                 if ((vertex.SampleValue1 + vertex.SampleValue2).Mod(vertex.Modulo) != vertex.Message) {
                     _forceSampleChange(vertex);
+                    forces++;
+                } else {
+                    good++;
                 }
+
             }
+
+            Console.WriteLine($"Did {swaps} swaps and {forces} forces. ({forces + good}) ({(double)forces / (good + forces) * 100} %)");
         }
 
         private static void _swapVertexData(Edge e) {

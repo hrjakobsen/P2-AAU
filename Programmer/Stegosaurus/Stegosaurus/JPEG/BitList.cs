@@ -2,7 +2,7 @@
 using System.Collections;
 
 namespace Stegosaurus {
-    public class BitList:IEnumerable {
+    public class BitList : IEnumerable {
         private BitArray _bits;
 
         public int Count { get; private set; }
@@ -66,19 +66,7 @@ namespace Stegosaurus {
             _bits[Count] = val;
             Count++;
         }
-
-        public BitList SubList(int startindex, int endindex) {
-            int length = endindex - startindex;
-            if (length <= 0) {
-                throw new IndexOutOfRangeException();
-            }
-            BitList b = new BitList(length);
-            for (int i = startindex; i < endindex + 1; i++) {
-                b.Add(this[i]);
-            }
-            return b;
-        }
-
+        
         private readonly BitArray _latestEntries = new BitArray(8);
         private int _addCounter;
 
@@ -88,12 +76,15 @@ namespace Stegosaurus {
             }
             _latestEntries[_addCounter % 8] = (val == 1);
             Add(val == 1);
-            bool allOne = true;
+            bool allOne = false;
 
-            for (int i = 0; i < 8; i++) {
-                if (!_latestEntries[i]) {
-                    allOne = false;
-                    break;
+            if (_addCounter % 8 == 7) {
+                allOne = true;
+                for (int i = 0; i < 8; i++) {
+                    if (!_latestEntries[i]) {
+                        allOne = false;
+                        break;
+                    }
                 }
             }
 

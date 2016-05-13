@@ -36,6 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="nunit.framework, Version=3.2.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.2.0\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
@@ -53,11 +54,14 @@
   </Choose>
   <ItemGroup>
     <Compile Include="JPEG\BitListTests.cs" />
+    <Compile Include="JPEG\EdgeTests.cs" />
     <Compile Include="JPEG\ExtensionMethodsTests.cs" />
+    <Compile Include="JPEG\GraphTests.cs" />
     <Compile Include="JPEG\HuffmanElementTests.cs" />
     <Compile Include="JPEG\HuffmanTableTests.cs" />
     <Compile Include="JPEG\JpegImageTests.cs" />
     <Compile Include="JPEG\QuantizationTableTests.cs" />
+    <Compile Include="JPEG\VertexTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
