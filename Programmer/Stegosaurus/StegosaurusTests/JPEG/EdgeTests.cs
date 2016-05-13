@@ -34,7 +34,7 @@ namespace Stegosaurus.Tests
 
             Edge edge1 = new Edge(vertex1, vertex2, weightinput, vStartFirstInput, vEndFirstInput);
 
-            Assert.AreEqual("((5,6) <-> (7,8))", edge1.ToString());
+            NUnit.Framework.Assert.AreEqual("((5,6) <-> (7,8))", edge1.ToString());
         }
     }
 }

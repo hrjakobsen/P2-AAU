@@ -28,7 +28,7 @@ namespace Stegosaurus.Tests
             HuffmanTable huffTable1 = new HuffmanTable(huffmanTestElement1, huffmanTestElement2);
             
 
-            Assert.AreEqual(2, huffTable1.Elements[00000000].CodeWord);
+            NUnit.Framework.Assert.AreEqual(2, huffTable1.Elements[00000000].CodeWord);
         }
 
         [Test()]
@@ -49,7 +49,7 @@ namespace Stegosaurus.Tests
 
             byte[] numberOfCodesOutput = huffTable1.Combinations();
 
-            Assert.AreEqual(2, numberOfCodesOutput[7]);
+            NUnit.Framework.Assert.AreEqual(2, numberOfCodesOutput[7]);
         }
 
         [Test()]
@@ -68,7 +68,7 @@ namespace Stegosaurus.Tests
 
             HuffmanTable huffTable1 = new HuffmanTable(huffmanTestElement1, huffmanTestElement2);
 
-            Assert.AreEqual(0, huffTable1.HasCode(2, 8).RunSize);
+            NUnit.Framework.Assert.AreEqual(0, huffTable1.HasCode(2, 8).RunSize);
         }
 
         [Test()]
@@ -87,7 +87,7 @@ namespace Stegosaurus.Tests
 
             HuffmanTable huffTable1 = new HuffmanTable(huffmanTestElement1, huffmanTestElement2);
 
-            Assert.AreEqual(null, huffTable1.HasCode(1, 8));
+            NUnit.Framework.Assert.AreEqual(null, huffTable1.HasCode(1, 8));
         }
 
         [Test()]
@@ -106,7 +106,7 @@ namespace Stegosaurus.Tests
 
             HuffmanTable huffTable1 = new HuffmanTable(huffmanTestElement1, huffmanTestElement2);
 
-            Assert.AreEqual("[0, 0 = 10, 1000]\n[1, 1 = 11, 1000]\n", huffTable1.ToString());
+            NUnit.Framework.Assert.AreEqual("[0, 0 = 10, 1000]\n[1, 1 = 11, 1000]\n", huffTable1.ToString());
         }
 
         [Test()]
@@ -125,7 +125,7 @@ namespace Stegosaurus.Tests
 
             HuffmanTable huffTable1 = new HuffmanTable(huffmanTestElement1, huffmanTestElement2);
 
-            Assert.AreEqual(huffmanTestElement2, huffTable1.GetElementFromRunSize(0, 1));
+            NUnit.Framework.Assert.AreEqual(huffmanTestElement2, huffTable1.GetElementFromRunSize(0, 1));
         }
     }
 }
