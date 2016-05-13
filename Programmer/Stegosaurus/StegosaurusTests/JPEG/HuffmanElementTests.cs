@@ -27,7 +27,7 @@ namespace Stegosaurus.Tests
             HuffmanElement huffmanTestElement2 = new HuffmanElement(runSizeInput2, codeWordInput2, lengthInput2);
 
             var check = huffmanTestElement1.CompareTo(huffmanTestElement2);
-            Assert.AreEqual(-1, check);
+            NUnit.Framework.Assert.AreEqual(-1, check);
         }
 
         [Test()]
@@ -46,7 +46,7 @@ namespace Stegosaurus.Tests
             HuffmanElement huffmanTestElement2 = new HuffmanElement(runSizeInput2, codeWordInput2, lengthInput2);
 
             var check = huffmanTestElement1.CompareTo(huffmanTestElement2);
-            Assert.AreEqual(-1, check);
+            NUnit.Framework.Assert.AreEqual(-1, check);
         }
 
         [Test()]
@@ -58,7 +58,7 @@ namespace Stegosaurus.Tests
 
             HuffmanElement huffmanTestElement1 = new HuffmanElement(runSizeInput1, codeWordInput1, lengthInput1);
 
-            Assert.AreEqual("0 = 10, 1000", huffmanTestElement1.ToString());
+            NUnit.Framework.Assert.AreEqual("0 = 10, 1000", huffmanTestElement1.ToString());
         }
     }
 }

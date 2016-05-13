@@ -30,7 +30,7 @@ namespace Stegosaurus.Tests
                 121, 112, 100, 120, 92, 101, 103, 99
             };
 
-            Assert.AreEqual(expectedTable, zigZagEntries);
+            NUnit.Framework.Assert.AreEqual(expectedTable, zigZagEntries);
 
         }
 
@@ -51,7 +51,7 @@ namespace Stegosaurus.Tests
                 9,   11,  11,  12,  14,  12,  12,  12
             };
 
-            Assert.AreEqual(expectedTable, scaledDefaultYQuantizationTable.Entries);
+            NUnit.Framework.Assert.AreEqual(expectedTable, scaledDefaultYQuantizationTable.Entries);
         }
 
         [Test()]
@@ -67,7 +67,7 @@ namespace Stegosaurus.Tests
                                     "49\t64\t78\t87\t103\t121\t120\t101\t\n" +
                                     "72\t92\t95\t98\t112\t100\t103\t99\t\n";
 
-            Assert.AreEqual(expectedString, defaultYQuantizationTable.ToString());
+            NUnit.Framework.Assert.AreEqual(expectedString, defaultYQuantizationTable.ToString());
         }
     }
 }
