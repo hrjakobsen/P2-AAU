@@ -31,7 +31,7 @@ post/.style={->,shorten >=1pt,>=stealth',semithick},
 \node[processnode]        (sampling)         [above=of dct] {Downsample MCU's};
 \node[processnode]        (split)            [left=of sampling] {Split image into MCU's};
 \node[processnode]        (convert)          [left=of split] {Convert from YCbCr to RGB};
-\node[processnode]        (bitmapimage)      [left=of convert] {\lstinline|Bitmap| image};
+\node[processnode]        (bitmapimage)      [left=of convert] {\lstinline|Bitmap| \\image};
  
 %Lines
 \draw[->] (bitmapimage.east) -- (convert.west);
