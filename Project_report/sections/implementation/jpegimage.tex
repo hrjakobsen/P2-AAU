@@ -3,7 +3,7 @@
 Looking back to section \ref{sec:designJPEG} we can start implementing this into our steganography program \textit{Stegasaurus}.
 Also we can refer to figure \ref{fig:JPEGprocess} for the steps the encoder must take.
 
-There are multiple constructors to the \lstinline|JPEGImage| class, as a user can chose to specify custom Quantization- or Huffman tables, or simply use the default table which both the \lstinline|QuantizationTable|- and \lstinline|HuffmanTable| classes provides, by not providing any tables in the constructor.
+There are multiple constructors for the \lstinline|JPEGImage| class, as a user can choose to specify custom quantization- or Huffman tables, or simply use the default table which both the \lstinline|QuantizationTable|- and \lstinline|HuffmanTable| classes provide, by not providing any tables in the constructor.
 The default tables in the respective classes are both found in the JPEG specification \citep[Annex k]{JPEGStandard}.
 
 The \lstinline|void Encode(byte[])| is where the actual JPEG encoding takes place.
@@ -29,13 +29,13 @@ public void Encode(byte[] message) {
 }
 \end{lstlisting}
 
-From here on, we need to perform all of the regular steps JPEG encoding up until just before the Huffman encoding.
+From here on, we need to perform all of the regular steps from JPEG encoding up until just before the Huffman encoding.
 We start out with splitting the image into Y, Cb and Cr channels instead of the \lstinline|Bitmap|'s RGB channels, and then in the method \lstinline|void _encodeAndQuantizeValues(sbyte[][,], int, int)| we have the loop which can be seen in listing \ref{JPEGEncodeAndQuantize}.
 While these nested loops may seem very computationally heavy, what it actually does is that it loops through the three channels of every pixel in the 16x16 MCU's.
 So while we have five nested for loops, we only run through every pixel 3 times.
 After every 16x16 MCU has been filled with values, the MCU must be encoded.
 As the name Minimum Encoded Unit implies, we can encode one MCU without depending on the other.
-That means that after we fill one MCU, we can encode that directly, we do that by invoking the method \lstinline|void _encodeBlocks(float[][,])|
+That means that after we fill one MCU, we can encode that directly, we do that by invoking the method \lstinline|void _encodeBlocks(float[][,])|.
 
 \begin{lstlisting}[firstnumber=525, label=JPEGEncodeAndQuantize]
 for (int MCUY = 0; MCUY < imageHeight; MCUY += 16) {
@@ -109,13 +109,13 @@ One way of doing it, is taking every 4th value in the block as seen on figure \r
 
 
 In our implementation we chose to use the average.
-While it does take some more calculations we do get better image quality.
-The problem with using just one value for every 2x2 block is, that if the image contains sharp edges, those lines will become distorted.
+While it does take some more calculations, we do get better image quality.
+The problem with using just one value for every 2x2 block, is that if the image contains sharp edges, those lines will become distorted.
 If using the average instead, the lines will at most become a bit blurry.
 
 After the down sampling process, only the DCT and Quantization processes are left before we can start embedding the message.
 On each 8x8 block we perform DCT as seen in listing \ref{JPEGEncodeDCT}.
-The DCT formula was described in section \ref{sec:jpegStudy}, but one thing we realised about the formula was, that the we could calculate the cosines only once, and use these instead of repetitively calculating the trigonometric function, therefore we calculate these results before even beginning the DCT process, and then just reuse the results in the DCT method.
+The DCT formula was described in section \ref{sec:jpegStudy}, but one thing we realised about the formula was, that we could calculate the cosines only once, and use these instead of repetitively calculating the trigonometric function, therefore we calculate these results before even beginning the DCT process, and then just reuse the results in the DCT method.
  
 
 \begin{lstlisting}[firstnumber=603,label=JPEGEncodeDCT]
@@ -139,7 +139,7 @@ private static float[,] _discreteCosineTransform(float[,] block8) {
 \end{lstlisting}
 
 After calculating the DCT coefficients, it is simply a matter of dividing each entry in the 8x8 block with the corresponding value in the quantization table.
-The result of this process are saved to the private field \lstinline|_quantizedValues|.
+The results of this process are saved to the private field \lstinline|_quantizedValues|.
 
 So now we are ready to perform the actual encoding of the data, before saving the image data to a file.
 We use procedure \ref{algJPEG} to find the valid entries from our newly filled \lstinline|_quantizedValues|.
@@ -152,7 +152,7 @@ We run this method 4 times for every distinctive pair of vertices in the graph, 
 In procedure \ref{algJPEGEncode} we would loop every vertex, for each vertex.
 If we had the vertices $\{a,b,c,d\}$ we would get the pairs $\{(a,b),(a,c),(a,d)(b,a),(b,c),(b,d),(c,a),(c,b),(c,d),(d,a),(d,b),(d,c)\}$.
 To find all possible switches, there is no need to check both $(a,b)$ and $(b,a)$, as those two vertices would have the same switches.
-In fact, we only need to check the switches $\{(a,b),(a,c),(a,d),(b,c),(b,d),(c,d)\}$ which is half the original pairs.
+In fact, we only need to check the switches $\{(a,b),(a,c),(a,d),(b,c),(b,d),(c,d)\}$ which is half of the original pairs.
 We implemented this as seen in listing \ref{implementationPairs}.
 The inner loop starts at the vertex following the current vertex in the outer loop.
 This way, we do not find the reversed counterparts of already found pairs.

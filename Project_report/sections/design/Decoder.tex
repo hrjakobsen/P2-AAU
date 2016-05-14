@@ -20,7 +20,7 @@ To decode the huffman-encoded values according to the table shown in section \re
 
 To get the negative values, we will have to do some calculations. 
 First, we notice how with each category, the minimum number is the same as adding one to the $2^n$ negative value, and the higher the bit-value becomes, the higher the actual value becomes as well. 
-Based on this information, we've derived algorithm \ref{algDecodeHuffmanValue}
+Based on this information, we have derived algorithm \ref{algDecodeHuffmanValue}
 \input{sections/design/decodeHuffmanValue.tex}
 These values, and the preceding zeroes, will have to be read into an array in zig-zag ordering.
 
@@ -42,7 +42,7 @@ The possible values will be as follows
 	\item 2. Value of modulo is 16
 	\item 3. Value of modulo is 256
 \end{itemize}
-Once the length has been found, we can keep decoding the scan data segment until enough AC coefficient has been read to decode the full message, using the modulo value we just found.
+Once the length has been found, we can keep decoding the scan data segment until enough AC coefficients have been read to decode the full message, using the modulo value we just found.
 
-When enough values has been read, the decoding process of the message is the same as listed in the beginning of thus subsection, except the value of modulo may be different. 
-Each letter will then have to be written to an array and returned to the user, since this array, will contain the message that was encoded in the JPEG picture.
+When enough values have been read, the decoding process of the message is the same as listed in the beginning of this subsection, with the only difference being that the value of modulo may be different. 
+Each letter will then have to be written to an array and returned to the user, since this array will contain the message that was encoded in the JPEG picture.

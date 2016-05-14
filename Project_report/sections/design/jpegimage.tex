@@ -16,7 +16,7 @@ As we can recall from section \ref{sec:jpegStudy}, the conversion from a bitmap 
 
 Some of these processes such as DCT are simply mathematical formulas performed on the data, and will not change from one image to another.
 However, other processes such as Huffman coding and quantization can yield very different results, depending on what Huffman- or quantization tables were used.
-If a quantization table with low values are used, the quality of the image would be higher, as the quantization process will not make as many of the entries in the 8x8 block zeroes.
+If a quantization table with low values is used, the quality of the image would be higher, as the quantization process will not make as many of the entries in the 8x8 block zeroes.
 A downside of quantization values being low is that because of the low amount of zeroes in the 8x8 blocks, the zero-runlength encoding would not be as efficient, which would mean a higher file-size.
 
 Because the Huffman- and quantization tables have such a tremendous impact on the resulting JPEG image, it would make sense to have the user able to change these to their liking.

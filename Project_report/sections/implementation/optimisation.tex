@@ -1,50 +1,53 @@
 \section{Optimisation}
 We had managed to implement several complex algorithms in our program.
 This was immediately visible if the JPEG-encoder was run with larger images (such as the 4K (3840x2160) resolution images that the camera in many smart phones output) or if long messages of several hundred bytes were embedded in the image.
-Doing so, the process took upwards of several minutes on slower computers.
-Since, ideally, our program was to be used on a smart phone running Android, some optimisation of the code was clearly needed.
-This section will focus on how these optimisations are implemented.\vspace*{12pt}
+Doing so took upwards of several minutes on slower computers, so some optimisation of the code was clearly a requirement.
+This section will focus on how these optimisations were implemented.
+\vspace*{12pt}
 
-\noindent To see what kinds of optimisations were useful and where they were needed, it was neccesary to objectively measure their worth.
+To see what kinds of optimisations were useful and where they were needed, it was neccesary to objectively measure their worth.
 The easiest way to do this, was by timing how long different parts of the code took to complete.
-To show this we created a Stopwatch object in JPEGImage, which allowed us to keep track of how many milliseconds something took.
+To show this, we created a Stopwatch object in JPEGImage, which allowed us to keep track of how many milliseconds something took.
 In order to ensure that we could compare the timings from different runs, it was important to establish some base rules to follow.
 We used the same image and message for every run.
 The image is a 4K resolution jpg image of a landscape with a hot air balloon in it.
 To ensure that we ran the method \lstinline|_padCoverImage| we removed eight pixels from the right and bottom sides of the image, bringing the resolution to 3832x2152.
 The message consisted of 640 bytes of the ASCII characters \textit{A-Z}.
-This was equivalent of the length of four regular textmessages end-to-end.
+This was equivalent of the length of four regular SMS messages end-to-end, and therefore constituted what we believed to(???)
 
-All runs were done on the with the \textit{Release} option in Visual Studio, as there seemed to be siginificant overhead on \textit{Debug}.
-Some basic optimisations such as moving the calculation of the upper-bound outside the decleration of for-loops.
-While a very simple thing to do, this did have some visible results in a few areas.
-We ran several trials before this stage to get a better understanding of which methods, where most time-consuming.
+All runs were done on the with the \textit{Release} option in Visual Studio, as there seemed to be a siginificant overhead on \textit{Debug}.
+Some basic optimisations such as moving the calculation of the upper-bound outside the declaration of for-loops had already been done at this point.
+While being a very simple thing to do, this did have some visible results in a few areas.
+We ran several trials before this stage to get a better understanding of which methods, were most time-consuming.
 
 We used a profiler to get a better understanding of which parts of the code took a substantial amount of time to run.
-The following methods and procedures constitute just under 99 \% of time spent by our mostly unoptimised program, when run with the aforementioned parameters:
+The following methods and procedures constituted around 90 \% of the total time spent by our mostly unoptimised program, when run with the aforementioned parameters:
 \lstinline|_padCoverImage|, \lstinline|_splitToChannels|, \lstinline|_encodeAndQuantizeValues|, Adding edges to the graph, \lstinline|GetSwitches| and \lstinline|_huffmanEncoding|.
 All numbers are averages based on ten consectutive runs, following a single "warm-up run", whose results were not saved.
 This was done to get more stable timings, seeing as the first run always had slightly different times than the remaining.
 It is quite possible that this was caused by the garbage collector, since it changes its behaviour depending on the patterns of code being run.
 Therefore, running the programme once without saving the data allowed it to learn the memory allocation patterns of the code and react in the same way the next ten times it was run.
 The warm-up run also allowed us to run the decoder to make sure that the message was being encoded properly in the image and that our optimisations had not changed the programme's output.
+We did a total of three rounds of optimisations, each further improving the performance of the program.
+The four different versions of the program can be found in appendix \ref{app:}.
 The first runs and the control for our further tests are shown in table \ref{fig:0genoptimised}
 
+\vspace{12pt}
 \begin{threeparttable}[]
     \centering
     \resizebox{\textwidth}{!}{%
     \begin{tabular}{|p{3cm}|p{3.2cm}|p{3.2cm}|p{3.2cm}|}
         \hline
         Code segment    & \multicolumn{3}{c|}{Processor} \\ \hline
-                        & Intel\textsuperscript{\textregistered} \newline i5-4670K & AMD\textsuperscript{\textregistered} \newline A6-3420M & Intel\textsuperscript{\textregistered} \newline i7-4700HQ \\ \hline
-        Image padding   & 6840 ms               & 39654 ms              & 8183 ms           \\ \hline
-        Channel split   & 3081 ms               & 20355 ms              & 3756 ms           \\ \hline
-        Encoding        & 4299 ms               & 28045 ms              & 4861 ms           \\ \hline
-        Adding edges    & 525 ms                & 1020 ms               & 141 ms			\\ \hline
-        Get switches    & 1461 ms               & 2720 ms               & 414 ms			\\ \hline
-        Huffman         & 642 ms                & 3568 ms               & 760 ms			\\ \hline
-        Total run time  & \textbf{17067 ms}     & \textbf{96385 ms}     & \textbf{18357 ms} \\ \hline
-        Time covered    & \textit{98.7 \%}      & \textit{98.9 \%}      & \textit{98.7 \%}  \\ \hline
+                        & Intel\textsuperscript{\textregistered} \newline i5-4670K & Intel\textsuperscript{\textregistered} \newline i7-4700HQ & AMD\textsuperscript{\textregistered} \newline A6-3420M \\ \hline
+        Image padding   & 6840 ms               & 8060 ms				& 39189 ms           \\ \hline
+        Channel split   & 3081 ms               & 3670 ms				& 20775 ms           \\ \hline
+        Encoding        & 4299 ms               & 5304 ms				& 28603 ms           \\ \hline
+        Adding edges    & 525 ms                & 626 ms				& 4017 ms			\\ \hline
+        Get switches    & 1461 ms               & 1764 ms				& 10393 ms			\\ \hline
+        Huffman         & 642 ms                & 761 ms				& 3576 ms			\\ \hline
+        Total run time  & \textbf{17067 ms}     & \textbf{21393 ms}     & \textbf{107099 ms} \\ \hline
+        Time covered    & \textit{98.7 \%}      & \textit{94.4 \%}      & \textit{99.0 \%}  \\ \hline
     \end{tabular}
     }
     \caption{Unoptimised encoding for three different processors.}
@@ -56,56 +59,59 @@ It was quite obvious that \lstinline|_padCoverImage|, \lstinline|_splitToChannel
 The first thing we focused on was \lstinline|_padCoverImage|, simply because it took almost twice as long as the second most time-consuming method.
 JPEG-encoding requires images with both a width and a height that is divisible by 16.
 If an image does not fulfill this, the last pixel is copied up to 15 times in the direction needed.
-Since the \lstinline|Bitmap| class does not allow for resizing of images, we needed to copy the entire image before being able to pad its bottom and right side.
+Since the \lstinline|System.Drawing.Bitmap| class does not allow for resizing of images, we needed to copy the entire image before being able to pad its bottom and right side.
 We did this by looping through every pixel and copying it to the new \lstinline|Bitmap|.
 This was done in two nested for-loops that ran from zero the width and zero to the height respectively.
 On the 3832x2152 image used, this amounted to 8,246,464 iterations.
 Every iteration used the \lstinline|Bitmap| class' methods \lstinline|GetPixel| and \lstinline|SetPixel|.
 It is very likely that there is more to the property than simply returning a value and therefore quite a bit of overhead.
-Using the \lstinline|Grapics| class we were able to copy portions of \lstinline|Bitmap|s much more efficiently, \citep{MSDNBitmap} as can be seen in figure \ref{fig:1genoptimised}
+More specifically the methods are both wrappers for native functions contained in \lstinline|GDI+|. 
+These might very well have to check several things before being able to return the pixel.
+Using the \lstinline|System.Drawing.Graphics| class we were able to copy portions of \lstinline|Bitmap|s much more efficiently, \citep{MSDNBitmap} as can be seen in figure \ref{fig:1genoptimised}.
 
-Seeing this overhead on the \lstinline|Bitmap| class, made us suspect the same of the related \lstinline|Pixel| class.
-During \lstinline|_splitToChannels| we also looped through every pixel of the image and saved it in a temporary variable.
-From this we used the bytes \lstinline|R|, \lstinline|G| and \lstinline|B| three times each.
-On the second runs we saved these values to bytes instead of getting them from the saved pixel each time they were needed.
+Seeing this overhead on the \lstinline|Bitmap| class, made us suspect the same of the related \lstinline|System.Drawing.Color| class, which holds the data of a single pixel.
+During \lstinline|_splitToChannels| we also looped through every pixel of the image and saved it in a temporary variable. 
+From this we used the bytes \lstinline|R|, \lstinline|G| and \lstinline|B| three times each. 
+In the first order of genereations we saved these values to bytes instead of getting them from the saved pixel each time they were needed.
 This reduced the calls to the Pixel's getter, which had a positive impact on the overall performance of the method.
-We also managed to get a slight increase in performance on the Huffman-encoding, by changing a loop in the \lstinline|BitList| to only run every eighth time a BIT???? OR BYTE??? was added to the list.
+We also managed to get a slight increase in performance on the Huffman-encoding, by changing a loop in the \lstinline|BitList| to only run every eighth time a bit was added to the list.
 
+\vspace{12pt}
 \begin{threeparttable}[]
     \centering
     \resizebox{\textwidth}{!}{%
-    \begin{tabular}{|p{2.8cm}|p{1.8cm}|p{1.5cm}|p{1.8cm}|p{1.5cm}|p{1.8cm}|p{1.5cm}|}
+    \begin{tabular}{|p{2.8cm}|p{1.9cm}|p{1.4cm}|p{1.9cm}|p{1.4cm}|p{1.8cm}|p{1.5cm}|}
         \hline
         Code segment    & \multicolumn{6}{c|}{Processor and performance increase} \\ \hline
-                        & Intel\textsuperscript{\textregistered} \newline i5-4670K & Increase\tnote{\textdagger} & AMD\textsuperscript{\textregistered} \newline A6-3420M & Increase\tnote{\textdagger} & Intel\textsuperscript{\textregistered} \newline i7-4700HQ & Increase\tnote{\textdagger} \\ \hline
-        Image padding   & 88 ms     & 7673 \%   & 526 ms     & 7433 \%    & 97 ms   & 8336 \%      \\ \hline
-        Channel split   & 2988 ms   & 3 \%      & 20074 ms   & 1 \%       & 3577 ms & 5 \%      \\ \hline
-        Encoding        & 4317 ms   & 0 \%      & 28921 ms   & -3 \%      & 4811 ms & 1 \%      \\ \hline
-        Adding edges    & 524 ms    & 0 \%      & 995 ms     & 3 \%       & 142 ms  & -1 \%      \\ \hline
-        Get switches    & 1460 ms   & 0 \%      & 2797 ms    & 3 \%       & 416 ms  & 0 \%      \\ \hline
-        Huffman         & 541 ms    & 19 \%     & 3604 ms    & -1 \%      & 741 ms  & 3 \%      \\ \hline
-        Total run time  & \textbf{10134 ms} & \textbf{68 \%} & \textbf{57973 ms}& \textbf{66 \%}  & \textbf{10028 ms} & \textbf{83 \%}  \\ \hline
-        Time covered    & \textit{97.9 \%} &    & \textit{98.2 \%} &      & \textit{97.6 \%} &     \\ \hline
+                        & Intel\textsuperscript{\textregistered} \newline i5-4670K & Decrease \newline in time \tnote{\textdagger} & Intel\textsuperscript{\textregistered} \newline i7-4700HQ & Decrease \newline in time \tnote{\textdagger} & AMD\textsuperscript{\textregistered} \newline A6-3420M & Decrease \newline in time \tnote{\textdagger} \\ \hline
+        Image padding   & 88 ms     & 7673 \%   & 101 ms	& 7861 \%	& 525 ms   & 8336 \%      \\ \hline
+        Channel split   & 2988 ms   & 3 \%      & 3786 ms   & -3 \%		& 19371 ms & 5 \%      \\ \hline
+        Encoding        & 4317 ms   & 0 \%      & 5145 ms   & 3 \%      & 29442 ms & 1 \%      \\ \hline
+        Adding edges    & 524 ms    & 0 \%      & 627 ms	& 0 \%      & 4063 ms  & -1 \%      \\ \hline
+        Get switches    & 1460 ms   & 0 \%      & 1765 ms	& 0 \%      & 10950 ms  & 0 \%      \\ \hline
+        Huffman         & 541 ms    & 19 \%     & 651 ms    & 17 \%     & 3073 ms  & 3 \%      \\ \hline
+        Total run time  & \textbf{10134 ms} & \textbf{68 \%} & \textbf{12328 ms}& \textbf{74 \%}  & \textbf{68482 ms} & \textbf{58 \%}  \\ \hline
+        Time covered    & \textit{97.9 \%} &    & \textit{98.0 \%} &      & \textit{98.5 \%} &     \\ \hline
     \end{tabular}
     }
     \begin{tablenotes}
-        \footnotesize{\item[\textdagger] Performance increase compared to the respective timings in table \ref{fig:0genoptimised}}
+        \footnotesize{\item[\textdagger] In comparison to the respective timings in table \ref{fig:0genoptimised}}
     \end{tablenotes}
     \caption{First round of optimisations. Improved \lstinline|Bitmap| copying, fewer calls to the properties of \lstinline|Pixel| and an improved \lstinline|BitList|.}
     \label{fig:1genoptimised}
 \end{threeparttable}
 
 \subsection{Second round of optimisations}
-While there was a slight speed-up by not accessing the properties of the \lstinline|Pixel| as much, it did not do much.
+While there was a slight speed-up by not accessing the properties of the \lstinline|Pixel| as often, it did not do much.
 It was apparant that any use of \lstinline|GetPixel| was going to cause problems on larger images.
-Using \lstinline|LocBits| we were able to use an \lstinline|IntPtr| to point at the data in memory.\citep{MSDNIntPtr}
-The reason for doing this instead of using an actual pointer, is the fact that pointers in C\# requires the code they are used in to be wrapped in the \lstinline|unsafe| keyword.
+Using \lstinline|LockBits| we were able to use an \lstinline|IntPtr| to point at the data in memory. \citep{MSDNIntPtr}
+The reason for doing this instead of using an actual pointer, is the fact that pointers in C\# requires the code they are used in to be wrapped in the \lstinline|unsafe| keyword. 
 We could not be entirely sure of the implications of this on an Android device, since it can require a different privileges on different platforms.
-Using this method to get the \lstinline|R|, \lstinline|G| and \lstinline|B| components of the source \lstinline|Bitmap| was beneficial to the program's execution time.
+Using this method to get the \lstinline|R|, \lstinline|G| and \lstinline|B| components of the source \lstinline|Bitmap| was beneficial to the programme's execution time.
 In fact, it was almost eight times faster than the previously used method, as seen on figure \ref{fig:2genoptimised}.
 
 Several changes to the two nested loops, which added edges to the graph, resulted in an improvement as to the Adding edges step as well as \lstinline|GetSwitches|.
-The original algorithm had complexity $O(n^2)$, so longer message lengths could result in much longer running times for it.
+The original algorithm had complexity $\mathcal{O}(n^2)$, so longer message lengths could result in much longer running times for it.
 We made sure to only look at the vertices whose vertices did not already fit with the message.
 With an M-value of four this meant that we would not have to check if we could add edges to around 25 \% of the vertices.
 We further reduced the overall amount of times the loops ran, by making sure that the inner loop only looked ahead in the list of vertices, which meant we only had to add each edge once.
@@ -114,30 +120,31 @@ This meant that our list of edges was halved, which effectively reduced the runn
 
 On a smaller note, we also changed the order in which the three checks that took place in \lstinline|_addEdge|.
 Two of these check were more computationally demanding than the third.
-By moving the least demanding check so it was the first evaluated, meant the more demanding checks were not performed as often.
+By moving the least demanding check so it was the first one evaluated, it meant the more demanding checks were not performed as often.
 This allowed us to save quite a few operations on each iteration.
-Furthermore we added the calculated edge weights to the edges instead of having a property that calculated them everytime.
+Furthermore we added the calculated edge weights to the edges instead of having a property that calculated them every time.
 This saved a few operations at a later time, when the edges were ordered by weight.
 
+\vspace{12pt}
 \begin{threeparttable}[]
     \centering
     \resizebox{\textwidth}{!}{%
-    \begin{tabular}{|p{2.8cm}|p{1.8cm}|p{1.5cm}|p{1.8cm}|p{1.5cm}|p{1.8cm}|p{1.5cm}|}
+    \begin{tabular}{|p{2.8cm}|p{1.9cm}|p{1.4cm}|p{1.9cm}|p{1.4cm}|p{1.8cm}|p{1.5cm}|}
         \hline
         Code segment    & \multicolumn{6}{c|}{Processor and performance increase} \\ \hline
-                        & Intel\textsuperscript{\textregistered} \newline i5-4670K & Increase\tnote{\textdagger} & AMD\textsuperscript{\textregistered} \newline A6-3420M & Increase\tnote{\textdagger} & Intel\textsuperscript{\textregistered} \newline i7-4700HQ & Increase\tnote{\textdagger} \\ \hline
-        Image padding   & 85        & 7947 \%    & 503       & 7780 \%    & 96      & 8406 \%     \\ \hline
-        Channel split   & 347       & 787 \%     & 5009      & 306 \%     & 388      & 867 \%     \\ \hline
-        Encoding        & 4377      & -2 \%       & 28539     & -2 \%       & 4806      & 1 \%     \\ \hline
-        Adding edges    & 104       & 406 \%      & 628       & 63 \%      & 112      & 26 \%     \\ \hline
-        Get switches    & 257       & 469 \%       & 2719      & 0 \%     & 380      & 9 \%     \\ \hline
-        Huffman         & 522       & 23 \%       & 3712      & -4 \%     & 723      & 5 \%     \\ \hline
-        Total run time  & \textbf{5907} & \textbf{189 \%} & \textbf{42208} & \textbf{128 \%} & \textbf{6748} & \textbf{172 \%} \\ \hline
-        Time covered    & \textit{96.4 \%} &     & \textit{97.4 \%} &     & \textit{96.4 \%} &      \\ \hline
+                        & Intel\textsuperscript{\textregistered} \newline i5-4670K & Decrease \newline in time \tnote{\textdagger} & Intel\textsuperscript{\textregistered} \newline i7-4700HQ & Decrease \newline in time \tnote{\textdagger} & AMD\textsuperscript{\textregistered} \newline A6-3420M & Decrease \newline in time \tnote{\textdagger} \\ \hline
+        Image padding   & 85        & 7947 \%	& 97		& 8249 \%	& 503      & 8406 \%     \\ \hline
+        Channel split   & 347       & 787 \%	& 386		& 850 \%	& 5096      & 867 \%     \\ \hline
+        Encoding        & 4377      & -2 \%		& 4796		& 11 \%		& 29812      & 1 \%     \\ \hline
+        Adding edges    & 104       & 406 \%	& 116		& 442 \%	& 629      & 26 \%     \\ \hline
+        Get switches    & 257       & 469 \%	& 289		& 511 \%	& 2244      & 9 \%     \\ \hline
+        Huffman         & 522       & 23 \%		& 610		& 25 \%     & 3125     & 5 \%     \\ \hline
+        Total run time  & \textbf{5907} & \textbf{189 \%} & \textbf{6534} & \textbf{227 \%} & \textbf{42444} & \textbf{155 \%} \\ \hline
+        Time covered    & \textit{96.4 \%} &	& \textit{96.3 \%} &     & \textit{97.6 \%} &      \\ \hline
     \end{tabular}
     }
     \begin{tablenotes}
-        \footnotesize{\item[\textdagger] Performance increase compared to the respective timings in table \ref{fig:0genoptimised}}
+        \footnotesize{\item[\textdagger] In comparison to the respective timings in table \ref{fig:0genoptimised}}
     \end{tablenotes}
     \caption{Second round of optimisations. Using a pointer to recieve \lstinline|Bitmap| data directly and improved edge adding logic.}
     \label{fig:2genoptimised}
@@ -149,7 +156,7 @@ Taking advantage of the multi-core design of most modern processors, we made som
 The effects of this can vary widely depending on the processor architechture and not all smart phones would be able to take advantage of it.
 The ones that can should be able to see a dramatic increase in performance of some parts of the code.
 
-Running loops in parallel as we did required seeing the code and its data dependencies in a different way than usually.
+Running loops in parallel as we did required seeing the code and its data dependencies in a different way than we usually do.
 With the exception of loops, normally code is run from the top to the bottom.
 The data dependencies follow the same pattern.
 When it comes to multi-threaded code though, this pattern changes, since the same lines of code can potentially be accessed by different threads at the same time.
@@ -160,33 +167,34 @@ In a high-level language such as C\#, this would most likely cause a run-time ex
 Because of these dangers, it is important that one manages any and all of these synchronisation issues properly.
 It is not always possible to use the same data-structure as single-threaded code does, and since we implemented multi-threading after making the code single-threaded we were not able to convert all the code.
 Specifically Huffman-encoding proved too cumbersome to efficiently multi-thread.
-However, DCT-calculation, quantization, adding edges and splitting the image to YCbCr-channels where succefully rewritten to allow for the code to run in parallel on several cores with the same output.
+However, DCT-calculation, quantization, adding edges and splitting the image to YCbCr-channels were successfully rewritten to allow for the code to run in parallel on several cores with the same output.
 
 By using the smallest data types capable of holding our data and properly unloading large unused variables, we effectively reduced peak memory usage from almost 400MB to around 100MB.
-This improved the spacial locality of the data, which had the potential of leading to better utilization of the different levels of caches, all in all leading to a better performing program.
+This improved the spacial locality of the data, which had the potential of leading to better utilisation of the different levels of caches, all in all leading to a better performing programme.
 
-Since we knew that there was a certain overhead on function calls, we tried to force the compiler to inline some of the most called functions we had. 
-This did not seem to have an effect, so it is quite likely that the compiler already inlined the functions we had tried it on.
+Since we knew that there was a certain overhead on function calls, we tried to force the compiler to in-line some of the most called functions we had. 
+This did not seem to have an effect, so it is quite likely that the compiler already in-lined the functions we had tried it on.
 
+\vspace{12pt}
 \begin{threeparttable}[]
     \centering
     \resizebox{\textwidth}{!}{%
-    \begin{tabular}{|p{2.8cm}|p{1.8cm}|p{1.5cm}|p{1.8cm}|p{1.5cm}|p{1.8cm}|p{1.5cm}|}
+    \begin{tabular}{|p{2.8cm}|p{1.9cm}|p{1.4cm}|p{1.9cm}|p{1.4cm}|p{1.8cm}|p{1.5cm}|}
         \hline
         Code segment    & \multicolumn{6}{c|}{Processor and performance increase} \\ \hline
-                        & Intel\textsuperscript{\textregistered} \newline i5-4670K & Increase\tnote{\textdagger} & AMD\textsuperscript{\textregistered} \newline A6-3420M & Increase\tnote{\textdagger} & Intel\textsuperscript{\textregistered} \newline i7-4700HQ & Increase\tnote{\textdagger} \\ \hline
-        Image padding   & 87        & 7995 \%    & 521       & 7513 \%    & 99      & 8199 \%	\\ \hline
-        Channel split   & 143       & 2884 \%    & 769       & 2546 \%    & 78      & 4691 \%	\\ \hline
-        Encoding        & 1788      & 141 \%     & 6977      & 302 \%     & 2445	& 99 \%     \\ \hline
-        Adding edges    & 48        & 148 \%     & 190       & 438 \%     & 60      & 136 \%	\\ \hline
-        Get switches    & 294       & 12 \%      & 2295      & 19 \%      & 347		& 19 \%     \\ \hline
-        Huffman         & 527       & 3 \%       & 3914      & -9 \%	  & 739		& 3 \%		\\ \hline
-        Total run time  & \textbf{3103} & \textbf{450 \%} & \textbf{15801} & \textbf{510 \%} & \textbf{4006} & \textbf{358 \%} \\ \hline
-        Time covered    & \textit{93.0 \%} &     & \textit{92.8 \%} &     & \textit{94.1 \%} &     \\ \hline
+                        & Intel\textsuperscript{\textregistered} \newline i5-4670K & Decrease \newline in time \tnote{\textdagger} & Intel\textsuperscript{\textregistered} \newline i7-4700HQ & Decrease \newline in time \tnote{\textdagger} & AMD\textsuperscript{\textregistered} \newline A6-3420M & Decrease \newline in time \tnote{\textdagger} \\ \hline
+        Image padding   & 87        & 7995 \%    & 98       & 7513 \%   & 511		& 8199 \%	\\ \hline
+        Channel split   & 143       & 2884 \%    & 122		& 2546 \%   & 769		& 4691 \%	\\ \hline
+        Encoding        & 1788      & 141 \%     & 2447		& 302 \%    & 6948		& 99 \%     \\ \hline
+        Adding edges    & 48        & 148 \%     & 53       & 438 \%    & 197       & 136 \%	\\ \hline
+        Get switches    & 294       & 12 \%      & 333      & 19 \%     & 2286		& 19 \%     \\ \hline
+        Huffman         & 527       & 3 \%       & 624      & -9 \%		& 739		& 3 \%		\\ \hline
+        Total run time  & \textbf{3103} & \textbf{450 \%} & \textbf{3916} & \textbf{446 \%} & \textbf{14764} & \textbf{632 \%} \\ \hline
+        Time covered    & \textit{93.0 \%} &     & \textit{93.9 \%} &     & \textit{93.0 \%} &	\\ \hline
     \end{tabular}
     }
     \begin{tablenotes}
-        \footnotesize{\item[\textdagger] Performance increase compared to the respective timings in table \ref{fig:0genoptimised}}
+        \footnotesize{\item[\textdagger] In comparison to the respective timings in table \ref{fig:0genoptimised}}
     \end{tablenotes}
     \caption{Third and last round of optimisations. Memory optimisations and multithreading of several methods.}
     \label{fig:3genoptimised}
