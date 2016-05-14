@@ -51,7 +51,6 @@ namespace Stegosaurus {
                     ChrACHuffman = temp;
                 }
             }
-
         }
 
         /// <summary>
@@ -154,8 +153,9 @@ namespace Stegosaurus {
             int modulo = getModulo(validNumbers);
 
             validNumbers.RemoveRange(0, 16);
-
-            int elementsToRead = (int)(length * (8 / Math.Log(modulo, 2))) * 2; // what
+            byte LogOp = (byte)(Math.Log(modulo, 2));
+            byte steps = (byte)(8 / LogOp);
+            int elementsToRead = length * steps * 2; // what
 
         //  Only read in the values we need to decode in order to decode the message
             while (validNumbers.Count < elementsToRead) {
@@ -170,12 +170,11 @@ namespace Stegosaurus {
 
         //  Combines each part of each character together, to fully decode the message
             List<byte> message = new List<byte>();
-            int steps = (int)(8 / Math.Log(modulo, 2));
             length = messageParts.Count - steps;
             for (int i = 0; i < length; i += steps) {
                 byte toAdd = 0;
                 for (int j = 0; j < steps; j++) {
-                    toAdd <<= (int)(Math.Log(modulo, 2));
+                    toAdd <<= LogOp;
                     toAdd += messageParts[i + j];
                 }
                 message.Add(toAdd);

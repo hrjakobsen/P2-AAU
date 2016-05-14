@@ -8,7 +8,7 @@
 \STATE{$insideHuffmanTable := false$}
 \STATE{array of lengths $AoL$}
 \STATE{elements of current length $e$}
-\STATE{current code length $codeL := 0$}
+\STATE{current code length $cL := 0$}
 
 \WHILE {$insideHuffmanTable = false$}
 	\STATE {$marker =$ read byte from stream}
@@ -26,14 +26,14 @@
 \ENDFOR
 	\STATE{$e := AoL_1$}
 	\STATE{$code := 0$}
-	\STATE{$codeL := 0$}
+	\STATE{$cL := 1$}
 	\FOR {$i:=1$ \TO $i = length$}
-		\WHILE{$e = 0$ \AND $cL < 17$}
+		\WHILE{$e = 0$ \AND $cL < 16$}
 			\STATE{$code * 2$}
 			\STATE{$cL + 1$}
 			\STATE{$e :=  AoL_{cL}$}
 		\ENDWHILE
-		\STATE{Create new Huffman element from the next read byte in the stream, with the same code as $code$ and with the length $AoL_{cL}$}
+		\STATE{Create new Huffman element from the next byte in the stream, with the same code as $code$ and with the length $cL$}
 		\STATE{Add Huffman element to table}
 		\STATE{$e - 1$}
 		\STATE{$code + 1$}
