@@ -144,7 +144,9 @@ namespace Stegosaurus.Tests
             Bitmap coverImage = new Bitmap(16, 16);
             PrivateObject po = new PrivateObject(new JpegImage(coverImage, 100, 4));
 
-            Bitmap returnedCoverImage = (Bitmap) po.Invoke("_padCoverImage");
+            po.Invoke("_padCoverImage");
+
+            Bitmap returnedCoverImage = (Bitmap) po.GetField("CoverImage");
 
             NUnit.Framework.Assert.AreEqual(coverImage, returnedCoverImage);
         }
@@ -157,7 +159,9 @@ namespace Stegosaurus.Tests
             Bitmap coverImage = new Bitmap(b, 15, 15);
             PrivateObject po = new PrivateObject(new JpegImage(coverImage, 100, 4));
 
-            Bitmap returnedCoverImage = (Bitmap) po.Invoke("_padCoverImage");
+            po.Invoke("_padCoverImage");
+
+            Bitmap returnedCoverImage = (Bitmap) po.GetField("CoverImage");
 
             Bitmap expectedCoverImage = new Bitmap(b, 16,16);
 
@@ -172,7 +176,9 @@ namespace Stegosaurus.Tests
             Bitmap coverImage = new Bitmap(b, 15, 15);
             PrivateObject po = new PrivateObject(new JpegImage(coverImage, 100, 4));
 
-            Bitmap returnedCoverImage = (Bitmap)po.Invoke("_padCoverImage");
+            po.Invoke("_padCoverImage");
+
+            Bitmap returnedCoverImage = (Bitmap)po.GetField("CoverImage");
 
             Bitmap expectedCoverImage = new Bitmap(b, 16, 16);
 
@@ -222,16 +228,8 @@ namespace Stegosaurus.Tests
             NUnit.Framework.Assert.AreEqual(expectedChannels, returnedChannels);
         }
 
-        [Test()]
-        public void SaveTest()
-        {
-            NUnit.Framework.Assert.Fail();
-        }
-
-        [Test()]
-        public void GetCapacityTest()
-        {
-            NUnit.Framework.Assert.Fail();
-        }
+        //[Test()]
+        //public void 
+        
     }
 }
