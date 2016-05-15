@@ -320,16 +320,16 @@ namespace Stegosaurus {
 
         private void _writeScanData() {
             _s.Restart();
-            Bitmap paddedCoverImage = _padCoverImage();
+            _padCoverImage();
             _s.Stop();
             _setTimings("_padCoverImage", _s.ElapsedMilliseconds);
             _s.Restart();
-            double[][,] channelValues = _splitToChannels(paddedCoverImage);
+            double[][,] channelValues = _splitToChannels(CoverImage);
             _s.Stop();
             _setTimings("_splitToChannels", _s.ElapsedMilliseconds);
             BitList bits = new BitList();
 
-            _encodeMCU(bits, channelValues, paddedCoverImage.Width, paddedCoverImage.Height);
+            _encodeMCU(bits, channelValues, CoverImage.Width, CoverImage.Height);
             _jw.WriteBytes(_flush(bits));
         }
 
@@ -643,7 +643,7 @@ namespace Stegosaurus {
             return channels;
         }
 
-        private Bitmap _padCoverImage() {
+        private void _padCoverImage() {
             int oldWidth = CoverImage.Width, oldHeight = CoverImage.Height;
             int newWidth = oldWidth, newHeight = oldHeight;
 
@@ -655,7 +655,7 @@ namespace Stegosaurus {
             }
 
             if (newWidth == oldWidth && newHeight == oldHeight) {
-                return CoverImage;
+                return;
             }
 
             Bitmap paddedCoverImage = _copyBitmap(CoverImage, newWidth, newHeight);
@@ -678,7 +678,7 @@ namespace Stegosaurus {
                 }
             }
 
-            return paddedCoverImage;
+            CoverImage = paddedCoverImage;
         }
 
         private static Bitmap _copyBitmap(Bitmap bitmapIn, int width, int height) {
@@ -759,10 +759,10 @@ namespace Stegosaurus {
 
 
         public int GetCapacity() {
-            Bitmap paddedCoverImage = _padCoverImage();
-            double[][,] YCbCrChannels = _splitToChannels(paddedCoverImage);
-            int imageHeight = paddedCoverImage.Height;
-            int imageWidth = paddedCoverImage.Width;
+            _padCoverImage();
+            double[][,] YCbCrChannels = _splitToChannels(CoverImage);
+            int imageHeight = CoverImage.Height;
+            int imageWidth = CoverImage.Width;
 
             if (_quantizedBlocks.Count == 0) {
                 _quantizeValues(YCbCrChannels, imageWidth, imageHeight);

@@ -9,7 +9,7 @@ namespace ConsoleTester {
         static void Main(string[] args) {
             IImageEncoder ji = new JpegImage(new Bitmap(@"tiger.jpg"), 100, 4);
 
-            //Console.WriteLine(ji.GetCapacity());
+            Console.WriteLine(ji.GetCapacity());
 
             int len = 280;
             byte[] msg = new byte[len];

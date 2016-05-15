@@ -10,7 +10,7 @@ namespace Stegosaurus {
     public class JpegImage : IImageEncoder {
         private JpegWriter _jw;
         private byte _m;
-        public readonly Bitmap CoverImage;
+        public Bitmap CoverImage;
         private readonly List<byte> _message = new List<byte>();
         private readonly int[] _lastDc = { 0, 0, 0 };
         private readonly List<Tuple<short[,], HuffmanTable, HuffmanTable, int>> _quantizedBlocks = new List<Tuple<short[,], HuffmanTable, HuffmanTable, int>>();
@@ -170,10 +170,10 @@ namespace Stegosaurus {
         public int GetCapacity() {
             //Basically perform all the steps Encode does up until
             //actually encoding the secret message
-            Bitmap paddedCoverImage = _padCoverImage();
-            sbyte[][,] YCbCrChannels = _splitToChannels(paddedCoverImage);
-            int imageHeight = paddedCoverImage.Height;
-            int imageWidth = paddedCoverImage.Width;
+            _padCoverImage();
+            sbyte[][,] YCbCrChannels = _splitToChannels(CoverImage);
+            int imageHeight = CoverImage.Height;
+            int imageWidth = CoverImage.Width;
 
             //If the image has already been quantized we do not want
             //to do it again
@@ -397,15 +397,15 @@ namespace Stegosaurus {
         }
 
         private void _writeScanData() {
-            Bitmap paddedCoverImage = _padCoverImage();
-            sbyte[][,] channelValues = _splitToChannels(paddedCoverImage);
+            _padCoverImage();
+            sbyte[][,] channelValues = _splitToChannels(CoverImage);
             BitList bits = new BitList();
 
-            _encodeMCU(bits, channelValues, paddedCoverImage.Width, paddedCoverImage.Height);
+            _encodeMCU(bits, channelValues, CoverImage.Width, CoverImage.Height);
             _jw.WriteBytes(_flush(bits));
         }
 
-        private Bitmap _padCoverImage() {
+        private void _padCoverImage() {
             int oldWidth = CoverImage.Width, oldHeight = CoverImage.Height;
             int newWidth = oldWidth, newHeight = oldHeight;
 
@@ -419,7 +419,7 @@ namespace Stegosaurus {
             }
 
             if (newWidth == oldWidth && newHeight == oldHeight) {
-                return CoverImage;
+                return;
             }
 
             Bitmap paddedCoverImage = _copyBitmap(CoverImage, newWidth, newHeight);
@@ -443,7 +443,7 @@ namespace Stegosaurus {
             }
 
             //Clean up after ourselves
-            return paddedCoverImage;
+            CoverImage = paddedCoverImage;
         }
 
         private static Bitmap _copyBitmap(Bitmap bitmapIn, int width, int height) {
