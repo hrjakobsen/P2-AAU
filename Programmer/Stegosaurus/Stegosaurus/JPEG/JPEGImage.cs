@@ -185,7 +185,8 @@ namespace Stegosaurus {
             //Pairs available = nonZeroValues / 2
             //Bits per pair = Pairs / 8 / Math.Log(M, 2)
             //Total bytes available = bits per pair / 8
-            return _nonZeroValues.Count / 2 / (8 / (int)Math.Log(M, 2)) / 8;
+            //We always need to use to bytes to encode message length and M-value
+            return _nonZeroValues.Count / 2 / (8 / (int)Math.Log(M, 2)) / 8 - 2;
         }
 
         private void _breakDownMessage(byte[] message) {
@@ -710,10 +711,10 @@ namespace Stegosaurus {
                 } else {
                     good++;
                 }
-
             }
 
-            Console.WriteLine($"Did {swaps} swaps and {forces} forces. ({forces + good}) ({(double)forces / (good + forces) * 100} %)");
+            //Console.WriteLine($"Did {swaps} swaps and {forces} forces. ({forces + good}) ({(double)forces / (good + forces) * 100} %)");
+            Console.WriteLine($"The message required {forces+good} values.\n{swaps} values were changed by swapping.\n{forces} values were changed by forcing.\n{good - swaps} values already fit.\n");
         }
 
         private static void _swapVertexData(Edge e) {

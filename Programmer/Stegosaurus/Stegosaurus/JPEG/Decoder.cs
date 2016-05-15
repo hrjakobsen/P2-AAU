@@ -158,7 +158,7 @@ namespace Stegosaurus {
             int elementsToRead = length * steps * 2; // what
 
         //  Only read in the values we need to decode in order to decode the message
-            while (validNumbers.Count < elementsToRead) {
+            while (validNumbers.Count < elementsToRead + 2) {
                 _addNextMCU(validNumbers, bits, ref index);
             }
 
