@@ -442,7 +442,6 @@ namespace Stegosaurus {
             }
 
             //Clean up after ourselves
-            CoverImage.Dispose();
             return paddedCoverImage;
         }
 
