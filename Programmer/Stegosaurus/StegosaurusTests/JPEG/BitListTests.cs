@@ -29,26 +29,17 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void BitListTest_Construction_Of_negative_length_Bitlist() //TODO: do checks on this test
+        public void BitListTest_Construction_Of_negative_length_Bitlist()
         {
-            try
-            {
-                BitList bl = new BitList(-1);
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                NUnit.Framework.Assert.Pass();
-            }
-
+            Assert.Catch<ArgumentOutOfRangeException>(() => new BitList(-1));
         }
 
         [Test()]
-        public void GetEnumeratorTest() //TODO: make test which checks if yield return works, so bl should return with 8 zeros?
+        public void Enumerable_MultipleValues_LoopsThroughAllAddedValues()
         {
-            BitList bl = new BitList(8);
-
-            bl.GetEnumerator();
-            NUnit.Framework.Assert.Fail();
+            BitList bl = new BitList(8) {true};
+            //Assert that the first 8 bits are false, and the last value is true
+            Assert.True(!bl.Take(8).Any(bit => bit) && bl.Last()); 
         }
 
         [Test()]

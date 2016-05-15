@@ -152,29 +152,31 @@ namespace Stegosaurus {
             int length = getLength(validNumbers);
             int modulo = getModulo(validNumbers);
 
+            //Remove the values where the length and modulo was encoded
             validNumbers.RemoveRange(0, 16);
-            byte LogOp = (byte)(Math.Log(modulo, 2));
-            byte steps = (byte)(8 / LogOp);
-            int elementsToRead = length * steps * 2; // what
 
-        //  Only read in the values we need to decode in order to decode the message
-            while (validNumbers.Count < elementsToRead + 2) {
+            byte logOp = (byte)(Math.Log(modulo, 2));
+            byte steps = (byte)(8 / logOp);
+            int elementsToRead = length * steps * 2;
+
+            //Only read in the values we need to decode in order to decode the message
+            while (validNumbers.Count < elementsToRead) {
                 _addNextMCU(validNumbers, bits, ref index);
             }
 
             List<byte> messageParts = new List<byte>();
 
-            for (int i = 0; i <= elementsToRead; i += 2) {
+            for (int i = 0; i + 1 < elementsToRead; i += 2) {
                 messageParts.Add((byte)(validNumbers[i] + validNumbers[i + 1]).Mod(modulo));
             }
 
-        //  Combines each part of each character together, to fully decode the message
+            //Combines each part of each character together, to fully decode the message
             List<byte> message = new List<byte>();
-            length = messageParts.Count - steps;
+            length = messageParts.Count;
             for (int i = 0; i < length; i += steps) {
                 byte toAdd = 0;
                 for (int j = 0; j < steps; j++) {
-                    toAdd <<= LogOp;
+                    toAdd <<= logOp;
                     toAdd += messageParts[i + j];
                 }
                 message.Add(toAdd);
