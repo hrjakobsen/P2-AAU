@@ -13,12 +13,11 @@ We used the same image and message for every run.
 The image is a 4K resolution jpg image of a landscape with a hot air balloon in it.
 To ensure that we ran the method \lstinline|_padCoverImage| we removed eight pixels from the right and bottom sides of the image, bringing the resolution to 3832x2152.
 The message consisted of 640 bytes of the ASCII characters \textit{A-Z}.
-This was equivalent of the length of four regular SMS messages end-to-end, and therefore constituted what we believed to(???)
+This was equivalent to the length of four regular SMS messages end-to-end, and therefore constituted what we believed to be a message capable of containing enough information for most uses.
 
 All runs were done on the with the \textit{Release} option in Visual Studio, as there seemed to be a siginificant overhead on \textit{Debug}.
 Some basic optimisations such as moving the calculation of the upper-bound outside the declaration of for-loops had already been done at this point.
 While being a very simple thing to do, this did have some visible results in a few areas.
-We ran several trials before this stage to get a better understanding of which methods, were most time-consuming.
 
 We used a profiler to get a better understanding of which parts of the code took a substantial amount of time to run.
 The following methods and procedures constituted around 90 \% of the total time spent by our mostly unoptimised program, when run with the aforementioned parameters:
@@ -29,7 +28,7 @@ It is quite possible that this was caused by the garbage collector, since it cha
 Therefore, running the programme once without saving the data allowed it to learn the memory allocation patterns of the code and react in the same way the next ten times it was run.
 The warm-up run also allowed us to run the decoder to make sure that the message was being encoded properly in the image and that our optimisations had not changed the programme's output.
 We did a total of three rounds of optimisations, each further improving the performance of the program.
-The four different versions of the program can be found in appendix \ref{app:}.
+The four different versions of the program can be found in appendix \ref{app:E}.
 The first runs and the control for our further tests are shown in table \ref{fig:0genoptimised}
 
 \vspace{12pt}
@@ -40,14 +39,14 @@ The first runs and the control for our further tests are shown in table \ref{fig
         \hline
         Code segment    & \multicolumn{3}{c|}{Processor} \\ \hline
                         & Intel\textsuperscript{\textregistered} \newline i5-4670K & Intel\textsuperscript{\textregistered} \newline i7-4700HQ & AMD\textsuperscript{\textregistered} \newline A6-3420M \\ \hline
-        Image padding   & 6840 ms               & 8060 ms				& 39189 ms           \\ \hline
-        Channel split   & 3081 ms               & 3670 ms				& 20775 ms           \\ \hline
-        Encoding        & 4299 ms               & 5304 ms				& 28603 ms           \\ \hline
-        Adding edges    & 525 ms                & 626 ms				& 4017 ms			\\ \hline
-        Get switches    & 1461 ms               & 1764 ms				& 10393 ms			\\ \hline
-        Huffman         & 642 ms                & 761 ms				& 3576 ms			\\ \hline
-        Total run time  & \textbf{17067 ms}     & \textbf{21393 ms}     & \textbf{107099 ms} \\ \hline
-        Time covered    & \textit{98.7 \%}      & \textit{94.4 \%}      & \textit{99.0 \%}  \\ \hline
+        Image padding   & 6840 ms               & 8060 ms				& 39189 ms              \\ \hline
+        Channel split   & 3081 ms               & 3670 ms				& 20775 ms              \\ \hline
+        Encoding        & 4299 ms               & 5304 ms				& 28603 ms              \\ \hline
+        Adding edges    & 525 ms                & 626 ms				& 4017 ms               \\ \hline
+        Get switches    & 1461 ms               & 1764 ms				& 10393 ms              \\ \hline
+        Huffman         & 642 ms                & 761 ms				& 3576 ms               \\ \hline
+        Total run time  & \textbf{17067 ms}     & \textbf{21393 ms}     & \textbf{107099 ms}    \\ \hline
+        Time covered    & \textit{98.7 \%}      & \textit{94.4 \%}      & \textit{99.0 \%}      \\ \hline
     \end{tabular}
     }
     \caption{Unoptimised encoding for three different processors.}
@@ -67,14 +66,83 @@ Every iteration used the \lstinline|Bitmap| class' methods \lstinline|GetPixel| 
 It is very likely that there is more to the property than simply returning a value and therefore quite a bit of overhead.
 More specifically the methods are both wrappers for native functions contained in \lstinline|GDI+|. 
 These might very well have to check several things before being able to return the pixel.
-Using the \lstinline|System.Drawing.Graphics| class we were able to copy portions of \lstinline|Bitmap|s much more efficiently, \citep{MSDNBitmap} as can be seen in figure \ref{fig:1genoptimised}.
+Using the \lstinline|System.Drawing.Graphics| class as show in listing \ref{lst:copyBitmap} we were able to copy portions of \lstinline|Bitmap|s much more efficiently, \citep{MSDNBitmap} as can be seen in by the roughly 8000 \% decrease in time in figure \ref{fig:1genoptimised}.
+
+\begin{lstlisting}[firstnumber=684,label=lst:copyBitmap,caption={Copying a \lstinline|Bitmap| using the \lstinline|Graphics| class.}]
+private static Bitmap _copyBitmap(Bitmap bitmapIn, int width, int height) {
+    Bitmap bitmapOut = new Bitmap(width, height);
+    Graphics g = Graphics.FromImage(bitmapOut);
+    Rectangle rect = new Rectangle(0, 0, bitmapIn.Width, bitmapIn.Height);
+    g.DrawImage(bitmapIn, rect, rect, GraphicsUnit.Pixel);
+    g.Dispose();
+
+    return bitmapOut;
+}
+\end{lstlisting}
 
 Seeing this overhead on the \lstinline|Bitmap| class, made us suspect the same of the related \lstinline|System.Drawing.Color| class, which holds the data of a single pixel.
 During \lstinline|_splitToChannels| we also looped through every pixel of the image and saved it in a temporary variable. 
 From this we used the bytes \lstinline|R|, \lstinline|G| and \lstinline|B| three times each. 
-In the first order of genereations we saved these values to bytes instead of getting them from the saved pixel each time they were needed.
+In this round of optimisations we saved these values to temporary variables instead of getting them from the saved pixel each time they were needed.
+
 This reduced the calls to the Pixel's getter, which had a positive impact on the overall performance of the method.
 We also managed to get a slight increase in performance on the Huffman-encoding, by changing a loop in the \lstinline|BitList| to only run every eighth time a bit was added to the list.
+This change can be seen in listings \ref{lst:originalCheckedAdd} and \ref{lst:newCheckedAdd}.
+
+\begin{lstlisting}[firstnumber=85,label=lst:originalCheckedAdd, caption={Original \lstinline|CheckedAdd| in \lstinline|BitList|. Note the for-loop on line 93. It always runs.}]
+public void CheckedAdd(int val) {
+    if (_addCounter % 8 == 0) {
+        _latestEntries.SetAll(false);
+    }
+    _latestEntries[_addCounter % 8] = (val == 1);
+    Add(val == 1);
+    bool allOne = true;
+
+    for (int i = 0; i < 8; i++) {
+        if (!_latestEntries[i]) {
+            allOne = false;
+            break;
+        }
+    }
+
+    if (allOne) {
+        for (int i = 0; i < 8; i++) {
+            Add(false);
+        }
+    }
+
+    _addCounter++;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[firstnumber=26,label=lst:newCheckedAdd, caption={Improved \lstinline|CheckedAdd| in \lstinline|BitList|. The for-loop only runs an eighth of the time.}]
+public void CheckedAdd(int val) {
+    if (_addCounter % 8 == 0) {
+        _latestEntries.SetAll(false);
+    }
+    _latestEntries[_addCounter % 8] = (val == 1);
+    Add(val == 1);
+    bool allOne = false;
+
+    if (_addCounter % 8 == 7) {
+        allOne = true;
+        for (int i = 0; i < 8; i++) {
+            if (!_latestEntries[i]) {
+                allOne = false;
+                break;
+            }
+        }
+    }
+
+    if (allOne) {
+        for (int i = 0; i < 8; i++) {
+            Add(false);
+        }
+    }
+
+    _addCounter++;
+}
+\end{lstlisting}
 
 \vspace{12pt}
 \begin{threeparttable}[]
@@ -111,12 +179,40 @@ Using this method to get the \lstinline|R|, \lstinline|G| and \lstinline|B| comp
 In fact, it was almost eight times faster than the previously used method, as seen on figure \ref{fig:2genoptimised}.
 
 Several changes to the two nested loops, which added edges to the graph, resulted in an improvement as to the Adding edges step as well as \lstinline|GetSwitches|.
-The original algorithm had complexity $\mathcal{O}(n^2)$, so longer message lengths could result in much longer running times for it.
+The original algorithm (as shown in listing \ref{lst:oldEdgeAdding}) had complexity $\mathcal{O}(n^2)$, so longer message lengths could result in much longer running times for it.
+
+\begin{lstlisting}[firstnumber=459,label=lst:oldEdgeAdding, caption={Original algorithm for adding edges to the graph.}]
+int threshold = 5;
+foreach (Vertex currentVertex in graph.Vertices) {
+    foreach (Vertex otherVertex in graph.Vertices.Where(otherVertex => currentVertex != otherVertex)) {
+        _addEdge(true, true, currentVertex, otherVertex, threshold, graph);
+        _addEdge(true, false, currentVertex, otherVertex, threshold, graph);
+        _addEdge(false, true, currentVertex, otherVertex, threshold, graph);
+        _addEdge(false, false, currentVertex, otherVertex, threshold, graph);
+    }
+}
+\end{lstlisting}
+
 We made sure to only look at the vertices whose vertices did not already fit with the message.
 With an M-value of four this meant that we would not have to check if we could add edges to around 25 \% of the vertices.
 We further reduced the overall amount of times the loops ran, by making sure that the inner loop only looked ahead in the list of vertices, which meant we only had to add each edge once.
 Before this we were adding every edge twice, with the start and end vertex flipped.
 This meant that our list of edges was halved, which effectively reduced the running time of \lstinline|GetSwitches| to a fourth.
+These changes can be seen in listing \ref{lst:newEdgeAdding}.
+
+\begin{lstlisting}[firstnumber=449,label=lst:newEdgeAdding, caption={Improved algorithm for adding edges to the graph.}]
+List<Vertex> toBeChanged = graph.Vertices.Where(x => (x.SampleValue1 + x.SampleValue2).Mod(x.Modulo) != x.Message).ToList();
+int length = toBeChanged.Count;
+int threshold = 5;
+for (int i = 0; i < length; i++) {
+    for (int j = i + 1; j < length; j++) {
+        _addEdge(true, true, toBeChanged[i], toBeChanged[j], threshold, graph);
+        _addEdge(true, false, toBeChanged[i], toBeChanged[j], threshold, graph);
+        _addEdge(false, true, toBeChanged[i], toBeChanged[j], threshold, graph);
+        _addEdge(false, false, toBeChanged[i], toBeChanged[j], threshold, graph);
+    }
+}
+\end{lstlisting}
 
 On a smaller note, we also changed the order in which the three checks that took place in \lstinline|_addEdge|.
 Two of these check were more computationally demanding than the third.
@@ -124,6 +220,34 @@ By moving the least demanding check so it was the first one evaluated, it meant 
 This allowed us to save quite a few operations on each iteration.
 Furthermore we added the calculated edge weights to the edges instead of having a property that calculated them every time.
 This saved a few operations at a later time, when the edges were ordered by weight.
+The two different versions of \lstinline|_addEdge| can be seen in listings \ref{lst:oldAddEdge} and \ref{lst:newAddEdge}
+
+\begin{lstlisting}[firstnumber=478,label=lst:oldAddEdge, caption={The original \lstinline|_addEdge| method.}]
+private static void _addEdge(bool firstFirst, bool secondFirst, Vertex first, Vertex second, int threshold, Graph g) {
+    if (((firstFirst ? first.SampleValue2 : first.SampleValue1) + (secondFirst ? second.SampleValue1 : second.SampleValue2)).Mod(first.Modulo) == first.Message) {
+        if (((firstFirst ? first.SampleValue1 : first.SampleValue2) + (secondFirst ? second.SampleValue2 : second.SampleValue1)).Mod(second.Modulo) == second.Message) {
+            Edge e = new Edge(first, second, firstFirst, secondFirst);
+            if (e.Weight < threshold) {
+                g.Edges.Add(e);
+            }
+        }
+    }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[firstnumber=482,label=lst:newAddEdge, caption={The improved \lstinline|_addEdge| method.}]
+private static void _addEdge(bool firstFirst, bool secondFirst, Vertex first, Vertex second, int threshold, Graph g) {
+    int weight = Math.Abs((firstFirst ? first.SampleValue1 : first.SampleValue2) - (secondFirst ? second.SampleValue1 : second.SampleValue2));
+    if (weight < threshold) {
+        if (((firstFirst ? first.SampleValue2 : first.SampleValue1) + (secondFirst ? second.SampleValue1 : second.SampleValue2)).Mod(first.Modulo) == first.Message) {
+            if (((firstFirst ? first.SampleValue1 : first.SampleValue2) + (secondFirst ? second.SampleValue2 : second.SampleValue1)).Mod(second.Modulo) == second.Message) {
+                Edge e = new Edge(first, second, weight, firstFirst, secondFirst);
+                g.Edges.Add(e);
+            }
+        }
+    }
+}
+\end{lstlisting}
 
 \vspace{12pt}
 \begin{threeparttable}[]
@@ -163,6 +287,21 @@ When it comes to multi-threaded code though, this pattern changes, since the sam
 This can lead to race-conditions, where the result of code can change depending on which thread gets to make changes first.
 Data can potentially be overwritten, since the same parts of memory can be written to at the same time.
 In a high-level language such as C\#, this would most likely cause a run-time exception instead.
+An example of a parallelised for-loop can be seen in listing \ref{lst:parallelEdgeAdding}.
+
+\begin{lstlisting}[firstnumber=677,label=lst:parallelEdgeAdding, caption={Parallelisation of the algorithm for adding edges to the graph.}]
+List<Vertex> toBeChanged = graph.Vertices.Where(x => (x.SampleValue1 + x.SampleValue2).Mod(x.Modulo) != x.Message).ToList();
+int length = toBeChanged.Count;
+int threshold = 5;
+Parallel.For(0, length, i => {
+    for (int j = i + 1; j < length; j++) {
+        _addEdge(true, true, toBeChanged[i], toBeChanged[j], threshold, graph);
+        _addEdge(true, false, toBeChanged[i], toBeChanged[j], threshold, graph);
+        _addEdge(false, true, toBeChanged[i], toBeChanged[j], threshold, graph);
+        _addEdge(false, false, toBeChanged[i], toBeChanged[j], threshold, graph);
+    }
+});
+\end{lstlisting}
 
 Because of these dangers, it is important that one manages any and all of these synchronisation issues properly.
 It is not always possible to use the same data-structure as single-threaded code does, and since we implemented multi-threading after making the code single-threaded we were not able to convert all the code.
