@@ -7,22 +7,20 @@ using System.Linq;
 namespace ConsoleTester {
     class Program {
         static void Main(string[] args) {
-            IImageEncoder ji = new JpegImage(new Bitmap(@"testImage.jpg"), 100, 4);
-            
+            //IImageEncoder ji = new JpegImage(new Bitmap(@"tiger.jpg"), 100, 4);
+
             //Console.WriteLine(ji.GetCapacity());
 
-            //byte[] msg = "Hej".Select(x => (byte)x).ToArray();
+            //int len = 280;
+            //byte[] msg = new byte[len];
+            //for (int i = 0; i < len; i++) {
+            //    msg[i] = (byte)('A');
+            //}
 
-            int len = 320;
-            byte[] msg = new byte[len];
-            for (int i = 0; i < len; i++) {
-                msg[i] = (byte)('A');
-            }
+            //ji.Encode(msg);
+            //ji.Save(@"output.jpg");
 
-            ji.Encode(msg);
-            ji.Save(@"cat2Out.jpg");
-
-            IImageDecoder jid = new Decoder("cat2Out.jpg");
+            IImageDecoder jid = new Decoder("output.jpg");
             byte[] message = jid.Decode();
             Console.WriteLine(message.Length);
             Console.WriteLine(new string(message.Select(x => (char)x).ToArray()));
