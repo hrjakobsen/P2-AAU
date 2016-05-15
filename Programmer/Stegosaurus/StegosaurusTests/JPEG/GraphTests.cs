@@ -64,7 +64,7 @@ namespace Stegosaurus.Tests
                 Edges = {e1, e2, e3, e4, e5, e6, e7, e8}
             };
 
-            Assert.AreEqual(new List<Edge> {e5,e7}, g.GetSwitches() );
+            NUnit.Framework.Assert.AreEqual(new List<Edge> {e5,e7}, g.GetSwitches() );
         }
     }
 }

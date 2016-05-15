@@ -37,17 +37,21 @@ namespace Stegosaurus.Tests
         [Test()]
         public void Encode_Test_if_throws_Exception_When_Message_Length_Is_Over_Limit() //TODO: Some errors with _addVertices, _encodeMessage, _encodeMCU, _writeScanData, Encode
         {
-            var b = new Bitmap(1, 1);
-            b.SetPixel(0,0, Color.Black);
-            var result = new Bitmap(b, 2000, 1000);
-            int len = 20;
-            byte[] msg = new byte[len];
-            for (int i = 0; i < len; i++)
-            {
-                msg[i] = (byte)('A');
-            }
+            Bitmap b = new Bitmap(3, 3);
+            b.SetPixel(0,0, Color.White);
+            b.SetPixel(1,1,Color.DarkBlue);
+            b.SetPixel(0,1,Color.Red);
+            b.SetPixel(1,0,Color.Green);
+            b.SetPixel(2,2,Color.Purple);
+           
 
-            var hello = new JpegImage(b, 100, 4);
+            var result = new Bitmap(b, 2000, 2000);
+            var hello = new JpegImage(result, 100, 4);
+            int das = hello.GetCapacity();
+            int len = 40;
+            byte[] msg = new byte[len];
+            
+            
 
             hello.Encode(msg);
         }
@@ -97,7 +101,7 @@ namespace Stegosaurus.Tests
 
             int capacity = ji.GetCapacity();
 
-            NUnit.Framework.Assert.AreEqual(35, capacity);
+            NUnit.Framework.Assert.AreEqual(33, capacity);
         }
 
         [Test()]
@@ -133,7 +137,7 @@ namespace Stegosaurus.Tests
             PrivateObject po = new PrivateObject(ji);
             
             var joo = po.GetField("_jw");
-            po.Invoke("_writeHuffmanSegment", new object[] {ji.YDCHuffman, 0, true});
+            //po.Invoke("_writeHuffmanSegment", new object[] {ji.YDCHuffman, 0, true});
 
             NUnit.Framework.Assert.Ignore();
         }
@@ -228,8 +232,44 @@ namespace Stegosaurus.Tests
             NUnit.Framework.Assert.AreEqual(expectedChannels, returnedChannels);
         }
 
-        //[Test()]
-        //public void 
+        //Testing the small sub methods before EncodeAndQuantizeValues
+        [Test()]
+        public void DownSample_Test()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+            float[,] inputValues = new float[16, 16];
+            int i = 0;
+            for (int x = 0; x < 16; x++) //Fill input value with values from 1 to 255
+            {
+                for (int y = 0; y < 16; y++)
+                {
+                    inputValues[x, y] = i++;
+                }
+            }
+
+            float[,] downSampleValues = (float[,])pt.InvokeStatic("_downSample", inputValues);
+
+            float[,] expectedDownSampledValues = new float[8, 8]
+            {
+                {8.5f,  10.5f, 12.5f, 14.5f, 16.5f, 18.5f, 20.5f, 22.5f},
+                {40.5f, 42.5f, 44.5f, 46.5f, 48.5f, 50.5f, 52.5f, 54.5f},
+                {72.5f, 74.5f, 76.5f, 78.5f, 80.5f, 82.5f, 84.5f, 86.5f},
+                {104.5f, 106.5f, 108.5f, 110.5f, 112.5f, 114.5f, 116.5f, 118.5f},
+                {136.5f, 138.5f, 140.5f, 142.5f, 144.5f, 146.5f, 148.5f, 150.5f},
+                {168.5f, 170.5f, 172.5f, 174.5f, 176.5f, 178.5f, 180.5f, 182.5f},
+                {200.5f, 202.5f, 204.5f, 206.5f, 208.5f, 210.5f, 212.5f, 214.5f},
+                {232.5f, 234.5f, 236.5f, 238.5f, 240.5f, 242.5f, 244.5f, 246.5f},
+            };
+
+            NUnit.Framework.Assert.AreEqual(expectedDownSampledValues, downSampleValues);
+
+        }
+
+        [Test()]
+        public void EncodeAndQuantizeValues_Test_()
+        {
+            
+        }
         
     }
 }
