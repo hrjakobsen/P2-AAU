@@ -21,7 +21,7 @@ namespace Stegosaurus.Tests
         [TestCase(53, -53, ExpectedResult = 0)] 
         public int ModTest(int dividend, int divisor)
         {
-            return ExtensionMethods.Mod(dividend, divisor);
+            return dividend.Mod(divisor);
         }
     }
 }

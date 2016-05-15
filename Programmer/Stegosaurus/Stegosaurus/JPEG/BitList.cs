@@ -34,7 +34,7 @@ namespace Stegosaurus {
         }
        
 
-        public void Insert(int index, bool value) {
+        public void InsertAt(int index, bool value) {
             BitArray newArr = new BitArray(Count + 1);
             for (int i = 0; i < index; i++) {
                 newArr[i] = this[i];

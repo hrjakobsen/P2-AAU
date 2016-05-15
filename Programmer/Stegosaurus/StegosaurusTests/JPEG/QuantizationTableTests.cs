@@ -35,7 +35,7 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void ScaleTest()
+        public void Scale_MultiplierInRange_ScalesTable()
         {
             QuantizationTable defaultYQuantizationTable = QuantizationTable.JpegDefaultYTable;
             QuantizationTable scaledDefaultYQuantizationTable = defaultYQuantizationTable.Scale(100);
@@ -52,6 +52,22 @@ namespace Stegosaurus.Tests
             };
 
             NUnit.Framework.Assert.AreEqual(expectedTable, scaledDefaultYQuantizationTable.Entries);
+        }
+
+        [Test()]
+        public void Scale_NegativeMultiplier_ThrowsException() {
+            QuantizationTable defaultYQuantizationTable = QuantizationTable.JpegDefaultYTable;
+
+            ArgumentOutOfRangeException ex = Assert.Throws<ArgumentOutOfRangeException>(() => defaultYQuantizationTable.Scale(-4));
+            StringAssert.Contains("Quality must be in the range [0,100]", ex.Message);
+        }
+
+        [Test()]
+        public void Scale_MultiplierAbove100_ThrowsException() {
+            QuantizationTable defaultYQuantizationTable = QuantizationTable.JpegDefaultYTable;
+
+            ArgumentOutOfRangeException ex = Assert.Throws<ArgumentOutOfRangeException>(() => defaultYQuantizationTable.Scale(101));
+            StringAssert.Contains("Quality must be in the range [0,100]", ex.Message);
         }
 
         [Test()]

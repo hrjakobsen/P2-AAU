@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Stegosaurus {
-    public class Edge:IComparable<Edge> {
+    public class Edge : IComparable<Edge> {
         public Vertex VStart { get; }
         public Vertex VEnd { get; }
         public short Weight { get; }
@@ -22,6 +22,18 @@ namespace Stegosaurus {
 
         public override string ToString() {
             return $"({VStart} <-> {VEnd})";
+        }
+
+        public override bool Equals(object obj) {
+            if (obj == null) return false;
+            Edge other = (Edge) obj;
+
+            return VStart == other.VStart && VEnd == other.VEnd && VStartFirst == other.VStartFirst &&
+                   VEndFirst == other.VEndFirst;
+        }
+
+        public override int GetHashCode() {
+            return Weight.GetHashCode();
         }
     }
 }
