@@ -194,34 +194,32 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void SplitToChannels_Test() //TODO: Find out why "_splitToChannels" can't be found, might need to go through "writeScanData" but channels don't pop up again
+        public void SplitToChannels_Test()
         {
             Bitmap b = new Bitmap(2,2);
-            b.SetPixel(0,0, Color.Black);
-            b.SetPixel(1,0, Color.Green);
-            b.SetPixel(0,1, Color.Red);
-            b.SetPixel(1,1,Color.Blue);
-            JpegImage ji = new JpegImage(new Bitmap(b, 16, 16), 100, 4);
+            b.SetPixel(0,0, Color.Black);   // R = 0,   G = 0,   B = 0 
+            b.SetPixel(1,0, Color.Green);   // R = 0,   G = 128, B = 0
+            b.SetPixel(0,1, Color.Red);     // R = 128, G = 0,   B = 0
+            b.SetPixel(1,1,Color.Blue);     // R = 0,   G = 0,   B= 128
 
             PrivateType pt = new PrivateType(typeof(JpegImage));
-            PrivateObject po = new PrivateObject(ji);
 
 
             sbyte[][,] returnedChannels = (sbyte[][,])pt.InvokeStatic("_splitToChannels", b);
 
             sbyte[,] ch1 = {
-                {1, 2}, {3, 4}, {5, 6}, {7, 8},
+                {-128, -51}, {-52, -98}
             };
             sbyte[,] ch2 = {
-                {1, 2}, {3, 4}, {5, 6}, {7, 8},
+                {0, -43}, {-42, 127}
             };
             sbyte[,] ch3 = {
-                {1, 2}, {3, 4}, {5, 6}, {7, 8},
+                {0, 127}, {-53, -20}
             };
 
-            sbyte[][,] s = {ch1, ch2, ch3};
-            
-            NUnit.Framework.Assert.AreEqual(s, returnedChannels);
+            sbyte[][,] expectedChannels = {ch1, ch2, ch3};
+
+            NUnit.Framework.Assert.AreEqual(expectedChannels, returnedChannels);
         }
 
         [Test()]
