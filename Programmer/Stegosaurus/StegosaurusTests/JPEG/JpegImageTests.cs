@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
+using System.Security.Cryptography;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NUnit.Framework.Compatibility;
 
@@ -205,12 +206,22 @@ namespace Stegosaurus.Tests
             PrivateType pt = new PrivateType(typeof(JpegImage));
             PrivateObject po = new PrivateObject(ji);
 
-            var rwae = po.Invoke("_splitToChannels");
 
-            //var returnedChannels = (sbyte[][,])pt.InvokeStatic("_splitToChannels", new object[] {ji});
+            sbyte[][,] returnedChannels = (sbyte[][,])pt.InvokeStatic("_splitToChannels", b);
 
-            NUnit.Framework.Assert.AreEqual(0, rwae);
+            sbyte[,] ch1 = {
+                {1, 2}, {3, 4}, {5, 6}, {7, 8},
+            };
+            sbyte[,] ch2 = {
+                {1, 2}, {3, 4}, {5, 6}, {7, 8},
+            };
+            sbyte[,] ch3 = {
+                {1, 2}, {3, 4}, {5, 6}, {7, 8},
+            };
 
+            sbyte[][,] s = {ch1, ch2, ch3};
+            
+            NUnit.Framework.Assert.AreEqual(s, returnedChannels);
         }
 
         [Test()]

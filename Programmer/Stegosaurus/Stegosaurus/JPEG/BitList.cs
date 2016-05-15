@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Stegosaurus {
-    public class BitList : IEnumerable {
+    public class BitList : IEnumerable<bool> {
         private BitArray _bits;
 
         public int Count { get; private set; }
@@ -26,11 +27,12 @@ namespace Stegosaurus {
             }
         }
 
-        public IEnumerator GetEnumerator() {
+        public IEnumerator<bool> GetEnumerator() {
             for (int i = 0; i < Count; i++) {
                 yield return _bits[i];
             }
         }
+       
 
         public void Insert(int index, bool value) {
             BitArray newArr = new BitArray(Count + 1);
@@ -95,6 +97,10 @@ namespace Stegosaurus {
             }
 
             _addCounter++;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            return GetEnumerator();
         }
     }
 }
