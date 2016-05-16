@@ -1,9 +1,23 @@
 using System;
+using System.Linq;
 
 namespace Stegosaurus {
+    [Serializable]
     public class QuantizationTable {
         public byte[] Entries { get; }
         public byte[] ZigzagEntries { get; }
+
+        public QuantizationTable() : this (
+            new byte[] {
+                1,1,1,1,1,1,1,1,
+                1,1,1,1,1,1,1,1,
+                1,1,1,1,1,1,1,1,
+                1,1,1,1,1,1,1,1,
+                1,1,1,1,1,1,1,1,
+                1,1,1,1,1,1,1,1,
+                1,1,1,1,1,1,1,1,
+                1,1,1,1,1,1,1,1,
+            }) { }
 
         public static readonly int[,] RoadPoints = {
             {0, 0}, {1, 0}, {0, 1}, {0, 2}, {1, 1}, {2, 0}, {3, 0}, {2, 1},

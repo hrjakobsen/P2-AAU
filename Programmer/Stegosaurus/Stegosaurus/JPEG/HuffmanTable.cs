@@ -3,9 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Stegosaurus {
+    [Serializable]
     public class HuffmanTable {
 
         public Dictionary<byte, HuffmanElement> Elements = new Dictionary<byte, HuffmanElement>();
+
+        public HuffmanTable() {
+            
+        }
+
+        public void AddElement(HuffmanElement element) {
+            Elements.Add(element.RunSize, element);
+        } 
+
         public HuffmanTable(params HuffmanElement[] elements) {
             foreach (HuffmanElement huffmanElement in elements) {
                 Elements.Add(huffmanElement.RunSize, huffmanElement);
@@ -423,6 +433,7 @@ namespace Stegosaurus {
         #endregion
     }
 
+    [Serializable]
     public class HuffmanElement:IComparable<HuffmanElement> {
         public byte RunSize { get; }
         public byte Length { get; }
