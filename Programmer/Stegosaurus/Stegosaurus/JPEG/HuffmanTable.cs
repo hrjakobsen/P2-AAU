@@ -463,7 +463,8 @@ namespace Stegosaurus {
             {
                 return false;
             }
-            return CompareTo((HuffmanElement)obj) == 0;
+            HuffmanElement he = (HuffmanElement) obj;
+            return Length == he.Length && RunSize == he.RunSize && CodeWord == he.CodeWord;
         }
 
         public override int GetHashCode()
