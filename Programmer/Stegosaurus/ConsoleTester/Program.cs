@@ -20,7 +20,7 @@ namespace ConsoleTester {
             ji.Encode(msg);
             ji.Save(@"out.jpg");
 
-            IImageDecoder jid = new Decoder("out.jpg");
+            IImageDecoder jid = new JPEGDecoder("out.jpg");
             byte[] message = jid.Decode();
             Console.WriteLine(new string(message.Select(x => (char)x).ToArray()));
             Console.ReadKey();

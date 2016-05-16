@@ -437,7 +437,7 @@ namespace TestForm{
             {
                 picGTResult.Image = null;
                 tbGTMessage.Text = "";
-                _stegoGtDecoderController = new Decoder(ImagesSavePath + "encryptedImageGT.jpg");
+                _stegoGtDecoderController = new JPEGDecoder(ImagesSavePath + "encryptedImageGT.jpg");
                 byte[] message = _stegoGtDecoderController.Decode();
                 tbGTMessage.Text = (new string(message.Select(x => (char)x).ToArray()) + " AND IT WOOOOORKS!");
             }
