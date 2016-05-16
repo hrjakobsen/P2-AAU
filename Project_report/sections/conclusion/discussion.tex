@@ -1,16 +1,16 @@
 \section{Discussion}
 We started out by using the relatively simple LSB-method for hiding data in an image.
 Specifically we saved an image inside of another PNG-image.
-While the differences in the image with and without the message-image were hardly noticeable to the human eye, we did find that comparing colour histograms of the two images revealed the fact that changes had been made.
+While the differences in the image with and without the message-image were hardly noticeable to the human eye, we did find that comparing colour histograms of the two images revealed that there had in fact been made changes to it.
 In an effort to diminish this problem, the graph-theoretical approach we implemented attempted to move pixels around in the image, rather than change their values.
 This meant that colour histograms of the image before and after the message had been encoded should look very similar, almost identical.
 Any changes would come from the unmatched pairs: the quantized DCT values used in the encoding that we did not find any interchangeable values for.
 When this happened we were forced to change the individual values, which led to a change in the colour composition of the image.
-Using this method we expected the changes to be small enough that it would not immediately draw attention to the image, if it was being subjected to a colour histogram.
+Using this method, we expected the changes to be small enough so that it would not immediately draw attention to the image, if it was being subjected to a colour histogram.
 
-To find out roughly how many of these forces there were in a given image, we used our program to save different messages in different images.
+To find out roughly how many of these forces there were in a given image, we used our programme to save different messages in different images.
 The used five different message lengths: 70, 140, 280, 560 and 1120 bytes.
-Each message consisted of the the ASCII characters A-Z repeated to fill out the message.
+Each message consisted of the ASCII characters A-Z repeated to fill out the message.
 Each of these messages were encoded in four images with varying motives, but the same resolution (1920x1080).
 The images can be seen in figure \ref{fig:four_test_images}.
 We used a cartoon-like drawing of a cat to see how our software would work on an image that was not ideal for the JPEG format.
@@ -54,7 +54,7 @@ This made sense, seeing as a longer message meant a larger graph with more edges
 During development of the programme we played around with the idea of using more vertices than what was required for the message, as we predicted it would mean fewer forces.
 These predictions would seem to be correct, but we never implemented the idea for two reasons.
 One, we were not entirely certain how to do it: should we just use twice as much as was actually needed?
-This would lead to using much more than what was necessary with a longer message, since the the improvement quickly diminishes with longer messages.
+This would lead to using much more than what was necessary with a longer message, since the improvement quickly diminishes with longer messages.
 Instead it would make more sense to always use a certain minimum of values, so shorter messages could be encoded properly, but longer ones did not take too long to encode.
 What were to happen if the image simply did not contain enough values then? 
 Should the programme inform the user that they needed to use a larger image or attempt to encode the message with the vertices it could make?
@@ -64,8 +64,8 @@ An entirely different approach would be to let the user decide themselves, how m
 Presenting this in a user-friendly way constituted a challenge in itself though.
 
 The second reason we did not implement it was due to performance concerns.
-Since our programme performed rather poorly during most of the development we considered it a very bad idea to construct a larger graph than we already were.
-Seeing as we managed to optimise the programme quite HEFTILY, we could have properly implemented a solution regardless.
+Since our programme performed rather poorly during most of the development we considered it a very bad idea to construct a larger graph than we already were constructing.
+Seeing as we managed to optimise the programme quite significantly, we could have properly implemented a solution regardless.
 
 
 An entirely different way of looking for changes in an image is by looking at the Euclidean distance of them.
@@ -74,9 +74,9 @@ The sum of all these distances can be used as measure of the change from one ima
 We used this same method for determining what changes were imposed on images of different size and format, when uploaded to various social media and image-sharing websites.
 
 Comparing these results directly with the ones obtained from the LSB-method would be folly.
-While the LSB-method would certainly incur a smaller difference in the Euclidean distance it would not neccesarily make it any better.
-First of all using this method required that the user was in possesion of both the original and the stego image.
-This would indeed be possible if the parties sharing secret messages in the images, where using images they found on the internet and tampered with them.
+While the LSB-method would certainly incur a smaller difference in the Euclidean distance it would not necessarily make it any better.
+First of all using this method required that the user was in possession of both the original and the stego image.
+This would indeed be possible if the parties sharing secret messages in the images, were using images they found on the internet and tampered with them.
 They could completely foil this risk of being compromised then, by simply using images that they took themselves.
 The other reason for the differences being larger is due to how the JPEG-file format is encoded.
 Using the LSB of every pixel there is only the potential to change the value of each pixel by one.
