@@ -1,11 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace Stegosaurus {
-    public class LeastSignificantBitImage : StegoImageBase {
+    public class LeastSignificantBitImage : StegoImageBase, IImageEncoder {
         private Bitmap _coverImage;
-        private Bitmap _messageImage;
         private Bitmap _stegoImage;
+
+        public LeastSignificantBitImage(Bitmap cover) {
+            _coverImage = cover;
+        }
 
         /* Setter for the CoverImage property checks the input */
         public Bitmap CoverImage {
@@ -14,23 +19,10 @@ namespace Stegosaurus {
                 if (value == null) {
                     throw new ArgumentNullException(nameof(value));
                 }
-                if (MessageImage != null && (value.Width / 2 != MessageImage.Width || value.Height / 2 != MessageImage.Height)) {
-                    throw new ArgumentException(nameof(value), "The width and height of the cover image must be exactly double those of the message image!");
-                }
                 _coverImage = value;
             }
         }
 
-        /* Setter for the MessageImage property checks the input */
-        public Bitmap MessageImage {
-            get { return _messageImage; }
-            set {
-                if (value != null && CoverImage != null && (value.Width * 2 != CoverImage.Width || value.Height * 2 != CoverImage.Height)) {
-                    throw new ArgumentException(nameof(value), "The width and height of the message image must be exactly half those of the cover image!");
-                }
-                _messageImage = value;
-            }
-        }
 
         /* Setter for the StegoImage property checks the input */
         public Bitmap StegoImage {
@@ -43,33 +35,6 @@ namespace Stegosaurus {
             }
         }
 
-        public override void Encode() {
-            int messageArrIndex = 0;
-
-
-            /* Flatten cover image */
-            Color[] coverArr = ImageToArray(CoverImage);
-
-            /* Flatten message image */
-            Color[] messageArr = ImageToArray(MessageImage);
-
-            /* Array for holding the flattened decoded image */
-            Color[] decodedArr = new Color[CoverImage.Width * CoverImage.Height];
-
-            for (int coverArrIndex = 0; coverArrIndex < coverArr.Length; coverArrIndex += 4) {
-                for (int messageBytePos = 0; messageBytePos < 4; messageBytePos++) {
-                    byte r = _encodeComponent(coverArr[coverArrIndex + messageBytePos].R, messageArr[messageArrIndex].R, messageBytePos);
-                    byte g = _encodeComponent(coverArr[coverArrIndex + messageBytePos].G, messageArr[messageArrIndex].G, messageBytePos);
-                    byte b = _encodeComponent(coverArr[coverArrIndex + messageBytePos].B, messageArr[messageArrIndex].B, messageBytePos);
-                    decodedArr[coverArrIndex + messageBytePos] = Color.FromArgb(r, g, b);
-                }
-                messageArrIndex++;
-            }
-
-            /* Convert the created array into a bitmap */
-            StegoImage = ArrayToImage(CoverImage.Width, CoverImage.Height, decodedArr);
-        }
-
         private byte _encodeComponent(byte component, byte toEncode, int messageBytePos ) {
             /* Used to mask the correct bits of the RGB channels */
             const byte coverMask = 0xFC;
@@ -77,29 +42,60 @@ namespace Stegosaurus {
             return (byte)((byte)(component & coverMask) + ((byte)(toEncode & messageMasks[messageBytePos]) >> 2 * (3 - messageBytePos)));
         }
 
-        public override void Decode() {
-            /* Flatten stego image */
-            Color[] stegoArr = ImageToArray(StegoImage);
-
-            /* Array for holding flattened message image */
-            Color[] plainArr = new Color[StegoImage.Width / 2 * StegoImage.Height / 2];
-            
-            for (int plainArrIndex = 0; plainArrIndex < plainArr.Length; plainArrIndex++) {
-                byte r = 0, g = 0, b = 0;
-                for (int stegoBitPos = 0; stegoBitPos < 4; stegoBitPos++) {
-                    r += _toComponent(stegoArr[plainArrIndex * 4 + stegoBitPos].R, stegoBitPos);
-                    g += _toComponent(stegoArr[plainArrIndex * 4 + stegoBitPos].G, stegoBitPos);
-                    b += _toComponent(stegoArr[plainArrIndex * 4 + stegoBitPos].B, stegoBitPos);
-                }
-                plainArr[plainArrIndex] = Color.FromArgb(r, g, b);
-            }
-
-            /* Convert the created array into a bitmap */
-            MessageImage = ArrayToImage(CoverImage.Width / 2, CoverImage.Height / 2, plainArr);
-        }
+        
 
         private byte _toComponent(byte component, int stegoBitPos) {
             return (byte)((byte)(component & 0x3) << ((3 - stegoBitPos) * 2));
+        }
+
+        public void Encode(byte[] message) {
+
+            List<byte> WholeMessage = message.ToList();
+            uint len = (uint)message.Length;
+
+            WholeMessage.Insert(0, (byte)(len >> 24));
+            WholeMessage.Insert(1, (byte)((len & 0xff0000) >> 16));
+            WholeMessage.Insert(2, (byte)((len & 0xff00) >> 8));
+            WholeMessage.Insert(3, (byte)(len & 0xff));
+            int messageArrIndex = 0;
+
+            byte mask = 0x3;
+            /* Flatten cover image */
+            Color[] coverArr = ImageToArray(CoverImage);
+
+            List<byte> hideData = new List<byte>();
+
+            foreach (Color color in coverArr) {
+                hideData.Add(color.R);
+                hideData.Add(color.G);
+                hideData.Add(color.B);
+            }
+
+            for (int i = 0; i < WholeMessage.Count; i++) {
+                for (int j = 0; j < 4; j++) {
+                    hideData[i * 4 + j] >>= 2;
+                    hideData[i * 4 + j] <<= 2;
+                    hideData[i * 4 + j] += (byte)((WholeMessage[i] & (0x3 << ((3 - j)*2))) >> ((3 - j)*2));
+                }
+            }
+
+            /* Array for holding the flattened decoded image */
+            Color[] decodedArr = new Color[CoverImage.Width * CoverImage.Height];
+
+            int length = CoverImage.Width * CoverImage.Height;
+            for (int i = 0; i < length; i ++) {
+                decodedArr[i] = Color.FromArgb(hideData[i * 3], hideData[i * 3 + 1], hideData[i * 3 + 2]);
+            }
+            /* Convert the created array into a bitmap */
+            StegoImage = ArrayToImage(CoverImage.Width, CoverImage.Height, decodedArr);
+        }
+
+        public int GetCapacity() {
+            return CoverImage.Width * CoverImage.Height * 3 * 2 / 8;
+        }
+
+        public void Save(string path) {
+            StegoImage.Save(path);
         }
     }
 }

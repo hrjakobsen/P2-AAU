@@ -1,9 +1,7 @@
 using System.Drawing;
 
 namespace Stegosaurus {
-    public abstract class StegoImageBase : Steganography {
-        public abstract override void Encode();
-        public abstract override void Decode();
+    public abstract class StegoImageBase {
 
         /* Converts a bitmap into an array row by row */
         protected static Color[] ImageToArray(Bitmap imgIn) {
