@@ -19,8 +19,35 @@ The same could be said for the tiger, but it contained larger areas of similar c
 The image of the snowy forest road contained very few colour nuances, but was almost made up of the luminance channel.
 This led to a total of 20 different values as seen in table \ref{fig:forces_swaps}.
 
-
-
+\vspace{12pt}
+\begin{table}[]
+\centering
+\begin{tabular}{@{}lllll@{}}
+\textbf{Image}                      & \textbf{Message length} & \textbf{Swaps} & \textbf{Forces} & \textbf{Already fit} \\ \midrule
+\multirow{5}{*}{\textit{Cat}}       & 70                      & 56\%           & 19\%            & 26\%                 \\
+                                    & 140                     & 58\%           & 18\%            & 24\%                 \\
+                                    & 280                     & 65\%           & 12\%            & 23\%                 \\
+                                    & 560                     & 65\%           & 11\%            & 24\%                 \\
+                                    & 1120                    & 66\%           & 8\%             & 25\%                 \\ \midrule
+\multirow{5}{*}{\textit{Landscape}} & 70                      & 55\%           & 15\%            & 30\%                 \\
+                                    & 140                     & 63\%           & 11\%            & 27\%                 \\
+                                    & 280                     & 62\%           & 11\%            & 27\%                 \\
+                                    & 560                     & 62\%           & 13\%            & 25\%                 \\
+                                    & 1120                    & 63\%           & 12\%            & 25\%                 \\ \midrule
+\multirow{5}{*}{\textit{Tiger}}     & 70                      & 63\%           & 8\%             & 28\%                 \\
+                                    & 140                     & 64\%           & 8\%             & 27\%                 \\
+                                    & 280                     & 68\%           & 6\%             & 26\%                 \\
+                                    & 560                     & 70\%           & 5\%             & 25\%                 \\
+                                    & 1120                    & 72\%           & 4\%             & 24\%                 \\ \midrule
+\multirow{5}{*}{\textit{Snow}}      & 70                      & 53\%           & 21\%            & 26\%                 \\
+                                    & 140                     & 58\%           & 13\%            & 29\%                 \\
+                                    & 280                     & 66\%           & 8\%             & 26\%                 \\
+                                    & 560                     & 67\%           & 8\%             & 25\%                 \\
+                                    & 1120                    & 69\%           & 7\%             & 24\%                 \\ \bottomrule
+\end{tabular}
+	\caption{The percentages of values which the program swapped or forced. Since this was run with M = 4, about a fourth of the values already fit.}
+	\label{fig:forces_swaps}
+\end{table}
 
 It became apparent that a longer message required fewer forces. 
 This made sense, seeing as a longer message meant a larger graph with more edges and therefore possible ways of swapping values.

@@ -46,7 +46,7 @@ The first runs and the control for our further tests are shown in table \ref{fig
         Get switches    & 1461 ms               & 1764 ms				& 10393 ms              \\ \hline
         Huffman         & 642 ms                & 761 ms				& 3576 ms               \\ \hline
         Total run time  & \textbf{17067 ms}     & \textbf{21393 ms}     & \textbf{107099 ms}    \\ \hline
-        Time covered    & \textit{98.7 \%}      & \textit{94.4 \%}      & \textit{99.0 \%}      \\ \hline
+        Time covered    & \textit{98.7\%}      & \textit{94.4\%}      & \textit{99.0\%}      \\ \hline
     \end{tabular}
     }
     \caption{Unoptimised encoding for three different processors.}
@@ -66,7 +66,7 @@ Every iteration used the \lstinline|Bitmap| class' methods \lstinline|GetPixel| 
 It is very likely that there is more to the property than simply returning a value and therefore quite a bit of overhead.
 More specifically the methods are both wrappers for native functions contained in \lstinline|GDI+|. 
 These might very well have to check several things before being able to return the pixel.
-Using the \lstinline|System.Drawing.Graphics| class as show in listing \ref{lst:copyBitmap} we were able to copy portions of \lstinline|Bitmap|s much more efficiently, \citep{MSDNBitmap} as can be seen in by the roughly 8000 \% decrease in time in figure \ref{fig:1genoptimised}.
+Using the \lstinline|System.Drawing.Graphics| class as show in listing \ref{lst:copyBitmap} we were able to copy portions of \lstinline|Bitmap|s much more efficiently, \citep{MSDNBitmap} as can be seen in by the roughly 8000\% decrease in time in figure \ref{fig:1genoptimised}.
 
 \begin{lstlisting}[firstnumber=684,label=lst:copyBitmap,caption={Copying a \lstinline|Bitmap| using the \lstinline|Graphics| class.}]
 private static Bitmap _copyBitmap(Bitmap bitmapIn, int width, int height) {
@@ -152,14 +152,14 @@ public void CheckedAdd(int val) {
         \hline
         Code segment    & \multicolumn{6}{c|}{Processor and performance increase} \\ \hline
                         & Intel\textsuperscript{\textregistered} \newline i5-4670K & Decrease \newline in time \tnote{\textdagger} & Intel\textsuperscript{\textregistered} \newline i7-4700HQ & Decrease \newline in time \tnote{\textdagger} & AMD\textsuperscript{\textregistered} \newline A6-3420M & Decrease \newline in time \tnote{\textdagger} \\ \hline
-        Image padding   & 88 ms     & 7673 \%   & 101 ms	& 7861 \%	& 525 ms   & 8336 \%      \\ \hline
-        Channel split   & 2988 ms   & 3 \%      & 3786 ms   & -3 \%		& 19371 ms & 5 \%      \\ \hline
-        Encoding        & 4317 ms   & 0 \%      & 5145 ms   & 3 \%      & 29442 ms & 1 \%      \\ \hline
-        Adding edges    & 524 ms    & 0 \%      & 627 ms	& 0 \%      & 4063 ms  & -1 \%      \\ \hline
-        Get switches    & 1460 ms   & 0 \%      & 1765 ms	& 0 \%      & 10950 ms  & 0 \%      \\ \hline
-        Huffman         & 541 ms    & 19 \%     & 651 ms    & 17 \%     & 3073 ms  & 3 \%      \\ \hline
-        Total run time  & \textbf{10134 ms} & \textbf{68 \%} & \textbf{12328 ms}& \textbf{74 \%}  & \textbf{68482 ms} & \textbf{58 \%}  \\ \hline
-        Time covered    & \textit{97.9 \%} &    & \textit{98.0 \%} &      & \textit{98.5 \%} &     \\ \hline
+        Image padding   & 88 ms     & 7673\%   & 101 ms	& 7861\%	& 525 ms   & 8336\%      \\ \hline
+        Channel split   & 2988 ms   & 3\%      & 3786 ms   & -3\%		& 19371 ms & 5\%      \\ \hline
+        Encoding        & 4317 ms   & 0\%      & 5145 ms   & 3\%      & 29442 ms & 1\%      \\ \hline
+        Adding edges    & 524 ms    & 0\%      & 627 ms	& 0\%      & 4063 ms  & -1\%      \\ \hline
+        Get switches    & 1460 ms   & 0\%      & 1765 ms	& 0\%      & 10950 ms  & 0\%      \\ \hline
+        Huffman         & 541 ms    & 19\%     & 651 ms    & 17\%     & 3073 ms  & 3\%      \\ \hline
+        Total run time  & \textbf{10134 ms} & \textbf{68\%} & \textbf{12328 ms}& \textbf{74\%}  & \textbf{68482 ms} & \textbf{58\%}  \\ \hline
+        Time covered    & \textit{97.9\%} &    & \textit{98.0\%} &      & \textit{98.5\%} &     \\ \hline
     \end{tabular}
     }
     \begin{tablenotes}
@@ -194,7 +194,7 @@ foreach (Vertex currentVertex in graph.Vertices) {
 \end{lstlisting}
 
 We made sure to only look at the vertices whose vertices did not already fit with the message.
-With an M-value of four this meant that we would not have to check if we could add edges to around 25 \% of the vertices.
+With an M-value of four this meant that we would not have to check if we could add edges to around 25\% of the vertices.
 We further reduced the overall amount of times the loops ran, by making sure that the inner loop only looked ahead in the list of vertices, which meant we only had to add each edge once.
 Before this we were adding every edge twice, with the start and end vertex flipped.
 This meant that our list of edges was halved, which effectively reduced the running time of \lstinline|GetSwitches| to a fourth.
@@ -257,14 +257,14 @@ private static void _addEdge(bool firstFirst, bool secondFirst, Vertex first, Ve
         \hline
         Code segment    & \multicolumn{6}{c|}{Processor and performance increase} \\ \hline
                         & Intel\textsuperscript{\textregistered} \newline i5-4670K & Decrease \newline in time \tnote{\textdagger} & Intel\textsuperscript{\textregistered} \newline i7-4700HQ & Decrease \newline in time \tnote{\textdagger} & AMD\textsuperscript{\textregistered} \newline A6-3420M & Decrease \newline in time \tnote{\textdagger} \\ \hline
-        Image padding   & 85        & 7947 \%	& 97		& 8249 \%	& 503      & 8406 \%     \\ \hline
-        Channel split   & 347       & 787 \%	& 386		& 850 \%	& 5096      & 867 \%     \\ \hline
-        Encoding        & 4377      & -2 \%		& 4796		& 11 \%		& 29812      & 1 \%     \\ \hline
-        Adding edges    & 104       & 406 \%	& 116		& 442 \%	& 629      & 26 \%     \\ \hline
-        Get switches    & 257       & 469 \%	& 289		& 511 \%	& 2244      & 9 \%     \\ \hline
-        Huffman         & 522       & 23 \%		& 610		& 25 \%     & 3125     & 5 \%     \\ \hline
-        Total run time  & \textbf{5907} & \textbf{189 \%} & \textbf{6534} & \textbf{227 \%} & \textbf{42444} & \textbf{155 \%} \\ \hline
-        Time covered    & \textit{96.4 \%} &	& \textit{96.3 \%} &     & \textit{97.6 \%} &      \\ \hline
+        Image padding   & 85        & 7947\%	& 97		& 8249\%	& 503      & 8406\%     \\ \hline
+        Channel split   & 347       & 787\%	& 386		& 850\%	& 5096      & 867\%     \\ \hline
+        Encoding        & 4377      & -2\%		& 4796		& 11\%		& 29812      & 1\%     \\ \hline
+        Adding edges    & 104       & 406\%	& 116		& 442\%	& 629      & 26\%     \\ \hline
+        Get switches    & 257       & 469\%	& 289		& 511\%	& 2244      & 9\%     \\ \hline
+        Huffman         & 522       & 23\%		& 610		& 25\%     & 3125     & 5\%     \\ \hline
+        Total run time  & \textbf{5907} & \textbf{189\%} & \textbf{6534} & \textbf{227\%} & \textbf{42444} & \textbf{155\%} \\ \hline
+        Time covered    & \textit{96.4\%} &	& \textit{96.3\%} &     & \textit{97.6\%} &      \\ \hline
     \end{tabular}
     }
     \begin{tablenotes}
@@ -322,14 +322,14 @@ This did not seem to have an effect, so it is quite likely that the compiler alr
         \hline
         Code segment    & \multicolumn{6}{c|}{Processor and performance increase} \\ \hline
                         & Intel\textsuperscript{\textregistered} \newline i5-4670K & Decrease \newline in time \tnote{\textdagger} & Intel\textsuperscript{\textregistered} \newline i7-4700HQ & Decrease \newline in time \tnote{\textdagger} & AMD\textsuperscript{\textregistered} \newline A6-3420M & Decrease \newline in time \tnote{\textdagger} \\ \hline
-        Image padding   & 87        & 7995 \%    & 98       & 7513 \%   & 511		& 8199 \%	\\ \hline
-        Channel split   & 143       & 2884 \%    & 122		& 2546 \%   & 769		& 4691 \%	\\ \hline
-        Encoding        & 1788      & 141 \%     & 2447		& 302 \%    & 6948		& 99 \%     \\ \hline
-        Adding edges    & 48        & 148 \%     & 53       & 438 \%    & 197       & 136 \%	\\ \hline
-        Get switches    & 294       & 12 \%      & 333      & 19 \%     & 2286		& 19 \%     \\ \hline
-        Huffman         & 527       & 3 \%       & 624      & -9 \%		& 739		& 3 \%		\\ \hline
-        Total run time  & \textbf{3103} & \textbf{450 \%} & \textbf{3916} & \textbf{446 \%} & \textbf{14764} & \textbf{632 \%} \\ \hline
-        Time covered    & \textit{93.0 \%} &     & \textit{93.9 \%} &     & \textit{93.0 \%} &	\\ \hline
+        Image padding   & 87        & 7995\%    & 98       & 7513\%   & 511		& 8199\%	\\ \hline
+        Channel split   & 143       & 2884\%    & 122		& 2546\%   & 769		& 4691\%	\\ \hline
+        Encoding        & 1788      & 141\%     & 2447		& 302\%    & 6948		& 99\%     \\ \hline
+        Adding edges    & 48        & 148\%     & 53       & 438\%    & 197       & 136\%	\\ \hline
+        Get switches    & 294       & 12\%      & 333      & 19\%     & 2286		& 19\%     \\ \hline
+        Huffman         & 527       & 3\%       & 624      & -9\%		& 739		& 3\%		\\ \hline
+        Total run time  & \textbf{3103} & \textbf{450\%} & \textbf{3916} & \textbf{446\%} & \textbf{14764} & \textbf{632\%} \\ \hline
+        Time covered    & \textit{93.0\%} &     & \textit{93.9\%} &     & \textit{93.0\%} &	\\ \hline
     \end{tabular}
     }
     \begin{tablenotes}
