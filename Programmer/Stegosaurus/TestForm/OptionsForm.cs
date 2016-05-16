@@ -50,6 +50,14 @@ namespace TestForm
             rdioHuffmanY_AC.Checked = true;
             QualityGT = StegosaurusForm.QualityGT;
             tbarQualitySlider.Value = QualityGT;
+            if (StegosaurusForm.QualityGTLocked)
+            {
+                tbarQualitySlider.Enabled = false;
+            }
+            else
+            {
+                tbarQualitySlider.Enabled = true;
+            }
         }
 
         //Adds defaultTable.Length amount of textboxes to a given Huffman panel and saves each in an array (to be looped through), sets

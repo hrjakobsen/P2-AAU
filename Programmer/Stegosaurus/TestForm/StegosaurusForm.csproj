@@ -80,6 +80,7 @@
     <Compile Include="QuantizationTableComponent.Designer.cs">
       <DependentUpon>QuantizationTableComponent.cs</DependentUpon>
     </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="StegosaurusForm.cs">
       <SubType>Form</SubType>
     </Compile>
