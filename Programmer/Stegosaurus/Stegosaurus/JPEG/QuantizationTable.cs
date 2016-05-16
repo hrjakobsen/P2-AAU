@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Stegosaurus {
     public class QuantizationTable {
@@ -48,6 +48,15 @@ namespace Stegosaurus {
             }
 
             return s;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            return !Entries.Where((t, i) => ((QuantizationTable)obj).Entries[i] != t).Any();
         }
 
         public static QuantizationTable JpegDefaultYTable = new QuantizationTable(new byte[] {

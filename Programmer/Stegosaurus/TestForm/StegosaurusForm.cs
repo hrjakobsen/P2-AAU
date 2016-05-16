@@ -8,7 +8,8 @@ using System.Linq;
 using System.IO;
 
 namespace TestForm{
-    public partial class StegosaurusForm:Form {
+    public partial class StegosaurusForm:Form
+    {
         private HuffmanTable _huffmanTableChrAC;
         private HuffmanTable _huffmanTableChrDC;
         private HuffmanTable _huffmanTableYAC;
@@ -20,9 +21,10 @@ namespace TestForm{
         private IImageEncoder _stegoGtEncoderController;
         private IImageDecoder _stegoGtDecoderController;
         private bool _inputImageSetLsb, _messageImageSetLsb, _inputImageSetGt, _messageFileSetGt, _messageTextSetGt;
-        private int _messageLength;
         private byte[] _message;
         private const string NoMessageWrittenMessage = "Enter the message you would like to encode into your image.";
+        private int _messageLength;
+        private int defaultQuality = 53;
 
         public static int QualityGT { get; set; }
         //public string ImagesSavePath { get; set; }
@@ -60,7 +62,9 @@ namespace TestForm{
             optionsForm.ShowDialog();
             if (OptionsForm.SaveEnabled)
             {
+                Cursor.Current = Cursors.WaitCursor;
                 loadSettings();
+                Cursor.Current = Cursors.Default;
             }
         }
 
@@ -78,19 +82,74 @@ namespace TestForm{
 
         private void loadSettings()
         {
+            tbarGTEncodingQuality.Value = OptionsForm.QualityGT;
 
-            //Make variable that determines wether the options should be saved (In OptionsForm??)
+            if (OptionsForm.HuffmanTableComponentYAC.SaveTable().Equals(HuffmanTable.JpegHuffmanTableYAC))
+            {
+                _huffmanTableYAC = HuffmanTable.JpegHuffmanTableYAC;
+            }
+            else
+            {
+                _huffmanTableYAC = OptionsForm.HuffmanTableComponentYAC.SaveTable();
+            }
+
+            if (OptionsForm.HuffmanTableComponentYDC.SaveTable().Equals(HuffmanTable.JpegHuffmanTableYDC))
+            {
+                _huffmanTableYDC = HuffmanTable.JpegHuffmanTableYDC;
+            }
+            else
+            {
+                _huffmanTableYDC = OptionsForm.HuffmanTableComponentYDC.SaveTable();
+            }
+
+            if (OptionsForm.HuffmanTableComponentChrAC.SaveTable().Equals(HuffmanTable.JpegHuffmanTableChrAC))
+            {
+                _huffmanTableChrAC = HuffmanTable.JpegHuffmanTableChrAC;
+            }
+            else
+            {
+                _huffmanTableChrAC = OptionsForm.HuffmanTableComponentChrAC.SaveTable();
+            }
+
+            if (OptionsForm.HuffmanTableComponentChrDC.SaveTable().Equals(HuffmanTable.JpegHuffmanTableChrDC))
+            {
+                _huffmanTableChrDC = HuffmanTable.JpegHuffmanTableChrDC;
+            }
+            else
+            {
+                _huffmanTableChrDC = OptionsForm.HuffmanTableComponentChrDC.SaveTable();
+            }
+
+            if (OptionsForm.QuantizationTableComponentY.SaveTable().Equals(QuantizationTable.JpegDefaultYTable))
+            {
+                _quantizationTableY = QuantizationTable.JpegDefaultYTable;
+            }
+            else
+            {
+                _quantizationTableY = OptionsForm.QuantizationTableComponentY.SaveTable();
+                tbarGTEncodingQuality.Value = defaultQuality;
+            }
+
+            if (OptionsForm.QuantizationTableComponentChr.SaveTable().Equals(QuantizationTable.JpegDefaultChrTable))
+            {
+                _quantizationTableChr = QuantizationTable.JpegDefaultChrTable;
+            }
+            else
+            {
+                _quantizationTableChr = OptionsForm.QuantizationTableComponentChr.SaveTable();
+                tbarGTEncodingQuality.Value = defaultQuality;
+            }
+
             if (!string.IsNullOrWhiteSpace(OptionsForm.ImagesSavePath))
             {
                 ImagesSavePath = OptionsForm.ImagesSavePath;
             }
-            tbarGTEncodingQuality.Value = OptionsForm.QualityGT;
-            _huffmanTableYAC = OptionsForm.HuffmanTableYAC.SaveTable();
-            _huffmanTableYDC = OptionsForm.HuffmanTableYDC.SaveTable();
-            _huffmanTableChrAC = OptionsForm.HuffmanTableChrAC.SaveTable();
-            _huffmanTableChrDC = OptionsForm.HuffmanTableChrDC.SaveTable();
-            _quantizationTableY = OptionsForm.QuantizationTableY.SaveTable();
-            _quantizationTableChr = OptionsForm.QuantizationTableChr.SaveTable();
+            //_huffmanTableYAC = OptionsForm.HuffmanTableComponentYAC.SaveTable();
+            //_huffmanTableYDC = OptionsForm.HuffmanTableComponentYDC.SaveTable();
+            //_huffmanTableChrAC = OptionsForm.HuffmanTableComponentChrAC.SaveTable();
+            //_huffmanTableChrDC = OptionsForm.HuffmanTableComponentChrDC.SaveTable();
+            //_quantizationTableY = OptionsForm.QuantizationTableComponentY.SaveTable();
+            //_quantizationTableChr = OptionsForm.QuantizationTableComponentChr.SaveTable();
         }
 
         #region LSB
@@ -237,6 +296,15 @@ namespace TestForm{
         {
             QualityGT = tbarGTEncodingQuality.Value;
             lblGTEncodingQualityValue.Text = QualityGT.ToString();
+
+            if (QualityGT != defaultQuality)
+            {
+                lblGTEncodingQualityValue.Text = QualityGT.ToString();
+            }
+            else
+            {
+                lblGTEncodingQualityValue.Text = QualityGT.ToString() + @"  (default)";
+            }
         }
 
         private void tbGTMessage_TextChanged(object sender, EventArgs e)
@@ -281,6 +349,11 @@ namespace TestForm{
             }
         }
 
+        private void StegosaurusForm_Load(object sender, EventArgs e)
+        {
+            tbarGTEncodingQuality.Value = defaultQuality;
+        }
+
         private void GetFileMessageGT_FileOk(object sender, CancelEventArgs e)
         {
             tbGTMessage.Enabled = false;
@@ -300,8 +373,18 @@ namespace TestForm{
             Cursor.Current = Cursors.WaitCursor;
             if (rdioGTEncode.Checked)
             {
-                //_stegoGtEncoderController = new JpegImage(CoverImageGT, QualityGT, 4);
-                _stegoGtEncoderController = new JpegImage(CoverImageGT, QualityGT, 4, _quantizationTableY, _quantizationTableChr, _huffmanTableYDC, _huffmanTableYAC, _huffmanTableChrDC, _huffmanTableChrAC);
+                //DELETE
+                ImagesSavePath = "";
+                //DELETE
+                if (_quantizationTableY == null || _quantizationTableChr == null || _huffmanTableYAC == null || _huffmanTableYDC == null || _huffmanTableChrAC == null || _huffmanTableChrDC == null)
+                {
+                    _stegoGtEncoderController = new JpegImage(CoverImageGT, QualityGT, 4);
+                }
+                else
+                {
+                    _stegoGtEncoderController = new JpegImage(CoverImageGT, QualityGT, 4, _quantizationTableY, _quantizationTableChr, _huffmanTableYDC, _huffmanTableYAC, _huffmanTableChrDC, _huffmanTableChrAC);
+                }
+
                 byte[] msg = new byte[_messageLength];
 
                 
@@ -328,7 +411,8 @@ namespace TestForm{
             else if (rdioGTDecode.Checked)
             {
                 picGTResult.Image = null;
-                _stegoGtDecoderController = new Decoder(ImagesSavePath + "encryptedImage.jpg");
+                tbGTMessage.Text = "";
+                _stegoGtDecoderController = new Decoder(ImagesSavePath + "encryptedImageGT.jpg");
                 byte[] message = _stegoGtDecoderController.Decode();
                 tbGTMessage.Text = (new string(message.Select(x => (char)x).ToArray()) + " AND IT WOOOOORKS!");
             }

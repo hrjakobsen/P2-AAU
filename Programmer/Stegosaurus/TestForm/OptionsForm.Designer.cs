@@ -101,9 +101,8 @@
             this.OptionsBox.Items.AddRange(new object[] {
             "General",
             "Huffman table (custom)",
-            "Encoding options",
-            "Quality setting",
-            "Quantization table (custom)"});
+            "Quantization table (custom)",
+            "Quality setting"});
             this.OptionsBox.Location = new System.Drawing.Point(14, 20);
             this.OptionsBox.Margin = new System.Windows.Forms.Padding(2);
             this.OptionsBox.Name = "OptionsBox";
