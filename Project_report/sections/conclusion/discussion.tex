@@ -14,31 +14,31 @@ Each message consisted of the the ASCII characters A-Z repeated to fill out the 
 Each of these messages were encoded in four images with varying motives, but the same resolution (1920x1080).
 The images can be seen in figure \ref{fig:four_test_images}.
 We used a cartoon-like drawing of a cat to see how our software would work on an image that was not ideal for the JPEG format.
-The landscape image contained many different colors and very complex patterns, which made it ideal for JPEG compression.
+The landscape image contained many different colours and very complex patterns, which made it ideal for JPEG compression.
 The same could be said for the tiger, but it contained larger areas of similar colours than the landscape did.
-The image of the snowy forrest road contained very few colour nuances, but was almost made up of the luminance channel.
+The image of the snowy forest road contained very few colour nuances, but was almost made up of the luminance channel.
 This led to a total of 20 different values as seen in table \ref{fig:forces_swaps}.
 
 
 
 
-It became apparant that a longer message required fewer forces. 
+It became apparent that a longer message required fewer forces. 
 This made sense, seeing as a longer message meant a larger graph with more edges and therefore possible ways of swapping values.
-During developtment of the programme we played around with the idea of using more vertices than what was required for the message, as we predicted it would mean fewer forces.
+During development of the programme we played around with the idea of using more vertices than what was required for the message, as we predicted it would mean fewer forces.
 These predictions would seem to be correct, but we never implemented the idea for two reasons.
 One, we were not entirely certain how to do it: should we just use twice as much as was actually needed?
-This would lead to using much more than what was neccesary with a longer message, since the the improvement quickly diminishes with longer messages.
+This would lead to using much more than what was necessary with a longer message, since the the improvement quickly diminishes with longer messages.
 Instead it would make more sense to always use a certain minimum of values, so shorter messages could be encoded properly, but longer ones did not take too long to encode.
 What were to happen if the image simply did not contain enough values then? 
 Should the programme inform the user that they needed to use a larger image or attempt to encode the message with the vertices it could make?
 What would this mean for the \lstinline|GetCapacity| method? 
 Should it take into consideration these extra values or just ignore it entirely?
 An entirely different approach would be to let the user decide themselves, how many values they wished the algorithm to use. 
-Presenting this in a user-friendly way consituted a chanllenge in itself though.
+Presenting this in a user-friendly way constituted a challenge in itself though.
 
 The second reason we did not implement it was due to performance concerns.
-Since our programme performed rather poorly during most of the developtment we considered it a very bad idea to construct a larger graph than we already were.
-Seing as we managed to optimise the programme quite HEFTILY, we could have properly implemented a solution regardles.
+Since our programme performed rather poorly during most of the development we considered it a very bad idea to construct a larger graph than we already were.
+Seeing as we managed to optimise the programme quite HEFTILY, we could have properly implemented a solution regardless.
 
 
 
