@@ -26,6 +26,7 @@ namespace TestForm{
         private int _messageLength;
         private int defaultQuality = 53;
 
+        public static bool QualityGTLocked { get; private set; }
         public static int QualityGT { get; set; }
         //public string ImagesSavePath { get; set; }
         private string myVar;
@@ -84,6 +85,8 @@ namespace TestForm{
         {
             tbarGTEncodingQuality.Value = OptionsForm.QualityGT;
 
+            //MessageBox.Show(HuffmanTable.JpegHuffmanTableYAC.Equals(HuffmanTable.JpegHuffmanTableYDC).ToString());
+
             if (OptionsForm.HuffmanTableComponentYAC.SaveTable().Equals(HuffmanTable.JpegHuffmanTableYAC))
             {
                 _huffmanTableYAC = HuffmanTable.JpegHuffmanTableYAC;
@@ -138,6 +141,19 @@ namespace TestForm{
             {
                 _quantizationTableChr = OptionsForm.QuantizationTableComponentChr.SaveTable();
                 tbarGTEncodingQuality.Value = defaultQuality;
+            }
+
+            //If changes have been made to a QuantizationTable, lock the quality-slider to prevet errors.
+            if (!OptionsForm.QuantizationTableComponentY.SaveTable().Equals(QuantizationTable.JpegDefaultYTable) 
+                || !OptionsForm.QuantizationTableComponentChr.SaveTable().Equals(QuantizationTable.JpegDefaultChrTable))
+            {
+                QualityGTLocked = true;
+                tbarGTEncodingQuality.Enabled = false;
+            }
+            else
+            {
+                QualityGTLocked = false;
+                tbarGTEncodingQuality.Enabled = true;
             }
 
             if (!string.IsNullOrWhiteSpace(OptionsForm.ImagesSavePath))
@@ -332,7 +348,7 @@ namespace TestForm{
 
         private void StegosaurusForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            SaveToFile("./savedSettings.txt");
+            SaveToFile();
         }
 
         private void getFileInputGT_FileOk(object sender, CancelEventArgs e)
@@ -352,6 +368,7 @@ namespace TestForm{
         private void StegosaurusForm_Load(object sender, EventArgs e)
         {
             tbarGTEncodingQuality.Value = defaultQuality;
+            tbarGTEncodingQuality.Value = Properties.Settings.Default.QualityGT;
         }
 
         private void GetFileMessageGT_FileOk(object sender, CancelEventArgs e)
@@ -420,14 +437,20 @@ namespace TestForm{
         }
         #endregion
 
-        public void SaveToFile(string filePath)
+        public void SaveToFile()
         {
-            using (StreamWriter sw = File.CreateText(filePath))
-            {
-                sw.WriteLine("Foo ");
-                sw.WriteLine();
+            Properties.Settings.Default["HuffmanTableYAC"] = _huffmanTableYAC;
+            Properties.Settings.Default["HuffmanTableYDC"] = _huffmanTableYDC;
+            Properties.Settings.Default["HuffmanTableChrAC"] = _huffmanTableChrAC;
+            Properties.Settings.Default["HuffmanTableChrDC"] = _huffmanTableChrDC;
+            Properties.Settings.Default["QuantizationTableY"] = _quantizationTableY;
+            Properties.Settings.Default["QuantizationTableChr"] = _quantizationTableChr;
+            Properties.Settings.Default["QualityGTLocked"] = QualityGTLocked;
+            //Properties.Settings.Default["QualityGT"] = QualityGT;
+            Properties.Settings.Default["ImagesFilePath"] = ImagesSavePath;
+            Properties.Settings.Default.QualityGT = QualityGT;
 
-            }
+            Properties.Settings.Default.Save();
         }
 
         //'Escape' closes form
