@@ -1,13 +1,20 @@
-\section{Context}
-For future use, it would have been optimal for our programme to be able to be used in relation to other uses.
-For example, our cooperation with Internet Technology and Computer Systems(ITC) group, would have gone a lot better, if we had made our programme more compatible with other systems, such as being able to work on android phones.
+\section{Future Work}
+This section contains a list of possible improvements for the product.
+These improvements would either enhance functionality or make hidden information harder to detect.
+It should be noted that the product fulfills its purpose as it is right now.
 
+\subsection{Compatibility}
+For future use, it would have been optimal for our programme to be able to be used in relation to other uses.
+For example, our cooperation with Internet Technology and Computer Systems (ITC) group would have gone a lot better, if we had made our programme more compatible with other systems, such as being able to work on Android phones.
+
+\subsection{Flexibility}
 Flexibility is definitely something that we should have taken into greater consideration.
 As the programme is now, we are very constricted when it comes to the usage of the programme.
 When we initially began researching the topic of steganography we could see that steganography has been used for many years in various forms.
 We also looked at how it has evolved and how it with the rise of media sharing could be quite easily sent to the intended recipient.
 So by increasing the amount of platforms used, the programme would be much more versatile and useful.
 
+\subsection{Different Encoding}
 Something that could make our encoding of messages more difficult to detect, would be to be able to encode the message in the middle of an image.
 As the programme is now, it is always encoded at the start of an image from left to right.
 In a lot of the pictures we tested, the top of the image typically was very bare, and the focus of the image, where there were more colours and shapes was in the centre.
@@ -15,7 +22,17 @@ Because of this, it is a little easier to see that there is some form of distort
 This change would make any encoded message a little more difficult to detect.
 However, this comes down to what image is used, so a change in this, is not always necessarily a good idea.
 
+\subsection{Cryptography}
 Another improvement to the programme would be to add a layer of cryptography to the message before it is embedded in the cover.
-The downfall of pure steganography is that if a suspecting person runs a reverse of known steganography tools, they will likely uncover the hidden message in plaintext.
+The strength of steganography is that, unlike cryptography, a hidden message does not attract attention.
+But if a cover is known to contain hidden information, then steganography is meaningless.
+Running a steganalysis and a subsequent reversal of the steganographic algorithm will reveal a message in plaintext.
 If there was a layer of encryption, the suspecting party would not be able to know if they uncovered an encrypted message, or if they simply used the wrong steganography algorithm.
 This would provide an immense layer of security on top of steganography, and since each sharing party has already communicated with each other beforehand, this would not be a huge obstacle in terms of sharing keys.
+
+\subsection{Usability Testing}
+A process often used in software development is usability testing, where people from outside the group use the actual product and describe their experiences.
+This is usually a good idea, since it gives direct knowledge about how real users will use the product, instead of a team member who often assumes that a user is going to behave in a certain way.
+We decided not to do any usability testing, since the focus of our project was to implement an algorithm that would allow ITC to develop a user interface on top of it.
+In essence, our own user interface was a means of testing whether our algorithm behaved as expected, and not to allow real users to use the product directly.
+But since our work with the cluster group did not entirely go as planned, and if we were to continue developing the product, usability testing would definitely be required for different kinds of user interfaces.
