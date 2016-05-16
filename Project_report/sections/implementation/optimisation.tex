@@ -53,7 +53,7 @@ The first runs and the control for our further tests are shown in table \ref{fig
     \label{fig:0genoptimised}
 \end{threeparttable}
 
-\subsection{First round of optimisations}
+\subsection{First Round of Optimisations}
 It was quite obvious that \lstinline|_padCoverImage|, \lstinline|_splitToChannels| and \lstinline|_splitToChannels| were the most time-consuming.
 The first thing we focused on was \lstinline|_padCoverImage|, simply because it took almost twice as long as the second most time-consuming method.
 JPEG-encoding requires images with both a width and a height that is divisible by 16.
@@ -66,11 +66,9 @@ Every iteration used the \lstinline|Bitmap| class' methods \lstinline|GetPixel| 
 It is very likely that there is more to the property than simply returning a value and therefore quite a bit of overhead.
 More specifically the methods are both wrappers for native functions contained in \lstinline|GDI+|. 
 These might very well have to check several things before being able to return the pixel.
-<<<<<<< HEAD
+
 Using the \lstinline|System.Drawing.Graphics| class as show in listing \ref{lst:copyBitmap} we were able to copy portions of \lstinline|Bitmap|s much more efficiently, \citep{MSDNBitmap} as can be seen in by the roughly 8000 \% decrease in time in table \ref{fig:1genoptimised}.
-=======
-Using the \lstinline|System.Drawing.Graphics| class as show in listing \ref{lst:copyBitmap} we were able to copy portions of \lstinline|Bitmap|s much more efficiently, \citep{MSDNBitmap} as can be seen in by the roughly 8000\% decrease in time in figure \ref{fig:1genoptimised}.
->>>>>>> c4a90a00890d5d0cd023ff463758a3a061ea3eb0
+
 
 \begin{lstlisting}[firstnumber=684,label=lst:copyBitmap,caption={Copying a \lstinline|Bitmap| using the \lstinline|Graphics| class.}]
 private static Bitmap _copyBitmap(Bitmap bitmapIn, int width, int height) {
@@ -173,7 +171,7 @@ public void CheckedAdd(int val) {
     \label{fig:1genoptimised}
 \end{threeparttable}
 
-\subsection{Second round of optimisations}
+\subsection{Second Round of Optimisations}
 While there was a slight speed-up by not accessing the properties of the \lstinline|Pixel| as often, it did not do as much.
 It was apparent that any use of \lstinline|GetPixel| was going to cause problems on larger images.
 Using \lstinline|LockBits| we were able to use an \lstinline|IntPtr| to point at the data in memory. \citep{MSDNIntPtr}
@@ -278,7 +276,7 @@ private static void _addEdge(bool firstFirst, bool secondFirst, Vertex first, Ve
     \label{fig:2genoptimised}
 \end{threeparttable}
 
-\subsection{Third round of optimisations}
+\subsection{Third Round of Optimisations}
 The final optimisations we did, had the potential to make a large difference on some systems.
 Taking advantage of the multi-core design of most modern processors, we made some of the intensive parts of our code run in parallel on multiple threads, which can utilise multi-core systems.
 The effects of this can vary widely depending on the processor architecture and not all smart phones would be able to take advantage of it.
