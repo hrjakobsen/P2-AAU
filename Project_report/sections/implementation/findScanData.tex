@@ -1,7 +1,6 @@
-\subsection{findScanData}
-The method \lstinline|findScanData()|, reads through the input until it meets the marker 0xFFDA, then skips the next 12 bytes which contains information about the scandata section.
+The method \lstinline|findScanData()|, reads through the input until it meets the SOS marker, then skips the next 12 bytes which contains information about the scandata section.
 Once this is done, the method will add every single byte in the scandata section to a \lstinline|List<byte>| list until a marker is found. The implemented method can be seen in Listing \ref{code:findScanData}.
-\lstinputlisting[firstline=110, firstnumber=110, lastline=141, label={code:findScanData}, caption={Read in the ScanData section into a \lstinline|BitList|}]{../Programmer/Stegosaurus/Stegosaurus/JPEG/Decoder.cs}
+\lstinputlisting[firstline=110, firstnumber=110, lastline=141, label={code:findScanData}, caption={Read in the ScanData section into a \lstinline|BitList|}]{../Programmer/Stegosaurus/Stegosaurus/JPEG/JPEGDecoder.cs}
 Since the decoding-process works on a bit-level, we will need to convert this list of bytes into an array of bits instead. To do this, we have to get the \lstinline|BitList| class, which suits our needs. This is shown in lines 134-139.
 
 This list, will be the list returned by \lstinline|findScanData()|.
