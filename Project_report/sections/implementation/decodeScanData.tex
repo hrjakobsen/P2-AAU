@@ -1,25 +1,18 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
 \subsection{decodeScanData}
-The method \lstinline|decodeScanData(BitList)| takes a \lstinline|BitList| as input, and returns the encoded message.
-The method has multiple submethod, each assisting the \lstinline|decodeScanData| method in finding the message. The methods are split up as follows, with their own functionality.
-\begin{itemize}
-	\item \lstinline|_addNextMCU(List<int>, BitList, ref int)| which finds four Y-component blocks, and two chrominance blocks. Finding the blocks gets taken care of by the \lstinline|getBlock| method. The values returned by \lstinline|getBlock|, will be added to \lstinline|List<int>|, which it received as input.
-	\item \lstinline|getBlock(BitList, ref int, HuffmanTable, HuffmanTable)| which iterates through the scandata saved in the \lstinline|BitList|, and for each bit it has read, will look up the first value in the DC Huffman table and disregard it, then look up the remaining 63 values in the AC table, or until the EOB value is found.
-	These values will be saved in an \lstinline|int[]| in zigzag ordering.
-	Once all 64 values or EOB has been found, all values that are not 0, will be added to a \lstinline|List<int>|, then returned to the caller.
-	\item \lstinline|nextValue(BitList, ref int, HuffmanTable, out int)|, which is the helping method for \lstinline|getBlock()|. It returns the decoded Huffman value, and the amount of zeroes which came before the value.
-	\item \lstinline|lookupValue(ushort, int)| decodes the Huffman value.
-\end{itemize}
+The method reads in MCU's till enough MCU's has been read in order to find the length of the message, as well as the value of modulo we need in order to decode it.
+Reading in an MCU is a matter of reading in six blocks, each containing one DC value and 63 AC values. The first four are for the Luminance channel, the remaining are the chrominance blocks.
+Once the first 16 non-zero values has been found, we can find the value of modulo and the length of the message.
 
-Since the length of the message, and what modulo is needed to decode the message, is hidden within the first 16 values, the method \lstinline|_addNextMCU|, will have to be called until we at least have 16 values.
-Once this is done, we can find the length of the message, modulo and can thus start reading in the remaining values by calling \lstinline|_addNextMCU| the appropriate amount of times.
-To get the length and modulo, the following is done:
-\begin{enumerate}
-	\item Call \lstinline|getLength(List<int>)|, which finds the length of the message by adding the first 14 values together in pairs of two, then doing modulo 4 of that value. 
-	This value will be added to a \lstinline|ushort| value, which first will be bitshifted right twice. 
-	After running this loop seven times, the \lstinline|ushort|, will be the length of the encoded message.
-	\item Call \lstinline|getModulo(List<int>)|, which will add the 14th and 15th value together, then after doing modulo 4 on the result, look through a switch with 3 values in it, then return the right modulo based on the result of the operation.
-\end{enumerate}
-With the values from these two methods, it is now just a matter of calling \lstinline|_addNextMCU| until the values containing the message have been found.
+To get the length, we add the first 14 values together in pairs of two, then doing modulo 4 of that value. 
+This value will be added to a \lstinline|ushort| value, which first will be bitshifted right twice. 
+Doing this seven times, and we will end up with the length of the message.
+
+To get the value for modulo, we will add the 14th and 15th value together, then after doing modulo 4 on the result, look through a switch with 3 values in it, then return the right modulo based on the result of the operation.
+
+Once we have the length and the value of modulo, we can keep reading in MCU's until the values containing the message have been found. 
+The reason we do not just read in all of scandata, is to save time, since there is no reason to decode the whole of it, when the message will only be hidden within the first relatively few bytes.
+It is the same reason we will also find the length and the value of modulo, once enough MCU's has been decoded.
+
 When all the required values have been read and saved in the \lstinline|List<int>| variable, the message is found according to Listing \ref{code:decodeMessage}.
 \lstinputlisting[firstline=164, firstnumber=164, lastline=184, label={code:decodeMessage}, caption={Decodes the message encoded into the JPEG image using the Graph-Theoretic Approach}]{../Programmer/Stegosaurus/Stegosaurus/JPEG/JPEGDecoder.cs}
