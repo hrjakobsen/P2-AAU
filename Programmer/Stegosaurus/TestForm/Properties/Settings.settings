@@ -2,22 +2,19 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TestForm.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="HuffmanTableYAC" Type="System.String" Scope="User">
+    <Setting Name="HuffmanTableYDC" Type="Stegosaurus.HuffmanTable" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="HuffmanTableYDC" Type="System.String" Scope="User">
+    <Setting Name="HuffmanTableChrAC" Type="Stegosaurus.HuffmanTable" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="HuffmanTableChrAC" Type="System.String" Scope="User">
+    <Setting Name="HuffmanTableChrDC" Type="Stegosaurus.HuffmanTable" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="HuffmanTableChrDC" Type="System.String" Scope="User">
+    <Setting Name="QuantizationTableY" Type="Stegosaurus.QuantizationTable" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="QuantizationTableY" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="QuantizationTableChr" Type="System.String" Scope="User">
+    <Setting Name="QuantizationTableChr" Type="Stegosaurus.QuantizationTable" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="QualityGT" Type="System.Int32" Scope="User">
@@ -27,6 +24,9 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ImagesFilePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="HuffmanTableYAC" Type="Stegosaurus.HuffmanTable" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

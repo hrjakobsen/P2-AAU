@@ -25,22 +25,9 @@ namespace TestForm.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string HuffmanTableYAC {
+        public global::Stegosaurus.HuffmanTable HuffmanTableYDC {
             get {
-                return ((string)(this["HuffmanTableYAC"]));
-            }
-            set {
-                this["HuffmanTableYAC"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string HuffmanTableYDC {
-            get {
-                return ((string)(this["HuffmanTableYDC"]));
+                return ((global::Stegosaurus.HuffmanTable)(this["HuffmanTableYDC"]));
             }
             set {
                 this["HuffmanTableYDC"] = value;
@@ -49,10 +36,9 @@ namespace TestForm.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string HuffmanTableChrAC {
+        public global::Stegosaurus.HuffmanTable HuffmanTableChrAC {
             get {
-                return ((string)(this["HuffmanTableChrAC"]));
+                return ((global::Stegosaurus.HuffmanTable)(this["HuffmanTableChrAC"]));
             }
             set {
                 this["HuffmanTableChrAC"] = value;
@@ -61,10 +47,9 @@ namespace TestForm.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string HuffmanTableChrDC {
+        public global::Stegosaurus.HuffmanTable HuffmanTableChrDC {
             get {
-                return ((string)(this["HuffmanTableChrDC"]));
+                return ((global::Stegosaurus.HuffmanTable)(this["HuffmanTableChrDC"]));
             }
             set {
                 this["HuffmanTableChrDC"] = value;
@@ -73,10 +58,9 @@ namespace TestForm.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string QuantizationTableY {
+        public global::Stegosaurus.QuantizationTable QuantizationTableY {
             get {
-                return ((string)(this["QuantizationTableY"]));
+                return ((global::Stegosaurus.QuantizationTable)(this["QuantizationTableY"]));
             }
             set {
                 this["QuantizationTableY"] = value;
@@ -85,10 +69,9 @@ namespace TestForm.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string QuantizationTableChr {
+        public global::Stegosaurus.QuantizationTable QuantizationTableChr {
             get {
-                return ((string)(this["QuantizationTableChr"]));
+                return ((global::Stegosaurus.QuantizationTable)(this["QuantizationTableChr"]));
             }
             set {
                 this["QuantizationTableChr"] = value;
@@ -128,6 +111,17 @@ namespace TestForm.Properties {
             }
             set {
                 this["ImagesFilePath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::Stegosaurus.HuffmanTable HuffmanTableYAC {
+            get {
+                return ((global::Stegosaurus.HuffmanTable)(this["HuffmanTableYAC"]));
+            }
+            set {
+                this["HuffmanTableYAC"] = value;
             }
         }
     }

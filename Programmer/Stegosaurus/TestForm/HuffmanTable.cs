@@ -96,6 +96,8 @@ namespace TestForm
         {
             HuffmanTable h = new HuffmanTable();
 
+            //List <TextBox> codeWordsBoxesTemp = codeWordsBoxes.Where(x => !string.IsNullOrEmpty(x.Text));
+
             for (int i = 0; i < codeWordsBoxes.Count; i++)
             {
                 byte runSize = Convert.ToByte(runSizeBoxes[i].Text, 16);

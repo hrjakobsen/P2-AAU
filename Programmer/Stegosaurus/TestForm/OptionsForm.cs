@@ -16,18 +16,19 @@ namespace TestForm
     {
         private readonly StegosaurusForm _stegosaurusForm = new StegosaurusForm();
         private bool _skipDialog;
-        public static readonly HuffmanTableComponent HuffmanTableComponentYAC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableYAC);
-        public static readonly HuffmanTableComponent HuffmanTableComponentYDC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableYDC);
-        public static readonly HuffmanTableComponent HuffmanTableComponentChrAC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableChrAC);
-        public static readonly HuffmanTableComponent HuffmanTableComponentChrDC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableChrDC);
-        public static readonly QuantizationTableComponent QuantizationTableComponentY = new QuantizationTableComponent(QuantizationTable.JpegDefaultYTable);
-        public static readonly QuantizationTableComponent QuantizationTableComponentChr = new QuantizationTableComponent(QuantizationTable.JpegDefaultChrTable);
-        public static readonly HuffmanTable HuffmanTableYAC;
-        public static readonly HuffmanTable HuffmanTableYDC;
-        public static readonly HuffmanTable HuffmanTableChrAC;
-        public static readonly HuffmanTable HuffmanTableChrDC;
-        public static readonly QuantizationTable QuantizationTableY;
-        public static readonly QuantizationTable QuantizationTableChr;
+
+        public static HuffmanTableComponent HuffmanTableComponentYAC,
+            HuffmanTableComponentYDC,
+            HuffmanTableComponentChrAC,
+            HuffmanTableComponentChrDC;
+        public static QuantizationTableComponent QuantizationTableComponentY, QuantizationTableComponentChr;
+
+        //public static readonly HuffmanTableComponent HuffmanTableComponentYAC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableYAC);
+        //public static readonly HuffmanTableComponent HuffmanTableComponentYDC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableYDC);
+        //public static readonly HuffmanTableComponent HuffmanTableComponentChrAC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableChrAC);
+        //public static readonly HuffmanTableComponent HuffmanTableComponentChrDC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableChrDC);
+        //public static readonly QuantizationTableComponent QuantizationTableComponentY = new QuantizationTableComponent(QuantizationTable.JpegDefaultYTable);
+        //public static readonly QuantizationTableComponent QuantizationTableComponentChr = new QuantizationTableComponent(QuantizationTable.JpegDefaultChrTable);
 
         public static string ImagesSavePath;
         public static int QualityGT;
@@ -36,12 +37,13 @@ namespace TestForm
         public OptionsForm()
         {
             InitializeComponent();
-            initializeQuantizationTable(QuantizationTableComponentY);
-            initializeQuantizationTable(QuantizationTableComponentChr);
-            initializeHuffmanTable(HuffmanTableComponentYAC);
-            initializeHuffmanTable(HuffmanTableComponentYDC);
-            initializeHuffmanTable(HuffmanTableComponentChrAC);
-            initializeHuffmanTable(HuffmanTableComponentChrDC);
+            initializeQuantizationTable(QuantizationTableComponentY, StegosaurusForm.QuantizationTableY, QuantizationTable.JpegDefaultYTable);
+            initializeQuantizationTable(QuantizationTableComponentChr, StegosaurusForm.QuantizationTableChr, QuantizationTable.JpegDefaultChrTable);
+            initializeHuffmanTable(HuffmanTableComponentYAC, StegosaurusForm.HuffmanTableYAC, HuffmanTable.JpegHuffmanTableYAC);
+            initializeHuffmanTable(HuffmanTableComponentYDC, StegosaurusForm.HuffmanTableYDC, HuffmanTable.JpegHuffmanTableYDC);
+            initializeHuffmanTable(HuffmanTableComponentChrAC, StegosaurusForm.HuffmanTableChrAC, HuffmanTable.JpegHuffmanTableChrAC);
+            initializeHuffmanTable(HuffmanTableComponentChrDC, StegosaurusForm.HuffmanTableChrDC, HuffmanTable.JpegHuffmanTableChrDC);
+
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;            
@@ -60,18 +62,36 @@ namespace TestForm
             }
         }
 
+
         //Adds defaultTable.Length amount of textboxes to a given Huffman panel and saves each in an array (to be looped through), sets
         //the size and position of each textbox and writes the default Quantization values in these.
-        private void initializeHuffmanTable(HuffmanTableComponent huffmanTableComponent)
+        private void initializeHuffmanTable(HuffmanTableComponent huffmanTableComponent, HuffmanTable savedHuffmanTable, HuffmanTable matchingDefaultHuffmanTable)
         {
+            if (savedHuffmanTable != null)
+            {
+                huffmanTableComponent = new HuffmanTableComponent(savedHuffmanTable);
+            }
+            else
+            {
+                huffmanTableComponent = new HuffmanTableComponent(matchingDefaultHuffmanTable);
+            }
             grpCustomHuffman.Controls.Add(huffmanTableComponent);
             huffmanTableComponent.Location = new Point(4, 30);
             huffmanTableComponent.AutoScroll = Enabled;
             huffmanTableComponent.BringToFront();
         }
 
-        private void initializeQuantizationTable(QuantizationTableComponent quantizationTableComponent)
+        private void initializeQuantizationTable(QuantizationTableComponent quantizationTableComponent, QuantizationTable savedQuantizationTable, QuantizationTable matchingDefaultQuantizationTable)
         {
+            if (savedQuantizationTable != null)
+            {
+                quantizationTableComponent = new QuantizationTableComponent(savedQuantizationTable);
+            }
+            else
+            {
+                quantizationTableComponent = new QuantizationTableComponent(matchingDefaultQuantizationTable);
+            }
+
             pnlQuantization.Controls.Add(quantizationTableComponent);
             quantizationTableComponent.Location = new Point(4, 18);
             quantizationTableComponent.BringToFront();

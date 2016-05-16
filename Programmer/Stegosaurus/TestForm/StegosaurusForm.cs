@@ -10,12 +10,8 @@ using System.IO;
 namespace TestForm{
     public partial class StegosaurusForm:Form
     {
-        private HuffmanTable _huffmanTableChrAC;
-        private HuffmanTable _huffmanTableChrDC;
-        private HuffmanTable _huffmanTableYAC;
-        private HuffmanTable _huffmanTableYDC;
-        private QuantizationTable _quantizationTableY;
-        private QuantizationTable _quantizationTableChr;
+        public static HuffmanTable HuffmanTableChrAC, HuffmanTableChrDC, HuffmanTableYAC, HuffmanTableYDC;
+        public static QuantizationTable QuantizationTableY, QuantizationTableChr;
 
         private readonly LeastSignificantBitImage _stegoLsbController;
         private IImageEncoder _stegoGtEncoderController;
@@ -57,6 +53,24 @@ namespace TestForm{
             _stegoLsbController = new LeastSignificantBitImage();
         }
 
+        private void StegosaurusForm_Load(object sender, EventArgs e)
+        {
+            loadSettings();
+        }
+
+        private void loadSettings()
+        {
+            tbarGTEncodingQuality.Value = Properties.Settings.Default.QualityGT;
+            ImagesSavePath = Properties.Settings.Default.ImagesFilePath;
+            QualityGTLocked = Properties.Settings.Default.QualityGTLocked;
+            HuffmanTableYAC = Properties.Settings.Default.HuffmanTableYAC;
+            HuffmanTableYDC = Properties.Settings.Default.HuffmanTableYDC;
+            HuffmanTableChrAC = Properties.Settings.Default.HuffmanTableChrAC;
+            HuffmanTableChrDC = Properties.Settings.Default.HuffmanTableChrDC;
+            QuantizationTableY = Properties.Settings.Default.QuantizationTableY;
+            QuantizationTableChr = Properties.Settings.Default.QuantizationTableChr;
+        }
+
         private void viewOptionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OptionsForm optionsForm = new OptionsForm();
@@ -64,7 +78,7 @@ namespace TestForm{
             if (OptionsForm.SaveEnabled)
             {
                 Cursor.Current = Cursors.WaitCursor;
-                loadSettings();
+                loadSettingsFromForm();
                 Cursor.Current = Cursors.Default;
             }
         }
@@ -81,7 +95,7 @@ namespace TestForm{
             helpForm.Show();
         }
 
-        private void loadSettings()
+        private void loadSettingsFromForm()
         {
             tbarGTEncodingQuality.Value = OptionsForm.QualityGT;
 
@@ -89,57 +103,57 @@ namespace TestForm{
 
             if (OptionsForm.HuffmanTableComponentYAC.SaveTable().Equals(HuffmanTable.JpegHuffmanTableYAC))
             {
-                _huffmanTableYAC = HuffmanTable.JpegHuffmanTableYAC;
+                HuffmanTableYAC = HuffmanTable.JpegHuffmanTableYAC;
             }
             else
             {
-                _huffmanTableYAC = OptionsForm.HuffmanTableComponentYAC.SaveTable();
+                HuffmanTableYAC = OptionsForm.HuffmanTableComponentYAC.SaveTable();
             }
 
             if (OptionsForm.HuffmanTableComponentYDC.SaveTable().Equals(HuffmanTable.JpegHuffmanTableYDC))
             {
-                _huffmanTableYDC = HuffmanTable.JpegHuffmanTableYDC;
+                HuffmanTableYDC = HuffmanTable.JpegHuffmanTableYDC;
             }
             else
             {
-                _huffmanTableYDC = OptionsForm.HuffmanTableComponentYDC.SaveTable();
+                HuffmanTableYDC = OptionsForm.HuffmanTableComponentYDC.SaveTable();
             }
 
             if (OptionsForm.HuffmanTableComponentChrAC.SaveTable().Equals(HuffmanTable.JpegHuffmanTableChrAC))
             {
-                _huffmanTableChrAC = HuffmanTable.JpegHuffmanTableChrAC;
+                HuffmanTableChrAC = HuffmanTable.JpegHuffmanTableChrAC;
             }
             else
             {
-                _huffmanTableChrAC = OptionsForm.HuffmanTableComponentChrAC.SaveTable();
+                HuffmanTableChrAC = OptionsForm.HuffmanTableComponentChrAC.SaveTable();
             }
 
             if (OptionsForm.HuffmanTableComponentChrDC.SaveTable().Equals(HuffmanTable.JpegHuffmanTableChrDC))
             {
-                _huffmanTableChrDC = HuffmanTable.JpegHuffmanTableChrDC;
+                HuffmanTableChrDC = HuffmanTable.JpegHuffmanTableChrDC;
             }
             else
             {
-                _huffmanTableChrDC = OptionsForm.HuffmanTableComponentChrDC.SaveTable();
+                HuffmanTableChrDC = OptionsForm.HuffmanTableComponentChrDC.SaveTable();
             }
 
             if (OptionsForm.QuantizationTableComponentY.SaveTable().Equals(QuantizationTable.JpegDefaultYTable))
             {
-                _quantizationTableY = QuantizationTable.JpegDefaultYTable;
+                QuantizationTableY = QuantizationTable.JpegDefaultYTable;
             }
             else
             {
-                _quantizationTableY = OptionsForm.QuantizationTableComponentY.SaveTable();
+                QuantizationTableY = OptionsForm.QuantizationTableComponentY.SaveTable();
                 tbarGTEncodingQuality.Value = defaultQuality;
             }
 
             if (OptionsForm.QuantizationTableComponentChr.SaveTable().Equals(QuantizationTable.JpegDefaultChrTable))
             {
-                _quantizationTableChr = QuantizationTable.JpegDefaultChrTable;
+                QuantizationTableChr = QuantizationTable.JpegDefaultChrTable;
             }
             else
             {
-                _quantizationTableChr = OptionsForm.QuantizationTableComponentChr.SaveTable();
+                QuantizationTableChr = OptionsForm.QuantizationTableComponentChr.SaveTable();
                 tbarGTEncodingQuality.Value = defaultQuality;
             }
 
@@ -348,7 +362,7 @@ namespace TestForm{
 
         private void StegosaurusForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            SaveToFile();
+            saveSettings();
         }
 
         private void getFileInputGT_FileOk(object sender, CancelEventArgs e)
@@ -363,12 +377,6 @@ namespace TestForm{
             {
                 btnGTProceed.Enabled = true;
             }
-        }
-
-        private void StegosaurusForm_Load(object sender, EventArgs e)
-        {
-            tbarGTEncodingQuality.Value = defaultQuality;
-            tbarGTEncodingQuality.Value = Properties.Settings.Default.QualityGT;
         }
 
         private void GetFileMessageGT_FileOk(object sender, CancelEventArgs e)
@@ -393,13 +401,13 @@ namespace TestForm{
                 //DELETE
                 ImagesSavePath = "";
                 //DELETE
-                if (_quantizationTableY == null || _quantizationTableChr == null || _huffmanTableYAC == null || _huffmanTableYDC == null || _huffmanTableChrAC == null || _huffmanTableChrDC == null)
+                if (QuantizationTableY == null || QuantizationTableChr == null || HuffmanTableYAC == null || HuffmanTableYDC == null || HuffmanTableChrAC == null || HuffmanTableChrDC == null)
                 {
                     _stegoGtEncoderController = new JpegImage(CoverImageGT, QualityGT, 4);
                 }
                 else
                 {
-                    _stegoGtEncoderController = new JpegImage(CoverImageGT, QualityGT, 4, _quantizationTableY, _quantizationTableChr, _huffmanTableYDC, _huffmanTableYAC, _huffmanTableChrDC, _huffmanTableChrAC);
+                    _stegoGtEncoderController = new JpegImage(CoverImageGT, QualityGT, 4, QuantizationTableY, QuantizationTableChr, HuffmanTableYDC, HuffmanTableYAC, HuffmanTableChrDC, HuffmanTableChrAC);
                 }
 
                 byte[] msg = new byte[_messageLength];
@@ -437,17 +445,16 @@ namespace TestForm{
         }
         #endregion
 
-        public void SaveToFile()
+        private void saveSettings()
         {
-            Properties.Settings.Default["HuffmanTableYAC"] = _huffmanTableYAC;
-            Properties.Settings.Default["HuffmanTableYDC"] = _huffmanTableYDC;
-            Properties.Settings.Default["HuffmanTableChrAC"] = _huffmanTableChrAC;
-            Properties.Settings.Default["HuffmanTableChrDC"] = _huffmanTableChrDC;
-            Properties.Settings.Default["QuantizationTableY"] = _quantizationTableY;
-            Properties.Settings.Default["QuantizationTableChr"] = _quantizationTableChr;
-            Properties.Settings.Default["QualityGTLocked"] = QualityGTLocked;
-            //Properties.Settings.Default["QualityGT"] = QualityGT;
-            Properties.Settings.Default["ImagesFilePath"] = ImagesSavePath;
+            Properties.Settings.Default.HuffmanTableYAC = HuffmanTableYAC;
+            Properties.Settings.Default.HuffmanTableYDC = HuffmanTableYDC;
+            Properties.Settings.Default.HuffmanTableChrAC = HuffmanTableChrAC;
+            Properties.Settings.Default.HuffmanTableChrDC = HuffmanTableChrDC;
+            Properties.Settings.Default.QuantizationTableY = QuantizationTableY;
+            Properties.Settings.Default.QuantizationTableChr = QuantizationTableChr;
+            Properties.Settings.Default.QualityGTLocked = QualityGTLocked;
+            Properties.Settings.Default.ImagesFilePath = ImagesSavePath;
             Properties.Settings.Default.QualityGT = QualityGT;
 
             Properties.Settings.Default.Save();
