@@ -1,4 +1,6 @@
-﻿namespace Stegosaurus {
+﻿using System.Linq;
+
+namespace Stegosaurus {
     public class QuantizationTable {
         public byte[] Entries { get; }
         public byte[] ZigzagEntries { get; }
@@ -43,6 +45,15 @@
             }
 
             return s;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            return !Entries.Where((t, i) => ((QuantizationTable)obj).Entries[i] != t).Any();
         }
 
         public static QuantizationTable JpegDefaultYTable = new QuantizationTable(new byte[] {

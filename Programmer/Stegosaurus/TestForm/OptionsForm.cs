@@ -16,12 +16,19 @@ namespace TestForm
     {
         private readonly StegosaurusForm _stegosaurusForm = new StegosaurusForm();
         private bool _skipDialog;
-        public static readonly HuffmanTableComponent HuffmanTableYAC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableYAC);
-        public static readonly HuffmanTableComponent HuffmanTableYDC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableYDC);
-        public static readonly HuffmanTableComponent HuffmanTableChrAC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableChrAC);
-        public static readonly HuffmanTableComponent HuffmanTableChrDC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableChrDC);
-        public static readonly QuantizationTableComponent QuantizationTableY = new QuantizationTableComponent(QuantizationTable.JpegDefaultYTable);
-        public static readonly QuantizationTableComponent QuantizationTableChr = new QuantizationTableComponent(QuantizationTable.JpegDefaultChrTable);
+        public static readonly HuffmanTableComponent HuffmanTableComponentYAC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableYAC);
+        public static readonly HuffmanTableComponent HuffmanTableComponentYDC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableYDC);
+        public static readonly HuffmanTableComponent HuffmanTableComponentChrAC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableChrAC);
+        public static readonly HuffmanTableComponent HuffmanTableComponentChrDC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableChrDC);
+        public static readonly QuantizationTableComponent QuantizationTableComponentY = new QuantizationTableComponent(QuantizationTable.JpegDefaultYTable);
+        public static readonly QuantizationTableComponent QuantizationTableComponentChr = new QuantizationTableComponent(QuantizationTable.JpegDefaultChrTable);
+        public static readonly HuffmanTable HuffmanTableYAC;
+        public static readonly HuffmanTable HuffmanTableYDC;
+        public static readonly HuffmanTable HuffmanTableChrAC;
+        public static readonly HuffmanTable HuffmanTableChrDC;
+        public static readonly QuantizationTable QuantizationTableY;
+        public static readonly QuantizationTable QuantizationTableChr;
+
         public static string ImagesSavePath;
         public static int QualityGT;
         public static bool SaveEnabled;
@@ -29,12 +36,12 @@ namespace TestForm
         public OptionsForm()
         {
             InitializeComponent();
-            initializeQuantizationTable(QuantizationTableY);
-            initializeQuantizationTable(QuantizationTableChr);
-            initializeHuffmanTable(HuffmanTableYAC);
-            initializeHuffmanTable(HuffmanTableYDC);
-            initializeHuffmanTable(HuffmanTableChrAC);
-            initializeHuffmanTable(HuffmanTableChrDC);
+            initializeQuantizationTable(QuantizationTableComponentY);
+            initializeQuantizationTable(QuantizationTableComponentChr);
+            initializeHuffmanTable(HuffmanTableComponentYAC);
+            initializeHuffmanTable(HuffmanTableComponentYDC);
+            initializeHuffmanTable(HuffmanTableComponentChrAC);
+            initializeHuffmanTable(HuffmanTableComponentChrDC);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;            
@@ -81,18 +88,13 @@ namespace TestForm
             }
             else if (OptionsBox.SelectedItem == OptionsBox.Items[2])
             {
-                //pnlOptionsQuantization.Visible = true;
-                //pnlOptionsQuantization.Enabled = true;
+                pnlOptionsQuantization.Visible = true;
+                pnlOptionsQuantization.Enabled = true;
             }
             else if (OptionsBox.SelectedItem == OptionsBox.Items[3])
             {
                 pnlOptionsQuality.Visible = true;
                 pnlOptionsQuality.Enabled = true;
-            }
-            else if (OptionsBox.SelectedItem == OptionsBox.Items[4])
-            {
-                pnlOptionsQuantization.Visible = true;
-                pnlOptionsQuantization.Enabled = true;
             }
         }
 
@@ -127,17 +129,17 @@ namespace TestForm
         {
             if (rdioQuantizationYChannel.Checked)
             {
-                QuantizationTableChr.Visible = false;
-                QuantizationTableChr.Enabled = false;
-                QuantizationTableY.Visible = true;
-                QuantizationTableY.Enabled = true;
+                QuantizationTableComponentChr.Visible = false;
+                QuantizationTableComponentChr.Enabled = false;
+                QuantizationTableComponentY.Visible = true;
+                QuantizationTableComponentY.Enabled = true;
             }
             else if (rdioQuantizationChrChannel.Checked)
             {
-                QuantizationTableY.Visible = false;
-                QuantizationTableY.Enabled = false;
-                QuantizationTableChr.Visible = true;
-                QuantizationTableChr.Enabled = true;
+                QuantizationTableComponentY.Visible = false;
+                QuantizationTableComponentY.Enabled = false;
+                QuantizationTableComponentChr.Visible = true;
+                QuantizationTableComponentChr.Enabled = true;
             }
         }
 
@@ -188,39 +190,39 @@ namespace TestForm
 
             if (rdioHuffmanChr_AC.Checked)
             {
-                HuffmanTableChrAC.Visible = true;
-                HuffmanTableChrAC.Enabled = true;
+                HuffmanTableComponentChrAC.Visible = true;
+                HuffmanTableComponentChrAC.Enabled = true;
             }
             else if (rdioHuffmanChr_DC.Checked)
             {
-                HuffmanTableChrDC.Visible = true;
-                HuffmanTableChrDC.Enabled = true;
+                HuffmanTableComponentChrDC.Visible = true;
+                HuffmanTableComponentChrDC.Enabled = true;
             }
             else if (rdioHuffmanY_AC.Checked)
             {
-                HuffmanTableYAC.Visible = true;
-                HuffmanTableYAC.Enabled = true;
+                HuffmanTableComponentYAC.Visible = true;
+                HuffmanTableComponentYAC.Enabled = true;
             }
             else if (rdioHuffmanY_DC.Checked)
             {
-                HuffmanTableYDC.Visible = true;
-                HuffmanTableYDC.Enabled = true;
+                HuffmanTableComponentYDC.Visible = true;
+                HuffmanTableComponentYDC.Enabled = true;
             }
         }
         
         private void deselectHuffmanTables()
         {
-            HuffmanTableChrAC.Visible = false;
-            HuffmanTableChrAC.Enabled = false;
+            HuffmanTableComponentChrAC.Visible = false;
+            HuffmanTableComponentChrAC.Enabled = false;
 
-            HuffmanTableChrDC.Visible = false;
-            HuffmanTableChrDC.Enabled = false;
+            HuffmanTableComponentChrDC.Visible = false;
+            HuffmanTableComponentChrDC.Enabled = false;
 
-            HuffmanTableYAC.Visible = false;
-            HuffmanTableYAC.Enabled = false;
+            HuffmanTableComponentYAC.Visible = false;
+            HuffmanTableComponentYAC.Enabled = false;
 
-            HuffmanTableYDC.Visible = false;
-            HuffmanTableYDC.Enabled = false;
+            HuffmanTableComponentYDC.Visible = false;
+            HuffmanTableComponentYDC.Enabled = false;
         }
 
         //Adds a row to the selected Huffman-table when btnHuffmanAddRow is clicked
@@ -228,19 +230,19 @@ namespace TestForm
         {
             if (rdioHuffmanChr_AC.Checked)
             {
-                HuffmanTableChrAC.AddRow();
+                HuffmanTableComponentChrAC.AddRow();
             }
             else if (rdioHuffmanChr_DC.Checked)
             {
-                HuffmanTableChrDC.AddRow();
+                HuffmanTableComponentChrDC.AddRow();
             }
             else if (rdioHuffmanY_AC.Checked)
             {
-                HuffmanTableYAC.AddRow();
+                HuffmanTableComponentYAC.AddRow();
             }
             else if (rdioHuffmanY_DC.Checked)
             {
-                HuffmanTableYDC.AddRow();
+                HuffmanTableComponentYDC.AddRow();
             }
         }
 

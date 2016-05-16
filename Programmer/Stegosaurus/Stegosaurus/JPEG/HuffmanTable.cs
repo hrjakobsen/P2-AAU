@@ -40,6 +40,26 @@ namespace Stegosaurus {
             return Elements[runSize];
         }
 
+        public override bool Equals(object obj)
+        {
+            HuffmanTable otherTable = (HuffmanTable)obj;
+            foreach (KeyValuePair<byte, HuffmanElement> element in Elements)
+            {
+                try
+                {
+                    if (!otherTable.Elements[element.Key].Equals(element.Value))
+                    {
+                        return false;
+                    }
+                }
+                catch (KeyNotFoundException)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         #region DefaultTables
         public static HuffmanTable JpegHuffmanTableYDC = new HuffmanTable(
             new HuffmanElement(0x00, 0x00, 2),
@@ -424,6 +444,20 @@ namespace Stegosaurus {
 
         public override string ToString() {
             return $"{Convert.ToString(RunSize, 2)} = {Convert.ToString(CodeWord, 2)}, {Convert.ToString(Length, 2)}";
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            return CompareTo((HuffmanElement)obj) == 0;
+        }
+
+        public override int GetHashCode()
+        {
+            return RunSize.GetHashCode();
         }
     }
 }

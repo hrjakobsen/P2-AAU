@@ -530,6 +530,7 @@
             this.Name = "StegosaurusForm";
             this.Text = "Stegosaurus";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.StegosaurusForm_FormClosing);
+            this.Load += new System.EventHandler(this.StegosaurusForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picResult)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picMessage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picInput)).EndInit();
