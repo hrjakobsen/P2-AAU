@@ -87,21 +87,23 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void GetCapacity_Test()
+        public void GetCapacity_Test() //TODO: Fix this test/remake it
         {
-            var b = new Bitmap(2, 2);
-            b.SetPixel(0, 0, Color.Black);
-            b.SetPixel(1,0,Color.Blue);
-            b.SetPixel(0,1,Color.Red);
-            b.SetPixel(1,1,Color.White);
+            var b = new Bitmap(1, 1);
+            b.SetPixel(0, 0, Color.White);
+            //b.SetPixel(1,0,Color.White);
+            //b.SetPixel(0,1,Color.White);
+            //b.SetPixel(1,1,Color.White);
 
-            var scaledUnitBitmap = new Bitmap(b, 200, 100); //Scale the unit bitmap
+            var scaledUnitBitmap = new Bitmap(b, 160, 160); //Scale the unit bitmap
+
+            //scaledUnitBitmap.Save(@"C:\Users\LeoMohr\Desktop\out.png");
 
             JpegImage ji = new JpegImage(scaledUnitBitmap, 100, 4);
 
             int capacity = ji.GetCapacity();
 
-            NUnit.Framework.Assert.AreEqual(33, capacity);
+            NUnit.Framework.Assert.AreEqual(34, capacity);
         }
 
         [Test()]
@@ -262,6 +264,38 @@ namespace Stegosaurus.Tests
             };
 
             NUnit.Framework.Assert.AreEqual(expectedDownSampledValues, downSampleValues);
+        }
+
+        [Test()]
+        public void Block16ToBlock8_Test() //TODO: might want to check this test
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+
+            float[,] inputValues = new float[16, 16];
+            int i = 0;
+            for (int x = 0; x < 16; x++) //Fill input value with values from 1 to 255
+            {
+                for (int y = 0; y < 16; y++)
+                {
+                    inputValues[x, y] = i++;
+                }
+            }
+
+            float[,] returnedBlock8 = (float[,]) pt.InvokeStatic("_block16ToBlock8", new object[] {inputValues, 1});
+
+            float[,] expectedBlock8 = new float[8, 8]
+            {
+                {128,  129f, 130f, 131f, 132f, 133f, 134f, 135f},
+                {144f, 145f, 146f, 147f, 148f, 149f, 150f, 151f},
+                {160f, 161f, 162f, 163f, 164f, 165f, 166f, 167f},
+                {176f, 177f, 178f, 179f, 180f, 181f, 182f, 183f},
+                {192f, 193f, 194f, 195f, 196f, 197f, 198f, 199f},
+                {208f, 209f, 210f, 211f, 212f, 213f, 214f, 215f},
+                {224f, 225f, 226f, 227f, 228f, 229f, 230f, 231f},
+                {240f, 241f, 242f, 243f, 244f, 245f, 246f, 247f},
+            };
+
+            NUnit.Framework.Assert.AreEqual(expectedBlock8, returnedBlock8);
 
         }
 
