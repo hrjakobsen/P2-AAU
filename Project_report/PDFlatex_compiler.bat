@@ -8,6 +8,7 @@ pdflatex DAT2-A423_Project_Report.tex -quiet
 @echo START	Compiling BibTex
 @echo -------------------------------------------------
 bibtex DAT2-A423_Project_Report -quiet
+makeindex DAT2-A423_Project_Report -quiet
 @echo -------------------------------------------------
 @echo END 	Compiling BibTex
 @echo -------------------------------------------------

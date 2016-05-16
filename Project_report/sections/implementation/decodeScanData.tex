@@ -1,3 +1,4 @@
+% -*- root: ../../DAT2-A423_Project_Report.tex -*-
 \subsection{decodeScanData}
 The method \lstinline|decodeScanData(BitList)| takes a \lstinline|BitList| as input, and returns the encoded message.
 The method has multiple submethod, each assisting the \lstinline|decodeScanData| method in finding the message. The methods are split up as follows, with their own functionality.
@@ -21,4 +22,4 @@ To get the length and modulo, the following is done:
 \end{enumerate}
 With the values from these two methods, it is now just a matter of calling \lstinline|_addNextMCU| until the values containing the message have been found.
 When all the required values have been read and saved in the \lstinline|List<int>| variable, the message is found according to Listing \ref{code:decodeMessage}.
-\lstinputlisting[firstline=164, firstnumber=164, lastline=184, label={code:decodeMessage}, caption={Decodes the message encoded into the JPEG image using the Graph-Theoretic Approach}]{../Programmer/Stegosaurus/Stegosaurus/JPEG/Decoder.cs}
+\lstinputlisting[firstline=164, firstnumber=164, lastline=184, label={code:decodeMessage}, caption={Decodes the message encoded into the JPEG image using the Graph-Theoretic Approach}]{../Programmer/Stegosaurus/Stegosaurus/JPEG/JPEGDecoder.cs}
