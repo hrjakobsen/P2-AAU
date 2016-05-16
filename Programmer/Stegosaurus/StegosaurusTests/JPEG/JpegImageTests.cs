@@ -2,68 +2,274 @@
 using Stegosaurus;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
+using System.Security.Cryptography;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework.Compatibility;
 
 namespace Stegosaurus.Tests
 {
     [TestFixture()]
     public class JpegImageTests
     {
-        [Test]
+        [Test()]
+        public void M_Test_if_modulo_field_gets_set()
+        {
+            PrivateObject po = new PrivateObject(new JpegImage(new Bitmap(200, 100), 100, 4));
+
+            var modField = po.GetField("_m");
+
+            NUnit.Framework.Assert.AreEqual(4, modField);
+        }
+
+        [Test()]
         public void JpegImage_Test_if_constructor_throws_exception_when_image_is_null() //Test if JpegImage constructor throws exception when cover image is null
         {
             NUnit.Framework.Assert.Throws<ArgumentNullException>(() => new JpegImage(null, 100, 4));
         }
 
         [Test()]
-        public void JpegImage_Test_If_image_width_Is_unchanged_by_constructor() //Test if JpegImage constructor does not throw exception when cover image is not null
+        public void Encode_Test_if_throws_Exception_When_Message_Length_Is_Over_Limit() //TODO: Some errors with _addVertices, _encodeMessage, _encodeMCU, _writeScanData, Encode
         {
-            int imageWidth = 200;
-            int imageHeight = 100;
+            Bitmap b = new Bitmap(3, 3);
+            b.SetPixel(0,0, Color.White);
+            b.SetPixel(1,1,Color.DarkBlue);
+            b.SetPixel(0,1,Color.Red);
+            b.SetPixel(1,0,Color.Green);
+            b.SetPixel(2,2,Color.Purple);
+           
 
-            Bitmap bm = new Bitmap(imageWidth, imageHeight);
-            JpegImage ji = new JpegImage(bm, 100, 4);
+            var result = new Bitmap(b, 2000, 2000);
+            var hello = new JpegImage(result, 100, 4);
+            int das = hello.GetCapacity();
+            int len = 40;
+            byte[] msg = new byte[len];
+            
+            
 
-            NUnit.Framework.Assert.AreEqual(imageWidth, ji.CoverImage.Width);
+            hello.Encode(msg);
         }
 
         [Test()]
-        public void JpegImage_Test_If_image_height_Is_unchanged_by_constructor() //Test if JpegImage constructor does not throw exception when cover image is not null
+        public void Save_Test_if_when_jpeg_writer_is_null_throws_exception()
         {
-            int imageWidth = 200;
-            int imageHeight = 100;
-
-            Bitmap bm = new Bitmap(imageWidth, imageHeight);
-            JpegImage ji = new JpegImage(bm, 100, 4);
-
-            NUnit.Framework.Assert.AreEqual(imageHeight, ji.CoverImage.Height);
+            JpegImage ji = new JpegImage(new Bitmap(200,100), 100, 4);
+            NUnit.Framework.Assert.Throws<Exception>(()=> ji.Save("test"));
         }
-        
+
         [Test()]
-        public void EncodeTest()
+        public void CalculateCosineCoefficients_Test() //TODO: Get formula for calc of CosCoef and fill out ExpectedCosCoef with real values
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+            JpegImage ji = new JpegImage(new Bitmap(200, 100), 100, 4); //Constructor calls calcCosineCoef
+
+            float[,] CosCoef = (float[,])pt.GetStaticField("CosinesCoefficients");
+
+            float[,] ExpectedCosCoef = new float[8, 8]
+            {
+                {1f, 0.980785251f, 0.9238795f, 0.8314696f, 0.707106769f, 0.555570245f, 0.382683426f, 0.195090324f}, 
+                {1f, 0.8314696f, 0.382683426f, -0.195090324f, -0.707106769f, -0.980785251f, -0.9238795f, -0.555570245f}, 
+                {1f, 0.555570245f, -0.382683426f, -0.980785251f, -0.707106769f, 0.195090324f, 0.923879504f, 0.831469595f}, 
+                {1f, 0.195090324f, -0.923879504f, -0.555570245f, 0.707106769f, 0.831469595f, -0.382683426f, -0.980785251f}, 
+                {1f, -0.195090324f, -0.923879504f, 0.555570245f, 0.707106769f, -0.831469595f, -0.382683426f, 0.980785251f}, 
+                {1f, -0.555570245f, -0.382683426f, 0.980785251f, -0.707106769f, -0.195090324f, 0.923879504f, -0.831469595f}, 
+                {1f, -0.831469595f, 0.382683426f, 0.195090324f, -0.707106769f, 0.980785251f, -0.923879504f, 0.555570245f},
+                {1f, -0.980785251f, 0.923879504f, -0.831469595f, 0.707106769f, -0.555570245f, 0.382683426f, -0.195090324f},
+            };
+           
+            NUnit.Framework.Assert.AreEqual(ExpectedCosCoef, CosCoef);
+        }
+
+        [Test()]
+        public void GetCapacity_Test()
+        {
+            var b = new Bitmap(2, 2);
+            b.SetPixel(0, 0, Color.Black);
+            b.SetPixel(1,0,Color.Blue);
+            b.SetPixel(0,1,Color.Red);
+            b.SetPixel(1,1,Color.White);
+
+            var scaledUnitBitmap = new Bitmap(b, 200, 100); //Scale the unit bitmap
+
+            JpegImage ji = new JpegImage(scaledUnitBitmap, 100, 4);
+
+            int capacity = ji.GetCapacity();
+
+            NUnit.Framework.Assert.AreEqual(33, capacity);
+        }
+
+        [Test()]
+        public void BreakDownMessage_Test() //TODO: check this test. In order to test logic regarding length of message we needed to drill down into "_splitMessageIntoSmallerComponents"
+        {
+            PrivateObject po = new PrivateObject(new JpegImage(new Bitmap(200, 100), 100, 4));
+
+            byte[] message = new byte[] {1,1,1};
+
+            po.Invoke("_breakDownMessage", message);
+
+            List<byte> messageList = new List<byte>();
+            messageList = (List<byte>)po.GetField("_message"); //Get the broken down message from instance of JpegImage class
+
+            List<byte> expectedList = new List<byte> {0, 0, 0, 0, 0, 0, 3, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1}; // What {1,1,1} corresponds to when broken down and has length encoded
+
+            NUnit.Framework.Assert.AreEqual(expectedList, messageList);
+        }
+
+        [Test()]
+        public void SplitMessageIntoSmallerComponents_Test()
+        {
+            //TODO: might need a test for this, but "BreakDownMessage_Test" might have it covered already
+            NUnit.Framework.Assert.Ignore();
+        }
+
+        // Most methods in between here only call jpegWriter or another method which calls it, JpegWriter will be tested on it's own. TODO: ask about this and delete
+
+        [Test()]
+        public void WriteHuffmanSegment_Test_Combined() //TODO: Find out how to access JpegWriter even when it's internal
         {
             JpegImage ji = new JpegImage(new Bitmap(200, 100), 100, 4);
-            PrivateObject obj = new PrivateObject(ji);
-            NUnit.Framework.Assert.Fail();
-            NUnit.Framework.Assert.Fail();
-           
+            PrivateObject po = new PrivateObject(ji);
+            
+            var joo = po.GetField("_jw");
+            //po.Invoke("_writeHuffmanSegment", new object[] {ji.YDCHuffman, 0, true});
+
+            NUnit.Framework.Assert.Ignore();
         }
 
         [Test()]
-        public void SaveTest()
+        public void PadCoverImage_Test_When_Cover_Is_Divisible_by_16()
         {
-            NUnit.Framework.Assert.Fail();
+            Bitmap coverImage = new Bitmap(16, 16);
+            PrivateObject po = new PrivateObject(new JpegImage(coverImage, 100, 4));
+
+            po.Invoke("_padCoverImage");
+
+            Bitmap returnedCoverImage = (Bitmap) po.GetField("CoverImage");
+
+            NUnit.Framework.Assert.AreEqual(coverImage, returnedCoverImage);
         }
 
         [Test()]
-        public void GetCapacityTest()
+        public void PadCoverImage_Test_When_Cover_Is_Not_Divisible_by_16_Test_Size()
         {
-            NUnit.Framework.Assert.Fail();
+            Bitmap b = new Bitmap(1,1);
+            b.SetPixel(0,0, Color.Black);
+            Bitmap coverImage = new Bitmap(b, 15, 15);
+            PrivateObject po = new PrivateObject(new JpegImage(coverImage, 100, 4));
+
+            po.Invoke("_padCoverImage");
+
+            Bitmap returnedCoverImage = (Bitmap) po.GetField("CoverImage");
+
+            Bitmap expectedCoverImage = new Bitmap(b, 16,16);
+
+            NUnit.Framework.Assert.AreEqual(expectedCoverImage.Size, returnedCoverImage.Size);
         }
+
+        [Test()]
+        public void PadCoverImage_Test_When_Cover_Is_Not_Divisible_by_16_Test_Colour()
+        {
+            Bitmap b = new Bitmap(1, 1);
+            b.SetPixel(0, 0, Color.Black);
+            Bitmap coverImage = new Bitmap(b, 15, 15);
+            PrivateObject po = new PrivateObject(new JpegImage(coverImage, 100, 4));
+
+            po.Invoke("_padCoverImage");
+
+            Bitmap returnedCoverImage = (Bitmap)po.GetField("CoverImage");
+
+            Bitmap expectedCoverImage = new Bitmap(b, 16, 16);
+
+            NUnit.Framework.Assert.AreEqual(expectedCoverImage.GetPixel(15, 15), returnedCoverImage.GetPixel(15, 15));
+        } //TODO: maybe make more tests for padCoverImage
+
+        [Test()]
+        public void CopyBitmap_Test()
+        {
+            Bitmap b = new Bitmap(1, 1);
+            b.SetPixel(0, 0, Color.Black);
+            Bitmap testBitmapIn = new Bitmap(b, 200, 100);
+
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+
+            Bitmap copiedBitmap = (Bitmap)pt.InvokeStatic("_copyBitmap", new object[] {testBitmapIn, 200, 100});
+ 
+            NUnit.Framework.Assert.AreEqual(testBitmapIn.GetPixel(100, 50), copiedBitmap.GetPixel(100, 50));
+        }
+
+        [Test()]
+        public void SplitToChannels_Test()
+        {
+            Bitmap b = new Bitmap(2,2);
+            b.SetPixel(0,0, Color.Black);   // R = 0,   G = 0,   B = 0 
+            b.SetPixel(1,0, Color.Green);   // R = 0,   G = 128, B = 0
+            b.SetPixel(0,1, Color.Red);     // R = 128, G = 0,   B = 0
+            b.SetPixel(1,1,Color.Blue);     // R = 0,   G = 0,   B= 128
+
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+
+
+            sbyte[][,] returnedChannels = (sbyte[][,])pt.InvokeStatic("_splitToChannels", b);
+
+            sbyte[,] ch1 = {
+                {-128, -51}, {-52, -98}
+            };
+            sbyte[,] ch2 = {
+                {0, -43}, {-42, 127}
+            };
+            sbyte[,] ch3 = {
+                {0, 127}, {-53, -20}
+            };
+
+            sbyte[][,] expectedChannels = {ch1, ch2, ch3};
+
+            NUnit.Framework.Assert.AreEqual(expectedChannels, returnedChannels);
+        }
+
+        //Testing the small sub methods before EncodeAndQuantizeValues
+        [Test()]
+        public void DownSample_Test()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+            float[,] inputValues = new float[16, 16];
+            int i = 0;
+            for (int x = 0; x < 16; x++) //Fill input value with values from 1 to 255
+            {
+                for (int y = 0; y < 16; y++)
+                {
+                    inputValues[x, y] = i++;
+                }
+            }
+
+            float[,] downSampleValues = (float[,])pt.InvokeStatic("_downSample", inputValues);
+
+            float[,] expectedDownSampledValues = new float[8, 8]
+            {
+                {8.5f,  10.5f, 12.5f, 14.5f, 16.5f, 18.5f, 20.5f, 22.5f},
+                {40.5f, 42.5f, 44.5f, 46.5f, 48.5f, 50.5f, 52.5f, 54.5f},
+                {72.5f, 74.5f, 76.5f, 78.5f, 80.5f, 82.5f, 84.5f, 86.5f},
+                {104.5f, 106.5f, 108.5f, 110.5f, 112.5f, 114.5f, 116.5f, 118.5f},
+                {136.5f, 138.5f, 140.5f, 142.5f, 144.5f, 146.5f, 148.5f, 150.5f},
+                {168.5f, 170.5f, 172.5f, 174.5f, 176.5f, 178.5f, 180.5f, 182.5f},
+                {200.5f, 202.5f, 204.5f, 206.5f, 208.5f, 210.5f, 212.5f, 214.5f},
+                {232.5f, 234.5f, 236.5f, 238.5f, 240.5f, 242.5f, 244.5f, 246.5f},
+            };
+
+            NUnit.Framework.Assert.AreEqual(expectedDownSampledValues, downSampleValues);
+
+        }
+
+        [Test()]
+        public void EncodeAndQuantizeValues_Test_()
+        {
+            
+        }
+        
     }
 }

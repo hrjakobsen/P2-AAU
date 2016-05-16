@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 
 namespace Stegosaurus {
@@ -11,7 +11,7 @@ namespace Stegosaurus {
         private int _m;
         private Bitmap CoverImage { get; }
         private readonly List<byte> _message = new List<byte>();
-        private readonly double[,] _cosinesCoefficients = new double[8, 8];
+        private readonly double[,] _cosines = new double[8, 8];
         private readonly int[] _lastDc = { 0, 0, 0 };
         private readonly List<Tuple<int[,], HuffmanTable, HuffmanTable, int>> _quantizedBlocks = new List<Tuple<int[,], HuffmanTable, HuffmanTable, int>>();
         private readonly List<int> _nonZeroValues = new List<int>();
@@ -141,7 +141,7 @@ namespace Stegosaurus {
         private void _calculateCosineCoefficients() {
             for (int j = 0; j < 8; j++) {
                 for (int i = 0; i < 8; i++) {
-                    _cosinesCoefficients[j, i] = Math.Cos((2 * j + 1) * i * Math.PI / 16);
+                    _cosines[j, i] = Math.Cos((2 * j + 1) * i * Math.PI / 16);
                 }
             }
         }
@@ -321,20 +321,18 @@ namespace Stegosaurus {
 
         private void _writeScanData() {
             _s.Restart();
-            Bitmap paddedCoverImage = _padCoverImage();
+            _padCoverImage();
             _s.Stop();
             _setTimings("_padCoverImage", _s.ElapsedMilliseconds);
             _s.Restart();
-            double[][,] channelValues = _splitToChannels(paddedCoverImage);
+            double[][,] channelValues = _splitToChannels(CoverImage);
             _s.Stop();
             _setTimings("_splitToChannels", _s.ElapsedMilliseconds);
             BitList bits = new BitList();
 
-            _encodeMCU(bits, channelValues, paddedCoverImage.Width, paddedCoverImage.Height);
+            _encodeMCU(bits, channelValues, CoverImage.Width, CoverImage.Height);
             _jw.WriteBytes(_flush(bits));
         }
-
-
 
         private static byte[] _flush(BitList bits) {
             while (bits.Count % 8 != 0) {
@@ -442,19 +440,30 @@ namespace Stegosaurus {
         private void _encodeMessage() {
             Graph graph = new Graph();
 
-            //Add vertices for each part of the message
-            _addVertices(graph);
+            for (int i = 0; i < 15; i += 2) {
+                graph.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0], 4));
+                _message.RemoveAt(0);
+            }
+
+            int valuesNeeded = _message.Count * 16 / (int)Math.Log(M, 2) - 1;
+            for (int i = 16; i < valuesNeeded; i += 2) {
+                if (_message.Count == 0) {
+                    break;
+                }
+                graph.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0], M));
+                _message.RemoveAt(0);
+            }
 
             _s.Restart();
-            List<Vertex> toBeChanged = graph.Vertices.Where(x => (x.SampleValue1 + x.SampleValue2).Mod(x.Modulo) != x.Message).ToList();
-            int length = toBeChanged.Count;
             int threshold = 5;
-            for (int i = 0; i < length; i++) {
-                for (int j = i + 1; j < length; j++) {
-                    _addEdge(true, true, toBeChanged[i], toBeChanged[j], threshold, graph);
-                    _addEdge(true, false, toBeChanged[i], toBeChanged[j], threshold, graph);
-                    _addEdge(false, true, toBeChanged[i], toBeChanged[j], threshold, graph);
-                    _addEdge(false, false, toBeChanged[i], toBeChanged[j], threshold, graph);
+            //World's worst loops (O(n^2) shiet)
+            //Find alle the possible switches between vertices and add them as edges
+            foreach (Vertex currentVertex in graph.Vertices) {
+                foreach (Vertex otherVertex in graph.Vertices.Where(otherVertex => currentVertex != otherVertex)) {
+                    _addEdge(true, true, currentVertex, otherVertex, threshold, graph);
+                    _addEdge(true, false, currentVertex, otherVertex, threshold, graph);
+                    _addEdge(false, true, currentVertex, otherVertex, threshold, graph);
+                    _addEdge(false, false, currentVertex, otherVertex, threshold, graph);
                 }
             }
             _s.Stop();
@@ -467,24 +476,11 @@ namespace Stegosaurus {
             _mergeGraphAndQuantizedValues(graph);
         }
 
-        private void _addVertices(Graph g) {
-            for (int i = 0; i < 15; i += 2) {
-                g.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0], 4));
-                _message.RemoveAt(0);
-            }
-
-            for (int i = 16; _message.Any(); i += 2) {
-                g.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0], M));
-                _message.RemoveAt(0);
-            }
-        }
-        
         private static void _addEdge(bool firstFirst, bool secondFirst, Vertex first, Vertex second, int threshold, Graph g) {
-            int weight = Math.Abs((firstFirst ? first.SampleValue1 : first.SampleValue2) - (secondFirst ? second.SampleValue1 : second.SampleValue2));
-            if (weight < threshold) {
-                if (((firstFirst ? first.SampleValue2 : first.SampleValue1) + (secondFirst ? second.SampleValue1 : second.SampleValue2)).Mod(first.Modulo) == first.Message) {
-                    if (((firstFirst ? first.SampleValue1 : first.SampleValue2) + (secondFirst ? second.SampleValue2 : second.SampleValue1)).Mod(second.Modulo) == second.Message) {
-                        Edge e = new Edge(first, second, weight, firstFirst, secondFirst);
+            if (((firstFirst ? first.SampleValue2 : first.SampleValue1) + (secondFirst ? second.SampleValue1 : second.SampleValue2)).Mod(first.Modulo) == first.Message) {
+                if (((firstFirst ? first.SampleValue1 : first.SampleValue2) + (secondFirst ? second.SampleValue2 : second.SampleValue1)).Mod(second.Modulo) == second.Message) {
+                    Edge e = new Edge(first, second, firstFirst, secondFirst);
+                    if (e.Weight < threshold) {
                         g.Edges.Add(e);
                     }
                 }
@@ -582,7 +578,7 @@ namespace Stegosaurus {
                     double cCoefficient = _c(i, j);
                     for (int x = 0; x < 8; x++) {
                         for (int y = 0; y < 8; y++) {
-                            tempSum += cCoefficient * block8[x, y] * _cosinesCoefficients[x, i] * _cosinesCoefficients[y, j];
+                            tempSum += cCoefficient * block8[x, y] * _cosines[x, i] * _cosines[y, j];
                         }
                     }
                     cosineValues[i, j] = tempSum;
@@ -628,33 +624,19 @@ namespace Stegosaurus {
         private static double[][,] _splitToChannels(Bitmap image) {
             double[][,] channels = new double[3][,];
             int imageWidth = image.Width, imageHeight = image.Height;
+
             for (int i = 0; i < 3; i++) {
                 channels[i] = new double[image.Width, image.Height];
             }
 
-            BitmapData bmpData = image.LockBits(new Rectangle(0, 0, imageWidth, imageHeight), ImageLockMode.ReadWrite, image.PixelFormat);
-            IntPtr ptr = bmpData.Scan0;
-            int bytesPerPixel = bmpData.PixelFormat == PixelFormat.Format24bppRgb ? 3 : 4;
-            int imageSizeInBytes = bmpData.Stride * bmpData.Height;
-            byte[] data = new byte[imageSizeInBytes];
-
-            //Copy imageSizeInBytes bytes from bData into data
-            System.Runtime.InteropServices.Marshal.Copy(ptr, data, 0, imageSizeInBytes);
-
-            for (int i = 0; i < imageSizeInBytes - bytesPerPixel; i += bytesPerPixel) {
-                int x = (i / bytesPerPixel) % imageWidth;
-                int y = (i / bytesPerPixel) / imageWidth;
-
-                byte r = data[i + 2];
-                byte g = data[i + 1];
-                byte b = data[i];
-
-                channels[0][x, y] = 0.299 * r + 0.587 * g + 0.114 * b - 128;
-                channels[1][x, y] = -0.168736 * r - 0.331264 * g + 0.5 * b;
-                channels[2][x, y] = 0.5 * r - 0.418688 * g - 0.081312 * b;
+            for (int y = 0; y < imageHeight; y++) {
+                for (int x = 0; x < imageWidth; x++) {
+                    Color pixel = image.GetPixel(x, y);
+                    channels[0][x, y] = 0.299 * pixel.R + 0.587 * pixel.G + 0.114 * pixel.B - 128;
+                    channels[1][x, y] = -0.168736 * pixel.R - 0.331264 * pixel.G + 0.5 * pixel.B;
+                    channels[2][x, y] = 0.5 * pixel.R - 0.418688 * pixel.G - 0.081312 * pixel.B;
+                }
             }
-
-            image.UnlockBits(bmpData);
 
             return channels;
         }
@@ -671,10 +653,15 @@ namespace Stegosaurus {
             }
 
             if (newWidth == oldWidth && newHeight == oldHeight) {
-                return CoverImage;
+                return;
             }
 
-            Bitmap paddedCoverImage = _copyBitmap(CoverImage, newWidth, newHeight);
+            Bitmap paddedCoverImage = new Bitmap(newWidth, newHeight);
+            for (int coverHeight = 0; coverHeight < oldHeight; coverHeight++) { //Copy all of cover image to paddedimage
+                for (int coverWidth = 0; coverWidth < oldWidth; coverWidth++) {
+                    paddedCoverImage.SetPixel(coverWidth, coverHeight, CoverImage.GetPixel(coverWidth, coverHeight));
+                }
+            }
 
             for (int rows = 0; rows < oldHeight; rows++) {
                 for (int extraPixelsX = oldWidth; extraPixelsX < newWidth; extraPixelsX++) {
@@ -694,17 +681,7 @@ namespace Stegosaurus {
                 }
             }
 
-            return paddedCoverImage;
-        }
-
-        private static Bitmap _copyBitmap(Bitmap bitmapIn, int width, int height) {
-            Bitmap bitmapOut = new Bitmap(width, height);
-            Graphics g = Graphics.FromImage(bitmapOut);
-            Rectangle rect = new Rectangle(0, 0, bitmapIn.Width, bitmapIn.Height);
-            g.DrawImage(bitmapIn, rect, rect, GraphicsUnit.Pixel);
-            g.Dispose();
-
-            return bitmapOut;
+            CoverImage = paddedCoverImage;
         }
 
         private void _writeEndOfImage() {
@@ -773,11 +750,12 @@ namespace Stegosaurus {
             return number < 0 ? (ushort)~Math.Abs(number) : (ushort)Math.Abs(number);
         }
 
+
         public int GetCapacity() {
-            Bitmap paddedCoverImage = _padCoverImage();
-            double[][,] YCbCrChannels = _splitToChannels(paddedCoverImage);
-            int imageHeight = paddedCoverImage.Height;
-            int imageWidth = paddedCoverImage.Width;
+            _padCoverImage();
+            double[][,] YCbCrChannels = _splitToChannels(CoverImage);
+            int imageHeight = CoverImage.Height;
+            int imageWidth = CoverImage.Width;
 
             if (_quantizedBlocks.Count == 0) {
                 _quantizeValues(YCbCrChannels, imageWidth, imageHeight);

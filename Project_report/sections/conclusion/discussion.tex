@@ -4,9 +4,43 @@ Specifically we saved an image inside of another PNG-image.
 While the differences in the image with and without the message-image were hardly noticeable to the human eye, we did find that comparing colour histograms of the two images revealed the fact that changes had been made.
 In an effort to diminish this problem, the graph-theoretical approach we implemented attempted to move pixels around in the image, rather than change their values.
 This meant that colour histograms of the image before and after the message had been encoded should look very similar, almost identical.
-Any changes would come from the SMALL?!?! (25-40%????) percentage of the quantized DCT values used in the encoding that we did not find any interchangeable values for.
+Any changes would come from the unmatched pairs: the quantized DCT values used in the encoding that we did not find any interchangeable values for.
 When this happened we were forced to change the individual values, which led to a change in the colour composition of the image.
-Using this method we expected the change to be small enough that it would not immediately draw attention to the image, if it was being subjected to a colour histogram.
+Using this method we expected the changes to be small enough that it would not immediately draw attention to the image, if it was being subjected to a colour histogram.
+
+To find out roughly how many of these forces there were in a given image, we used our program to save different messages in different images.
+The used five different message lengths: 70, 140, 280, 560 and 1120 bytes.
+Each message consisted of the the ASCII characters A-Z repeated to fill out the message.
+Each of these messages were encoded in four images with varying motives, but the same resolution (1920x1080).
+The images can be seen in figure \ref{fig:four_test_images}.
+We used a cartoon-like drawing of a cat to see how our software would work on an image that was not ideal for the JPEG format.
+The landscape image contained many different colors and very complex patterns, which made it ideal for JPEG compression.
+The same could be said for the tiger, but it contained larger areas of similar colours than the landscape did.
+The image of the snowy forrest road contained very few colour nuances, but was almost made up of the luminance channel.
+This led to a total of 20 different values as seen in table \ref{fig:forces_swaps}.
+
+
+
+
+It became apparant that a longer message required fewer forces. 
+This made sense, seeing as a longer message meant a larger graph with more edges and therefore possible ways of swapping values.
+During developtment of the programme we played around with the idea of using more vertices than what was required for the message, as we predicted it would mean fewer forces.
+These predictions would seem to be correct, but we never implemented the idea for two reasons.
+One, we were not entirely certain how to do it: should we just use twice as much as was actually needed?
+This would lead to using much more than what was neccesary with a longer message, since the the improvement quickly diminishes with longer messages.
+Instead it would make more sense to always use a certain minimum of values, so shorter messages could be encoded properly, but longer ones did not take too long to encode.
+What were to happen if the image simply did not contain enough values then? 
+Should the programme inform the user that they needed to use a larger image or attempt to encode the message with the vertices it could make?
+What would this mean for the \lstinline|GetCapacity| method? 
+Should it take into consideration these extra values or just ignore it entirely?
+An entirely different approach would be to let the user decide themselves, how many values they wished the algorithm to use. 
+Presenting this in a user-friendly way consituted a chanllenge in itself though.
+
+The second reason we did not implement it was due to performance concerns.
+Since our programme performed rather poorly during most of the developtment we considered it a very bad idea to construct a larger graph than we already were.
+Seing as we managed to optimise the programme quite HEFTILY, we could have properly implemented a solution regardles.
+
+
 
 An entirely different way of looking for changes in an image is by looking at the Euclidean distance of them.
 This can be done by calculating the distance between the colour values of each pixel in two equally sized images.

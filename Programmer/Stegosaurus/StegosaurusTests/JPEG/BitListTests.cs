@@ -29,50 +29,41 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void BitListTest_Construction_Of_negative_length_Bitlist() //TODO: do checks on this test
+        public void BitListTest_Construction_Of_negative_length_Bitlist()
         {
-            try
-            {
-                BitList bl = new BitList(-1);
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                NUnit.Framework.Assert.Pass();
-            }
-
+            Assert.Catch<ArgumentOutOfRangeException>(() => new BitList(-1));
         }
 
         [Test()]
-        public void GetEnumeratorTest() //TODO: make test which checks if yield return works, so bl should return with 8 zeros?
+        public void Enumerable_MultipleValues_LoopsThroughAllAddedValues()
         {
-            BitList bl = new BitList(8);
-
-            bl.GetEnumerator();
-            NUnit.Framework.Assert.Fail();
+            BitList bl = new BitList(8) {true};
+            //Assert that the first 8 bits are false, and the last value is true
+            Assert.True(!bl.Take(8).Any(bit => bit) && bl.Last()); 
         }
 
         [Test()]
-        public void InsertTest_Insertion_On_Index()
+        public void InsertTest_IndexInMiddle_InsertionOnIndex()
         {
             BitList bl = new BitList(8);
 
-            bl.Insert(3, true);
+            bl.InsertAt(3, true);
             
             NUnit.Framework.Assert.AreEqual(true, bl[3]);
         }
 
         [Test()]
-        public void AddTest_If_Add_Bool_Val_Adds_bit()
+        public void AddTest_IfAddBoolVal_AddsBit()
         {
             BitList bl = new BitList(8);
-
+            
             bl.Add(true);
 
             NUnit.Framework.Assert.AreEqual(true, bl[8]);
         }
 
         [Test()]
-        public void AddTest_If_Add_Int_Val_Adds_bit()
+        public void AddTest_IfAddIntVal_AddsBit()
         {
             BitList bl = new BitList(8);
 
@@ -80,5 +71,37 @@ namespace Stegosaurus.Tests
 
             NUnit.Framework.Assert.AreEqual(true, bl[8]);
         }
+
+        [Test()]
+        public void CheckedAdd_AddedEigthTrueInARow_AddsEightZeroes() {
+            const int numberOfStartElements = 5;
+            BitList bl = new BitList(numberOfStartElements);
+
+            for (int i = 0; i < 8; i++) {
+                bl.CheckedAdd(1);
+            }
+
+            Assert.AreEqual(16 + numberOfStartElements, bl.Count);
+            for (int i = 8 + numberOfStartElements; i < 16 + numberOfStartElements; i++) {
+                Assert.False(bl[i]);
+            }
+        }
+
+        [Test()]
+        public void CheckedAdd_Added7TrueInARowAndOneFalse_DoesNotAddEightZeroes() {
+            const int numberOfStartElements = 5;
+            BitList bl = new BitList(numberOfStartElements);
+
+            for (int i = 0; i < 7; i++) {
+                bl.CheckedAdd(1);
+            }
+            bl.CheckedAdd(0);
+
+            Assert.AreEqual(8 + numberOfStartElements, bl.Count);
+            for (int i = 8 + numberOfStartElements; i < 8 + numberOfStartElements; i++) {
+                Assert.False(bl[i]);
+            }
+        }
+
     }
 }

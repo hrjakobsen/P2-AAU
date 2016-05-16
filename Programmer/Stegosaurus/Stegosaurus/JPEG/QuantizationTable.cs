@@ -1,4 +1,6 @@
-﻿namespace Stegosaurus {
+﻿using System;
+
+namespace Stegosaurus {
     public class QuantizationTable {
         public byte[] Entries { get; }
         public byte[] ZigzagEntries { get; }
@@ -25,6 +27,9 @@
         }
 
         public QuantizationTable Scale(int quality) {
+            if (quality < 0 || quality > 100) {
+                throw new ArgumentOutOfRangeException(nameof(quality), "Quality must be in the range [0,100]");
+            }
             double scale = ((double)(100 - quality) / 53 + 0.125);
             byte[] scaledEntries = new byte[64];
             for (int entryIndex = 0; entryIndex < 64; entryIndex++) {

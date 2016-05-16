@@ -49,4 +49,12 @@ Another way to show the representation of a graph, is simply a list of vertices 
 Each edge then simply stores what vertices it connects. 
 This makes it very easy to loop through all edges, but at the same time makes it computationally expensive to remove certain edges from the graph (ie. 
 to remove all edges between two vertices).
-%Wait until we have checked if we can make adjacency list work
+
+There are always other types of adjacency lists where each vertex keeps a list of the edges connecting them to other vertices. Here we get the advantages of having an actual \lstinline|Edge| object, while still being able to quickly find all neighbours of a vertex.
+
+We have chosen to use the method of simply keeping a list of all vertices, instead of each vertex keeping a list of its neighbour. There are three main reasons for ding this.
+\begin{itemize}
+	\item Difficult removing all edges touch vertices
+	\item Only do half the vertex-pairs
+	\item Having to sort all edges by weight
+\end{itemize}

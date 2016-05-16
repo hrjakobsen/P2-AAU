@@ -11,7 +11,7 @@ namespace Stegosaurus {
         private int _m;
         private Bitmap CoverImage { get; }
         private readonly List<byte> _message = new List<byte>();
-        private readonly double[,] _cosines = new double[8, 8];
+        private readonly double[,] _cosinesCoefficients = new double[8, 8];
         private readonly int[] _lastDc = { 0, 0, 0 };
         private readonly List<Tuple<int[,], HuffmanTable, HuffmanTable, int>> _quantizedBlocks = new List<Tuple<int[,], HuffmanTable, HuffmanTable, int>>();
         private readonly List<int> _nonZeroValues = new List<int>();
@@ -68,11 +68,10 @@ namespace Stegosaurus {
                     case 2:
                     case 4:
                     case 16:
-                    case 256:
                         _m = value;
                         break;
                     default:
-                        throw new ArgumentException("M must 2, 4, 16 or 256!");
+                        throw new ArgumentException("M must 2, 4 or 16!");
                 }
             }
         }
@@ -141,7 +140,7 @@ namespace Stegosaurus {
         private void _calculateCosineCoefficients() {
             for (int j = 0; j < 8; j++) {
                 for (int i = 0; i < 8; i++) {
-                    _cosines[j, i] = Math.Cos((2 * j + 1) * i * Math.PI / 16);
+                    _cosinesCoefficients[j, i] = Math.Cos((2 * j + 1) * i * Math.PI / 16);
                 }
             }
         }
@@ -321,18 +320,20 @@ namespace Stegosaurus {
 
         private void _writeScanData() {
             _s.Restart();
-            Bitmap paddedCoverImage = _padCoverImage();
+            _padCoverImage();
             _s.Stop();
             _setTimings("_padCoverImage", _s.ElapsedMilliseconds);
             _s.Restart();
-            double[][,] channelValues = _splitToChannels(paddedCoverImage);
+            double[][,] channelValues = _splitToChannels(CoverImage);
             _s.Stop();
             _setTimings("_splitToChannels", _s.ElapsedMilliseconds);
             BitList bits = new BitList();
 
-            _encodeMCU(bits, channelValues, paddedCoverImage.Width, paddedCoverImage.Height);
+            _encodeMCU(bits, channelValues, CoverImage.Width, CoverImage.Height);
             _jw.WriteBytes(_flush(bits));
         }
+
+
 
         private static byte[] _flush(BitList bits) {
             while (bits.Count % 8 != 0) {
@@ -578,7 +579,7 @@ namespace Stegosaurus {
                     double cCoefficient = _c(i, j);
                     for (int x = 0; x < 8; x++) {
                         for (int y = 0; y < 8; y++) {
-                            tempSum += cCoefficient * block8[x, y] * _cosines[x, i] * _cosines[y, j];
+                            tempSum += cCoefficient * block8[x, y] * _cosinesCoefficients[x, i] * _cosinesCoefficients[y, j];
                         }
                     }
                     cosineValues[i, j] = tempSum;
@@ -632,16 +633,17 @@ namespace Stegosaurus {
             for (int y = 0; y < imageHeight; y++) {
                 for (int x = 0; x < imageWidth; x++) {
                     Color pixel = image.GetPixel(x, y);
-                    channels[0][x, y] = 0.299 * pixel.R + 0.587 * pixel.G + 0.114 * pixel.B - 128;
-                    channels[1][x, y] = -0.168736 * pixel.R - 0.331264 * pixel.G + 0.5 * pixel.B;
-                    channels[2][x, y] = 0.5 * pixel.R - 0.418688 * pixel.G - 0.081312 * pixel.B;
+                    byte r = pixel.R, g = pixel.G, b = pixel.B;
+                    channels[0][x, y] = 0.299 * r + 0.587 * g + 0.114 * b - 128;
+                    channels[1][x, y] = -0.168736 * r - 0.331264 * g + 0.5 * b;
+                    channels[2][x, y] = 0.5 * r - 0.418688 * g - 0.081312 * b;
                 }
             }
 
             return channels;
         }
 
-        private Bitmap _padCoverImage() {
+        private void _padCoverImage() {
             int oldWidth = CoverImage.Width, oldHeight = CoverImage.Height;
             int newWidth = oldWidth, newHeight = oldHeight;
 
@@ -653,18 +655,10 @@ namespace Stegosaurus {
             }
 
             if (newWidth == oldWidth && newHeight == oldHeight) {
-                return CoverImage;
+                return;
             }
 
-
-            //Bitmap paddedCoverImage = _copyBitmap(CoverImage, newWidth, newHeight);
-
-            Bitmap paddedCoverImage = new Bitmap(newWidth, newHeight);
-            for (int coverHeight = 0; coverHeight < oldHeight; coverHeight++) { //Copy all of cover image to paddedimage
-                for (int coverWidth = 0; coverWidth < oldWidth; coverWidth++) {
-                    paddedCoverImage.SetPixel(coverWidth, coverHeight, CoverImage.GetPixel(coverWidth, coverHeight));
-                }
-            }
+            Bitmap paddedCoverImage = _copyBitmap(CoverImage, newWidth, newHeight);
 
             for (int rows = 0; rows < oldHeight; rows++) {
                 for (int extraPixelsX = oldWidth; extraPixelsX < newWidth; extraPixelsX++) {
@@ -684,7 +678,7 @@ namespace Stegosaurus {
                 }
             }
 
-            return paddedCoverImage;
+            CoverImage = paddedCoverImage;
         }
 
         private static Bitmap _copyBitmap(Bitmap bitmapIn, int width, int height) {
@@ -765,10 +759,10 @@ namespace Stegosaurus {
 
 
         public int GetCapacity() {
-            Bitmap paddedCoverImage = _padCoverImage();
-            double[][,] YCbCrChannels = _splitToChannels(paddedCoverImage);
-            int imageHeight = paddedCoverImage.Height;
-            int imageWidth = paddedCoverImage.Width;
+            _padCoverImage();
+            double[][,] YCbCrChannels = _splitToChannels(CoverImage);
+            int imageHeight = CoverImage.Height;
+            int imageWidth = CoverImage.Width;
 
             if (_quantizedBlocks.Count == 0) {
                 _quantizeValues(YCbCrChannels, imageWidth, imageHeight);
