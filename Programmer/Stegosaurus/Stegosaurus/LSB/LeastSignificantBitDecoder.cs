@@ -18,7 +18,7 @@ namespace Stegosaurus {
             Color[] stegoArr = ImageToArray(new Bitmap(Filepath));
 
             List<byte> hideData = new List<byte>();
-
+            //Add all color components for saving information
             foreach (Color color in stegoArr) {
                 hideData.Add(color.R);
                 hideData.Add(color.G);
@@ -26,7 +26,7 @@ namespace Stegosaurus {
             }
 
             List<byte> message = new List<byte>();
-
+            //Get the length from the first 4 bytes (2 * 16 = 32 bits = sizeof(uint))
             uint length = 0;
             for (int i = 0; i < 16; i++) {
                 length <<= 2;

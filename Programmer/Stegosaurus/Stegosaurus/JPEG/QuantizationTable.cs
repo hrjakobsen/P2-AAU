@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Linq;
 
 namespace Stegosaurus {
@@ -62,6 +63,10 @@ namespace Stegosaurus {
             }
 
             return s;
+        }
+
+        public override int GetHashCode() {
+            return Entries[0].GetHashCode();
         }
 
         public override bool Equals(object obj)

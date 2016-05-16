@@ -6,7 +6,7 @@ namespace Stegosaurus {
     [Serializable]
     public class HuffmanTable {
 
-        public Dictionary<byte, HuffmanElement> Elements = new Dictionary<byte, HuffmanElement>();
+        public readonly Dictionary<byte, HuffmanElement> Elements = new Dictionary<byte, HuffmanElement>();
 
         public HuffmanTable() {
             
@@ -41,8 +41,9 @@ namespace Stegosaurus {
         }
 
         public override string ToString() {
-            Elements = Elements.OrderBy(x => x.Value.RunSize).ToDictionary(x => x.Key, x => x.Value);
-            return Elements.Aggregate("", (current, huffmanElement) => current + (huffmanElement + "\n"));
+            return Elements.OrderBy(x => x.Value.RunSize)
+                           .ToDictionary(x => x.Key, x => x.Value)
+                           .Aggregate("", (current, huffmanElement) => current + (huffmanElement + "\n"));
         }
 
         public HuffmanElement GetElementFromRunSize(byte run, byte size) {
@@ -68,6 +69,10 @@ namespace Stegosaurus {
                 }
             }
             return true;
+        }
+
+        public override int GetHashCode() {
+            return Elements.Count.GetHashCode();
         }
 
         #region DefaultTables

@@ -35,31 +35,17 @@ namespace Stegosaurus {
             }
         }
 
-        private byte _encodeComponent(byte component, byte toEncode, int messageBytePos ) {
-            /* Used to mask the correct bits of the RGB channels */
-            const byte coverMask = 0xFC;
-            byte[] messageMasks = { 0xC0, 0x30, 0xC, 0x3 };
-            return (byte)((byte)(component & coverMask) + ((byte)(toEncode & messageMasks[messageBytePos]) >> 2 * (3 - messageBytePos)));
-        }
-
-        
-
-        private byte _toComponent(byte component, int stegoBitPos) {
-            return (byte)((byte)(component & 0x3) << ((3 - stegoBitPos) * 2));
-        }
-
         public void Encode(byte[] message) {
 
-            List<byte> WholeMessage = message.ToList();
+            List<byte> wholeMessage = message.ToList();
+
+            //Use the first 4 bytes for saving the length
             uint len = (uint)message.Length;
+            wholeMessage.Insert(0, (byte)(len >> 24));
+            wholeMessage.Insert(1, (byte)((len & 0xff0000) >> 16));
+            wholeMessage.Insert(2, (byte)((len & 0xff00) >> 8));
+            wholeMessage.Insert(3, (byte)(len & 0xff));
 
-            WholeMessage.Insert(0, (byte)(len >> 24));
-            WholeMessage.Insert(1, (byte)((len & 0xff0000) >> 16));
-            WholeMessage.Insert(2, (byte)((len & 0xff00) >> 8));
-            WholeMessage.Insert(3, (byte)(len & 0xff));
-            int messageArrIndex = 0;
-
-            byte mask = 0x3;
             /* Flatten cover image */
             Color[] coverArr = ImageToArray(CoverImage);
 
@@ -70,28 +56,38 @@ namespace Stegosaurus {
                 hideData.Add(color.G);
                 hideData.Add(color.B);
             }
+            const byte mask = 0x3;
+            const int bytesPerMessageElement = 4;
 
-            for (int i = 0; i < WholeMessage.Count; i++) {
-                for (int j = 0; j < 4; j++) {
-                    hideData[i * 4 + j] >>= 2;
-                    hideData[i * 4 + j] <<= 2;
-                    hideData[i * 4 + j] += (byte)((WholeMessage[i] & (0x3 << ((3 - j)*2))) >> ((3 - j)*2));
+            for (int i = 0; i < wholeMessage.Count; i++) {
+                for (int j = 0; j < bytesPerMessageElement; j++) {
+                    //Remove the last two bits
+                    hideData[i * bytesPerMessageElement + j] = (byte)((hideData[i * bytesPerMessageElement + j] >> 2) << 2);
+                    
+                    //Add the bits from the message
+                    hideData[i * bytesPerMessageElement + j] += (byte)((wholeMessage[i] & (mask << ((bytesPerMessageElement - j) * 2))) >> ((bytesPerMessageElement - j) * 2));
                 }
             }
 
             /* Array for holding the flattened decoded image */
-            Color[] decodedArr = new Color[CoverImage.Width * CoverImage.Height];
+            Color[] stegoArray = new Color[CoverImage.Width * CoverImage.Height];
 
             int length = CoverImage.Width * CoverImage.Height;
             for (int i = 0; i < length; i ++) {
-                decodedArr[i] = Color.FromArgb(hideData[i * 3], hideData[i * 3 + 1], hideData[i * 3 + 2]);
+                stegoArray[i] = Color.FromArgb(hideData[i * 3], hideData[i * 3 + 1], hideData[i * 3 + 2]);
             }
             /* Convert the created array into a bitmap */
-            StegoImage = ArrayToImage(CoverImage.Width, CoverImage.Height, decodedArr);
+            StegoImage = ArrayToImage(CoverImage.Width, CoverImage.Height, stegoArray);
         }
 
         public int GetCapacity() {
-            return CoverImage.Width * CoverImage.Height * 3 * 2 / 8;
+            int numberOfPixels = CoverImage.Width * CoverImage.Height;
+            const int numberOfComponentsPerPixel = 3;
+            const int bitsPerByte = 8;
+            const int bitsSavedPerByte = 2;
+            const int bytesUsedForLength = 4;
+
+            return numberOfPixels * numberOfComponentsPerPixel * bitsSavedPerByte / bitsPerByte - bytesUsedForLength;
         }
 
         public void Save(string path) {
