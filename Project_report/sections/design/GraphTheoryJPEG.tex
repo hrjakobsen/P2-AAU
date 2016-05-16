@@ -10,7 +10,7 @@ The authors of the method define the following about using the technique on JPEG
     where the data will be embedded) are the coefficients of the DCT operation. 
     \item The DC component must not be used for embedding data, as these are often large numbers and would result in visible distortion of the image, if those were to be altered.
     \item AC components with a value of 0 must not be used for embedding data.
-    If they were to be used, the Run/Length encoding step would be useless, as there will be very few consecutive zeros in the scan data.
+    If they were to be used, the Run/Length encoding step would be useless, as there would be very few consecutive zeros in the scan data.
 \end{itemize}
 
 The process of encoding a JPEG image can be seen on figure \ref{fig:JPEGprocess}. 
@@ -93,22 +93,22 @@ So the number of quantized matrices can be calculated as seen in equation \ref{e
 \end{algorithmic}
 \end{algorithm}
 
-After finding the data in which we hide our message, we can encode the actual message, as seen in procedure \ref{algJPEGEncode}. 
+After finding the data in which our message is hidden, we can encode the actual message, as seen in procedure \ref{algJPEGEncode}. 
 After this procedure, we have a list of the valid coefficients with adjusted values, such that they contain the message. 
 To save this to the file, we must first reverse the process of procedure \ref{algJPEG} to replace the values in the quantized values, so that when they are saved to a file, they contain the same values as we have calculated. 
-This process would work for all data, but there is still one problem when decoding the data. We do not know where to stop and the decoder does not know the $m$ value that was used while embedding the data. 
-Let's tackle the problem about length first. 
+This process would work for all data. However, there is still one problem when decoding the data. We do not know where to stop and the decoder does not know the $m$ value that was used while embedding the data. 
+Let us tackle the problem about length first. 
 One often used technique is to have a certain marker to look for, and when that marker is encountered, the end of the data has been reached. 
 This exact method is actually used in JPEG; when reading through the scan data, we keep on reading until we reach the EOF (End of File) marker. 
 And when that marker is encountered, we have read all of the available scan data. 
-But as we want our image to be able to contain arbitrary data, we do not want our implementation to depend on a sequence of bits or bytes, that could be randomly found in the data we are embedding. 
+But as we want our image to be able to contain arbitrary data, we do not want our implementation to depend on a sequence of bits or bytes that could be randomly found in the data we are embedding. 
 So instead, we have to make sure that the decoder knows how much data to read before it starts to actually read it. 
 
 That is why we have decided to use the first 2 bytes of hidden data to contain information about the rest of the data. 
-These bytes must also contain information about what $m$ value is used in the data embedding. 
+These bytes must also contain information about which $m$ value is used in the data embedding. 
 We have chosen to use 14 bits to indicate the length of the message (in bytes) and the last 2 bits to indicate what $m$ value was used (00 = 2, 01 = 4, 10 = 16). 
-This leads to a obvious problem, how do we know how to decode the first two bytes, if the information about the $m$ value is hidden in these bytes? To overcome this problem, we have decided to always embed the first two bytes of information using $m = 4$. 
-This means that a minor change to \ref{algJPEGEncode} is needed, such that the first 16 bytes of information is embedded differently than the rest.
+This leads to a obvious problem: how do we know how to decode the first two bytes, if the information about the $m$ value is hidden in these bytes? To overcome this problem, we have decided to always embed the first two bytes of information using $m = 4$. 
+This means that a minor change to procedure \ref{algJPEGEncode} is needed, such that the first 16 bytes of information is embedded differently than the rest.
 
 \begin{algorithm}
 \caption{Encoding data into the image data}
@@ -135,7 +135,7 @@ This means that a minor change to \ref{algJPEGEncode} is needed, such that the f
     \ENDFOR
 \ENDFOR
 
-\STATE{sort edges in $G$ by weight and remove all edges with high weight}
+\STATE{sort edges in $G$ by weight and remove all edges with large weight}
 
 \WHILE {G has any edges}
     \STATE {Switch the values in the vertices connected by the first edge in the graph}

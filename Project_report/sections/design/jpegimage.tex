@@ -4,7 +4,7 @@
 In section \ref{sec:jpegStudy} we examined how a JPEG image is encoded and saved to a file.
 In this section we will use this knowledge to design a JPEG encoder that can be implemented into our program.
 By making the encoder, we hope that we can create a valid JFIF file where we have also implemented the graph theoretical approach as described in section \ref{sec:graphJPEG}.
-As we can recall from section \ref{sec:jpegStudy}, the conversion from a bitmap image to a JPEG image is the result from the following process:
+As we can recall from section \ref{sec:jpegStudy}, the conversion of a bitmap image to a JPEG image is the result from the following process, as shown in \ref{fig:JPEGprocess}:
 
 \begin{enumerate}
 	\item The image is split into three channels (Y, Cb and Cr).
@@ -30,7 +30,7 @@ The class then contains the unsigned data type along with the length of the bits
 So what we have is a Huffman table where we want to lookup a byte (the runsize) and get the corresponding bit encoding of the byte. To do this, this class must be implemented using a dictionary, where you can use the runsize as the key, and get the corresponding bitstring back. That way we can very efficiently translate from bytes to bit-encoding in the file. 
 
 
-To make the program easier to expand at a later time, the JPEG image class will implement the interface \lstinline|IImageEncoder|. Using an interface makes it much easier to later switch the implementation, or in our case the encoding method. If someone wanted to encode a PNG image instead of a JPEG image, they would just switch the \lstinline|JPEGImage| instance to for example a \lstinline|PNGImage|
+To make the programme easier to expand at a later time, the JPEG image class will implement the interface \lstinline|IImageEncoder|. Using an interface makes it much easier to later switch the implementation, or in our case the encoding method. If someone wanted to encode a PNG image instead of a JPEG image, they would just switch the \lstinline|JPEGImage| instance to for example a \lstinline|PNGImage|
 Implementing the interface means that the \lstinline|JPEGImage| class will have the following public methods:
 
 \begin{itemize}

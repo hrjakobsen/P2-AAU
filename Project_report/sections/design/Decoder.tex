@@ -6,7 +6,7 @@ As an encoded message is of no use if it cannot be retrieved, this section will 
 \subsection{Decoding the Huffman-encoded Values}
 As explained in section \ref{sec:graphJPEG}, the hidden message will be hidden in pairs of two quantized values in a certain modulo.
 To get the data out, we would have to first read the first 16 AC values that are not 0, in order to find what modulo the message is hidden with, and the length of the message, to not decode the whole image, and to give back the actual message as an output.
-Finding the length of message, as well as the value of modulo, requires you to decode the scan data as follows
+Finding the length of message, as well as the value of modulo, requires you to decode the scan data as follows:
 \begin{enumerate}
 	\item Read in 1 Huffman DC element for the Y channel
 	\item Read in 63 Huffman AC elements for the Y channel, or until EOB
@@ -16,11 +16,11 @@ Finding the length of message, as well as the value of modulo, requires you to d
 	\item Read in 1 Huffman DC element for the cr channel
 	\item Read in 63 Huffman AC elements for the cr channel, or until EOB
 \end{enumerate}
-To decode the huffman-encoded values according to the table shown in section \ref{tab:huffmanCodes}, the values with $1_2$ as the most significant bit, is a positive number, and can thus, in a language such as C\#, just be used without doing any calculations on it, seeing the containing variable's most most-significant bit, will be $0_2$.
+Decoding the Huffman-encoded values in accordance to the table shown in section \ref{tab:huffmanCodes} is not completely trivial. The values with $1_2$ as their most significant bit, are positive numbers, and can thus, in C\#, just be used as is, seeing as the containing variable's most-significant bit is $0_2$.
 
-To get the negative values, we will have to do some calculations. 
+To get the negative values, we have to do some calculations. 
 First, we notice how with each category, the minimum number is the same as adding one to the $2^n$ negative value, and the higher the bit-value becomes, the higher the actual value becomes as well. 
-Based on this information, we have derived algorithm \ref{algDecodeHuffmanValue}
+Based on this information, we have derived algorithm \ref{algDecodeHuffmanValue}.
 \input{sections/design/decodeHuffmanValue.tex}
 These values, and the preceding zeroes, will have to be read into an array in zig-zag ordering.
 
@@ -33,14 +33,13 @@ We will need 16 non-zero values in order to find the length of the encoded messa
 	\item Add the result to the variable mentioned in step 1
 	\item Repeat steps 1-4 six more times
 \end{enumerate}
-The value of modulo is hidden within the remaining two values, which can be found by doing steps 2 and 3. This value however, will just tell us what value modulo should be, thus we will need to implement a switch, which assigns the right value for the modulo variable.
+The value of modulo is hidden within the remaining two values, which can be found by doing steps 2 and 3. This value however, will just tell us what value modulo should be. This means that we will need to implement a switch, which assigns the right value for the modulo variable.
 
-The possible values will be as follows
+The possible values are as follows:
 \begin{itemize}
 	\item 0. Value of modulo is 2
 	\item 1. Value of modulo is 4
 	\item 2. Value of modulo is 16
-	\item 3. Value of modulo is 256
 \end{itemize}
 Once the length has been found, we can keep decoding the scan data segment until enough AC coefficients have been read to decode the full message, using the modulo value we just found.
 

@@ -1,8 +1,8 @@
 \section{User Interface}
 
-The user interface (UI) for Stegosaurus is going to be created in Visual Studio using C\# and Windows Forms.
+The user interface (UI) for Stegosaurus is going to be created in Visual Studio using C\# and WinForms.
 In some of our previous experiments, we have created a very basic UI.
-The only function these UIs could was to show the cover image, the hidden image and then the output.
+The only function of this UI was to show the cover image, the hidden image and then the output.
 In this example, the user had no visual cue on whether the programme had done as it was supposed to.
 This is something that we would like to improve on in our final design.
 
@@ -11,7 +11,8 @@ For example, whether they would like to use the least significant bit method or 
 Therefore, the final design should also include several different options, so as to customise the encoding of their image to something that suits their requirements.
 
 Another thing lacking in previous designs has been a guide through the programme and its functions together with a description of what they do.
-Previous versions have been less complex and perhaps did not require much explanation.However, now as the programme will have a larger set of different settings, we believe that it should be a requirement to have a short explanation of these, what impact they will have on the end result and what the programme will do in general.
+Previous versions have been less complex and perhaps did not require much explanation.
+However, now as the programme will have a larger set of different settings, we believe that it should be a requirement to have a short explanation of these, what impact they will have on the end result and what the programme will do in general.
 
 All of these things should illustrate to the user how the programme works and what it is doing when running.
 
@@ -26,12 +27,12 @@ We are taking the main ideas from this, where we show the user the images they h
 	\label{fig:LSBForm}
 \end{figure}
 We decided, however, that it was confusing to have three load buttons.
-As in the figure described before, the clean image is uploaded on one side, the message in the middle and the encoded image on the right.
+As in the figure described before, the cover image is uploaded on one side, the message in the middle and the encoded image on the right.
 And when you wanted to decode the image, the encoded image had to be uploaded on the right.
 Because of this we have therefore decided to only have two buttons, one for loading an image that is to be encoded or decoded and another for only loading the hidden message.
 
 We have decided to include some extra features to our overall design.
-These features include giving the user options to use their own huffman code and own quantization tables to make their encoded image as precise as possible.
+These features include giving the user options to use their own Huffman code and own quantization tables to make their encoded image as precise as possible.
 
 To do this, we decided that creating an options form would be best when it comes to guiding the user through our programme.
 The options box would consist of quality settings, choice of encoding method, customisation of Huffman tables and customisation of quantization.
@@ -41,7 +42,7 @@ All of these options allow the user to encode their image according to their spe
 After the image has been encoded, there is, naturally, a need to be able to decode the image.
 This means that the programme should be able to present these options to the user as openly as possible, as these are the key features of the programme.
 
-This, however, is slightly more advanced when it came to huffman coding as each channel has a different size.
+This, however, is slightly more advanced when it came to Huffman coding as each channel has a different length.
 
 As something more general, we have created a basic help guide to explain to the user how the programme works, and a short description of what each feature entails.
 Within this section, there will also be an 'about' that gives a description of what the programme is for and who it is by.
@@ -61,9 +62,6 @@ The following list is what the user interface will include:
 The encode and decode buttons work as they are.
 But if we also want to have our buttons to work as an option on whether the image has to be encoded or decoded, radio buttons, where encode or decode get selected, and thereby when decode is selected then the message image load button, will not be applicable for selection.
 
-In our original design, we had a maximize and minimise button next to close.
-We have since decided on changing this, so that the maximise and minimise buttons are disabled.
-This is to stop any change of size in the programme, so that all features of the programme retain their original size.
 This is shown in our main form as can be seen on figures \ref{fig:StegoLSBMain} and \ref{fig:StegoGTAMain2}.
 
 \item[LSB or Graph Theory Method]
@@ -105,7 +103,7 @@ Huffman tables requires a similar form to quantization tables. There are four ra
 
 \begin{figure}
 	\centering
-	\includegraphics[width=1\textwidth]{figures/StegoOptionHuff.png}
+	\includegraphics[width=1\textwidth]{figures/StegoOptionHuff2.png}
 	\caption{The picture above shows how the user will see the Huffman table.}
 	\label{fig:StegoOptionHuff2}
 \end{figure}
@@ -118,14 +116,14 @@ This slider was initially planned to be a part of the main form, but has since b
 \item[Progress bar]
 The original idea of showing the user what was happening with the programme by having a pop-up window has been replaced by having a loading sign by the cursor.
 This is also a way of showing the viewer that something is happening.
-If the implementation took more than a few minutes, it would maybe be more of a requirement, but as the programme works rather quickly, it does not seem necessary.
+If the programme took longer than a few minutes, it would maybe be more of a requirement to have such a progress bar, but as the programme works rather quickly, it does not seem necessary.
 
 \item[Help form]
 A very general description of what the programme does and descriptions of the different settings in the options form.
 We believe this to be important to the overall understanding of how the programme is to be used; something that our previous experiments have not had.
 \end{description}
 
-\subsection{Improvements}
+
 There are some things with the UI that can be seen as problematic.
 As the programme is now, there is no option to save one's custom settings when the programme is closed.
 This could have been a useful tool, as some of the components are quite time consuming, especially writing each value in the Huffman Tables and quantization table forms.

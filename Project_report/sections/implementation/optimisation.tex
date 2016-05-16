@@ -1,35 +1,35 @@
 \section{Optimisation}
-We had managed to implement several complex algorithms in our program.
+We have managed to implement several complex algorithms in our programme.
 This was immediately visible if the JPEG-encoder was run with larger images (such as the 4K (3840x2160) resolution images that the camera in many smart phones output) or if long messages of several hundred bytes were embedded in the image.
 Doing so took upwards of several minutes on slower computers, so some optimisation of the code was clearly a requirement.
 This section will focus on how these optimisations were implemented.
 \vspace*{12pt}
 
-To see what kinds of optimisations were useful and where they were needed, it was neccesary to objectively measure their worth.
+To see what kinds of optimisations were useful and where they were needed, it was necessary to objectively measure their worth.
 The easiest way to do this, was by timing how long different parts of the code took to complete.
 To show this, we created a Stopwatch object in JPEGImage, which allowed us to keep track of how many milliseconds something took.
 In order to ensure that we could compare the timings from different runs, it was important to establish some base rules to follow.
 We used the same image and message for every run.
 The image is a 4K resolution jpg image of a landscape with a hot air balloon in it.
-To ensure that we ran the method \lstinline|_padCoverImage| we removed eight pixels from the right and bottom sides of the image, bringing the resolution to 3832x2152.
+To ensure that we ran the method \lstinline|_padCoverImage|, we removed eight pixels from the right and bottom sides of the image, bringing the resolution to 3832x2152.
 The message consisted of 640 bytes of the ASCII characters \textit{A-Z}.
-This was equivalent to the length of four regular SMS messages end-to-end, and therefore constituted what we believed to be a message capable of containing enough information for most uses.
+This was equivalent to the length of four regular SMS messages end-to-end, and therefore constituted what we believed to be a message capable of containing enough information for most regular uses.
 
-All runs were done on the with the \textit{Release} option in Visual Studio, as there seemed to be a siginificant overhead on \textit{Debug}.
+All runs were done on the with the \textit{Release} option in Visual Studio, as there seemed to be a significant overhead on \textit{Debug}.
 Some basic optimisations such as moving the calculation of the upper-bound outside the declaration of for-loops had already been done at this point.
 While being a very simple thing to do, this did have some visible results in a few areas.
 
 We used a profiler to get a better understanding of which parts of the code took a substantial amount of time to run.
-The following methods and procedures constituted around 90 \% of the total time spent by our mostly unoptimised program, when run with the aforementioned parameters:
+The following methods and procedures constituted around 90\% of the total time spent by our mostly unoptimised programme, when run with the aforementioned parameters:
 \lstinline|_padCoverImage|, \lstinline|_splitToChannels|, \lstinline|_encodeAndQuantizeValues|, Adding edges to the graph, \lstinline|GetSwitches| and \lstinline|_huffmanEncoding|.
-All numbers are averages based on ten consectutive runs, following a single "warm-up run", whose results were not saved.
+All numbers are averages based on ten consecutive runs, following a single "warm-up run", whose results were not saved.
 This was done to get more stable timings, seeing as the first run always had slightly different times than the remaining.
 It is quite possible that this was caused by the garbage collector, since it changes its behaviour depending on the patterns of code being run.
 Therefore, running the programme once without saving the data allowed it to learn the memory allocation patterns of the code and react in the same way the next ten times it was run.
 The warm-up run also allowed us to run the decoder to make sure that the message was being encoded properly in the image and that our optimisations had not changed the programme's output.
-We did a total of three rounds of optimisations, each further improving the performance of the program.
-The four different versions of the program can be found in appendix \ref{app:E}.
-The first runs and the control for our further tests are shown in table \ref{fig:0genoptimised}
+We completed a total of three rounds of optimisations, each further improving the performance of the programme.
+The four different versions of the programme can be found in appendix \ref{app:E}.
+The first runs and the control for our further tests are shown in table \ref{fig:0genoptimised}.
 
 \vspace{12pt}
 \begin{threeparttable}[]
@@ -57,7 +57,7 @@ The first runs and the control for our further tests are shown in table \ref{fig
 It was quite obvious that \lstinline|_padCoverImage|, \lstinline|_splitToChannels| and \lstinline|_splitToChannels| were the most time-consuming.
 The first thing we focused on was \lstinline|_padCoverImage|, simply because it took almost twice as long as the second most time-consuming method.
 JPEG-encoding requires images with both a width and a height that is divisible by 16.
-If an image does not fulfill this, the last pixel is copied up to 15 times in the direction needed.
+If an image does not fulfil this, the last pixel is copied up to 15 times in the direction needed.
 Since the \lstinline|System.Drawing.Bitmap| class does not allow for resizing of images, we needed to copy the entire image before being able to pad its bottom and right side.
 We did this by looping through every pixel and copying it to the new \lstinline|Bitmap|.
 This was done in two nested for-loops that ran from zero the width and zero to the height respectively.
@@ -66,7 +66,7 @@ Every iteration used the \lstinline|Bitmap| class' methods \lstinline|GetPixel| 
 It is very likely that there is more to the property than simply returning a value and therefore quite a bit of overhead.
 More specifically the methods are both wrappers for native functions contained in \lstinline|GDI+|. 
 These might very well have to check several things before being able to return the pixel.
-Using the \lstinline|System.Drawing.Graphics| class as show in listing \ref{lst:copyBitmap} we were able to copy portions of \lstinline|Bitmap|s much more efficiently, \citep{MSDNBitmap} as can be seen in by the roughly 8000 \% decrease in time in figure \ref{fig:1genoptimised}.
+Using the \lstinline|System.Drawing.Graphics| class as show in listing \ref{lst:copyBitmap} we were able to copy portions of \lstinline|Bitmap|s much more efficiently, \citep{MSDNBitmap} as can be seen in by the roughly 8000 \% decrease in time in table \ref{fig:1genoptimised}.
 
 \begin{lstlisting}[firstnumber=684,label=lst:copyBitmap,caption={Copying a \lstinline|Bitmap| using the \lstinline|Graphics| class.}]
 private static Bitmap _copyBitmap(Bitmap bitmapIn, int width, int height) {
@@ -170,8 +170,8 @@ public void CheckedAdd(int val) {
 \end{threeparttable}
 
 \subsection{Second round of optimisations}
-While there was a slight speed-up by not accessing the properties of the \lstinline|Pixel| as often, it did not do much.
-It was apparant that any use of \lstinline|GetPixel| was going to cause problems on larger images.
+While there was a slight speed-up by not accessing the properties of the \lstinline|Pixel| as often, it did not do as much.
+It was apparent that any use of \lstinline|GetPixel| was going to cause problems on larger images.
 Using \lstinline|LockBits| we were able to use an \lstinline|IntPtr| to point at the data in memory. \citep{MSDNIntPtr}
 The reason for doing this instead of using an actual pointer, is the fact that pointers in C\# requires the code they are used in to be wrapped in the \lstinline|unsafe| keyword. 
 We could not be entirely sure of the implications of this on an Android device, since it can require a different privileges on different platforms.
@@ -194,9 +194,9 @@ foreach (Vertex currentVertex in graph.Vertices) {
 \end{lstlisting}
 
 We made sure to only look at the vertices whose vertices did not already fit with the message.
-With an M-value of four this meant that we would not have to check if we could add edges to around 25 \% of the vertices.
+With an M-value of four this meant that we would not have to check if we could add edges to around 25\% of the vertices.
 We further reduced the overall amount of times the loops ran, by making sure that the inner loop only looked ahead in the list of vertices, which meant we only had to add each edge once.
-Before this we were adding every edge twice, with the start and end vertex flipped.
+Before this, we were adding every edge twice, with the start and end vertex flipped.
 This meant that our list of edges was halved, which effectively reduced the running time of \lstinline|GetSwitches| to a fourth.
 These changes can be seen in listing \ref{lst:newEdgeAdding}.
 
@@ -216,11 +216,11 @@ for (int i = 0; i < length; i++) {
 
 On a smaller note, we also changed the order in which the three checks that took place in \lstinline|_addEdge|.
 Two of these check were more computationally demanding than the third.
-By moving the least demanding check so it was the first one evaluated, it meant the more demanding checks were not performed as often.
+By moving the least demanding check so it was the first one evaluated, it meant that the more demanding checks were not performed quite as often.
 This allowed us to save quite a few operations on each iteration.
-Furthermore we added the calculated edge weights to the edges instead of having a property that calculated them every time.
+Furthermore, we added the calculated edge weights to the edges instead of having a property that calculated them every time.
 This saved a few operations at a later time, when the edges were ordered by weight.
-The two different versions of \lstinline|_addEdge| can be seen in listings \ref{lst:oldAddEdge} and \ref{lst:newAddEdge}
+The two different versions of \lstinline|_addEdge| can be seen in listings \ref{lst:oldAddEdge} and \ref{lst:newAddEdge}.
 
 \begin{lstlisting}[firstnumber=478,label=lst:oldAddEdge, caption={The original \lstinline|_addEdge| method.}]
 private static void _addEdge(bool firstFirst, bool secondFirst, Vertex first, Vertex second, int threshold, Graph g) {
@@ -275,13 +275,13 @@ private static void _addEdge(bool firstFirst, bool secondFirst, Vertex first, Ve
 \end{threeparttable}
 
 \subsection{Third round of optimisations}
-The final optimisations we did, had the potential to make a big difference on some systems.
-Taking advantage of the multi-core design of most modern processors, we made some of the intensive parts of our code run in parallel on different cores.
-The effects of this can vary widely depending on the processor architechture and not all smart phones would be able to take advantage of it.
-The ones that can should be able to see a dramatic increase in performance of some parts of the code.
+The final optimisations we did, had the potential to make a large difference on some systems.
+Taking advantage of the multi-core design of most modern processors, we made some of the intensive parts of our code run in parallel on multiple threads, which can utilise multi-core systems.
+The effects of this can vary widely depending on the processor architecture and not all smart phones would be able to take advantage of it.
+The ones that can, should be able to see a dramatic increase in performance of some parts of the code.
 
-Running loops in parallel as we did required seeing the code and its data dependencies in a different way than we usually do.
-With the exception of loops, normally code is run from the top to the bottom.
+Running loops in parallel as we did, required seeing the code and its data dependencies in a different way than we usually do.
+With the exception of loops, normally, code is run from the top to the bottom.
 The data dependencies follow the same pattern.
 When it comes to multi-threaded code though, this pattern changes, since the same lines of code can potentially be accessed by different threads at the same time.
 This can lead to race-conditions, where the result of code can change depending on which thread gets to make changes first.
@@ -335,6 +335,6 @@ This did not seem to have an effect, so it is quite likely that the compiler alr
     \begin{tablenotes}
         \footnotesize{\item[\textdagger] In comparison to the respective timings in table \ref{fig:0genoptimised}}
     \end{tablenotes}
-    \caption{Third and last round of optimisations. Memory optimisations and multithreading of several methods.}
+    \caption{Third and last round of optimisations. Memory optimisations and multi-threading of several methods.}
     \label{fig:3genoptimised}
 \end{threeparttable}
