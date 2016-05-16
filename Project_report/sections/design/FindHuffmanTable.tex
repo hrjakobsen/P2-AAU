@@ -4,5 +4,5 @@ To find the encoded text using the Graph-Theoretic Approach, the first step is t
 As mentioned in section \ref{sec:jpegStudy}, the Huffman tables are placed in the beginning of a JPEG-file, prior to the scan-data session.
 Since a \lstinline|StreamReader| reads from the beginning of a file towards the end, it is important to proceed in much the same way.
 The first step is to look for the $DHT$ marker $0xFFC4$, since we then know that what follows is all the information about the Huffman table.
-To read in all the information we need, and store it in a table, we came up with algorithm \ref{huffmanAlgo} with a little inspiration from \cite{HuffmanDecoding}
+To read in all the information we need, and store it in a table, we came up with algorithm \ref{huffmanAlgo} with a little inspiration from \cite{HuffmanDecoding}.
 \input{sections/design/findHuffmanAlgo.tex}

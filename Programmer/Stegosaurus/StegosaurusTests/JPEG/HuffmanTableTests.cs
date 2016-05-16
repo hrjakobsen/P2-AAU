@@ -14,13 +14,13 @@ namespace Stegosaurus.Tests
         [Test()]
         public void HuffmanTableTest_Access_to_codeword()
         {
-            byte runSizeInput1 = 00000000;
-            ushort codeWordInput1 = 2; // 10 as byte
-            byte lengthInput1 = 8; // 1000 as byte
+            byte runSizeInput1 = 0x00;
+            ushort codeWordInput1 = 2; // 10 in base 2
+            byte lengthInput1 = 8; // 1000 in base 2
 
-            byte runSizeInput2 = 1;
-            ushort codeWordInput2 = 3; // 11 as byte
-            byte lengthInput2 = 8; // 1000 as byte
+            byte runSizeInput2 = 0x1;
+            ushort codeWordInput2 = 3; // 11 in base 2
+            byte lengthInput2 = 8; // 1000 in base 2
 
             HuffmanElement huffmanTestElement1 = new HuffmanElement(runSizeInput1, codeWordInput1, lengthInput1);
             HuffmanElement huffmanTestElement2 = new HuffmanElement(runSizeInput2, codeWordInput2, lengthInput2);
@@ -28,19 +28,19 @@ namespace Stegosaurus.Tests
             HuffmanTable huffTable1 = new HuffmanTable(huffmanTestElement1, huffmanTestElement2);
             
 
-            NUnit.Framework.Assert.AreEqual(2, huffTable1.Elements[00000000].CodeWord);
+            NUnit.Framework.Assert.AreEqual(2, huffTable1.Elements[0x00].CodeWord);
         }
 
         [Test()]
         public void CombinationsTest() //TODO: Maybe use a loop to check every element
         {
             byte runSizeInput1 = 00000000;
-            ushort codeWordInput1 = 2; // 10 as byte
-            byte lengthInput1 = 8; // 1000 as byte
+            ushort codeWordInput1 = 2; // 10 in base 2
+            byte lengthInput1 = 8; // 1000 in base 2
 
             byte runSizeInput2 = 1;
-            ushort codeWordInput2 = 3; // 11 as byte
-            byte lengthInput2 = 8; // 1000 as byte
+            ushort codeWordInput2 = 3; // 11 in base 2
+            byte lengthInput2 = 8; // 1000 in base 2
 
             HuffmanElement huffmanTestElement1 = new HuffmanElement(runSizeInput1, codeWordInput1, lengthInput1);
             HuffmanElement huffmanTestElement2 = new HuffmanElement(runSizeInput2, codeWordInput2, lengthInput2);
@@ -56,12 +56,12 @@ namespace Stegosaurus.Tests
         public void HasCodeTest1()
         {
             byte runSizeInput1 = 00000000;
-            ushort codeWordInput1 = 2; // 10 as byte
-            byte lengthInput1 = 8; // 1000 as byte
+            ushort codeWordInput1 = 2; // 10 in base 2
+            byte lengthInput1 = 8; // 1000 in base 2
 
             byte runSizeInput2 = 1;
-            ushort codeWordInput2 = 3; // 11 as byte
-            byte lengthInput2 = 8; // 1000 as byte
+            ushort codeWordInput2 = 3; // 11 in base 2
+            byte lengthInput2 = 8; // 1000 in base 2
 
             HuffmanElement huffmanTestElement1 = new HuffmanElement(runSizeInput1, codeWordInput1, lengthInput1);
             HuffmanElement huffmanTestElement2 = new HuffmanElement(runSizeInput2, codeWordInput2, lengthInput2);
@@ -75,12 +75,12 @@ namespace Stegosaurus.Tests
         public void HasCodeTest_for_null_when_no_element_has_code()
         {
             byte runSizeInput1 = 00000000;
-            ushort codeWordInput1 = 2; // 10 as byte
-            byte lengthInput1 = 8; // 1000 as byte
+            ushort codeWordInput1 = 2; // 10 in base 2
+            byte lengthInput1 = 8; // 1000 in base 2
 
             byte runSizeInput2 = 1;
-            ushort codeWordInput2 = 3; // 11 as byte
-            byte lengthInput2 = 8; // 1000 as byte
+            ushort codeWordInput2 = 3; // 11 in base 2
+            byte lengthInput2 = 8; // 1000 in base 2
 
             HuffmanElement huffmanTestElement1 = new HuffmanElement(runSizeInput1, codeWordInput1, lengthInput1);
             HuffmanElement huffmanTestElement2 = new HuffmanElement(runSizeInput2, codeWordInput2, lengthInput2);
@@ -94,12 +94,12 @@ namespace Stegosaurus.Tests
         public void ToStringTest()
         {
             byte runSizeInput1 = 00000000;
-            ushort codeWordInput1 = 2; // 10 as byte
-            byte lengthInput1 = 8; // 1000 as byte
+            ushort codeWordInput1 = 2; // 10 in base 2
+            byte lengthInput1 = 8; // 1000 in base 2
 
             byte runSizeInput2 = 1;
-            ushort codeWordInput2 = 3; // 11 as byte
-            byte lengthInput2 = 8; // 1000 as byte
+            ushort codeWordInput2 = 3; // 11 in base 2
+            byte lengthInput2 = 8; // 1000 in base 2
 
             HuffmanElement huffmanTestElement1 = new HuffmanElement(runSizeInput1, codeWordInput1, lengthInput1);
             HuffmanElement huffmanTestElement2 = new HuffmanElement(runSizeInput2, codeWordInput2, lengthInput2);
@@ -110,22 +110,22 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void GetElementFromRunSizeTest() //TODO: Check if GetElementFromRunSize is meant to work like this
+        public void GetElementFromRunSizeTest()
         {
-            byte runSizeInput1 = 00000000;
-            ushort codeWordInput1 = 2; // 10 as byte
-            byte lengthInput1 = 8; // 1000 as byte
+            byte runSizeInput1 = 0x00;
+            ushort codeWordInput1 = 2; // 10 in base 2
+            byte lengthInput1 = 8; // 1000 in base 2
 
-            byte runSizeInput2 = 1;
-            ushort codeWordInput2 = 3; // 11 as byte
-            byte lengthInput2 = 8; // 1000 as byte
+            byte runSizeInput2 = 0x01;
+            ushort codeWordInput2 = 3; // 11 in base 2
+            byte lengthInput2 = 8; // 1000 in base 2
 
             HuffmanElement huffmanTestElement1 = new HuffmanElement(runSizeInput1, codeWordInput1, lengthInput1);
             HuffmanElement huffmanTestElement2 = new HuffmanElement(runSizeInput2, codeWordInput2, lengthInput2);
 
             HuffmanTable huffTable1 = new HuffmanTable(huffmanTestElement1, huffmanTestElement2);
 
-            NUnit.Framework.Assert.AreEqual(huffmanTestElement2, huffTable1.GetElementFromRunSize(0, 1));
+            NUnit.Framework.Assert.AreEqual(huffmanTestElement2, huffTable1.GetElementFromRunSize(0x0, 0x1)); //combines to 0x01
         }
     }
 }

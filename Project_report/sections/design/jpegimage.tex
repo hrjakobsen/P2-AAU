@@ -16,7 +16,7 @@ As we can recall from section \ref{sec:jpegStudy}, the conversion from a bitmap 
 
 Some of these processes such as DCT are simply mathematical formulas performed on the data, and will not change from one image to another.
 However, other processes such as Huffman coding and quantization can yield very different results, depending on what Huffman- or quantization tables were used.
-If a quantization table with low values are used, the quality of the image would be higher, as the quantization process will not make as many of the entries in the 8x8 block zeroes.
+If a quantization table with low values is used, the quality of the image would be higher, as the quantization process will not make as many of the entries in the 8x8 block zeroes.
 A downside of quantization values being low is that because of the low amount of zeroes in the 8x8 blocks, the zero-runlength encoding would not be as efficient, which would mean a higher file-size.
 
 Because the Huffman- and quantization tables have such a tremendous impact on the resulting JPEG image, it would make sense to have the user able to change these to their liking.
@@ -26,10 +26,11 @@ Furthermore, a Huffman table is a collection of run-sizes and a bitstring of how
 These bitstrings can be saved in an unsigned data type, but because these bitstrings can start with the bit 0, there is no way to tell the length from the unsigned data type alone.
 Because of this, a class \lstinline|HuffmanElement| was created.
 The class then contains the unsigned data type along with the length of the bitstring.
-All in all, this means that our Huffman Table must contain a dictionary where the key is the run/size byte and the value is the \lstinline|HuffmanElement|.
 
-\iffalse
-The JPEG image class will implement the interface \lstinline|IImageEncoder|, as this is the class which will convert a bitmap image into a JPEG-image, as well as embed data into the saved image.
+So what we have is a Huffman table where we want to lookup a byte (the runsize) and get the corresponding bit encoding of the byte. To do this, this class must be implemented using a dictionary, where you can use the runsize as the key, and get the corresponding bitstring back. That way we can very efficiently translate from bytes to bit-encoding in the file. 
+
+
+To make the program easier to expand at a later time, the JPEG image class will implement the interface \lstinline|IImageEncoder|. Using an interface makes it much easier to later switch the implementation, or in our case the encoding method. If someone wanted to encode a PNG image instead of a JPEG image, they would just switch the \lstinline|JPEGImage| instance to for example a \lstinline|PNGImage|
 Implementing the interface means that the \lstinline|JPEGImage| class will have the following public methods:
 
 \begin{itemize}
@@ -38,9 +39,4 @@ Implementing the interface means that the \lstinline|JPEGImage| class will have 
 	\item \lstinline|public int GetCapacity()| which calculates how much information can be stored in the image.
 \end{itemize}
 
-The reason for the use of \lstinline|IImageEncoder| is that we can keep working on the actual implementation of the JPEG-encoder, while the ITC-group can build their system around the interface.
-Using an interface also means that we can later expand the system with other types of image encoders.
-An example of this could be a PNG-encoder using an LSB-method to embed data.
-This class would then also implement \lstinline|IImageEncoder|, andswitching between the two would be very easy.
-
-\fi
+Another reason for using the \lstinline|IImageEncoder| interface is that we can keep working on the actual implementation of the JPEG-encoder, while the ITC-group can build their system around the interface. The interface is very sparse, but offers the basic functionality which should be present in all types of image-encoders.

@@ -11,6 +11,6 @@ The Huffman tables will be read from a stream from a given filepath. This stream
 
 The listing also shows how we find the HuffmanTable and store it in the right property, based on its ID and Class
 
-Once we've read the in all the lengths of the Huffman-encoded values, the next we'll be reading, is the runsize of the Huffmancodes. To get the correct code, we will bitshift the current value we have by one to the left, once there are no more huffmancodes to read of the current length, then increment the current length by 1, as described in algorithm \ref{huffmanAlgo}.
+Once we have read in all the lengths of the Huffman-encoded values, the next we will be reading, is the runsize of the Huffman codes. To get the correct code, we will bitshift the current value we have by one to the left, once there are no more huffmancodes to read of the current length, then increment the current length by 1, as described in algorithm \ref{huffmanAlgo}.
 
-After implementing the rest of the algorithm, we'll end up with a complete \lstinline|HuffmanTable|.
+After implementing the rest of the algorithm, we will end up with a complete \lstinline|HuffmanTable|.

@@ -12,10 +12,10 @@ namespace Stegosaurus.Tests
     public class HuffmanElementTests
     {
         [Test()]
-        public void CompareToTest1()
+        public void Comparison_HuffmanElementWithDifferentRunSizes_SmallerRunSizeBeforeLarger()
         {
-            byte runSizeInput1 = 00000000;
-            ushort codeWordInput1 = 2;
+            byte runSizeInput1 = 0x00;
+            ushort codeWordInput1 = 0x02;
             byte lengthInput1 = 8;
 
             byte runSizeInput2 = 1;
@@ -25,19 +25,18 @@ namespace Stegosaurus.Tests
             HuffmanElement huffmanTestElement1 = new HuffmanElement(runSizeInput1, codeWordInput1, lengthInput1);
 
             HuffmanElement huffmanTestElement2 = new HuffmanElement(runSizeInput2, codeWordInput2, lengthInput2);
-
-            var check = huffmanTestElement1.CompareTo(huffmanTestElement2);
-            NUnit.Framework.Assert.AreEqual(-1, check);
+            
+            NUnit.Framework.Assert.AreEqual(-1, huffmanTestElement1.CompareTo(huffmanTestElement2));
         }
 
         [Test()]
-        public void CompareToTest2()
+        public void Comparison_HuffmanElementWithDifferentLengths_ShorterLengthBeforeLonger()
         {
-            byte runSizeInput1 = 00000000;
+            byte runSizeInput1 = 0x00;
             ushort codeWordInput1 = 2;
             byte lengthInput1 = 7;
 
-            byte runSizeInput2 = 1;
+            byte runSizeInput2 = 0x01;
             ushort codeWordInput2 = 3;
             byte lengthInput2 = 8;
 
@@ -52,7 +51,7 @@ namespace Stegosaurus.Tests
         [Test()]
         public void ToStringTest()
         {
-            byte runSizeInput1 = 00000000;
+            byte runSizeInput1 = 0x00;
             ushort codeWordInput1 = 2;
             byte lengthInput1 = 8;
 

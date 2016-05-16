@@ -31,7 +31,7 @@ post/.style={->,shorten >=1pt,>=stealth',semithick},
 \node[processnode]        (sampling)         [above=of dct] {Downsample MCU's};
 \node[processnode]        (split)            [left=of sampling] {Split image into MCU's};
 \node[processnode]        (convert)          [left=of split] {Convert from YCbCr to RGB};
-\node[processnode]        (bitmapimage)      [left=of convert] {\lstinline|Bitmap| image};
+\node[processnode]        (bitmapimage)      [left=of convert] {\lstinline|Bitmap| \\image};
  
 %Lines
 \draw[->] (bitmapimage.east) -- (convert.west);
@@ -57,10 +57,10 @@ This means that we will not work on the individual 8x8 matrix, but instead on th
 This allows us to obtain a much larger graph, with more edges, and more possible switches of values in the vertices. 
 A downside of using this method is that we cannot do the encoding of the message on-the-fly, as we will have to find all valid coefficients before we can start the encoding process.
 
-Each method has its pros and cons, but ultimately, we have chosen to go with the latter, as the first method limits the graph in such a way that it becomes close to just using LSB, as we will have very few switches, and a lot of forced changes.
+Each method has its pros and cons, but ultimately, we have chosen to go with the latter, as the first method limits the graph in such a way that it becomes close to just using LSB, as there will be very few switches, and a lot of forced changes.
 
 Now that we have chosen the dataset in which we will encode the data, we must find a way to get the data. 
-Procedure \ref{algJPEG} shows how to obtain the values, after the quantization process. 
+Procedure \ref{algJPEG} shows us how to obtain the values, after the quantization process. 
 The procedure itself is $\mathcal{O}(n)$ where $n$ is the number of quantized matrices from the DCT step. 
 With a sampling of 4:2:0 in the JPEG image we have 6 of these matrices in each 16x16 pixel MCU in the image. 
 So the number of quantized matrices can be calculated as seen in equation \ref{eq:numOfQuantizedMatrices} where $W$ and $H$ is the width and height of the image, respectively.
@@ -96,7 +96,7 @@ So the number of quantized matrices can be calculated as seen in equation \ref{e
 After finding the data in which we hide our message, we can encode the actual message, as seen in procedure \ref{algJPEGEncode}. 
 After this procedure, we have a list of the valid coefficients with adjusted values, such that they contain the message. 
 To save this to the file, we must first reverse the process of procedure \ref{algJPEG} to replace the values in the quantized values, so that when they are saved to a file, they contain the same values as we have calculated. 
-This process would work for all data, but there is still one problem when decoding the data. We do not know where to stop and the decoder does not know what $m$ value that was used while embedding the data. 
+This process would work for all data, but there is still one problem when decoding the data. We do not know where to stop and the decoder does not know the $m$ value that was used while embedding the data. 
 Let's tackle the problem about length first. 
 One often used technique is to have a certain marker to look for, and when that marker is encountered, the end of the data has been reached. 
 This exact method is actually used in JPEG; when reading through the scan data, we keep on reading until we reach the EOF (End of File) marker. 
