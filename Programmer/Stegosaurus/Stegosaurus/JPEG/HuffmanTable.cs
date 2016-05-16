@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Stegosaurus {
+    [Serializable]
     public class HuffmanTable {
 
         public Dictionary<byte, HuffmanElement> Elements = new Dictionary<byte, HuffmanElement>();
@@ -423,6 +424,7 @@ namespace Stegosaurus {
         #endregion
     }
 
+    [Serializable]
     public class HuffmanElement:IComparable<HuffmanElement> {
         public byte RunSize { get; }
         public byte Length { get; }
@@ -452,7 +454,8 @@ namespace Stegosaurus {
             {
                 return false;
             }
-            return CompareTo((HuffmanElement)obj) == 0;
+            HuffmanElement he = (HuffmanElement) obj;
+            return Length == he.Length && RunSize == he.RunSize && CodeWord == he.CodeWord;
         }
 
         public override int GetHashCode()
