@@ -32,14 +32,14 @@ And when you wanted to decode the image, the encoded image had to be uploaded on
 Because of this we have therefore decided to only have two buttons, one for loading an image that is to be encoded or decoded and another for only loading the hidden message.
 
 We have decided to include some extra features to our overall design.
-These features include giving the user options to use their own Huffman code and own quantization tables to make their encoded image as precise as possible.
+These features include giving the user options to use their own Huffman code and own quantization tables to make their encoded message as precise as possible.
 
 To do this, we decided that creating an options form would be best when it comes to guiding the user through our programme.
 The options box would consist of quality settings, choice of encoding method, customisation of Huffman tables and customisation of quantization.
 However, there are also default options, if the user in question has no specific preferences.
 
-All of these options allow the user to encode their image according to their specific needs.
-After the image has been encoded, there is, naturally, a need to be able to decode the image.
+All of these options allow the user to encode their message according to their specific needs.
+After their message has been encoded, there is, naturally, a need to be able to decode it after the encoding process.
 This means that the programme should be able to present these options to the user as openly as possible, as these are the key features of the programme.
 
 This, however, is slightly more advanced when it came to Huffman coding as each channel has a different length.
@@ -50,7 +50,7 @@ Within this section, there will also be an 'about' that gives a description of w
 Something that is absolutely fundamental to the programme, is showing the user the images they provide and the image they produce.
 This visual representation gives the user an indication that the programme is doing something and also peace of mind in that they have chosen the correct files.
 
-Another thing in regards to giving the user a visual representation is having some form of status indicator, to show the user that the programme is working on encoding or decoding their image.
+Another thing in regard to giving the user a visual representation is having some form of status indicator, to show the user that the programme is working on encoding or decoding their image.
 
 Likewise, another feature, that we deem to be a rather important visual representation is the quality level of encoding.
 Therefore, we have decided to have a slider to show what level of quality the programme will produce.
@@ -62,29 +62,20 @@ The following list is what the user interface will include:
 The encode and decode buttons work as they are.
 But if we also want to have our buttons to work as an option on whether the image has to be encoded or decoded, radio buttons, where encode or decode get selected, and thereby when decode is selected then the message image load button, will not be applicable for selection.
 
-This is shown in our main form as can be seen on figures \ref{fig:StegoLSBMain} and \ref{fig:StegoGTAMain2}.
+This is shown in our main form as can be seen on the figure \ref{fig:StegoMainForm}.
 
 \item[LSB or Graph Theory Method]
-The user will be able to switch between methods by clicking on a tab that will be shown at the top of the main form.
-This idea seems more effective than our initial idea of having the option of selecting which method in an options form.
-Having the option to toggle between the two on the main form makes it much clearer what this programme can do.
+The user will be able to switch between the two different methods by going into an options form and selecting the desired method from in there. This is instead of having to choose on the main form whether they want to use the least significant bit or graph theory method by switching between two tabs, which was our original design.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=1\textwidth]{figures/StegoLSBMain.png}
-	\caption{This is almost identical to previous experiment, although with some changes as mentioned previously.}
-	\label{fig:StegoLSBMain}
-\end{figure}
-
-\begin{figure}
-	\centering
-	\includegraphics[width=1\textwidth]{figures/StegoGTAMain.png}
-	\caption{This is how the user will meet our graph theoretical method, where there is no longer an option for inserting an image to be encoded.}
-	\label{fig:StegoGTAMain2}
+	\includegraphics[width=1\textwidth]{figures/StegoMainForm.png}
+	\caption{This is how the user will meet our graph theoretical method and LSB, where there is no longer an option for inserting an image to be encoded, but a way of inserting text for encoding.}
+	\label{fig:StegoMainForm}
 \end{figure}
 
 \item[Quantization Tables]
-A difficulty that arose when deciding on these features were: how we were going to make it possible for a user to input their custom quantization and huffman codes.
+A difficulty that arose when deciding on these features were: how we were going to make it possible for a user to input their custom quantization and Huffman codes.
 
 An initial idea included a CSV-file (Comma Separated Values file), but we decided that for quantization tables, it was ideal and no trouble to have the user input their table by typing it in text boxes as the size of each quantization table is the same for both the luminance and chromium channels. This can be seen in figure \ref{fig:StegoOptionQuant}.
 
@@ -92,7 +83,7 @@ An initial idea included a CSV-file (Comma Separated Values file), but we decide
 \begin{figure}
 	\centering
 	\includegraphics[width=1\textwidth]{figures/StegoOptionQuant.png}
-	\caption{This is how the custom quantization table is shown to the user.}
+	\caption{This is how the custom quantization table is shown to the user in the options setting form.}
 	\label{fig:StegoOptionQuant}
 \end{figure}
 
@@ -104,14 +95,14 @@ Huffman tables requires a similar form to quantization tables. There are four ra
 \begin{figure}
 	\centering
 	\includegraphics[width=1\textwidth]{figures/StegoOptionHuff2.png}
-	\caption{The picture above shows how the user will see the Huffman table.}
+	\caption{The picture above shows how the user will see the Huffman table options setting.}
 	\label{fig:StegoOptionHuff2}
 \end{figure}
 
 \item[Quality setting]
 Our initial idea was a slider that would be shown on the main form and in our options form.
 This slider would then tell us what the quality settings were set to, from 0 to 100.
-This slider was initially planned to be a part of the main form, but has since been moved to options setting and the main form for the graph theoretical, as we decided it was as much a custom option as the Huffman and quantization tables.
+This slider was initially planned to only be a part of the main form, but has since been moved to options setting and the main form for the graph theoretical method, as we decided it was as much a custom option as the Huffman and quantization tables.
 
 \item[Progress bar]
 The original idea of showing the user what was happening with the programme by having a pop-up window has been replaced by having a loading sign by the cursor.
@@ -122,7 +113,6 @@ If the programme took longer than a few minutes, it would maybe be more of a req
 A very general description of what the programme does and descriptions of the different settings in the options form.
 We believe this to be important to the overall understanding of how the programme is to be used; something that our previous experiments have not had.
 \end{description}
-
 
 There are some things with the UI that can be seen as problematic.
 As the programme is now, there is no option to save one's custom settings when the programme is closed.
