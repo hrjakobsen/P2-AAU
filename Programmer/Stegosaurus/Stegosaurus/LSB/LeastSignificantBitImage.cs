@@ -36,6 +36,9 @@ namespace Stegosaurus {
         }
 
         public void Encode(byte[] message) {
+            if (message.Length > GetCapacity()) {
+                throw new ImageCannotContainDataException(message.Length, GetCapacity());
+            }
 
             List<byte> wholeMessage = message.ToList();
 

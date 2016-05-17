@@ -1,13 +1,21 @@
 using System;
 using System.ComponentModel;
+using System.Drawing.Imaging;
 using System.Linq;
 
 namespace Stegosaurus {
     [Serializable]
     public class QuantizationTable {
         public byte[] Entries { get; }
+        
+        /// <summary>
+        /// Returns the entries in a zig-zag order
+        /// </summary>
         public byte[] ZigzagEntries { get; }
 
+        /// <summary>
+        /// Constructor with no arguments will create a quantization table with no compression.
+        /// </summary>
         public QuantizationTable() : this (
             new byte[] {
                 1,1,1,1,1,1,1,1,
@@ -31,7 +39,14 @@ namespace Stegosaurus {
             {5, 6}, {4, 7}, {5, 7}, {6, 6}, {7, 5}, {7, 6}, {6, 7}, {7, 7}
         };
 
+        /// <summary>
+        /// Creates a quantization from 64 bytes.
+        /// </summary>
+        /// <param name="entries">Entries for the table must have exactly 64 elements</param>
         public QuantizationTable(byte[] entries) {
+            if (entries.Length != 64) {
+                throw new ArgumentException("64 elements must be provided");
+            }
             Entries = entries;
 
             ZigzagEntries = new byte[64];
@@ -41,6 +56,12 @@ namespace Stegosaurus {
             }
         }
 
+        /// <summary>
+        /// Returns a scaled quantiztion value based on the quality.
+        /// A quality of 100 will result in each entry is divided by 8 and a quality of 0 will multiply each entry with 2.
+        /// </summary>
+        /// <param name="quality">Quality must be between 0 and 100</param>
+        /// <returns></returns>
         public QuantizationTable Scale(int quality) {
             if (quality < 0 || quality > 100) {
                 throw new ArgumentOutOfRangeException(nameof(quality), "Quality must be in the range [0,100]");
@@ -54,21 +75,27 @@ namespace Stegosaurus {
         }
 
         public override string ToString() {
-            string s = "";
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-                    s += Entries[i * 8 + j] + "\t";
-                }
-                s += "\n";
-            }
+            return Entries.Aggregate("", (current, entry) => current + (entry + ";"));
+        }
 
-            return s;
+        public static QuantizationTable FromString(string qTableString) {
+            string[] parts = qTableString.Split(';');
+            byte[] entries = new byte[64];
+            for (int i = 0; i < 64; i++) {
+                entries[i] = byte.Parse(parts[i]);
+            }
+            return new QuantizationTable(entries);
         }
 
         public override int GetHashCode() {
             return Entries[0].GetHashCode();
         }
 
+        /// <summary>
+        /// Test if all entries in two quantization tables are the same
+        /// </summary>
+        /// <param name="obj">The other quantization table</param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             if (obj == null)

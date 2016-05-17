@@ -1,7 +1,8 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
-\subsection{decodeScanData}
-The method reads in MCU's till enough MCU's has been read in order to find the length of the message, as well as the value of modulo we need in order to decode it.
-Reading in an MCU is a matter of reading in six blocks, each containing one DC value and 63 AC values. The first four are for the Luminance channel, the remaining are the chrominance blocks.
+Once we have the scan-data segment written into the program, we can read in MCU's, until enough MCU's has been read in order to find the length of the message, as well as the value of modulo we need in order to decode it.
+The amount of non-zero elements we will have to read in, is 16.
+Reading in an MCU is a matter of reading in six blocks, each containing one DC value and 63 AC values. 
+The first four are for the Luminance channel, the remaining two are chrominance blocks.
 Once the first 16 non-zero values has been found, we can find the value of modulo and the length of the message.
 
 To get the length, we add the first 14 values together in pairs of two, then doing modulo 4 of that value. 
@@ -15,4 +16,4 @@ The reason we do not just read in all of scandata, is to save time, since there 
 It is the same reason we will also find the length and the value of modulo, once enough MCU's has been decoded.
 
 When all the required values have been read and saved in the \lstinline|List<int>| variable, the message is found according to Listing \ref{code:decodeMessage}.
-\lstinputlisting[firstline=164, firstnumber=164, lastline=184, label={code:decodeMessage}, caption={Decodes the message encoded into the JPEG image using the Graph-Theoretic Approach}]{../Programmer/Stegosaurus/Stegosaurus/JPEG/JPEGDecoder.cs}
+\lstinputlisting[firstline=169, firstnumber=169, lastline=186, label={code:decodeMessage}, caption={Decodes the message encoded into the JPEG image using the Graph-Theoretic Approach \textbf{File: }JPEGDecoder.cs}]{../Programmer/Stegosaurus/Stegosaurus/JPEG/JPEGDecoder.cs}

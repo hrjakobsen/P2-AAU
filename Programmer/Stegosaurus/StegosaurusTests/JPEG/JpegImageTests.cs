@@ -148,11 +148,12 @@ namespace Stegosaurus.Tests
         public void PadCoverImage_Test_When_Cover_Is_Divisible_by_16()
         {
             Bitmap coverImage = new Bitmap(16, 16);
-            PrivateObject po = new PrivateObject(new JpegImage(coverImage, 100, 4));
+            JpegImage ji = new JpegImage(coverImage, 100, 4);
+            PrivateObject po = new PrivateObject(ji);
 
             po.Invoke("_padCoverImage");
 
-            Bitmap returnedCoverImage = (Bitmap) po.GetField("CoverImage");
+            Bitmap returnedCoverImage = ji.CoverImage;
 
             NUnit.Framework.Assert.AreEqual(coverImage, returnedCoverImage);
         }
@@ -163,11 +164,13 @@ namespace Stegosaurus.Tests
             Bitmap b = new Bitmap(1,1);
             b.SetPixel(0,0, Color.Black);
             Bitmap coverImage = new Bitmap(b, 15, 15);
-            PrivateObject po = new PrivateObject(new JpegImage(coverImage, 100, 4));
+
+            JpegImage ji = new JpegImage(coverImage, 100, 4);
+            PrivateObject po = new PrivateObject(ji);
 
             po.Invoke("_padCoverImage");
 
-            Bitmap returnedCoverImage = (Bitmap) po.GetField("CoverImage");
+            Bitmap returnedCoverImage = ji.CoverImage;
 
             Bitmap expectedCoverImage = new Bitmap(b, 16,16);
 
@@ -180,11 +183,12 @@ namespace Stegosaurus.Tests
             Bitmap b = new Bitmap(1, 1);
             b.SetPixel(0, 0, Color.Black);
             Bitmap coverImage = new Bitmap(b, 15, 15);
-            PrivateObject po = new PrivateObject(new JpegImage(coverImage, 100, 4));
+            JpegImage ji = new JpegImage(coverImage, 100, 4);
+            PrivateObject po = new PrivateObject(ji);
 
             po.Invoke("_padCoverImage");
 
-            Bitmap returnedCoverImage = (Bitmap)po.GetField("CoverImage");
+            Bitmap returnedCoverImage = ji.CoverImage;
 
             Bitmap expectedCoverImage = new Bitmap(b, 16, 16);
 
@@ -241,9 +245,15 @@ namespace Stegosaurus.Tests
             JpegImage ji = new JpegImage(new Bitmap(200, 100), 100, 4);
             PrivateObject po = new PrivateObject(ji);
 
+            sbyte[][,] inputValues = {
+                new sbyte[16, 16], 
+                new sbyte[16, 16],
+                new sbyte[16, 16], 
+            };
 
+            ji.GetCapacity();
             //pt.InvokeStatic("_encodeAndQuantizeValues", new object[] {inputValues, 200, 100});
-            //po.Invoke("_encodeAndQuantizeValues", new object[] {inputValues, 200, 100});
+            po.Invoke("_encodeAndQuantizeValues", new object[] {inputValues, 200, 100});
 
             List<Tuple<short[,], HuffmanTable, HuffmanTable, int>> quan = (List<Tuple<short[,], HuffmanTable, HuffmanTable, int>>)po.GetField("_quantizedBlocks");
             List<short> nonzero = (List<short>)po.GetField("_nonZeroValues");
@@ -342,8 +352,10 @@ namespace Stegosaurus.Tests
                 {5.71323699E-06f, 2.60522029E-06f, 4.07821602E-07f, 7.56153099E-07f, -8.28878115E-07f, 1.63273896E-07f, -2.87587607E-08f, 4.81403617E-07f},
                 {-1.1472187f, -1.5253089E-06f, 1.64349444E-06f, 4.29837684E-07f, -5.12431711E-07f, 8.11701511E-07f, 1.23775763E-07f, 7.26117264E-07f},
             };
+            GlobalSettings.DefaultFloatingPointTolerance = 0.00001;
 
-            NUnit.Framework.Assert.AreEqual(expectedCosineValues, returnedCosineValues);
+            
+            NUnit.Framework.Assert.That(expectedCosineValues, Is.EquivalentTo(returnedCosineValues));
         }
 
         [Test()]
@@ -431,7 +443,43 @@ namespace Stegosaurus.Tests
         [Test()]
         public void AddVertices_Test()
         {
-            
+            PrivateObject po = new PrivateObject(new JpegImage(new Bitmap(200, 100), 100, 4));
+
+            List<short> inputNonZeroValues = new List<short>();
+            List<byte> inputMessage = new List<byte>();
+
+            for (int i = 0; i < 20; i++)
+            {
+                inputNonZeroValues.Add((short)i);
+            }
+            for (int e = 0; e < 10; e++)
+            {
+                inputMessage.Add((byte)e);
+            }
+
+            po.SetField("_nonZeroValues", inputNonZeroValues);
+            po.SetField("_message",inputMessage);
+
+            Vertex
+                v1 = new Vertex(0, 1, 0, 4),
+                v2 = new Vertex(2, 3, 1, 4),
+                v3 = new Vertex(4, 5, 2, 4),
+                v4 = new Vertex(6, 7, 3, 4),
+                v5 = new Vertex(8, 9, 4, 4),
+                v6 = new Vertex(10, 11, 5, 4),
+                v7 = new Vertex(12, 13, 6, 4),
+                v8 = new Vertex(14, 15, 7, 4),
+                v9 = new Vertex(16, 17, 8, 4),
+                v10 = new Vertex(18, 19, 9, 4);
+
+            Graph returnedGraph = new Graph();
+            Graph expectedGraph = new Graph();
+
+            expectedGraph.Vertices.AddRange(new List<Vertex>() {v1, v2, v3, v4, v5, v6, v7, v8, v9, v10});
+
+            po.Invoke("_addVertices", returnedGraph);
+
+            NUnit.Framework.Assert.AreEqual(expectedGraph.ToString(), returnedGraph.ToString());
         }
     }
 }

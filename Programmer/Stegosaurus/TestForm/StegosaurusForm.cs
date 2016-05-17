@@ -24,7 +24,6 @@ namespace TestForm{
         public static bool QualityLocked { get; private set; }
         public static bool LSBMethodSelected;
         public static int Quality { get; set; }
-        //public string ImagesSavePath { get; set; }
         private string myVar;
 
         private string ImagesSavePath
@@ -75,35 +74,24 @@ namespace TestForm{
             if (OptionsForm.SaveEnabled)
             {
                 Cursor.Current = Cursors.WaitCursor;
-                //DELETE THIS
-                LSBMethodSelected = OptionsForm.LSBMethodSelected;
 
-                if (LSBMethodSelected)
-                {
-                    tbarEncodingQuality.Enabled = false;
-                    lblEncodingQualityValue.Text = "";
-                }
-                else
-                {
-                    tbarEncodingQuality.Enabled = true;
-                }
-                //DELETE THIS
+                //TODO: Delete this
+                //LSBMethodSelected = OptionsForm.LSBMethodSelected;
 
-                //loadSettingsFromOptionsForm();
+                //if (LSBMethodSelected)
+                //{
+                //    tbarEncodingQuality.Enabled = false;
+                //    lblEncodingQualityValue.Text = "";
+                //}
+                //else
+                //{
+                //    tbarEncodingQuality.Enabled = true;
+                //}
+                //
+
+                loadSettingsFromOptionsForm();
                 Cursor.Current = Cursors.Default;
             }
-        }
-
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AboutForm aboutForm = new AboutForm();
-            aboutForm.Show();
-        }
-
-        private void showHelpToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            HelpForm helpForm = new HelpForm();
-            helpForm.Show();
         }
 
         private void loadSettingsFromOptionsForm()
@@ -183,7 +171,7 @@ namespace TestForm{
                 tbarEncodingQuality.Value = defaultQuality;
             }
 
-            //If changes have been made to a QuantizationTable, lock the quality-slider to prevet errors.
+            //If changes have been made to a QuantizationTable, lock the quality-slider to prevent errors.
             if (!OptionsForm.QuantizationTableComponentY.SaveTable().Equals(QuantizationTable.JpegDefaultYTable) 
                 || !OptionsForm.QuantizationTableComponentChr.SaveTable().Equals(QuantizationTable.JpegDefaultChrTable))
             {
@@ -197,13 +185,25 @@ namespace TestForm{
             }            
         }
 
-        #region Graph Theoretic
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutForm aboutForm = new AboutForm();
+            aboutForm.Show();
+        }
+
+        private void showHelpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            HelpForm helpForm = new HelpForm();
+            helpForm.Show();
+        }
+
+        #region Main Form
         private void btnLoadMessageFile_Click(object sender, EventArgs e)
         {
             GetFileMessage.ShowDialog();
         }
 
-        private void rdioGTEncode_CheckedChanged(object sender, EventArgs e)
+        private void rdioEncode_CheckedChanged(object sender, EventArgs e)
         {
             if (rdioEncode.Checked)
             {
@@ -228,12 +228,12 @@ namespace TestForm{
             }
         }
 
-        private void tbGTMessage_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void tbMessage_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             tbMessage.SelectAll();
         }
 
-        private void tbGTMessage_Leave(object sender, EventArgs e)
+        private void tbMessage_Leave(object sender, EventArgs e)
         {
             if (tbMessage.Text == "")
             {
@@ -241,22 +241,7 @@ namespace TestForm{
             }
         }
 
-        private void tbarGTEncodingQuality_ValueChanged(object sender, EventArgs e)
-        {
-            Quality = tbarEncodingQuality.Value;
-            lblEncodingQualityValue.Text = Quality.ToString();
-
-            if (Quality != defaultQuality)
-            {
-                lblEncodingQualityValue.Text = Quality.ToString();
-            }
-            else
-            {
-                lblEncodingQualityValue.Text = Quality.ToString() + @"  (default)";
-            }
-        }
-
-        private void tbGTMessage_TextChanged(object sender, EventArgs e)
+        private void tbMessage_TextChanged(object sender, EventArgs e)
         {
             tbMessage.ForeColor = SystemColors.MenuText;
             if (tbMessage.Text != NoMessageWrittenMessage && !string.IsNullOrEmpty(tbMessage.Text) && !_messageFileSet)
@@ -279,24 +264,29 @@ namespace TestForm{
             }
         }
 
-        private void StegosaurusForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void tbarEncodingQuality_ValueChanged(object sender, EventArgs e)
         {
-            saveSettings();
+            Quality = tbarEncodingQuality.Value;
+            lblEncodingQualityValue.Text = Quality.ToString();
+
+            if (Quality != defaultQuality)
+            {
+                lblEncodingQualityValue.Text = Quality.ToString();
+            }
+            else
+            {
+                lblEncodingQualityValue.Text = Quality.ToString() + @"  (default)";
+            }
         }
 
-        private void tbarEncodingQuality_Scroll(object sender, EventArgs e)
+        private void btnLoadInput_Click(object sender, EventArgs e)
         {
-
+            getFileInput.ShowDialog();
         }
 
-        private void btnGTLoadInput_Click(object sender, EventArgs e)
+        private void getFileInput_FileOk(object sender, CancelEventArgs e)
         {
-            getFileInputGT.ShowDialog();
-        }
-
-        private void getFileInputGT_FileOk(object sender, CancelEventArgs e)
-        {
-            CoverImage = new Bitmap(getFileInputGT.FileName);
+            CoverImage = new Bitmap(getFileInput.FileName);
 
             _inputImageSet = true;
             picInput.Image = CoverImage;
@@ -307,7 +297,7 @@ namespace TestForm{
             }
         }
 
-        private void GetFileMessageGT_FileOk(object sender, CancelEventArgs e)
+        private void GetFileMessage_FileOk(object sender, CancelEventArgs e)
         {
             tbMessage.Enabled = false;
             tbMessageFilePath.Text = GetFileMessage.SafeFileName;
@@ -322,7 +312,8 @@ namespace TestForm{
             }
         }
 
-        private void btnGTProceed_Click(object sender, EventArgs e)
+        //Handles encoding/decoding using the correct method and settings when the 'Proceed' button is pressed.
+        private void btnProceed_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
             if (rdioEncode.Checked)
@@ -395,6 +386,25 @@ namespace TestForm{
         }
         #endregion
 
+        //'Escape' closes form
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape)
+            {
+                DialogResult dialogResult = MessageBox.Show("Do you want to close Stegosaurus?", "", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    this.Close();
+                }
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void StegosaurusForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            saveSettings();
+        }
+
         private void saveSettings()
         {
             Properties.Settings.Default.HuffmanTableYAC = HuffmanTableYAC;
@@ -409,20 +419,6 @@ namespace TestForm{
             Properties.Settings.Default.LSBMethodSelected = LSBMethodSelected;
 
             Properties.Settings.Default.Save();
-        }
-
-        //'Escape' closes form
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.Escape)
-            {
-                DialogResult dialogResult = MessageBox.Show("Do you want to close Stegosaurus?", "", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
-                {
-                    this.Close();
-                }
-            }
-            return base.ProcessCmdKey(ref msg, keyData);
         }
     }
 }
