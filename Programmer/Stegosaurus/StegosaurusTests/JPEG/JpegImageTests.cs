@@ -481,5 +481,36 @@ namespace Stegosaurus.Tests
 
             NUnit.Framework.Assert.AreEqual(expectedGraph.ToString(), returnedGraph.ToString());
         }
+
+        [Test()]
+        public void AddEdge_Test()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+
+            Vertex
+                v1 = new Vertex(0, 1, 0, 4),
+                v2 = new Vertex(2, 3, 2, 4),
+                v3 = new Vertex(4, 5, 3, 4),
+                v4 = new Vertex(6, 7, 3, 4),
+                v5 = new Vertex(8, 9, 4, 4),
+                v6 = new Vertex(10, 11, 5, 4);
+
+            Graph inputGraph = new Graph();
+            inputGraph.Vertices.AddRange(new List<Vertex>() { v1, v2, v3, v4, v5, v6 });
+
+            int inputThreshold = 5;
+
+            pt.InvokeStatic("_addEdge", new object[] {true, false, v1, v2, inputThreshold, inputGraph});    //pass
+            pt.InvokeStatic("_addEdge", new object[] {true, true, v3, v4, inputThreshold, inputGraph});     //pass
+            pt.InvokeStatic("_addEdge", new object[] {false, true, v5, v6, inputThreshold, inputGraph});    //fail
+
+            Graph expectedGraph = new Graph();
+
+            expectedGraph.Edges.Add(new Edge(v1, v2, 3, true, false));
+            expectedGraph.Edges.Add(new Edge(v3, v4, 2, true, true));
+
+            NUnit.Framework.Assert.AreEqual(expectedGraph.Edges, inputGraph.Edges);
+
+        }
     }
 }
