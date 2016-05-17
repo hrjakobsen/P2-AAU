@@ -37,7 +37,7 @@ namespace Stegosaurus.Tests
         [Test()]
         public void Encode_Test_if_throws_Exception_When_Message_Length_Is_Over_Limit() //TODO: Some errors with _addVertices, _encodeMessage, _encodeMCU, _writeScanData, Encode
         {
-            Bitmap b = new Bitmap(3, 3);
+            /*Bitmap b = new Bitmap(3, 3);
             b.SetPixel(0,0, Color.White);
             b.SetPixel(1,1,Color.DarkBlue);
             b.SetPixel(0,1,Color.Red);
@@ -53,7 +53,7 @@ namespace Stegosaurus.Tests
             
             
 
-            hello.Encode(msg);
+            hello.Encode(msg);*/
         }
 
         [Test()]
@@ -234,7 +234,21 @@ namespace Stegosaurus.Tests
             NUnit.Framework.Assert.AreEqual(expectedChannels, returnedChannels);
         }
 
-        //Testing the small sub methods before EncodeAndQuantizeValues
+        [Test()]
+        public void EncodeAndQuantizeValues_Test_() //TODO: "_encodeAndQuantizeValues" method can't be found
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+            JpegImage ji = new JpegImage(new Bitmap(200, 100), 100, 4);
+            PrivateObject po = new PrivateObject(ji);
+
+
+            //pt.InvokeStatic("_encodeAndQuantizeValues", new object[] {inputValues, 200, 100});
+            //po.Invoke("_encodeAndQuantizeValues", new object[] {inputValues, 200, 100});
+
+            List<Tuple<short[,], HuffmanTable, HuffmanTable, int>> quan = (List<Tuple<short[,], HuffmanTable, HuffmanTable, int>>)po.GetField("_quantizedBlocks");
+            List<short> nonzero = (List<short>)po.GetField("_nonZeroValues");
+        }
+
         [Test()]
         public void DownSample_Test()
         {
@@ -270,10 +284,11 @@ namespace Stegosaurus.Tests
         public void Block16ToBlock8_Test() //TODO: might want to check this test
         {
             PrivateType pt = new PrivateType(typeof(JpegImage));
+            
 
             float[,] inputValues = new float[16, 16];
             int i = 0;
-            for (int x = 0; x < 16; x++) //Fill input value with values from 1 to 255
+            for (int x = 0; x < 16; x++) //Fill input value with values from 0 to 255
             {
                 for (int y = 0; y < 16; y++)
                 {
@@ -296,14 +311,127 @@ namespace Stegosaurus.Tests
             };
 
             NUnit.Framework.Assert.AreEqual(expectedBlock8, returnedBlock8);
-
         }
 
         [Test()]
-        public void EncodeAndQuantizeValues_Test_()
+        public void DiscreteCosineTransform_Test()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+            JpegImage ji = new JpegImage(new Bitmap(200, 100), 100, 4);
+
+            float[,] inputBlock8 = new float[8, 8];
+            int i = 0;
+            for (int x = 0; x < 8; x++) //Fill input value with values from 0 to 63
+            {
+                for (int y = 0; y < 8; y++)
+                {
+                    inputBlock8[x, y] = i++;
+                }
+            }
+
+            float[,] returnedCosineValues = (float[,])pt.InvokeStatic("_discreteCosineTransform", inputBlock8);
+
+            float[,] expectedCosineValues = new float[8, 8]
+            {
+                {252f, -18.220953f, -1.3045323E-07f, -1.90474725f, 1.78540418E-07f, -0.568218122f, -8.80875195E-09f, -0.143401206f},
+                {-145.767609f, 2.41847101E-06f, 8.53143945E-07f, 1.44885166E-06f, 1.03676985E-06f, -1.5390215E-07f, -2.55802661E-07f, -9.47974854E-08f},
+                {-2.99147609E-06f, 5.62151536E-06f, -1.10848976E-06f, -3.00187935E-07f, 2.10143571E-06f, -5.08922085E-07f, -6.90155488E-08f, 9.28238705E-07f},
+                {-15.2379627f, 4.95177403E-07f, -1.25386225E-06f, -2.32657641E-07f, -7.20322817E-07f, 4.82752E-07f, -1.97521246E-07f, 6.68256234E-07f},
+                {-1.72880823E-06f, -8.70578845E-07f, -7.59587181E-07f, 1.18702587E-06f, 2.07287385E-07f, 6.64636985E-08f, 1.24796173E-07f, -2.74013161E-07f},
+                {-4.54574156f, -2.06125083E-06f, 1.39842655E-06f, 5.91484728E-09f, -8.87210604E-07f, -3.22430438E-09f, 1.63273896E-07f, -2.61182095E-07f},
+                {5.71323699E-06f, 2.60522029E-06f, 4.07821602E-07f, 7.56153099E-07f, -8.28878115E-07f, 1.63273896E-07f, -2.87587607E-08f, 4.81403617E-07f},
+                {-1.1472187f, -1.5253089E-06f, 1.64349444E-06f, 4.29837684E-07f, -5.12431711E-07f, 8.11701511E-07f, 1.23775763E-07f, 7.26117264E-07f},
+            };
+
+            NUnit.Framework.Assert.AreEqual(expectedCosineValues, returnedCosineValues);
+        }
+
+        [Test()]
+        public void C_Test_i0_j0()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+
+            float returnedC = (float) pt.InvokeStatic("_c", new object[] {0, 0});
+            
+            NUnit.Framework.Assert.AreEqual(0.125f, returnedC);
+        }
+
+        [Test()]
+        public void C_Test_i0_j1()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+
+            float returnedC = (float)pt.InvokeStatic("_c", new object[] { 0, 1 });
+
+            NUnit.Framework.Assert.AreEqual(0.17677f, returnedC);
+        }
+
+        [Test()]
+        public void C_Test_i1_j0()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+
+            float returnedC = (float)pt.InvokeStatic("_c", new object[] { 1, 0 });
+
+            NUnit.Framework.Assert.AreEqual(0.17677f, returnedC);
+        }
+
+        [Test()]
+        public void C_Test_i1_j1()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+
+            float returnedC = (float)pt.InvokeStatic("_c", new object[] { 1, 1 });
+
+            NUnit.Framework.Assert.AreEqual(0.25f, returnedC);
+        }
+
+        [Test()]
+        public void Quantization_Test()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+            JpegImage ji = new JpegImage(new Bitmap(200, 100), 100, 4);
+
+
+            float[,] inputValues = new float[8, 8];
+            int i = 0;
+            for (int x = 0; x < 8; x++) //Fill input value with values from 0 to 63
+            {
+                for (int y = 0; y < 8; y++)
+                {
+                    inputValues[x, y] = i++;
+                }
+            }
+
+            short[,] quantizedValues =
+                (short[,]) pt.InvokeStatic("_quantization", new object[] {inputValues, ji.YQuantizationTable});
+
+            short[,] expectedQuantizedValues = new short[8, 8]
+            {
+                {0, 1, 2, 3, 2, 1, 1, 0},
+                {8, 9, 10, 5, 6, 3, 1, 1},
+                {16, 17, 9, 9, 5, 3, 2, 2},
+                {12, 12, 8, 9, 4, 3, 3, 2},
+                {10, 11, 6, 5, 4, 3, 3, 2},
+                {8, 5, 6, 4, 3, 3, 3, 3},
+                {8, 7, 6, 5, 4, 3, 3, 4},
+                {8, 9, 8, 8, 6, 5, 5, 5},
+            };
+
+            NUnit.Framework.Assert.AreEqual(expectedQuantizedValues, quantizedValues);
+        }
+
+        [Test()]
+        public void EncodeMessage_Test()
+        {
+            //TODO: Ask if _encodeMessage needs test, because the only logic within is a for loop and a .Where
+            NUnit.Framework.Assert.Ignore();
+        }
+
+        [Test()]
+        public void AddVertices_Test()
         {
             
         }
-        
     }
 }

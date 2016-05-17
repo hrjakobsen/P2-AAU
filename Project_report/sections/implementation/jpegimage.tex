@@ -13,7 +13,7 @@ The most significant part of the JPEG file is obviously the scan data, but befor
 We do that by calling \lstinline|void _writeHeaders()|.
 All information needed in these headers are already known, as both the bitmap image and tables provided in the constructor.
 
-\begin{lstlisting}[firstnumber=136,label=JPEGEncode]
+\begin{lstlisting}[firstnumber=136,label=JPEGEncode, caption={\lstinline|JPEGImage.Encode| method \textbf{File: }JPEGImage.cs}]
 public void Encode(byte[] message) {
     //Instantiate a JpegWriter, which has an internal list of bytes 
     //and the logic required to write those to a file
@@ -38,7 +38,7 @@ After every 16x16 MCU has been filled with values, the MCU must be encoded.
 As the name Minimum Encoded Unit implies, we can encode one MCU without depending on the other.
 That means that after we fill one MCU, we can encode that directly. We do that by invoking the method \lstinline|void _encodeBlocks(float[][,])|.
 
-\begin{lstlisting}[firstnumber=525, label=JPEGEncodeAndQuantize]
+\begin{lstlisting}[firstnumber=525, label=JPEGEncodeAndQuantize, caption={Shows how the image is divided into MCUs \textbf{File: }JPEGImage.cs}]
 for (int MCUY = 0; MCUY < imageHeight; MCUY += 16) {
     for (int MCUX = 0; MCUX < imageWidth; MCUX += 16) {
         for (int i = 0; i < 3; i++) {
@@ -119,7 +119,7 @@ On each 8x8 block we perform DCT as seen in listing \ref{JPEGEncodeDCT}.
 The DCT formula was described in section \ref{sec:jpegStudy}, but one thing we realised about the formula was, that we could calculate the cosines only once, and use these instead of repeatedly calculating the trigonometric function, therefore we calculate these results before even beginning the DCT process, and then just reuse the results in the DCT method.
  
 
-\begin{lstlisting}[firstnumber=603,label=JPEGEncodeDCT]
+\begin{lstlisting}[firstnumber=603,label=JPEGEncodeDCT, caption={Multidimensional DCT on 8x8 block \textbf{File: }JPEGImage.cs}]
 private static float[,] _discreteCosineTransform(float[,] block8) {
     float[,] cosineValues = new float[8, 8];
 
@@ -160,7 +160,7 @@ This way, we do not find the reversed counterparts of already found pairs.
 This particular piece is still $\mathcal{O}(n^2)$, but instead of checking $n(n-1)=n^2-n$ pairs, we only need to check $(n\cdot\frac{n}{2})=\frac{n^2}{2}$ where $n$ is the number of vertices. 
 
 
-\begin{lstlisting}[firstnumber=655,label=implementationPairs]
+\begin{lstlisting}[firstnumber=655,label=implementationPairs,caption={Checks all edges between distincive pairs of vertices \textbf{File: }JPEGImage.cs}]
 Parallel.For(0, length, i => {
     for (int j = i + 1; j < length; j++) {
         _addEdge(true, true, toBeChanged[i], toBeChanged[j], threshold, graph);
@@ -175,7 +175,7 @@ After adding the edges, we need to determine what edges to keep, where each edge
 We do that by sorting our edges by weight and then choose the edge with the lowest weight. We then remove all other edges connected to the two vertices connected by the chosen edge, and then repeat the process.
 All of this is implemented as seen in listing \ref{graphDoSwitches}.
 
-\begin{lstlisting}[firstnumber=14,label=graphDoSwitches]
+\begin{lstlisting}[firstnumber=14,label=graphDoSwitches, caption={Implementation of greedy algorithm for choosing switches \textbf{File: }JPEGImage.cs}]
 public List<Edge> GetSwitches() {
     Edges.Sort();
     List<Edge> chosenEdges = new List<Edge>();
@@ -196,9 +196,9 @@ After running the \lstinline|List<Edge> GetSwitches| method on the graph, it was
 
 The only thing needed before saving the image to the file, is the Huffman encoding.
 The process of doing this is relatively trivial.
-We start out by encoding the DC entry by first finding the difference from the last DC entry (in the current MCU), then finding the Huffman code from the DC Huffman table, before saving the bits to the image.
+We start out by encoding the DC as seen in listing \ref{DCencoding}. We do that by first finding the difference from the last DC entry (in the current MCU), then finding the Huffman code from the DC Huffman table, before saving the bits to the image.
 
-\begin{lstlisting}
+\begin{lstlisting}[label=DCencoding,caption={Encoding DC coefficient into the image \textbf{File: }JPEGImage.cs}]
 short diff = (short)(block8[0, 0] - _lastDc[DCIndex]);
 _lastDc[DCIndex] += diff;
 
@@ -216,9 +216,9 @@ if (diff != 0) {
 
 Now the next part of the Huffman encoding is simply to run through the 63 AC values in zigzag.
 If we find a zero, we count that, but otherwise keep on going as that zero must be encoded as EOB, ZRL or as part of the next non-zero value.
-If we have more than 16 zeroes before the next non-zero value we encode the ZRL, and if the rest of the block consists of only zeroes, we encode the EOB.
+If we have more than 16 zeroes before the next non-zero value we encode the ZRL, and if the rest of the block consists of only zeroes, we encode the EOB. This can all be seen in listing \ref{ACencoding}
 
-\begin{lstlisting}
+\begin{lstlisting}[label=ACencoding,caption={Encoding AC coefficients into the image \textbf{File: }JPEGImage.cs}]
 int zeroesCounter = 0;
 for (int i = 1; i < 64; i++) {
     int x = QuantizationTable.RoadPoints[i, 0], y = QuantizationTable.RoadPoints[i, 1];

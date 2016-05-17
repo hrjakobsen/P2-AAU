@@ -67,8 +67,19 @@ The second reason we did not implement it was due to performance concerns.
 Since our programme performed rather poorly during most of the development we considered it a very bad idea to construct a larger graph than we already were constructing.
 Seeing as we managed to optimise the programme quite significantly, we could have properly implemented a solution regardless.
 
+Actually comparing colour histograms from the two methods was not as trivial as one could have hoped.
+Using the LSB-method only made immediately visible changes to the colour histograms if about a quarter of the image had data encoded in it.
+When using an image of substantial size, a quarter of an image can hold a large amount of data. 
+A 512x512 image for example can hold 196,604 bytes, when using the two least significant bits.
+Encoding 40,000 bytes using our graph-theoretical (GT) programme was completely out of the question due to the complexity of the algorithm.
+The longest message we tried encoding was just under 8960 bytes and took around half an hour on a decent desktop computer.
+Encoding half that, 4480 bytes, took around three minutes, so extrapolating from that, it would take roughly 50 hours to encode 40,000 bytes.
 
-An entirely different way of looking for changes in an image is by looking at the Euclidean distance of them.
+This made a direct comparison using realistic real-world images and messages impossible. 
+Instead we could use an image small enough to fill it out with data using both our programmes.
+
+
+A different way of looking for changes in an image is by looking at their Euclidean distance.
 This can be done by calculating the distance between the colour values of each pixel in two equally sized images.
 The sum of all these distances can be used as measure of the change from one image to the other.
 We used this same method for determining what changes were imposed on images of different size and format, when uploaded to various social media and image-sharing websites.
