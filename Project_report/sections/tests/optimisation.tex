@@ -15,7 +15,7 @@ To ensure that we ran the method \lstinline|_padCoverImage|, we removed eight pi
 The message consisted of 640 bytes of the ASCII characters \textit{A-Z}.
 This was equivalent to the length of four regular SMS messages end-to-end, and therefore constituted what we believed to be a message capable of containing enough information for most regular uses.
 
-All runs were done on the with the \textit{Release} option in Visual Studio, as there seemed to be a significant overhead on \textit{Debug}.
+All runs were done on a \textit{Release} build, as there seemed to be significant overhead on a \textit{Debug} build.
 Some basic optimisations such as moving the calculation of the upper-bound outside the declaration of for-loops had already been done at this point.
 While being a very simple thing to do, this did have some visible results in a few areas.
 
