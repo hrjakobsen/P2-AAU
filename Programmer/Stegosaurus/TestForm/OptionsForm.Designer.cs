@@ -65,9 +65,9 @@
             this.btnClose = new System.Windows.Forms.Button();
             this.pnlOptionsEncodingMethod = new System.Windows.Forms.Panel();
             this.grpEncodingMethod = new System.Windows.Forms.GroupBox();
+            this.rdioLSBMethod = new System.Windows.Forms.RadioButton();
+            this.rdioGTMethod = new System.Windows.Forms.RadioButton();
             this.lblEncodingMethod = new System.Windows.Forms.Label();
-            this.rdioGT = new System.Windows.Forms.RadioButton();
-            this.rdioLSB = new System.Windows.Forms.RadioButton();
             this.pnlOptionsHuffman.SuspendLayout();
             this.grpCustomHuffman.SuspendLayout();
             this.pnlOptionsQuality.SuspendLayout();
@@ -447,8 +447,8 @@
             // 
             // grpEncodingMethod
             // 
-            this.grpEncodingMethod.Controls.Add(this.rdioLSB);
-            this.grpEncodingMethod.Controls.Add(this.rdioGT);
+            this.grpEncodingMethod.Controls.Add(this.rdioLSBMethod);
+            this.grpEncodingMethod.Controls.Add(this.rdioGTMethod);
             this.grpEncodingMethod.Controls.Add(this.lblEncodingMethod);
             this.grpEncodingMethod.Location = new System.Drawing.Point(9, 0);
             this.grpEncodingMethod.Margin = new System.Windows.Forms.Padding(2);
@@ -457,7 +457,31 @@
             this.grpEncodingMethod.Size = new System.Drawing.Size(421, 303);
             this.grpEncodingMethod.TabIndex = 23;
             this.grpEncodingMethod.TabStop = false;
-            this.grpEncodingMethod.Text = "Huffman Tables:";
+            this.grpEncodingMethod.Text = "Encoding Method";
+            // 
+            // rdioLSBMethod
+            // 
+            this.rdioLSBMethod.AutoSize = true;
+            this.rdioLSBMethod.Location = new System.Drawing.Point(135, 44);
+            this.rdioLSBMethod.Name = "rdioLSBMethod";
+            this.rdioLSBMethod.Size = new System.Drawing.Size(129, 17);
+            this.rdioLSBMethod.TabIndex = 19;
+            this.rdioLSBMethod.Text = "Least Significant Bit(s)";
+            this.rdioLSBMethod.UseVisualStyleBackColor = true;
+            this.rdioLSBMethod.CheckedChanged += new System.EventHandler(this.rdioGT_CheckedChangedSetMethod);
+            // 
+            // rdioGTMethod
+            // 
+            this.rdioGTMethod.AutoSize = true;
+            this.rdioGTMethod.Checked = true;
+            this.rdioGTMethod.Location = new System.Drawing.Point(27, 44);
+            this.rdioGTMethod.Name = "rdioGTMethod";
+            this.rdioGTMethod.Size = new System.Drawing.Size(102, 17);
+            this.rdioGTMethod.TabIndex = 18;
+            this.rdioGTMethod.TabStop = true;
+            this.rdioGTMethod.Text = "Graph Theoretic";
+            this.rdioGTMethod.UseVisualStyleBackColor = true;
+            this.rdioGTMethod.CheckedChanged += new System.EventHandler(this.rdioGT_CheckedChangedSetMethod);
             // 
             // lblEncodingMethod
             // 
@@ -468,30 +492,6 @@
             this.lblEncodingMethod.Size = new System.Drawing.Size(125, 13);
             this.lblEncodingMethod.TabIndex = 17;
             this.lblEncodingMethod.Text = "Select encoding method:";
-            // 
-            // rdioGT
-            // 
-            this.rdioGT.AutoSize = true;
-            this.rdioGT.Checked = true;
-            this.rdioGT.Location = new System.Drawing.Point(27, 44);
-            this.rdioGT.Name = "rdioGT";
-            this.rdioGT.Size = new System.Drawing.Size(102, 17);
-            this.rdioGT.TabIndex = 18;
-            this.rdioGT.TabStop = true;
-            this.rdioGT.Text = "Graph Theoretic";
-            this.rdioGT.UseVisualStyleBackColor = true;
-            this.rdioGT.CheckedChanged += new System.EventHandler(this.rdioGT_CheckedChangedSetMethod);
-            // 
-            // rdioLSB
-            // 
-            this.rdioLSB.AutoSize = true;
-            this.rdioLSB.Location = new System.Drawing.Point(135, 44);
-            this.rdioLSB.Name = "rdioLSB";
-            this.rdioLSB.Size = new System.Drawing.Size(129, 17);
-            this.rdioLSB.TabIndex = 19;
-            this.rdioLSB.Text = "Least Significant Bit(s)";
-            this.rdioLSB.UseVisualStyleBackColor = true;
-            this.rdioLSB.CheckedChanged += new System.EventHandler(this.rdioGT_CheckedChangedSetMethod);
             // 
             // OptionsForm
             // 
@@ -568,8 +568,8 @@
         private System.Windows.Forms.Label lblEncodingQuality;
         private System.Windows.Forms.Panel pnlOptionsEncodingMethod;
         private System.Windows.Forms.GroupBox grpEncodingMethod;
-        private System.Windows.Forms.RadioButton rdioLSB;
-        private System.Windows.Forms.RadioButton rdioGT;
+        private System.Windows.Forms.RadioButton rdioLSBMethod;
+        private System.Windows.Forms.RadioButton rdioGTMethod;
         private System.Windows.Forms.Label lblEncodingMethod;
     }
 }
