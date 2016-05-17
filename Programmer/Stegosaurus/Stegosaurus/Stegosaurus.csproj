@@ -49,16 +49,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="JPEG\BitList.cs" />
-    <Compile Include="JPEG\Decoder.cs" />
     <Compile Include="JPEG\Edge.cs" />
     <Compile Include="JPEG\ExtensionMethods.cs" />
     <Compile Include="JPEG\Graph.cs" />
     <Compile Include="JPEG\HuffmanTable.cs" />
     <Compile Include="JPEG\IImageDecode.cs" />
     <Compile Include="JPEG\IImageEncoder.cs" />
+    <Compile Include="JPEG\JPEGDecoder.cs" />
     <Compile Include="JPEG\JPEGImage.cs" />
     <Compile Include="JPEG\JPEGWriter.cs" />
-    <Compile Include="JPEG\Pair.cs" />
     <Compile Include="JPEG\QuantizationTable.cs" />
     <Compile Include="JPEG\Vertex.cs" />
     <Compile Include="LSB\LeastSignificantBitImage.cs" />
