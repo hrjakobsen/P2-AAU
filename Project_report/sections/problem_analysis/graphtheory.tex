@@ -38,7 +38,7 @@ Our message vector is found by splitting the binary string into pairs of two bit
 A grey-scale image can be viewed as a list of pixels $p = \{ p_0, p_1, p_2, \ldots, p_n \}$, where $\forall i\left( 0 \leq p_i \leq 255 \right)$. 
 These pixels are then ordered into consecutive pairs of two.
 Because we embed one entry from the message vector into each pair of pixels, an $m$ value of 4, means that we embed two bit per two pixels, meaning the message vector can have the same dimension as the amount of pixels in the image. 
-Were we to chose $m = 2$, only half of this message could fit in the same image.
+Were we to choose $m = 2$, only half of this message could fit in the same image.
 The $\oplus_m$ operator is then used on each individual pair, and compared to the message which is to be encoded.
 If the resulting remainder equals the wanted message, these pixels are a \textit{perfect pair}.
 If not, they need to be changed by either switching two pixels around, or changing one of the values.
@@ -156,7 +156,7 @@ The image obtained after these switches and changes are the one shown on figure 
 		\caption{Grey-scale stego image}
 		\label{fig:endingImageComp}
     \end{subfigure}
-    \caption{Comparison of the image before (\ref{fig:startingImage}) and after (\ref{fig:endingImage}) the changes have been made.}\label{fig:pixelGrids}
+    \caption{Comparison of the image before (\ref{fig:startingImageComp}) and after (\ref{fig:endingImageComp}) the changes have been made.}\label{fig:pixelGrids}
 \end{figure}
 
 By doing these switches, we minimize the need to alter the pixels in the image.
