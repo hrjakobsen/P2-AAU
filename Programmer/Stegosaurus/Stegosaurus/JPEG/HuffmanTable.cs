@@ -5,9 +5,9 @@ using System.Linq;
 namespace Stegosaurus {
     [Serializable]
     public class HuffmanTable {
+        public Dictionary<byte, HuffmanElement> Elements { get; } = new Dictionary<byte, HuffmanElement>();
 
-        public readonly Dictionary<byte, HuffmanElement> Elements = new Dictionary<byte, HuffmanElement>();
-
+        //Empty constructor so that the huffman table can be used as a setting
         public HuffmanTable() {
             
         }
@@ -16,12 +16,21 @@ namespace Stegosaurus {
             Elements.Add(element.RunSize, element);
         } 
 
+        /// <summary>
+        /// Creates a huffman table from huffman elements
+        /// </summary>
+        /// <param name="elements">Elements for the huffman table</param>
         public HuffmanTable(params HuffmanElement[] elements) {
             foreach (HuffmanElement huffmanElement in elements) {
                 Elements.Add(huffmanElement.RunSize, huffmanElement);
             }
         }
 
+
+        /// <summary>
+        /// Calculates how many components of each length exists in the table
+        /// </summary>
+        /// <returns>byte[] where each entry corresponds to how many of codes of that length is in the table </returns>
         public byte[] Combinations() {
             byte[] numberOfCodes = new byte[16];
             foreach (KeyValuePair<byte, HuffmanElement> element in Elements) {
@@ -31,6 +40,12 @@ namespace Stegosaurus {
             return numberOfCodes;
         }
 
+        /// <summary>
+        /// Reverse lookup in the table
+        /// </summary>
+        /// <param name="code">bitstring with the code</param>
+        /// <param name="length">Length of the bitstring. Must be between 1 and 16 </param>
+        /// <returns>The huffman element corresponding to the code</returns>
         public HuffmanElement HasCode(ushort code, int length) {
             foreach (KeyValuePair<byte, HuffmanElement> element in Elements) {
                 if (element.Value.CodeWord == code && element.Value.Length == length) {
@@ -39,6 +54,7 @@ namespace Stegosaurus {
             }
             return null;
         }
+        
 
         public override string ToString() {
             return Elements.OrderBy(x => x.Value.RunSize)
@@ -46,13 +62,27 @@ namespace Stegosaurus {
                            .Aggregate("", (current, huffmanElement) => current + (huffmanElement + "\n"));
         }
 
+        /// <summary>
+        /// Looks up a Huffman Element from the runsize. Combines the run and size into a single byte first.
+        /// </summary>
+        /// <param name="run">The number of zeroes before number in 4 bits</param>
+        /// <param name="size">The category of the number in 4 bits</param>
+        /// <returns>The huffmanElement with the runsize from the 2x4 bits combined </returns>
         public HuffmanElement GetElementFromRunSize(byte run, byte size) {
             byte runSize = (byte)((run << 4) | size);
             return Elements[runSize];
         }
 
+        /// <summary>
+        /// Check if all elements are equal. If the key are not found in both tables, they are not equal.
+        /// </summary>
+        /// <param name="obj">The other table</param>
+        /// <returns>True if the tables are equal, false otherwise</returns>
         public override bool Equals(object obj)
         {
+            if (obj == null) {
+                return false;
+            }
             HuffmanTable otherTable = (HuffmanTable)obj;
             foreach (KeyValuePair<byte, HuffmanElement> element in Elements)
             {
@@ -444,12 +474,23 @@ namespace Stegosaurus {
         public byte Length { get; }
         public ushort CodeWord { get; }
 
+        /// <summary>
+        /// Constructor for a huffman element
+        /// </summary>
+        /// <param name="runSize">The 4 higher order bits are the number of preceding zeroes</param>
+        /// <param name="codeWord">The bitstring with the code</param>
+        /// <param name="length">The length of the bitstring</param>
         public HuffmanElement(byte runSize, ushort codeWord, byte length) {
             RunSize = runSize;
             CodeWord = codeWord;
             Length = length;
         }
 
+        /// <summary>
+        /// Comparison of two huffman elements. Used for sorting a list of huffman elements
+        /// </summary>
+        /// <param name="other">The huffman element to compare to</param>
+        /// <returns>Less than one if instanse should be first in the list, 0 if they are equal, otherwise 1 </returns>
         public int CompareTo(HuffmanElement other) {
             if (Length == other.Length) {
                 return RunSize - other.RunSize;
@@ -462,6 +503,11 @@ namespace Stegosaurus {
             return $"{Convert.ToString(RunSize, 2)} = {Convert.ToString(CodeWord, 2)}, {Convert.ToString(Length, 2)}";
         }
 
+        /// <summary>
+        /// Determines wether two huffman elements are equal
+        /// </summary>
+        /// <param name="obj">Huffman element to compare to</param>
+        /// <returns>True if they are equal, otherwise false</returns>
         public override bool Equals(object obj)
         {
             if (obj == null)

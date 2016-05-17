@@ -10,6 +10,10 @@ namespace Stegosaurus {
             return Vertices.Aggregate("These are my vertices: \n", (current, v) => current + (v + "\n"));
         }
 
+        /// <summary>
+        /// Uses a greedy algorithm to choose what edges to keep. Always chooses the one with the lowest weight, then remove all other edges touching those vertices. Keeps doing this until no more edges can be chosen.
+        /// </summary>
+        /// <returns>A list of edges that describes switches that will make the message fit into the image</returns>
         public List<Edge> GetSwitches() {
             Edges.Sort();
             List<Edge> chosenEdges = new List<Edge>();

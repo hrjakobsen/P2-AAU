@@ -10,7 +10,8 @@ namespace Stegosaurus {
     public class JpegImage : IImageEncoder {
         private JpegWriter _jw;
         private byte _m;
-        public Bitmap CoverImage;
+
+        public Bitmap CoverImage { get; set; }
         private readonly List<byte> _message = new List<byte>();
         private readonly int[] _lastDc = { 0, 0, 0 };
         private readonly List<Tuple<short[,], HuffmanTable, HuffmanTable, int>> _quantizedBlocks = new List<Tuple<short[,], HuffmanTable, HuffmanTable, int>>();
@@ -137,9 +138,17 @@ namespace Stegosaurus {
             //and the logic required to write those to a file
             _jw = new JpegWriter();
 
+            int capacity = GetCapacity();
+
             if (message.Length > 16884) {
-                throw new ArgumentException("Message cannot be longer than 16884 bytes!");
+                throw new ImageCannotContainDataException(message.Length, 16884);
+            } else if (message.Length > capacity) {
+                throw new ImageCannotContainDataException(message.Length, capacity);
             }
+
+
+
+
             _breakDownMessage(message);
 
             _writeHeaders();
@@ -167,6 +176,10 @@ namespace Stegosaurus {
             }
         }
 
+        /// <summary>
+        /// Calculates the number of bytes that can be encoded into the image
+        /// </summary>
+        /// <returns>The number of bytes the image can hold</returns>
         public int GetCapacity() {
             //Basically perform all the steps Encode does up until
             //actually encoding the secret message
