@@ -11,6 +11,9 @@ namespace Stegosaurus {
         private JpegWriter _jw;
         private byte _m;
 
+        private int _originalCoverWidth;
+        private int _originalCoverHeight;
+
         public Bitmap CoverImage { get; set; }
         private readonly List<byte> _message = new List<byte>();
         private readonly int[] _lastDc = { 0, 0, 0 };
@@ -125,6 +128,8 @@ namespace Stegosaurus {
             YACHuffman = huffmanYAC;
             ChrDCHuffman = huffmanChrDC;
             ChrACHuffman = huffmanChrAC;
+            _originalCoverWidth = coverImage.Width;
+            _originalCoverHeight = coverImage.Height;
 
             // Calculate coefficients that are used in DCT
             _calculateCosineCoefficients();
@@ -315,10 +320,10 @@ namespace Stegosaurus {
             _jw.WriteBytes(0x08);
 
             //Width and height of image, each in two bytes
-            byte widthByteOne = (byte)(CoverImage.Width >> 8);
-            byte widthByteTwo = (byte)(CoverImage.Width & 0xff);
-            byte heightByteOne = (byte)(CoverImage.Height >> 8);
-            byte heightByteTwo = (byte)(CoverImage.Height & 0xff);
+            byte widthByteOne = (byte)(_originalCoverWidth >> 8);
+            byte widthByteTwo = (byte)(_originalCoverWidth & 0xff);
+            byte heightByteOne = (byte)(_originalCoverHeight >> 8);
+            byte heightByteTwo = (byte)(_originalCoverHeight & 0xff);
             _jw.WriteBytes(heightByteOne, heightByteTwo, widthByteOne, widthByteTwo);
 
             //Number of components in image 
