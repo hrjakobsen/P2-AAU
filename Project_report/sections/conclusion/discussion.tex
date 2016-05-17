@@ -73,10 +73,12 @@ When using an image of substantial size, a quarter of an image can hold a large 
 A 512x512 image for example can hold 196,604 bytes, when using the two least significant bits.
 Encoding 40,000 bytes using our graph-theoretical (GT) programme was completely out of the question due to the complexity of the algorithm.
 The longest message we tried encoding was just under 8960 bytes and took around half an hour on a decent desktop computer.
-Encoding half that, 4480 bytes, took around three minutes, so extrapolating from that, it would take roughly 50 hours to encode 40,000 bytes.
+Running several test runs with different message lengths made it clear that the complexity of the programme made it impossible to ever complete an encoding of this much data.
 
 This made a direct comparison using realistic real-world images and messages impossible. 
-Instead we could use an image small enough to fill it out with data using both our programmes.
+The only real comparison we could make was between images containing different messages that used up every single available byte in the image.
+Since the GT method became very time consuming with larger messages, we would need to use an image that was small enough that we could embed all bytes possible, without it taking too long to complete.
+We ended up using a 120x120 px
 
 
 A different way of looking for changes in an image is by looking at their Euclidean distance.
