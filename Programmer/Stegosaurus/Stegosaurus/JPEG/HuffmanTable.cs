@@ -57,9 +57,25 @@ namespace Stegosaurus {
         
 
         public override string ToString() {
-            return Elements.OrderBy(x => x.Value.RunSize)
-                           .ToDictionary(x => x.Key, x => x.Value)
-                           .Aggregate("", (current, huffmanElement) => current + (huffmanElement + "\n"));
+            string s = "";
+
+            foreach (HuffmanElement element in Elements.Select(x => x.Value)) {
+                s += $"{element.RunSize},{element.CodeWord},{element.Length};";
+            }
+
+            return s;
+        }
+
+        public static HuffmanTable FromString(string hTableString) {
+            string[] elements = hTableString.Split(';');
+            List<HuffmanElement> tableElements = new List<HuffmanElement>();
+            
+            for (int i = 0; i < elements.Length - 1; i++) {
+                string[] elementParts = elements[i].Split(',');
+                tableElements.Add(new HuffmanElement(byte.Parse(elementParts[0]), ushort.Parse(elementParts[1]), byte.Parse(elementParts[2])));
+            }
+
+            return new HuffmanTable(tableElements.ToArray());
         }
 
         /// <summary>

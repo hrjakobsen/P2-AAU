@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Drawing.Imaging;
 using System.Linq;
 
 namespace Stegosaurus {
@@ -74,15 +75,16 @@ namespace Stegosaurus {
         }
 
         public override string ToString() {
-            string s = "";
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-                    s += Entries[i * 8 + j] + "\t";
-                }
-                s += "\n";
-            }
+            return Entries.Aggregate("", (current, entry) => current + (entry + ";"));
+        }
 
-            return s;
+        public static QuantizationTable FromString(string qTableString) {
+            string[] parts = qTableString.Split(';');
+            byte[] entries = new byte[64];
+            for (int i = 0; i < 64; i++) {
+                entries[i] = byte.Parse(parts[i]);
+            }
+            return new QuantizationTable(entries);
         }
 
         public override int GetHashCode() {
