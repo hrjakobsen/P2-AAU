@@ -73,7 +73,6 @@
     <Compile Include="OptionsForm.Designer.cs">
       <DependentUpon>OptionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="OptionsSaver.cs" />
     <Compile Include="QuantizationTableComponent.cs">
       <SubType>Component</SubType>
     </Compile>

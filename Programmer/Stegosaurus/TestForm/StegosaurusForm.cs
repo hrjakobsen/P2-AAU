@@ -14,15 +14,16 @@ namespace TestForm{
         public static QuantizationTable QuantizationTableY, QuantizationTableChr;
 
         private readonly LeastSignificantBitImage _stegoLsbController;
-        private IImageEncoder _stegoGtEncoderController;
-        private IImageDecoder _stegoGtDecoderController;
+        private IImageEncoder _imageEncoder;
+        private IImageDecoder _imageDecoder;
         private bool _inputImageSetLsb, _messageImageSetLsb, _inputImageSetGt, _messageFileSetGt, _messageTextSetGt;
-        private byte[] _message;
+        private byte[] _messageGT, _messageLSB;
         private const string NoMessageWrittenMessage = "Enter the message you would like to encode into your image.";
         private int _messageLength;
         private int defaultQuality = 53;
 
         public static bool QualityGTLocked { get; private set; }
+        public static bool LSBMethodSelected;
         public static int QualityGT { get; set; }
         //public string ImagesSavePath { get; set; }
         private string myVar;
@@ -40,8 +41,8 @@ namespace TestForm{
             }
         }
 
-
-        private Bitmap CoverImageGT { get; set; }
+        private Bitmap CoverImageLSB { get; set; }
+        private Bitmap CoverImage { get; set; }
         private Bitmap StegoImageGt { get; set; }
 
         public StegosaurusForm() {
@@ -50,12 +51,12 @@ namespace TestForm{
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            _stegoLsbController = new LeastSignificantBitImage();
+            //_stegoLsbController = new LeastSignificantBitImage();
         }
 
         private void StegosaurusForm_Load(object sender, EventArgs e)
         {
-            loadSettings();
+            //loadSettings();
         }
 
         private void loadSettings()
@@ -78,7 +79,21 @@ namespace TestForm{
             if (OptionsForm.SaveEnabled)
             {
                 Cursor.Current = Cursors.WaitCursor;
-                loadSettingsFromForm();
+                //DELETE THIS
+                LSBMethodSelected = OptionsForm.LSBMethodSelected;
+
+                if (LSBMethodSelected)
+                {
+                    tbarGTEncodingQuality.Enabled = false;
+                    lblGTEncodingQualityValue.Text = "";
+                }
+                else
+                {
+                    tbarGTEncodingQuality.Enabled = true;
+                }
+                //DELETE THIS
+
+                //loadSettingsFromOptionsForm();
                 Cursor.Current = Cursors.Default;
             }
         }
@@ -95,11 +110,26 @@ namespace TestForm{
             helpForm.Show();
         }
 
-        private void loadSettingsFromForm()
+        private void loadSettingsFromOptionsForm()
         {
             tbarGTEncodingQuality.Value = OptionsForm.QualityGT;
 
-            //MessageBox.Show(HuffmanTable.JpegHuffmanTableYAC.Equals(HuffmanTable.JpegHuffmanTableYDC).ToString());
+            LSBMethodSelected = OptionsForm.LSBMethodSelected;
+
+            if (LSBMethodSelected)
+            {
+                tbarGTEncodingQuality.Enabled = false;
+                lblGTEncodingQualityValue.Text = "";
+            }
+            else
+            {
+                tbarGTEncodingQuality.Enabled = true;
+            }
+
+            if (!string.IsNullOrWhiteSpace(OptionsForm.ImagesSavePath))
+            {
+                ImagesSavePath = OptionsForm.ImagesSavePath;
+            }
 
             if (OptionsForm.HuffmanTableComponentYAC.SaveTable().Equals(HuffmanTable.JpegHuffmanTableYAC))
             {
@@ -168,18 +198,7 @@ namespace TestForm{
             {
                 QualityGTLocked = false;
                 tbarGTEncodingQuality.Enabled = true;
-            }
-
-            if (!string.IsNullOrWhiteSpace(OptionsForm.ImagesSavePath))
-            {
-                ImagesSavePath = OptionsForm.ImagesSavePath;
-            }
-            //_huffmanTableYAC = OptionsForm.HuffmanTableComponentYAC.SaveTable();
-            //_huffmanTableYDC = OptionsForm.HuffmanTableComponentYDC.SaveTable();
-            //_huffmanTableChrAC = OptionsForm.HuffmanTableComponentChrAC.SaveTable();
-            //_huffmanTableChrDC = OptionsForm.HuffmanTableComponentChrDC.SaveTable();
-            //_quantizationTableY = OptionsForm.QuantizationTableComponentY.SaveTable();
-            //_quantizationTableChr = OptionsForm.QuantizationTableComponentChr.SaveTable();
+            }            
         }
 
         #region LSB
@@ -208,7 +227,7 @@ namespace TestForm{
             else
             {
                 btnLoadMessage.Enabled = false;
-                picMessage.Image = null;
+                picMessageGT.Image = null;
                 _messageImageSetLsb = false;
                 btnProceed.Text = @"Decode";
                 if (_inputImageSetLsb)
@@ -219,9 +238,9 @@ namespace TestForm{
         }
 
         private void getFileInput_FileOk(object sender, CancelEventArgs e) {
-            _stegoLsbController.CoverImage = new Bitmap(getFileInputLSB.FileName);
-            _stegoLsbController.StegoImage = new Bitmap(getFileInputLSB.FileName);
-            picInput.Image = _stegoLsbController.StegoImage;
+            CoverImageLSB = new Bitmap(getFileInputLSB.FileName);
+
+            picInput.Image = CoverImageLSB;
             _inputImageSetLsb = true;
 
             if (_messageImageSetLsb || rdioDecode.Checked) {
@@ -229,9 +248,12 @@ namespace TestForm{
             }
         }
 
-        private void getFileMessage_FileOk(object sender, CancelEventArgs e) {
-            _stegoLsbController.MessageImage = new Bitmap(getFileMessageLSB.FileName);
-            picMessage.Image = _stegoLsbController.MessageImage;
+        private void getFileMessageLSB_FileOk(object sender, CancelEventArgs e) {
+            
+
+
+            _messageLSB = File.ReadAllBytes(getFileMessageLSB.FileName);
+            picMessageGT.Image = new Bitmap(getFileMessageLSB.FileName);
             _messageImageSetLsb = true;
 
             if (_inputImageSetLsb) {
@@ -245,20 +267,31 @@ namespace TestForm{
             Cursor.Current = Cursors.WaitCursor;
             if (rdioEncode.Checked)
             {
-                Bitmap oldStegoImage = _stegoLsbController.StegoImage;
-                _stegoLsbController.Encode();
-
-                picResult.Image = _stegoLsbController.StegoImage;
-                _stegoLsbController.StegoImage.Save(ImagesSavePath + "./encryptedImageLSB.png");
-                _stegoLsbController.StegoImage = oldStegoImage;
+                _imageEncoder = new LeastSignificantBitImage(CoverImageLSB);
+                Bitmap oldStegoImage = (Bitmap)picMessageGT.Image;
+                _imageEncoder.Encode(_messageLSB);
+                _imageEncoder.Save(ImagesSavePath + "encryptedImageLSB.jpg");
+                picGTResult.Image = Image.FromFile(ImagesSavePath + "encryptedImageLSB.jpg");
             }
             else if (rdioDecode.Checked)
             {
-                _stegoLsbController.Decode();
+                //picGTResult.Image = null;
+                //tbGTMessage.Text = "";
+                //_imageDecoder = new JPEGDecoder(ImagesSavePath + "encryptedImageGT.jpg");
+                //byte[] message = _imageDecoder.Decode();
+                //tbGTMessage.Text = (new string(message.Select(x => (char)x).ToArray()));
 
-                picResult.Image = _stegoLsbController.MessageImage;
-                _stegoLsbController.MessageImage.Save(ImagesSavePath + "./decryptedImageLSB.png");
-                _stegoLsbController.MessageImage = null;
+                _imageDecoder = new LeastSignificantBitDecoder(ImagesSavePath + "encryptedImageLSB.jpg");
+
+                byte[] message = _imageDecoder.Decode();
+
+                TypeConverter tc = TypeDescriptor.GetConverter(typeof(Bitmap));
+                Bitmap messageImage = (Bitmap)tc.ConvertFrom(message);
+
+                picResultGT.Image = messageImage;
+                //_imageDecoder.Save();
+                //_stegoLsbController.MessageImage.Save(ImagesSavePath + "./decryptedImageLSB.png");
+                //_stegoLsbController.MessageImage = null;
             }
             Cursor.Current = Cursors.Default;
         }
@@ -266,7 +299,7 @@ namespace TestForm{
         private void getFileStego_FileOk(object sender, CancelEventArgs e)
         {
             StegoLSBController.StegoImage = new Bitmap(getFileStego.FileName);
-            picResult.Image = StegoLSBController.StegoImage;
+            picResultGT.Image = StegoLSBController.StegoImage;
 
             Decode.Enabled = true;
         }*/
@@ -317,11 +350,6 @@ namespace TestForm{
             }
         }
 
-        private void btnGTLoadInput_Click(object sender, EventArgs e)
-        {
-            getFileInputGT.ShowDialog();
-        }
-
         private void tbarGTEncodingQuality_ValueChanged(object sender, EventArgs e)
         {
             QualityGT = tbarGTEncodingQuality.Value;
@@ -365,13 +393,17 @@ namespace TestForm{
             saveSettings();
         }
 
+        private void btnGTLoadInput_Click(object sender, EventArgs e)
+        {
+            getFileInputGT.ShowDialog();
+        }
+
         private void getFileInputGT_FileOk(object sender, CancelEventArgs e)
         {
-            CoverImageGT = new Bitmap(getFileInputGT.FileName);
+            CoverImage = new Bitmap(getFileInputGT.FileName);
 
-            picGTInput.Image = _stegoLsbController.StegoImage;
             _inputImageSetGt = true;
-            picGTInput.Image = CoverImageGT;
+            picGTInput.Image = CoverImage;
 
             if (_messageFileSetGt || _messageTextSetGt)
             {
@@ -384,8 +416,8 @@ namespace TestForm{
             tbGTMessage.Enabled = false;
             tbGTMessageFilePath.Text = GetFileMessageGT.SafeFileName;
             _messageFileSetGt = true;
-            _message = File.ReadAllBytes(GetFileMessageGT.FileName);
-            _messageLength = _message.Length;
+            _messageGT = File.ReadAllBytes(GetFileMessageGT.FileName);
+            _messageLength = _messageGT.Length;
 
             if (_inputImageSetGt || _messageFileSetGt)
             {
@@ -401,18 +433,8 @@ namespace TestForm{
                 //DELETE
                 ImagesSavePath = "";
                 //DELETE
-                if (QuantizationTableY == null || QuantizationTableChr == null || HuffmanTableYAC == null || HuffmanTableYDC == null || HuffmanTableChrAC == null || HuffmanTableChrDC == null)
-                {
-                    _stegoGtEncoderController = new JpegImage(CoverImageGT, QualityGT, 4);
-                }
-                else
-                {
-                    _stegoGtEncoderController = new JpegImage(CoverImageGT, QualityGT, 4, QuantizationTableY, QuantizationTableChr, HuffmanTableYDC, HuffmanTableYAC, HuffmanTableChrDC, HuffmanTableChrAC);
-                }
-
                 byte[] msg = new byte[_messageLength];
 
-                
                 if (_messageTextSetGt)
                 {
                     for (int i = 0; i < _messageLength; i++)
@@ -424,22 +446,53 @@ namespace TestForm{
                 {
                     for (int i = 0; i < _messageLength; i++)
                     {
-                        msg[i] = _message[i];
+                        msg[i] = _messageGT[i];
                     }
                 }
 
-                _stegoGtEncoderController.Encode(msg);
-                _stegoGtEncoderController.Save(ImagesSavePath + "encryptedImageGT.jpg");
-                picGTResult.Image = Image.FromFile(ImagesSavePath + "encryptedImageGT.jpg");
+                if (!LSBMethodSelected)
+                {
+                    if (QuantizationTableY == null || QuantizationTableChr == null || HuffmanTableYAC == null || HuffmanTableYDC == null || HuffmanTableChrAC == null || HuffmanTableChrDC == null)
+                    {
+                        _imageEncoder = new JpegImage(CoverImage, QualityGT, 4);
+                    }
+                    else
+                    {
+                        _imageEncoder = new JpegImage(CoverImage, QualityGT, 4, QuantizationTableY, QuantizationTableChr, HuffmanTableYDC, HuffmanTableYAC, HuffmanTableChrDC, HuffmanTableChrAC);
+                    }
+                }
+                else
+                {
+                    _imageEncoder = new LeastSignificantBitImage(CoverImage);
+                }
 
+                _imageEncoder.Encode(msg);
+
+                if (!LSBMethodSelected)
+                {
+                    _imageEncoder.Save(ImagesSavePath + "encryptedImageGT.jpg");
+                    picGTResult.Image = Image.FromFile(ImagesSavePath + "encryptedImageGT.jpg");
+                }
+                else
+                {
+                    _imageEncoder.Save(ImagesSavePath + "encryptedImageLSB.jpg");
+                    picGTResult.Image = Image.FromFile(ImagesSavePath + "encryptedImageLSB.jpg");
+                }
             }
             else if (rdioGTDecode.Checked)
             {
                 picGTResult.Image = null;
                 tbGTMessage.Text = "";
-                _stegoGtDecoderController = new JPEGDecoder(ImagesSavePath + "encryptedImageGT.jpg");
-                byte[] message = _stegoGtDecoderController.Decode();
-                tbGTMessage.Text = (new string(message.Select(x => (char)x).ToArray()) + " AND IT WOOOOORKS!");
+                if (!LSBMethodSelected)
+                {
+                    _imageDecoder = new JPEGDecoder(ImagesSavePath + "encryptedImageGT.jpg");
+                }
+                else
+                {
+                    _imageDecoder = new LeastSignificantBitDecoder(ImagesSavePath + "encryptedImageLSB.jpg");
+                }
+                byte[] message = _imageDecoder.Decode();
+                tbGTMessage.Text = new string(message.Select(x => (char)x).ToArray());
             }
             Cursor.Current = Cursors.Default;
         }

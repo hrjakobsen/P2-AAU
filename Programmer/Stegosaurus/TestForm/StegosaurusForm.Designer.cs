@@ -29,12 +29,12 @@
             this.getFileMessageLSB = new System.Windows.Forms.OpenFileDialog();
             this.getFileStego = new System.Windows.Forms.OpenFileDialog();
             this.line = new System.Windows.Forms.Label();
-            this.picResult = new System.Windows.Forms.PictureBox();
+            this.picResultGT = new System.Windows.Forms.PictureBox();
             this.Decode = new System.Windows.Forms.Button();
             this.Encode = new System.Windows.Forms.Button();
             this.btnLoadMessage = new System.Windows.Forms.Button();
             this.btnLoadInput = new System.Windows.Forms.Button();
-            this.picMessage = new System.Windows.Forms.PictureBox();
+            this.picMessageGT = new System.Windows.Forms.PictureBox();
             this.picInput = new System.Windows.Forms.PictureBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -68,8 +68,8 @@
             this.tpMethodLSB = new System.Windows.Forms.TabPage();
             this.getFileInputGT = new System.Windows.Forms.OpenFileDialog();
             this.GetFileMessageGT = new System.Windows.Forms.OpenFileDialog();
-            ((System.ComponentModel.ISupportInitialize)(this.picResult)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picMessage)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picResultGT)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picMessageGT)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picInput)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -90,7 +90,7 @@
             // getFileMessageLSB
             // 
             this.getFileMessageLSB.FileName = "Select an image with half the width and height and width of the Cover image";
-            this.getFileMessageLSB.FileOk += new System.ComponentModel.CancelEventHandler(this.getFileMessage_FileOk);
+            this.getFileMessageLSB.FileOk += new System.ComponentModel.CancelEventHandler(this.getFileMessageLSB_FileOk);
             // 
             // getFileStego
             // 
@@ -104,16 +104,16 @@
             this.line.Size = new System.Drawing.Size(615, 2);
             this.line.TabIndex = 24;
             // 
-            // picResult
+            // picResultGT
             // 
-            this.picResult.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.picResult.Location = new System.Drawing.Point(385, 6);
-            this.picResult.Name = "picResult";
-            this.picResult.Size = new System.Drawing.Size(216, 216);
-            this.picResult.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.picResult.TabIndex = 22;
-            this.picResult.TabStop = false;
-            this.ttStegosaurus.SetToolTip(this.picResult, "Result-image");
+            this.picResultGT.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.picResultGT.Location = new System.Drawing.Point(385, 6);
+            this.picResultGT.Name = "picResultGT";
+            this.picResultGT.Size = new System.Drawing.Size(216, 216);
+            this.picResultGT.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picResultGT.TabIndex = 22;
+            this.picResultGT.TabStop = false;
+            this.ttStegosaurus.SetToolTip(this.picResultGT, "Result-image");
             // 
             // Decode
             // 
@@ -160,16 +160,16 @@
             this.btnLoadInput.UseVisualStyleBackColor = true;
             this.btnLoadInput.Click += new System.EventHandler(this.loadInputImage_Click_1);
             // 
-            // picMessage
+            // picMessageGT
             // 
-            this.picMessage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.picMessage.Location = new System.Drawing.Point(249, 16);
-            this.picMessage.Name = "picMessage";
-            this.picMessage.Size = new System.Drawing.Size(108, 108);
-            this.picMessage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.picMessage.TabIndex = 17;
-            this.picMessage.TabStop = false;
-            this.ttStegosaurus.SetToolTip(this.picMessage, "Message-image");
+            this.picMessageGT.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.picMessageGT.Location = new System.Drawing.Point(249, 16);
+            this.picMessageGT.Name = "picMessageGT";
+            this.picMessageGT.Size = new System.Drawing.Size(108, 108);
+            this.picMessageGT.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picMessageGT.TabIndex = 17;
+            this.picMessageGT.TabStop = false;
+            this.ttStegosaurus.SetToolTip(this.picMessageGT, "Message-image");
             // 
             // picInput
             // 
@@ -494,13 +494,13 @@
             // 
             this.tpMethodLSB.BackColor = System.Drawing.SystemColors.Menu;
             this.tpMethodLSB.Controls.Add(this.picInput);
-            this.tpMethodLSB.Controls.Add(this.picMessage);
+            this.tpMethodLSB.Controls.Add(this.picMessageGT);
             this.tpMethodLSB.Controls.Add(this.btnLoadMessage);
             this.tpMethodLSB.Controls.Add(this.btnLoadInput);
             this.tpMethodLSB.Controls.Add(this.groupBox1);
             this.tpMethodLSB.Controls.Add(this.Encode);
             this.tpMethodLSB.Controls.Add(this.Decode);
-            this.tpMethodLSB.Controls.Add(this.picResult);
+            this.tpMethodLSB.Controls.Add(this.picResultGT);
             this.tpMethodLSB.Location = new System.Drawing.Point(4, 22);
             this.tpMethodLSB.Name = "tpMethodLSB";
             this.tpMethodLSB.Padding = new System.Windows.Forms.Padding(3);
@@ -531,8 +531,8 @@
             this.Text = "Stegosaurus";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.StegosaurusForm_FormClosing);
             this.Load += new System.EventHandler(this.StegosaurusForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.picResult)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picMessage)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picResultGT)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picMessageGT)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picInput)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -558,12 +558,12 @@
         private System.Windows.Forms.OpenFileDialog getFileMessageLSB;
         private System.Windows.Forms.OpenFileDialog getFileStego;
         private System.Windows.Forms.Label line;
-        private System.Windows.Forms.PictureBox picResult;
+        private System.Windows.Forms.PictureBox picResultGT;
         private System.Windows.Forms.Button Decode;
         private System.Windows.Forms.Button Encode;
         private System.Windows.Forms.Button btnLoadMessage;
         private System.Windows.Forms.Button btnLoadInput;
-        private System.Windows.Forms.PictureBox picMessage;
+        private System.Windows.Forms.PictureBox picMessageGT;
         private System.Windows.Forms.PictureBox picInput;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;

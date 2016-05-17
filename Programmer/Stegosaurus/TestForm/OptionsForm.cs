@@ -33,23 +33,26 @@ namespace TestForm
         public static string ImagesSavePath;
         public static int QualityGT;
         public static bool SaveEnabled;
+        public static bool LSBMethodSelected;
 
         public OptionsForm()
         {
             InitializeComponent();
-            initializeQuantizationTable(QuantizationTableComponentY, StegosaurusForm.QuantizationTableY, QuantizationTable.JpegDefaultYTable);
-            initializeQuantizationTable(QuantizationTableComponentChr, StegosaurusForm.QuantizationTableChr, QuantizationTable.JpegDefaultChrTable);
-            initializeHuffmanTable(HuffmanTableComponentYAC, StegosaurusForm.HuffmanTableYAC, HuffmanTable.JpegHuffmanTableYAC);
-            initializeHuffmanTable(HuffmanTableComponentYDC, StegosaurusForm.HuffmanTableYDC, HuffmanTable.JpegHuffmanTableYDC);
-            initializeHuffmanTable(HuffmanTableComponentChrAC, StegosaurusForm.HuffmanTableChrAC, HuffmanTable.JpegHuffmanTableChrAC);
-            initializeHuffmanTable(HuffmanTableComponentChrDC, StegosaurusForm.HuffmanTableChrDC, HuffmanTable.JpegHuffmanTableChrDC);
+            //initializeQuantizationTable(QuantizationTableComponentY, StegosaurusForm.QuantizationTableY, QuantizationTable.JpegDefaultYTable);
+            //initializeQuantizationTable(QuantizationTableComponentChr, StegosaurusForm.QuantizationTableChr, QuantizationTable.JpegDefaultChrTable);
+            //initializeHuffmanTable(HuffmanTableComponentYAC, StegosaurusForm.HuffmanTableYAC, HuffmanTable.JpegHuffmanTableYAC);
+            //initializeHuffmanTable(HuffmanTableComponentYDC, StegosaurusForm.HuffmanTableYDC, HuffmanTable.JpegHuffmanTableYDC);
+            //initializeHuffmanTable(HuffmanTableComponentChrAC, StegosaurusForm.HuffmanTableChrAC, HuffmanTable.JpegHuffmanTableChrAC);
+            //initializeHuffmanTable(HuffmanTableComponentChrDC, StegosaurusForm.HuffmanTableChrDC, HuffmanTable.JpegHuffmanTableChrDC);
 
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.MinimizeBox = false;            
+            this.MinimizeBox = false;
 
-            rdioQuantizationYChannel.Checked = true;
-            rdioHuffmanY_AC.Checked = true;
+            OptionsBox.SelectedItem = OptionsBox.Items[0];
+
+            //rdioQuantizationYChannel.Checked = true;
+            //rdioHuffmanY_AC.Checked = true;
             QualityGT = StegosaurusForm.QualityGT;
             tbarQualitySlider.Value = QualityGT;
             if (StegosaurusForm.QualityGTLocked)
@@ -59,6 +62,17 @@ namespace TestForm
             else
             {
                 tbarQualitySlider.Enabled = true;
+            }
+
+            LSBMethodSelected = StegosaurusForm.LSBMethodSelected;
+
+            if (!LSBMethodSelected)
+            {
+                rdioGT.Checked = true;
+            }
+            else
+            {
+                rdioLSB.Checked = true;
             }
         }
 
@@ -124,6 +138,11 @@ namespace TestForm
                 pnlOptionsQuality.Visible = true;
                 pnlOptionsQuality.Enabled = true;
             }
+            else if (OptionsBox.SelectedItem == OptionsBox.Items[4])
+            {
+                pnlOptionsEncodingMethod.Visible = true;
+                pnlOptionsEncodingMethod.Enabled = true;
+            }
         }
 
         private void DeselectAllOptionPanels()
@@ -139,6 +158,9 @@ namespace TestForm
 
             pnlOptionsQuantization.Visible = false;
             pnlOptionsQuantization.Enabled = false;
+
+            pnlOptionsEncodingMethod.Visible = false;
+            pnlOptionsEncodingMethod.Enabled = false;
         }
 
         //'Escape' closes form 
@@ -293,6 +315,18 @@ namespace TestForm
         private void tbarQualitySlider_ValueChanged(object sender, EventArgs e)
         {
             lblEncodingQualityValue.Text = tbarQualitySlider.Value.ToString();
+        }
+
+        private void rdioGT_CheckedChangedSetMethod(object sender, EventArgs e)
+        {
+            if (rdioGT.Checked)
+            {
+                LSBMethodSelected = false;
+            }
+            else if (rdioLSB.Checked)
+            {
+                LSBMethodSelected = true;
+            }
         }
     }
 }
