@@ -49,7 +49,7 @@
             this.btnProceed = new System.Windows.Forms.Button();
             this.rdioEncode = new System.Windows.Forms.RadioButton();
             this.rdioDecode = new System.Windows.Forms.RadioButton();
-            this.getFileInputGT = new System.Windows.Forms.OpenFileDialog();
+            this.getFileInput = new System.Windows.Forms.OpenFileDialog();
             this.GetFileMessage = new System.Windows.Forms.OpenFileDialog();
             this.tbarEncodingQuality = new System.Windows.Forms.TrackBar();
             this.menuStrip1.SuspendLayout();
@@ -150,7 +150,7 @@
             this.ttStegosaurus.SetToolTip(this.btnLoadInput, "Choose the image you would like to hide\r\ndata in (cover-image) or retrieve data \r" +
         "\nfrom (decode)");
             this.btnLoadInput.UseVisualStyleBackColor = true;
-            this.btnLoadInput.Click += new System.EventHandler(this.btnGTLoadInput_Click);
+            this.btnLoadInput.Click += new System.EventHandler(this.btnLoadInput_Click);
             // 
             // picResult
             // 
@@ -173,9 +173,9 @@
             this.tbMessage.Size = new System.Drawing.Size(142, 72);
             this.tbMessage.TabIndex = 40;
             this.tbMessage.Text = "Enter the message you would like to encode into your image.";
-            this.tbMessage.TextChanged += new System.EventHandler(this.tbGTMessage_TextChanged);
-            this.tbMessage.Leave += new System.EventHandler(this.tbGTMessage_Leave);
-            this.tbMessage.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.tbGTMessage_MouseDoubleClick);
+            this.tbMessage.TextChanged += new System.EventHandler(this.tbMessage_TextChanged);
+            this.tbMessage.Leave += new System.EventHandler(this.tbMessage_Leave);
+            this.tbMessage.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.tbMessage_MouseDoubleClick);
             // 
             // cbMessageFile
             // 
@@ -237,7 +237,7 @@
             this.btnProceed.TabIndex = 2;
             this.btnProceed.Text = "Procceed";
             this.btnProceed.UseVisualStyleBackColor = false;
-            this.btnProceed.Click += new System.EventHandler(this.btnGTProceed_Click);
+            this.btnProceed.Click += new System.EventHandler(this.btnProceed_Click);
             // 
             // rdioEncode
             // 
@@ -249,7 +249,7 @@
             this.rdioEncode.TabStop = true;
             this.rdioEncode.Text = "Encode";
             this.rdioEncode.UseVisualStyleBackColor = true;
-            this.rdioEncode.CheckedChanged += new System.EventHandler(this.rdioGTEncode_CheckedChanged);
+            this.rdioEncode.CheckedChanged += new System.EventHandler(this.rdioEncode_CheckedChanged);
             // 
             // rdioDecode
             // 
@@ -261,17 +261,17 @@
             this.rdioDecode.TabStop = true;
             this.rdioDecode.Text = "Decode";
             this.rdioDecode.UseVisualStyleBackColor = true;
-            this.rdioDecode.CheckedChanged += new System.EventHandler(this.rdioGTEncode_CheckedChanged);
+            this.rdioDecode.CheckedChanged += new System.EventHandler(this.rdioEncode_CheckedChanged);
             // 
-            // getFileInputGT
+            // getFileInput
             // 
-            this.getFileInputGT.FileName = "Select an image to be the Cover";
-            this.getFileInputGT.FileOk += new System.ComponentModel.CancelEventHandler(this.getFileInputGT_FileOk);
+            this.getFileInput.FileName = "Select an image to be the Cover";
+            this.getFileInput.FileOk += new System.ComponentModel.CancelEventHandler(this.getFileInput_FileOk);
             // 
             // GetFileMessage
             // 
             this.GetFileMessage.FileName = "Select a file to be the message";
-            this.GetFileMessage.FileOk += new System.ComponentModel.CancelEventHandler(this.GetFileMessageGT_FileOk);
+            this.GetFileMessage.FileOk += new System.ComponentModel.CancelEventHandler(this.GetFileMessage_FileOk);
             // 
             // tbarEncodingQuality
             // 
@@ -282,8 +282,7 @@
             this.tbarEncodingQuality.TabIndex = 36;
             this.tbarEncodingQuality.TickStyle = System.Windows.Forms.TickStyle.None;
             this.ttStegosaurus.SetToolTip(this.tbarEncodingQuality, "Set the encoding quality from which\r\nthe amount of data you can hide varries");
-            this.tbarEncodingQuality.Scroll += new System.EventHandler(this.tbarEncodingQuality_Scroll);
-            this.tbarEncodingQuality.ValueChanged += new System.EventHandler(this.tbarGTEncodingQuality_ValueChanged);
+            this.tbarEncodingQuality.ValueChanged += new System.EventHandler(this.tbarEncodingQuality_ValueChanged);
             // 
             // StegosaurusForm
             // 
@@ -345,7 +344,7 @@
         private System.Windows.Forms.RadioButton rdioEncode;
         private System.Windows.Forms.RadioButton rdioDecode;
         private System.Windows.Forms.PictureBox picResult;
-        private System.Windows.Forms.OpenFileDialog getFileInputGT;
+        private System.Windows.Forms.OpenFileDialog getFileInput;
         private System.Windows.Forms.OpenFileDialog GetFileMessage;
         private System.Windows.Forms.TextBox tbMessage;
         private System.Windows.Forms.TrackBar tbarEncodingQuality;
