@@ -81,24 +81,24 @@ namespace TestForm.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("53")]
-        public int QualityGT {
+        public int Quality {
             get {
-                return ((int)(this["QualityGT"]));
+                return ((int)(this["Quality"]));
             }
             set {
-                this["QualityGT"] = value;
+                this["Quality"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool QualityGTLocked {
+        public bool QualityLocked {
             get {
-                return ((bool)(this["QualityGTLocked"]));
+                return ((bool)(this["QualityLocked"]));
             }
             set {
-                this["QualityGTLocked"] = value;
+                this["QualityLocked"] = value;
             }
         }
         
@@ -122,6 +122,18 @@ namespace TestForm.Properties {
             }
             set {
                 this["HuffmanTableYAC"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool LSBMethodSelected {
+            get {
+                return ((bool)(this["LSBMethodSelected"]));
+            }
+            set {
+                this["LSBMethodSelected"] = value;
             }
         }
     }

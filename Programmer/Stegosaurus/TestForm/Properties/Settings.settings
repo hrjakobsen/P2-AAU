@@ -17,10 +17,10 @@
     <Setting Name="QuantizationTableChr" Type="Stegosaurus.QuantizationTable" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="QualityGT" Type="System.Int32" Scope="User">
+    <Setting Name="Quality" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">53</Value>
     </Setting>
-    <Setting Name="QualityGTLocked" Type="System.Boolean" Scope="User">
+    <Setting Name="QualityLocked" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ImagesFilePath" Type="System.String" Scope="User">
@@ -28,6 +28,9 @@
     </Setting>
     <Setting Name="HuffmanTableYAC" Type="Stegosaurus.HuffmanTable" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="LSBMethodSelected" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

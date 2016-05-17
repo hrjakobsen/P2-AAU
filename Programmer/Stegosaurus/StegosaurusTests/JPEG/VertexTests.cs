@@ -17,7 +17,7 @@ namespace Stegosaurus.Tests
             short SampleInput1 = 5;
             short SampleInput2 = 6;
             byte messageInput = 11;
-            byte modulo = 100;
+            byte modulo = 4;
 
             Vertex vertex1 = new Vertex(SampleInput1, SampleInput2, messageInput, modulo);
 

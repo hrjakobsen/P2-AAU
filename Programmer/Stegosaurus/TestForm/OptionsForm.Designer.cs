@@ -63,6 +63,11 @@
             this.label3 = new System.Windows.Forms.Label();
             this.selectOutputFolder = new System.Windows.Forms.FolderBrowserDialog();
             this.btnClose = new System.Windows.Forms.Button();
+            this.pnlOptionsEncodingMethod = new System.Windows.Forms.Panel();
+            this.grpEncodingMethod = new System.Windows.Forms.GroupBox();
+            this.lblEncodingMethod = new System.Windows.Forms.Label();
+            this.rdioGT = new System.Windows.Forms.RadioButton();
+            this.rdioLSB = new System.Windows.Forms.RadioButton();
             this.pnlOptionsHuffman.SuspendLayout();
             this.grpCustomHuffman.SuspendLayout();
             this.pnlOptionsQuality.SuspendLayout();
@@ -72,6 +77,8 @@
             this.grpQuantization.SuspendLayout();
             this.pnlOptionsGeneral.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.pnlOptionsEncodingMethod.SuspendLayout();
+            this.grpEncodingMethod.SuspendLayout();
             this.SuspendLayout();
             // 
             // line
@@ -102,7 +109,8 @@
             "General",
             "Huffman table (custom)",
             "Quantization table (custom)",
-            "Quality setting"});
+            "Quality setting",
+            "Encoding method"});
             this.OptionsBox.Location = new System.Drawing.Point(14, 20);
             this.OptionsBox.Margin = new System.Windows.Forms.Padding(2);
             this.OptionsBox.Name = "OptionsBox";
@@ -429,6 +437,62 @@
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
+            // pnlOptionsEncodingMethod
+            // 
+            this.pnlOptionsEncodingMethod.Controls.Add(this.grpEncodingMethod);
+            this.pnlOptionsEncodingMethod.Location = new System.Drawing.Point(169, 20);
+            this.pnlOptionsEncodingMethod.Name = "pnlOptionsEncodingMethod";
+            this.pnlOptionsEncodingMethod.Size = new System.Drawing.Size(442, 311);
+            this.pnlOptionsEncodingMethod.TabIndex = 25;
+            // 
+            // grpEncodingMethod
+            // 
+            this.grpEncodingMethod.Controls.Add(this.rdioLSB);
+            this.grpEncodingMethod.Controls.Add(this.rdioGT);
+            this.grpEncodingMethod.Controls.Add(this.lblEncodingMethod);
+            this.grpEncodingMethod.Location = new System.Drawing.Point(9, 0);
+            this.grpEncodingMethod.Margin = new System.Windows.Forms.Padding(2);
+            this.grpEncodingMethod.Name = "grpEncodingMethod";
+            this.grpEncodingMethod.Padding = new System.Windows.Forms.Padding(2);
+            this.grpEncodingMethod.Size = new System.Drawing.Size(421, 303);
+            this.grpEncodingMethod.TabIndex = 23;
+            this.grpEncodingMethod.TabStop = false;
+            this.grpEncodingMethod.Text = "Huffman Tables:";
+            // 
+            // lblEncodingMethod
+            // 
+            this.lblEncodingMethod.AutoSize = true;
+            this.lblEncodingMethod.Location = new System.Drawing.Point(21, 27);
+            this.lblEncodingMethod.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblEncodingMethod.Name = "lblEncodingMethod";
+            this.lblEncodingMethod.Size = new System.Drawing.Size(125, 13);
+            this.lblEncodingMethod.TabIndex = 17;
+            this.lblEncodingMethod.Text = "Select encoding method:";
+            // 
+            // rdioGT
+            // 
+            this.rdioGT.AutoSize = true;
+            this.rdioGT.Checked = true;
+            this.rdioGT.Location = new System.Drawing.Point(27, 44);
+            this.rdioGT.Name = "rdioGT";
+            this.rdioGT.Size = new System.Drawing.Size(102, 17);
+            this.rdioGT.TabIndex = 18;
+            this.rdioGT.TabStop = true;
+            this.rdioGT.Text = "Graph Theoretic";
+            this.rdioGT.UseVisualStyleBackColor = true;
+            this.rdioGT.CheckedChanged += new System.EventHandler(this.rdioGT_CheckedChangedSetMethod);
+            // 
+            // rdioLSB
+            // 
+            this.rdioLSB.AutoSize = true;
+            this.rdioLSB.Location = new System.Drawing.Point(135, 44);
+            this.rdioLSB.Name = "rdioLSB";
+            this.rdioLSB.Size = new System.Drawing.Size(129, 17);
+            this.rdioLSB.TabIndex = 19;
+            this.rdioLSB.Text = "Least Significant Bit(s)";
+            this.rdioLSB.UseVisualStyleBackColor = true;
+            this.rdioLSB.CheckedChanged += new System.EventHandler(this.rdioGT_CheckedChangedSetMethod);
+            // 
             // OptionsForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -437,10 +501,11 @@
             this.Controls.Add(this.line);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.OptionsBox);
+            this.Controls.Add(this.pnlOptionsEncodingMethod);
+            this.Controls.Add(this.pnlOptionsHuffman);
             this.Controls.Add(this.pnlOptionsQuantization);
             this.Controls.Add(this.pnlOptionsGeneral);
             this.Controls.Add(this.pnlOptionsQuality);
-            this.Controls.Add(this.pnlOptionsHuffman);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "OptionsForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
@@ -458,6 +523,9 @@
             this.pnlOptionsGeneral.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.pnlOptionsEncodingMethod.ResumeLayout(false);
+            this.grpEncodingMethod.ResumeLayout(false);
+            this.grpEncodingMethod.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -498,5 +566,10 @@
         private System.Windows.Forms.Label lblEncodingQualityValue;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Label lblEncodingQuality;
+        private System.Windows.Forms.Panel pnlOptionsEncodingMethod;
+        private System.Windows.Forms.GroupBox grpEncodingMethod;
+        private System.Windows.Forms.RadioButton rdioLSB;
+        private System.Windows.Forms.RadioButton rdioGT;
+        private System.Windows.Forms.Label lblEncodingMethod;
     }
 }
