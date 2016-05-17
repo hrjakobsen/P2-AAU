@@ -8,7 +8,7 @@ This could potentially give an idea of what these tools could be missing or othe
 	\item[EzStego] is a Java-based steganography tool for embedding information in GIF-files.
 	GIF images are limited to a palette of 256 colours per pixel, and EzStego takes advantage of this to embed information into the pixels.
 	A GIF palette is usually sorted by luminance, but this is not ideal, since two colours with similar luminance could be very different.
-	EzStego sorts a GIF palette in a way that two adjacent colours are very similar, which means that if the colours are switched, it is unlikely that a 		human would notice.
+	EzStego sorts a GIF palette in a way that two adjacent colours are very similar, which means that if the colours are switched, it is unlikely that a human would notice.
 	The embedding of data in EzStego works by switching colours if the bit to be embedded is '1', and leaving the colours if it is '0'.
 	This will create an image that looks a lot like the original image, and it is done without changing the file size.
 	It is, however, possible to extract the hidden data if the created stego-image is compared pixel-by-pixel to the original image \citep{Westfeld2000}.
