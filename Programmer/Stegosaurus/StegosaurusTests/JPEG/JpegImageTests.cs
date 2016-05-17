@@ -148,11 +148,12 @@ namespace Stegosaurus.Tests
         public void PadCoverImage_Test_When_Cover_Is_Divisible_by_16()
         {
             Bitmap coverImage = new Bitmap(16, 16);
-            PrivateObject po = new PrivateObject(new JpegImage(coverImage, 100, 4));
+            JpegImage ji = new JpegImage(coverImage, 100, 4);
+            PrivateObject po = new PrivateObject(ji);
 
             po.Invoke("_padCoverImage");
 
-            Bitmap returnedCoverImage = (Bitmap) po.GetField("CoverImage");
+            Bitmap returnedCoverImage = ji.CoverImage;
 
             NUnit.Framework.Assert.AreEqual(coverImage, returnedCoverImage);
         }
@@ -163,11 +164,13 @@ namespace Stegosaurus.Tests
             Bitmap b = new Bitmap(1,1);
             b.SetPixel(0,0, Color.Black);
             Bitmap coverImage = new Bitmap(b, 15, 15);
-            PrivateObject po = new PrivateObject(new JpegImage(coverImage, 100, 4));
+
+            JpegImage ji = new JpegImage(coverImage, 100, 4);
+            PrivateObject po = new PrivateObject(ji);
 
             po.Invoke("_padCoverImage");
 
-            Bitmap returnedCoverImage = (Bitmap) po.GetField("CoverImage");
+            Bitmap returnedCoverImage = ji.CoverImage;
 
             Bitmap expectedCoverImage = new Bitmap(b, 16,16);
 
@@ -180,11 +183,12 @@ namespace Stegosaurus.Tests
             Bitmap b = new Bitmap(1, 1);
             b.SetPixel(0, 0, Color.Black);
             Bitmap coverImage = new Bitmap(b, 15, 15);
-            PrivateObject po = new PrivateObject(new JpegImage(coverImage, 100, 4));
+            JpegImage ji = new JpegImage(coverImage, 100, 4);
+            PrivateObject po = new PrivateObject(ji);
 
             po.Invoke("_padCoverImage");
 
-            Bitmap returnedCoverImage = (Bitmap)po.GetField("CoverImage");
+            Bitmap returnedCoverImage = ji.CoverImage;
 
             Bitmap expectedCoverImage = new Bitmap(b, 16, 16);
 
