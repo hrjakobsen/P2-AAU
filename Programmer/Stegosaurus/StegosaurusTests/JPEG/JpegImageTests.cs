@@ -234,7 +234,21 @@ namespace Stegosaurus.Tests
             NUnit.Framework.Assert.AreEqual(expectedChannels, returnedChannels);
         }
 
-        //Testing the small sub methods before EncodeAndQuantizeValues
+        [Test()]
+        public void EncodeAndQuantizeValues_Test_() //TODO: "_encodeAndQuantizeValues" method can't be found
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+            JpegImage ji = new JpegImage(new Bitmap(200, 100), 100, 4);
+            PrivateObject po = new PrivateObject(ji);
+
+
+            //pt.InvokeStatic("_encodeAndQuantizeValues", new object[] {inputValues, 200, 100});
+            //po.Invoke("_encodeAndQuantizeValues", new object[] {inputValues, 200, 100});
+
+            List<Tuple<short[,], HuffmanTable, HuffmanTable, int>> quan = (List<Tuple<short[,], HuffmanTable, HuffmanTable, int>>)po.GetField("_quantizedBlocks");
+            List<short> nonzero = (List<short>)po.GetField("_nonZeroValues");
+        }
+
         [Test()]
         public void DownSample_Test()
         {
@@ -333,10 +347,91 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void EncodeAndQuantizeValues_Test_()
+        public void C_Test_i0_j0()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+
+            float returnedC = (float) pt.InvokeStatic("_c", new object[] {0, 0});
+            
+            NUnit.Framework.Assert.AreEqual(0.125f, returnedC);
+        }
+
+        [Test()]
+        public void C_Test_i0_j1()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+
+            float returnedC = (float)pt.InvokeStatic("_c", new object[] { 0, 1 });
+
+            NUnit.Framework.Assert.AreEqual(0.17677f, returnedC);
+        }
+
+        [Test()]
+        public void C_Test_i1_j0()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+
+            float returnedC = (float)pt.InvokeStatic("_c", new object[] { 1, 0 });
+
+            NUnit.Framework.Assert.AreEqual(0.17677f, returnedC);
+        }
+
+        [Test()]
+        public void C_Test_i1_j1()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+
+            float returnedC = (float)pt.InvokeStatic("_c", new object[] { 1, 1 });
+
+            NUnit.Framework.Assert.AreEqual(0.25f, returnedC);
+        }
+
+        [Test()]
+        public void Quantization_Test()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+            JpegImage ji = new JpegImage(new Bitmap(200, 100), 100, 4);
+
+
+            float[,] inputValues = new float[8, 8];
+            int i = 0;
+            for (int x = 0; x < 8; x++) //Fill input value with values from 0 to 63
+            {
+                for (int y = 0; y < 8; y++)
+                {
+                    inputValues[x, y] = i++;
+                }
+            }
+
+            short[,] quantizedValues =
+                (short[,]) pt.InvokeStatic("_quantization", new object[] {inputValues, ji.YQuantizationTable});
+
+            short[,] expectedQuantizedValues = new short[8, 8]
+            {
+                {0, 1, 2, 3, 2, 1, 1, 0},
+                {8, 9, 10, 5, 6, 3, 1, 1},
+                {16, 17, 9, 9, 5, 3, 2, 2},
+                {12, 12, 8, 9, 4, 3, 3, 2},
+                {10, 11, 6, 5, 4, 3, 3, 2},
+                {8, 5, 6, 4, 3, 3, 3, 3},
+                {8, 7, 6, 5, 4, 3, 3, 4},
+                {8, 9, 8, 8, 6, 5, 5, 5},
+            };
+
+            NUnit.Framework.Assert.AreEqual(expectedQuantizedValues, quantizedValues);
+        }
+
+        [Test()]
+        public void EncodeMessage_Test()
+        {
+            //TODO: Ask if _encodeMessage needs test, because the only logic within is a for loop and a .Where
+            NUnit.Framework.Assert.Ignore();
+        }
+
+        [Test()]
+        public void AddVertices_Test()
         {
             
         }
-        
     }
 }
