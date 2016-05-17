@@ -62,10 +62,10 @@ namespace Stegosaurus {
             for (int i = 0; i < wholeMessage.Count; i++) {
                 for (int j = 0; j < bytesPerMessageElement; j++) {
                     //Remove the last two bits
-                    hideData[i * bytesPerMessageElement + j] = (byte)((hideData[i * bytesPerMessageElement + j] >> 2) << 2);
+                    hideData[i * bytesPerMessageElement + j] &= 0xFC;
                     
                     //Add the bits from the message
-                    hideData[i * bytesPerMessageElement + j] += (byte)((wholeMessage[i] & (mask << ((bytesPerMessageElement - j) * 2))) >> ((bytesPerMessageElement - j) * 2));
+                    hideData[i * bytesPerMessageElement + j] += (byte)((wholeMessage[i] & (mask << ((bytesPerMessageElement - 1 - j) * 2))) >> ((bytesPerMessageElement - 1 - j) * 2));
                 }
             }
 

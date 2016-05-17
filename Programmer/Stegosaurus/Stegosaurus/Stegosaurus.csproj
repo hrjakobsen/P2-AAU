@@ -60,6 +60,7 @@
     <Compile Include="JPEG\JPEGWriter.cs" />
     <Compile Include="JPEG\QuantizationTable.cs" />
     <Compile Include="JPEG\Vertex.cs" />
+    <Compile Include="LSB\LeastSignificantBitDecoder.cs" />
     <Compile Include="LSB\LeastSignificantBitImage.cs" />
     <Compile Include="StegoImageBase.cs" />
     <Compile Include="Steganography.cs" />
