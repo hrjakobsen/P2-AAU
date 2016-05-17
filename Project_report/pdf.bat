@@ -1,0 +1,4 @@
+pdflatex DAT2-A423_Project_Report.tex
+makeindex DAT2-A423_Project_Report
+bibtex DAT2-A423_Project_Report
+pdflatex DAT2-A423_Project_Report.tex
