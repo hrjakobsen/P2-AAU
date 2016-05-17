@@ -8,7 +8,7 @@ To avoid this, we would instead have to use the \lstinline|BitList| class again,
 
 The Decoder implements an interface, which specifies the decoder to have four properties, each containing the respective Huffman table, and the method \lstinline|decode()|, which returns a \lstinline|byte| array. 
 The Huffman tables are read from a stream from a given filepath. This stream gets assigned to a \lstinline|BinaryReader|, since what we would read, would be bytes. All of this can be seen in the constructor in Listing \ref{code:decoderConstructor}.
-\lstinputlisting[firstline=36, firstnumber=36, lastline=54, label={code:decoderConstructor}, caption={The Decoder constructor}]{../Programmer/Stegosaurus/Stegosaurus/JPEG/JPEGDecoder.cs} 
+\lstinputlisting[firstline=36, firstnumber=36, lastline=54, label={code:decoderConstructor}, caption={The Decoder constructor \textbf{File: }JPEGDecoder.cs}]{../Programmer/Stegosaurus/Stegosaurus/JPEG/JPEGDecoder.cs} 
 
 The listing also shows how we find the HuffmanTable and store it in the right property, based on its ID and Class.
 
