@@ -25,19 +25,20 @@ namespace TestForm{
         public static bool LSBMethodSelected;
         public static int Quality { get; set; }
         private string decodeFilePath;
+        private string decodeFileName;
 
-        private string _imagesSavePath;
+        private string _userSavePath;
 
-        private string ImagesSavePath
+        private string UserSavePath
         {
-            get { return _imagesSavePath; }
+            get { return _userSavePath; }
             set
             {
                 string s = value;
 
                // s = s.Replace("\\", "/");
 
-                _imagesSavePath = s;
+                _userSavePath = s;
             }
         }
         private Bitmap CoverImage { get; set; }
@@ -59,7 +60,7 @@ namespace TestForm{
         {
             LSBMethodSelected = Properties.Settings.Default.LSBMethodSelected;
             tbarEncodingQuality.Value = Properties.Settings.Default.Quality;
-            ImagesSavePath = Properties.Settings.Default.ImagesFilePath;
+            UserSavePath = Properties.Settings.Default.ImagesFilePath;
             QualityLocked = Properties.Settings.Default.QualityLocked;
 
             if (QualityLocked && LSBMethodSelected)
@@ -140,11 +141,6 @@ namespace TestForm{
             else
             {
                 lblEncodingQualityValue.Text = Quality.ToString();
-            }
-
-            if (!string.IsNullOrWhiteSpace(OptionsForm.ImagesSavePath))
-            {
-                ImagesSavePath = OptionsForm.ImagesSavePath;
             }
 
             if (OptionsForm.HuffmanTableComponentYAC.SaveTable().Equals(HuffmanTable.JpegHuffmanTableYAC))
@@ -321,6 +317,7 @@ namespace TestForm{
         {
             CoverImage = new Bitmap(getFileInput.FileName);
             decodeFilePath = getFileInput.FileName;
+            decodeFileName = Path.GetFileNameWithoutExtension(getFileInput.FileName);
             _inputImageSet = true;
             picInput.Image = CoverImage;
 
@@ -348,12 +345,10 @@ namespace TestForm{
         //Handles encoding/decoding using the correct method and settings when the 'Proceed' button is pressed.
         private void btnProceed_Click(object sender, EventArgs e)
         {
+            getFilePath();
             Cursor.Current = Cursors.WaitCursor;
             if (rdioEncode.Checked)
             {
-                //DELETE
-                ImagesSavePath = "";
-                //DELETE
                 byte[] msg = new byte[_messageLength];
 
                 if (_messageTextSet)
@@ -391,13 +386,13 @@ namespace TestForm{
 
                 if (!LSBMethodSelected)
                 {
-                    _imageEncoder.Save(ImagesSavePath + "encryptedImageGT.jpg");
-                    picResult.Image = Image.FromFile(ImagesSavePath + "encryptedImageGT.jpg");
+                    _imageEncoder.Save(UserSavePath);
+                    picResult.Image = Image.FromFile(UserSavePath);
                 }
                 else
                 {
-                    _imageEncoder.Save(ImagesSavePath + "encryptedImageLSB.jpg");
-                    picResult.Image = Image.FromFile(ImagesSavePath + "encryptedImageLSB.jpg");
+                    _imageEncoder.Save(UserSavePath);
+                    picResult.Image = Image.FromFile(UserSavePath);
                 }
             }
             else if (rdioDecode.Checked)
@@ -410,12 +405,47 @@ namespace TestForm{
                 }
                 else
                 {
-                    _imageDecoder = new LeastSignificantBitDecoder(ImagesSavePath + "encryptedImageLSB.jpg");
+                    _imageDecoder = new LeastSignificantBitDecoder(decodeFilePath);
                 }
                 byte[] message = _imageDecoder.Decode();
                 tbMessage.Text = new string(message.Select(x => (char)x).ToArray());
+                File.WriteAllBytes(UserSavePath, message);
             }
             Cursor.Current = Cursors.Default;
+        }
+
+        private void getFilePath()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.ShowHelp = true;
+
+            if (rdioEncode.Checked)
+            {
+                saveFileDialog.FileName = decodeFileName + " (encoded).jpeg";
+                saveFileDialog.Filter = "Image Files (*.jpeg)|*.jpeg";
+                saveFileDialog.FilterIndex = 2;
+                saveFileDialog.RestoreDirectory = true;
+                saveFileDialog.Title = "Save encoded image as";
+            }
+            else if (rdioDecode.Checked)
+            {
+                saveFileDialog.FileName = decodeFileName + " (decoded)";
+                saveFileDialog.Filter = "No file Extension ()|";
+                saveFileDialog.FilterIndex = 2;
+                saveFileDialog.RestoreDirectory = true;
+                saveFileDialog.Title = "Save decoded message as";
+            }
+            
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                Stream saveFileStream;
+                if ((saveFileStream = saveFileDialog.OpenFile()) != null)
+                {
+                    UserSavePath = saveFileDialog.FileName;
+                    saveFileStream.Close();
+                }
+            }
         }
         #endregion
 
@@ -447,7 +477,7 @@ namespace TestForm{
             saveQuantizationTableToFile(QuantizationTableY, "QuantizationTableY.txt");
             saveQuantizationTableToFile(QuantizationTableChr, "QuantizationTableChr.txt");
             Properties.Settings.Default.QualityLocked = QualityLocked;
-            Properties.Settings.Default.ImagesFilePath = ImagesSavePath;
+            Properties.Settings.Default.ImagesFilePath = UserSavePath;
             Properties.Settings.Default.Quality = Quality;
             Properties.Settings.Default.LSBMethodSelected = LSBMethodSelected;
 
