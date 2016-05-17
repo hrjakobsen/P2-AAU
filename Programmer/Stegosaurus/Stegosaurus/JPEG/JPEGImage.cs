@@ -199,7 +199,7 @@ namespace Stegosaurus {
             //Bits per pair = Pairs / 8 / Math.Log(M, 2)
             //Total bytes available = bits per pair / 8
             //We always need to use to bytes to encode message length and M-value
-            return _nonZeroValues.Count / 2 / (8 / (int)Math.Log(M, 2)) / 8 - 2;
+            return (int)(_nonZeroValues.Count / 2 * Math.Log(M, 2) / 8 - 2);
         }
 
         private void _breakDownMessage(byte[] message) {
