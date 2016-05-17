@@ -31,7 +31,7 @@ namespace TestForm
         //public static readonly QuantizationTableComponent QuantizationTableComponentChr = new QuantizationTableComponent(QuantizationTable.JpegDefaultChrTable);
 
         public static string ImagesSavePath;
-        public static int QualityGT;
+        public static int Quality;
         public static bool SaveEnabled;
         public static bool LSBMethodSelected;
 
@@ -53,9 +53,9 @@ namespace TestForm
 
             //rdioQuantizationYChannel.Checked = true;
             //rdioHuffmanY_AC.Checked = true;
-            QualityGT = StegosaurusForm.QualityGT;
-            tbarQualitySlider.Value = QualityGT;
-            if (StegosaurusForm.QualityGTLocked)
+            Quality = StegosaurusForm.Quality;
+            tbarQualitySlider.Value = Quality;
+            if (StegosaurusForm.QualityLocked)
             {
                 tbarQualitySlider.Enabled = false;
             }
@@ -201,7 +201,7 @@ namespace TestForm
                // _stegosaurusForm.ImagesSavePath = ImagesSavePath;
             }
 
-            QualityGT = tbarQualitySlider.Value;
+            Quality = tbarQualitySlider.Value;
             _skipDialog = true;
             SaveEnabled = true;
             Cursor.Current = Cursors.Default;
