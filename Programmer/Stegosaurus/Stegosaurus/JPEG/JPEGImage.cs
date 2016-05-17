@@ -11,6 +11,9 @@ namespace Stegosaurus {
         private JpegWriter _jw;
         private byte _m;
 
+        private int _originalCoverWidth;
+        private int _originalCoverHeight;
+
         public Bitmap CoverImage { get; set; }
         private readonly List<byte> _message = new List<byte>();
         private readonly int[] _lastDc = { 0, 0, 0 };
@@ -125,6 +128,8 @@ namespace Stegosaurus {
             YACHuffman = huffmanYAC;
             ChrDCHuffman = huffmanChrDC;
             ChrACHuffman = huffmanChrAC;
+            _originalCoverWidth = coverImage.Width;
+            _originalCoverHeight = coverImage.Height;
 
             // Calculate coefficients that are used in DCT
             _calculateCosineCoefficients();
@@ -199,7 +204,7 @@ namespace Stegosaurus {
             //Bits per pair = Pairs / 8 / Math.Log(M, 2)
             //Total bytes available = bits per pair / 8
             //We always need to use to bytes to encode message length and M-value
-            return _nonZeroValues.Count / 2 / (8 / (int)Math.Log(M, 2)) / 8 - 2;
+            return (int)(_nonZeroValues.Count / 2 * Math.Log(M, 2) / 8 - 2);
         }
 
         private void _breakDownMessage(byte[] message) {
@@ -315,10 +320,10 @@ namespace Stegosaurus {
             _jw.WriteBytes(0x08);
 
             //Width and height of image, each in two bytes
-            byte widthByteOne = (byte)(CoverImage.Width >> 8);
-            byte widthByteTwo = (byte)(CoverImage.Width & 0xff);
-            byte heightByteOne = (byte)(CoverImage.Height >> 8);
-            byte heightByteTwo = (byte)(CoverImage.Height & 0xff);
+            byte widthByteOne = (byte)(_originalCoverWidth >> 8);
+            byte widthByteTwo = (byte)(_originalCoverWidth & 0xff);
+            byte heightByteOne = (byte)(_originalCoverHeight >> 8);
+            byte heightByteTwo = (byte)(_originalCoverHeight & 0xff);
             _jw.WriteBytes(heightByteOne, heightByteTwo, widthByteOne, widthByteTwo);
 
             //Number of components in image 
