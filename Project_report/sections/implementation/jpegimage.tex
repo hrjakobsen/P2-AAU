@@ -139,8 +139,23 @@ private static float[,] _discreteCosineTransform(float[,] block8) {
 }
 \end{lstlisting}
 
+\FloatBarrier
+
 After calculating the DCT coefficients, it is simply a matter of dividing each entry in the 8x8 block with the corresponding value in the quantization table.
-The results of this process are saved to the private field \lstinline|_quantizedValues|.
+
+We wanted our JPEG encoder to be able to have a quality setting, so that the user of the class can choose wether they want to focus on image size or image quality. To lower the filesize, and also the quality we must divide by larger values in the quantisation step. The way we do this, is that we scale the quantization table based on an integer between 0 and 100 (the quality setting).
+
+We use the function $f(q) = \frac{100-x}{53}+0.125$ to convert from a quality to a factor we can multiply the entries in the quantization table with. There is no standard function for choosing multiplication factors, so we just chose a function that will scale nicely between the numbers 0 and 100. On figure \ref{fig:plotQuality} a plot of the function is seen.
+
+After the scaling process, we divide each entry in the DC coefficients by the corresponding entry in the quantization table. The results of this process are saved to the private field \lstinline|_quantizedValues|.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/plotQuality.png}
+    \label{fig:plotQuality}
+    \caption{Plot of $f(q) = \frac{100-x}{53}+0.125$ that shows how the quality of the jpeg image impacts the quantization tables}
+\end{figure}
 
 So now we are ready to perform the actual encoding of the data, before saving the image data to a file.
 We use procedure \ref{algJPEG} to find the valid entries from our newly filled \lstinline|_quantizedValues|.

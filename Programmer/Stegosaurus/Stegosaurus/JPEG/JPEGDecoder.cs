@@ -28,11 +28,11 @@ namespace Stegosaurus {
         public HuffmanTable ChrACHuffman { get; private set; }
 
         private BinaryReader file;
-        List<HuffmanTable> huffmanTables = new List<HuffmanTable>();
 
         /// <summary>
         /// Takes a filepath to a JPEG file.
         /// </summary>
+        /// <param name="path">Path to the jpeg file</param>
         public JPEGDecoder(string path) {
             StreamReader sr = new StreamReader(path);
             file = new BinaryReader(sr.BaseStream);
@@ -202,8 +202,6 @@ namespace Stegosaurus {
                     return 4;
                 case 2:
                     return 16;
-                case 3:
-                    return 256;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
