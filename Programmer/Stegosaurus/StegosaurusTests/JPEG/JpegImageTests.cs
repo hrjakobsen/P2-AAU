@@ -89,21 +89,23 @@ namespace Stegosaurus.Tests
         [Test()]
         public void GetCapacity_Test() //TODO: Fix this test/remake it
         {
-            var b = new Bitmap(1, 1);
-            b.SetPixel(0, 0, Color.White);
-            //b.SetPixel(1,0,Color.White);
-            //b.SetPixel(0,1,Color.White);
-            //b.SetPixel(1,1,Color.White);
+            
+            var inputBitmap = new Bitmap(16, 16); //Scale the unit bitmap
 
-            var scaledUnitBitmap = new Bitmap(b, 160, 160); //Scale the unit bitmap
+            for (int i = 0; i < 16; i+=2)
+            {
+                for (int j = 0; j < 16; j+=2)
+                {
+                    inputBitmap.SetPixel(i,j,Color.White);
+                    inputBitmap.SetPixel(i+1,j+1,Color.Black);
+                }
+            }
 
-            //scaledUnitBitmap.Save(@"C:\Users\LeoMohr\Desktop\out.png");
-
-            JpegImage ji = new JpegImage(scaledUnitBitmap, 100, 4);
+            JpegImage ji = new JpegImage(inputBitmap, 100, 4);
 
             int capacity = ji.GetCapacity();
 
-            NUnit.Framework.Assert.AreEqual(34, capacity);
+            NUnit.Framework.Assert.AreEqual(10, capacity);
         }
 
         [Test()]
@@ -121,27 +123,6 @@ namespace Stegosaurus.Tests
             List<byte> expectedList = new List<byte> {0, 0, 0, 0, 0, 0, 3, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1}; // What {1,1,1} corresponds to when broken down and has length encoded
 
             NUnit.Framework.Assert.AreEqual(expectedList, messageList);
-        }
-
-        [Test()]
-        public void SplitMessageIntoSmallerComponents_Test()
-        {
-            //TODO: might need a test for this, but "BreakDownMessage_Test" might have it covered already
-            NUnit.Framework.Assert.Ignore();
-        }
-
-        // Most methods in between here only call jpegWriter or another method which calls it, JpegWriter will be tested on it's own. TODO: ask about this and delete
-
-        [Test()]
-        public void WriteHuffmanSegment_Test_Combined() //TODO: Find out how to access JpegWriter even when it's internal
-        {
-            JpegImage ji = new JpegImage(new Bitmap(200, 100), 100, 4);
-            PrivateObject po = new PrivateObject(ji);
-            
-            var joo = po.GetField("_jw");
-            //po.Invoke("_writeHuffmanSegment", new object[] {ji.YDCHuffman, 0, true});
-
-            NUnit.Framework.Assert.Ignore();
         }
 
         [Test()]
@@ -434,13 +415,6 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void EncodeMessage_Test()
-        {
-            //TODO: Ask if _encodeMessage needs test, because the only logic within is a for loop and a .Where
-            NUnit.Framework.Assert.Ignore();
-        }
-
-        [Test()]
         public void AddVertices_Test()
         {
             PrivateObject po = new PrivateObject(new JpegImage(new Bitmap(200, 100), 100, 4));
@@ -644,7 +618,69 @@ namespace Stegosaurus.Tests
         [Test()]
         public void HuffmanEncode()
         {
+            //TODO: Make this
+            NUnit.Framework.Assert.Fail();
+        }
+
+        [Test()]
+        public void Bitcost_Test()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+            short input = 2;
+
+            byte expected = 2;
+
+            byte output = (byte)pt.InvokeStatic("_bitCost", input);
+
+            NUnit.Framework.Assert.AreEqual(expected, output);
+        }
+
+        [Test()]
+        public void UShortToBits_Test()
+        {
+            BitList bitList = new BitList();
+            ushort input = 3;
+            byte inputLen = 2;
             
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+
+            pt.InvokeStatic("_ushortToBits", new object[] {bitList, input, inputLen});
+
+            BitList expectedBitList = new BitList();
+            expectedBitList.Add(true);
+            expectedBitList.Add(true);
+
+            NUnit.Framework.Assert.AreEqual(expectedBitList, bitList);
+        }
+
+        [Test()]
+        public void NumberEncoder_Test()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+            short input = -1;
+            ushort expected = 65534; // 11111111 11111110
+
+            ushort output = (ushort)pt.InvokeStatic("_numberEncoder", input);
+            
+            NUnit.Framework.Assert.AreEqual(expected, output);
+        }
+
+        [Test()]
+        public void Flush_Test()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+
+            BitList bl = new BitList();
+            bl.Add(true);
+            bl.Add(true);
+            bl.Add(false);
+
+            byte[] output = (byte[]) pt.InvokeStatic("_flush", bl);
+
+            byte[] expected = new byte[1] {192}; // 11000000
+
+            NUnit.Framework.Assert.AreEqual(expected, output);
+
         }
     }
 }
