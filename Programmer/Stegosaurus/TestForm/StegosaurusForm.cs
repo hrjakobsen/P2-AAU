@@ -24,19 +24,21 @@ namespace TestForm{
         public static bool QualityLocked { get; private set; }
         public static bool LSBMethodSelected;
         public static int Quality { get; set; }
-        //public string ImagesSavePath { get; set; }
-        private string myVar;
+        private string decodeFilePath;
+        private string decodeFileName;
 
-        private string ImagesSavePath
+        private string _userSavePath;
+
+        private string UserSavePath
         {
-            get { return myVar; }
+            get { return _userSavePath; }
             set
             {
                 string s = value;
 
                // s = s.Replace("\\", "/");
 
-                myVar = s;
+                _userSavePath = s;
             }
         }
         private Bitmap CoverImage { get; set; }
@@ -51,21 +53,52 @@ namespace TestForm{
 
         private void StegosaurusForm_Load(object sender, EventArgs e)
         {
-            //loadSettings();
+            loadSettings();
         }
 
         private void loadSettings()
         {
             LSBMethodSelected = Properties.Settings.Default.LSBMethodSelected;
             tbarEncodingQuality.Value = Properties.Settings.Default.Quality;
-            ImagesSavePath = Properties.Settings.Default.ImagesFilePath;
+            UserSavePath = Properties.Settings.Default.ImagesFilePath;
             QualityLocked = Properties.Settings.Default.QualityLocked;
-            HuffmanTableYAC = Properties.Settings.Default.HuffmanTableYAC;
-            HuffmanTableYDC = Properties.Settings.Default.HuffmanTableYDC;
-            HuffmanTableChrAC = Properties.Settings.Default.HuffmanTableChrAC;
-            HuffmanTableChrDC = Properties.Settings.Default.HuffmanTableChrDC;
-            QuantizationTableY = Properties.Settings.Default.QuantizationTableY;
-            QuantizationTableChr = Properties.Settings.Default.QuantizationTableChr;
+
+            if (QualityLocked && LSBMethodSelected)
+            {
+                tbarEncodingQuality.Enabled = false;
+                lblEncodingQualityValue.Text = "-";
+            }
+            else if (QualityLocked)
+            {
+                tbarEncodingQuality.Value = defaultQuality;
+                tbarEncodingQuality.Enabled = false;
+            }
+            {
+                tbarEncodingQuality.Enabled = true;
+            }
+
+            loadHuffmanTableFromFile(out HuffmanTableYAC, "HuffmanTableYAC.txt");
+            loadHuffmanTableFromFile(out HuffmanTableYAC, "HuffmanTableYAC.txt");
+            loadHuffmanTableFromFile(out HuffmanTableYAC, "HuffmanTableYAC.txt");
+            loadHuffmanTableFromFile(out HuffmanTableYAC, "HuffmanTableYAC.txt");
+            loadQuantizationTableFromFile(out QuantizationTableY, "QuantizationTableY.txt");
+            loadQuantizationTableFromFile(out QuantizationTableChr, "QuantizationTableChr.txt");
+        }
+
+        
+        private void loadHuffmanTableFromFile(out HuffmanTable huffmanTable, string filePath)
+        {
+            string input = File.ReadAllText(filePath);
+            huffmanTable = HuffmanTable.FromString(input);
+        }
+
+        private void loadQuantizationTableFromFile(out QuantizationTable quantizationTable, string filePath)
+        {
+            string input = File.ReadAllText(filePath);
+
+            //byte[] entries = input.Split(';').Select(s => Convert.ToByte(s, 16)).ToArray();
+
+            quantizationTable = QuantizationTable.FromString(input);
         }
 
         private void viewOptionsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -75,56 +108,39 @@ namespace TestForm{
             if (OptionsForm.SaveEnabled)
             {
                 Cursor.Current = Cursors.WaitCursor;
-                //DELETE THIS
-                LSBMethodSelected = OptionsForm.LSBMethodSelected;
 
-                if (LSBMethodSelected)
-                {
-                    tbarEncodingQuality.Enabled = false;
-                    lblEncodingQualityValue.Text = "";
-                }
-                else
-                {
-                    tbarEncodingQuality.Enabled = true;
-                }
-                //DELETE THIS
+                //TODO: Delete this
+                //LSBMethodSelected = OptionsForm.LSBMethodSelected;
 
-                //loadSettingsFromOptionsForm();
+                //if (LSBMethodSelected)
+                //{
+                //    tbarEncodingQuality.Enabled = false;
+                //    lblEncodingQualityValue.Text = "";
+                //}
+                //else
+                //{
+                //    tbarEncodingQuality.Enabled = true;
+                //}
+                //
+
+                loadSettingsFromOptionsForm();
                 Cursor.Current = Cursors.Default;
             }
         }
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AboutForm aboutForm = new AboutForm();
-            aboutForm.Show();
-        }
-
-        private void showHelpToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            HelpForm helpForm = new HelpForm();
-            helpForm.Show();
-        }
-
         private void loadSettingsFromOptionsForm()
         {
-            tbarEncodingQuality.Value = OptionsForm.Quality;
-
             LSBMethodSelected = OptionsForm.LSBMethodSelected;
+
+            tbarEncodingQuality.Value = OptionsForm.Quality;
 
             if (LSBMethodSelected)
             {
-                tbarEncodingQuality.Enabled = false;
-                lblEncodingQualityValue.Text = "";
+                lblEncodingQualityValue.Text = "-";
             }
             else
             {
-                tbarEncodingQuality.Enabled = true;
-            }
-
-            if (!string.IsNullOrWhiteSpace(OptionsForm.ImagesSavePath))
-            {
-                ImagesSavePath = OptionsForm.ImagesSavePath;
+                lblEncodingQualityValue.Text = Quality.ToString();
             }
 
             if (OptionsForm.HuffmanTableComponentYAC.SaveTable().Equals(HuffmanTable.JpegHuffmanTableYAC))
@@ -183,8 +199,8 @@ namespace TestForm{
                 tbarEncodingQuality.Value = defaultQuality;
             }
 
-            //If changes have been made to a QuantizationTable, lock the quality-slider to prevet errors.
-            if (!OptionsForm.QuantizationTableComponentY.SaveTable().Equals(QuantizationTable.JpegDefaultYTable) 
+            //If changes have been made to a QuantizationTable or LSB is selected, lock the quality-slider to prevent errors.
+            if (LSBMethodSelected || !OptionsForm.QuantizationTableComponentY.SaveTable().Equals(QuantizationTable.JpegDefaultYTable) 
                 || !OptionsForm.QuantizationTableComponentChr.SaveTable().Equals(QuantizationTable.JpegDefaultChrTable))
             {
                 QualityLocked = true;
@@ -197,13 +213,25 @@ namespace TestForm{
             }            
         }
 
-        #region Graph Theoretic
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutForm aboutForm = new AboutForm();
+            aboutForm.Show();
+        }
+
+        private void showHelpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            HelpForm helpForm = new HelpForm();
+            helpForm.Show();
+        }
+
+        #region Main Form
         private void btnLoadMessageFile_Click(object sender, EventArgs e)
         {
             GetFileMessage.ShowDialog();
         }
 
-        private void rdioGTEncode_CheckedChanged(object sender, EventArgs e)
+        private void rdioEncode_CheckedChanged(object sender, EventArgs e)
         {
             if (rdioEncode.Checked)
             {
@@ -219,6 +247,7 @@ namespace TestForm{
             {
                 btnLoadMessageFile.Enabled = false;
                 tbMessage.Enabled = false;
+                tbMessage.Text = "";
                 _messageFileSet = false;
                 btnProceed.Text = @"Decode";
                 if (_inputImageSet)
@@ -228,12 +257,12 @@ namespace TestForm{
             }
         }
 
-        private void tbGTMessage_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void tbMessage_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             tbMessage.SelectAll();
         }
 
-        private void tbGTMessage_Leave(object sender, EventArgs e)
+        private void tbMessage_Leave(object sender, EventArgs e)
         {
             if (tbMessage.Text == "")
             {
@@ -241,22 +270,7 @@ namespace TestForm{
             }
         }
 
-        private void tbarGTEncodingQuality_ValueChanged(object sender, EventArgs e)
-        {
-            Quality = tbarEncodingQuality.Value;
-            lblEncodingQualityValue.Text = Quality.ToString();
-
-            if (Quality != defaultQuality)
-            {
-                lblEncodingQualityValue.Text = Quality.ToString();
-            }
-            else
-            {
-                lblEncodingQualityValue.Text = Quality.ToString() + @"  (default)";
-            }
-        }
-
-        private void tbGTMessage_TextChanged(object sender, EventArgs e)
+        private void tbMessage_TextChanged(object sender, EventArgs e)
         {
             tbMessage.ForeColor = SystemColors.MenuText;
             if (tbMessage.Text != NoMessageWrittenMessage && !string.IsNullOrEmpty(tbMessage.Text) && !_messageFileSet)
@@ -279,25 +293,31 @@ namespace TestForm{
             }
         }
 
-        private void StegosaurusForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void tbarEncodingQuality_ValueChanged(object sender, EventArgs e)
         {
-            saveSettings();
+            Quality = tbarEncodingQuality.Value;
+            lblEncodingQualityValue.Text = Quality.ToString();
+
+            if (Quality != defaultQuality)
+            {
+                lblEncodingQualityValue.Text = Quality.ToString();
+            }
+            else
+            {
+                lblEncodingQualityValue.Text = Quality.ToString() + @"  (default)";
+            }
         }
 
-        private void tbarEncodingQuality_Scroll(object sender, EventArgs e)
+        private void btnLoadInput_Click(object sender, EventArgs e)
         {
-
+            getFileInput.ShowDialog();
         }
 
-        private void btnGTLoadInput_Click(object sender, EventArgs e)
+        private void getFileInput_FileOk(object sender, CancelEventArgs e)
         {
-            getFileInputGT.ShowDialog();
-        }
-
-        private void getFileInputGT_FileOk(object sender, CancelEventArgs e)
-        {
-            CoverImage = new Bitmap(getFileInputGT.FileName);
-
+            CoverImage = new Bitmap(getFileInput.FileName);
+            decodeFilePath = getFileInput.FileName;
+            decodeFileName = Path.GetFileNameWithoutExtension(getFileInput.FileName);
             _inputImageSet = true;
             picInput.Image = CoverImage;
 
@@ -307,7 +327,7 @@ namespace TestForm{
             }
         }
 
-        private void GetFileMessageGT_FileOk(object sender, CancelEventArgs e)
+        private void GetFileMessage_FileOk(object sender, CancelEventArgs e)
         {
             tbMessage.Enabled = false;
             tbMessageFilePath.Text = GetFileMessage.SafeFileName;
@@ -322,14 +342,13 @@ namespace TestForm{
             }
         }
 
-        private void btnGTProceed_Click(object sender, EventArgs e)
+        //Handles encoding/decoding using the correct method and settings when the 'Proceed' button is pressed.
+        private void btnProceed_Click(object sender, EventArgs e)
         {
+            getFilePath();
             Cursor.Current = Cursors.WaitCursor;
             if (rdioEncode.Checked)
             {
-                //DELETE
-                ImagesSavePath = "";
-                //DELETE
                 byte[] msg = new byte[_messageLength];
 
                 if (_messageTextSet)
@@ -367,13 +386,13 @@ namespace TestForm{
 
                 if (!LSBMethodSelected)
                 {
-                    _imageEncoder.Save(ImagesSavePath + "encryptedImageGT.jpg");
-                    picResult.Image = Image.FromFile(ImagesSavePath + "encryptedImageGT.jpg");
+                    _imageEncoder.Save(UserSavePath);
+                    picResult.Image = Image.FromFile(UserSavePath);
                 }
                 else
                 {
-                    _imageEncoder.Save(ImagesSavePath + "encryptedImageLSB.jpg");
-                    picResult.Image = Image.FromFile(ImagesSavePath + "encryptedImageLSB.jpg");
+                    _imageEncoder.Save(UserSavePath);
+                    picResult.Image = Image.FromFile(UserSavePath);
                 }
             }
             else if (rdioDecode.Checked)
@@ -382,34 +401,53 @@ namespace TestForm{
                 tbMessage.Text = "";
                 if (!LSBMethodSelected)
                 {
-                    _imageDecoder = new JPEGDecoder(ImagesSavePath + "encryptedImageGT.jpg");
+                    _imageDecoder = new JPEGDecoder(decodeFilePath);
                 }
                 else
                 {
-                    _imageDecoder = new LeastSignificantBitDecoder(ImagesSavePath + "encryptedImageLSB.jpg");
+                    _imageDecoder = new LeastSignificantBitDecoder(decodeFilePath);
                 }
                 byte[] message = _imageDecoder.Decode();
                 tbMessage.Text = new string(message.Select(x => (char)x).ToArray());
+                File.WriteAllBytes(UserSavePath, message);
             }
             Cursor.Current = Cursors.Default;
         }
-        #endregion
 
-        private void saveSettings()
+        private void getFilePath()
         {
-            Properties.Settings.Default.HuffmanTableYAC = HuffmanTableYAC;
-            Properties.Settings.Default.HuffmanTableYDC = HuffmanTableYDC;
-            Properties.Settings.Default.HuffmanTableChrAC = HuffmanTableChrAC;
-            Properties.Settings.Default.HuffmanTableChrDC = HuffmanTableChrDC;
-            Properties.Settings.Default.QuantizationTableY = QuantizationTableY;
-            Properties.Settings.Default.QuantizationTableChr = QuantizationTableChr;
-            Properties.Settings.Default.QualityLocked = QualityLocked;
-            Properties.Settings.Default.ImagesFilePath = ImagesSavePath;
-            Properties.Settings.Default.Quality = Quality;
-            Properties.Settings.Default.LSBMethodSelected = LSBMethodSelected;
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.ShowHelp = true;
 
-            Properties.Settings.Default.Save();
+            if (rdioEncode.Checked)
+            {
+                saveFileDialog.FileName = decodeFileName + " (encoded).jpeg";
+                saveFileDialog.Filter = "Image Files (*.jpeg)|*.jpeg";
+                saveFileDialog.FilterIndex = 2;
+                saveFileDialog.RestoreDirectory = true;
+                saveFileDialog.Title = "Save encoded image as";
+            }
+            else if (rdioDecode.Checked)
+            {
+                saveFileDialog.FileName = decodeFileName + " (decoded)";
+                saveFileDialog.Filter = "No file Extension ()|";
+                saveFileDialog.FilterIndex = 2;
+                saveFileDialog.RestoreDirectory = true;
+                saveFileDialog.Title = "Save decoded message as";
+            }
+            
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                Stream saveFileStream;
+                if ((saveFileStream = saveFileDialog.OpenFile()) != null)
+                {
+                    UserSavePath = saveFileDialog.FileName;
+                    saveFileStream.Close();
+                }
+            }
         }
+        #endregion
 
         //'Escape' closes form
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -423,6 +461,43 @@ namespace TestForm{
                 }
             }
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void StegosaurusForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            saveSettings();
+        }
+
+        private void saveSettings()
+        {
+            saveHuffmanTableToFile(HuffmanTableYAC, "HuffmanTableYAC.txt");
+            saveHuffmanTableToFile(HuffmanTableYDC, "HuffmanTableYDC.txt");
+            saveHuffmanTableToFile(HuffmanTableChrAC, "HuffmanTableChrAC.txt");
+            saveHuffmanTableToFile(HuffmanTableChrDC, "HuffmanTableChrDC.txt");
+            saveQuantizationTableToFile(QuantizationTableY, "QuantizationTableY.txt");
+            saveQuantizationTableToFile(QuantizationTableChr, "QuantizationTableChr.txt");
+            Properties.Settings.Default.QualityLocked = QualityLocked;
+            Properties.Settings.Default.ImagesFilePath = UserSavePath;
+            Properties.Settings.Default.Quality = Quality;
+            Properties.Settings.Default.LSBMethodSelected = LSBMethodSelected;
+
+            Properties.Settings.Default.Save();
+        }
+
+        private void saveHuffmanTableToFile(HuffmanTable huffmanTable, string filePath)
+        {
+            if (huffmanTable != null)
+            {
+                File.WriteAllText(filePath, huffmanTable.ToString());
+            }
+        }
+
+        private void saveQuantizationTableToFile(QuantizationTable quantizationTable, string filePath)
+        {
+            if (quantizationTable != null)
+            {
+                File.WriteAllText(filePath, quantizationTable.ToString());
+            }
         }
     }
 }

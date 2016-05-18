@@ -38,21 +38,20 @@ namespace TestForm
         public OptionsForm()
         {
             InitializeComponent();
-            //initializeQuantizationTable(QuantizationTableComponentY, StegosaurusForm.QuantizationTableY, QuantizationTable.JpegDefaultYTable);
-            //initializeQuantizationTable(QuantizationTableComponentChr, StegosaurusForm.QuantizationTableChr, QuantizationTable.JpegDefaultChrTable);
-            //initializeHuffmanTable(HuffmanTableComponentYAC, StegosaurusForm.HuffmanTableYAC, HuffmanTable.JpegHuffmanTableYAC);
-            //initializeHuffmanTable(HuffmanTableComponentYDC, StegosaurusForm.HuffmanTableYDC, HuffmanTable.JpegHuffmanTableYDC);
-            //initializeHuffmanTable(HuffmanTableComponentChrAC, StegosaurusForm.HuffmanTableChrAC, HuffmanTable.JpegHuffmanTableChrAC);
-            //initializeHuffmanTable(HuffmanTableComponentChrDC, StegosaurusForm.HuffmanTableChrDC, HuffmanTable.JpegHuffmanTableChrDC);
-
+            initializeQuantizationTable(out QuantizationTableComponentY, StegosaurusForm.QuantizationTableY, QuantizationTable.JpegDefaultYTable);
+            initializeQuantizationTable(out QuantizationTableComponentChr, StegosaurusForm.QuantizationTableChr, QuantizationTable.JpegDefaultChrTable);
+            initializeHuffmanTable(out HuffmanTableComponentYAC, StegosaurusForm.HuffmanTableYAC, HuffmanTable.JpegHuffmanTableYAC);
+            initializeHuffmanTable(out HuffmanTableComponentYDC, StegosaurusForm.HuffmanTableYDC, HuffmanTable.JpegHuffmanTableYDC);
+            initializeHuffmanTable(out HuffmanTableComponentChrAC, StegosaurusForm.HuffmanTableChrAC, HuffmanTable.JpegHuffmanTableChrAC);
+            initializeHuffmanTable(out HuffmanTableComponentChrDC, StegosaurusForm.HuffmanTableChrDC, HuffmanTable.JpegHuffmanTableChrDC);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
 
             OptionsBox.SelectedItem = OptionsBox.Items[0];
 
-            //rdioQuantizationYChannel.Checked = true;
-            //rdioHuffmanY_AC.Checked = true;
+            rdioQuantizationYChannel.Checked = true;
+            rdioHuffmanY_AC.Checked = true;
             Quality = StegosaurusForm.Quality;
             tbarQualitySlider.Value = Quality;
             if (StegosaurusForm.QualityLocked)
@@ -68,26 +67,27 @@ namespace TestForm
 
             if (!LSBMethodSelected)
             {
-                rdioGT.Checked = true;
+                rdioGTMethod.Checked = true;
             }
             else
             {
-                rdioLSB.Checked = true;
+                rdioLSBMethod.Checked = true;
             }
         }
 
 
         //Adds defaultTable.Length amount of textboxes to a given Huffman panel and saves each in an array (to be looped through), sets
         //the size and position of each textbox and writes the default Quantization values in these.
-        private void initializeHuffmanTable(HuffmanTableComponent huffmanTableComponent, HuffmanTable savedHuffmanTable, HuffmanTable matchingDefaultHuffmanTable)
+        private void initializeHuffmanTable(out HuffmanTableComponent huffmanTableComponent, HuffmanTable settingsHuffmanTable, HuffmanTable defaultHuffmanTable)
         {
-            if (savedHuffmanTable != null)
+
+            if (settingsHuffmanTable != null)
             {
-                huffmanTableComponent = new HuffmanTableComponent(savedHuffmanTable);
+                huffmanTableComponent = new HuffmanTableComponent(settingsHuffmanTable);
             }
             else
             {
-                huffmanTableComponent = new HuffmanTableComponent(matchingDefaultHuffmanTable);
+                huffmanTableComponent = new HuffmanTableComponent(defaultHuffmanTable);
             }
             grpCustomHuffman.Controls.Add(huffmanTableComponent);
             huffmanTableComponent.Location = new Point(4, 30);
@@ -95,15 +95,15 @@ namespace TestForm
             huffmanTableComponent.BringToFront();
         }
 
-        private void initializeQuantizationTable(QuantizationTableComponent quantizationTableComponent, QuantizationTable savedQuantizationTable, QuantizationTable matchingDefaultQuantizationTable)
+        private void initializeQuantizationTable(out QuantizationTableComponent quantizationTableComponent, QuantizationTable settingsQuantizationTable, QuantizationTable defaultQuantizationTable)
         {
-            if (savedQuantizationTable != null)
+            if (settingsQuantizationTable != null)
             {
-                quantizationTableComponent = new QuantizationTableComponent(savedQuantizationTable);
+                quantizationTableComponent = new QuantizationTableComponent(settingsQuantizationTable);
             }
             else
             {
-                quantizationTableComponent = new QuantizationTableComponent(matchingDefaultQuantizationTable);
+                quantizationTableComponent = new QuantizationTableComponent(defaultQuantizationTable);
             }
 
             pnlQuantization.Controls.Add(quantizationTableComponent);
@@ -120,25 +120,20 @@ namespace TestForm
             DeselectAllOptionPanels();
             if (OptionsBox.SelectedItem == OptionsBox.Items[0])
             {
-                pnlOptionsGeneral.Visible = true;
-                pnlOptionsGeneral.Enabled = true;
-            }
-            else if (OptionsBox.SelectedItem == OptionsBox.Items[1])
-            {
                 pnlOptionsHuffman.Visible = true;
                 pnlOptionsHuffman.Enabled = true;
             }
-            else if (OptionsBox.SelectedItem == OptionsBox.Items[2])
+            else if (OptionsBox.SelectedItem == OptionsBox.Items[1])
             {
                 pnlOptionsQuantization.Visible = true;
                 pnlOptionsQuantization.Enabled = true;
             }
-            else if (OptionsBox.SelectedItem == OptionsBox.Items[3])
+            else if (OptionsBox.SelectedItem == OptionsBox.Items[2])
             {
                 pnlOptionsQuality.Visible = true;
                 pnlOptionsQuality.Enabled = true;
             }
-            else if (OptionsBox.SelectedItem == OptionsBox.Items[4])
+            else if (OptionsBox.SelectedItem == OptionsBox.Items[3])
             {
                 pnlOptionsEncodingMethod.Visible = true;
                 pnlOptionsEncodingMethod.Enabled = true;
@@ -147,9 +142,6 @@ namespace TestForm
 
         private void DeselectAllOptionPanels()
         {
-            pnlOptionsGeneral.Visible = false;
-            pnlOptionsGeneral.Enabled = false;
-
             pnlOptionsHuffman.Visible = false;
             pnlOptionsHuffman.Enabled = false;
 
@@ -301,17 +293,6 @@ namespace TestForm
             
         }
 
-        private void btnSelectOutputFolder_Click(object sender, EventArgs e)
-        {
-            DialogResult result = selectOutputFolder.ShowDialog();
-
-            if (!string.IsNullOrWhiteSpace(selectOutputFolder.SelectedPath))
-            {
-                ImagesSavePath = selectOutputFolder.SelectedPath;
-                tbSaveLocation.Text = ImagesSavePath;
-            }
-        }
-
         private void tbarQualitySlider_ValueChanged(object sender, EventArgs e)
         {
             lblEncodingQualityValue.Text = tbarQualitySlider.Value.ToString();
@@ -319,11 +300,11 @@ namespace TestForm
 
         private void rdioGT_CheckedChangedSetMethod(object sender, EventArgs e)
         {
-            if (rdioGT.Checked)
+            if (rdioGTMethod.Checked)
             {
                 LSBMethodSelected = false;
             }
-            else if (rdioLSB.Checked)
+            else if (rdioLSBMethod.Checked)
             {
                 LSBMethodSelected = true;
             }

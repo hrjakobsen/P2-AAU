@@ -1,3 +1,4 @@
+% -*- root: ../../DAT2-A423_Project_Report.tex -*-
 \section{Steganalysis}
 \label{steganalysis}
 Steganalysis is the study of detecting information hidden with steganography and if possible, recover that information.
@@ -46,13 +47,13 @@ The new stego image has quite an unusual histogram, though unfortunately we cann
 This unusual histogram might just be a product of a compression algorithm.
 
 \paragraph*{DCT coefficients histogram}
-To detect if data is hidden using a algorithm which employs shrinkage, we can look at a histogram of the DCT coefficients.
+To detect if data is hidden using an algorithm which employs shrinkage, we can look at a histogram of the DCT coefficients.
 When hiding data in the least significant bit of the DCT coefficients instead of just changing the bits, we can analyse each of the bits.
 If the least significant bit matches our message we move on, if it does not we subtract 1 from the DCT value, if the value is negative we add 1.
 This is called shrinkage.
 This method results in a high amount of zeros in the DCT coefficients.
 This can be seen on the comparison between figure \ref{fig:InputF5} and figure \ref{fig:outputF5}, these are histograms of DCT coefficients of figure \ref{fig:puffin}.
-We can clearly see that after data has been hidden using a algorithm which uses shrinkage, as there are almost only zeros remaining.
+We can clearly see that after data has been hidden using an algorithm which uses shrinkage, as there are almost only zeros remaining.
 
 \begin{figure}
 	\centering
@@ -62,17 +63,20 @@ We can clearly see that after data has been hidden using a algorithm which uses 
 \end{figure}
 
 \begin{figure}
-	\centering
-	\includegraphics[width=0.5\textwidth]{figures/inputF5.png}
-	\caption{Histogram of DCT coefficient before F5.}
-	\label{fig:InputF5}
-\end{figure}
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.5\textwidth]{figures/outputF5.png}
-	\caption{Histogram of DCT coefficient after F5.}
-	\label{fig:outputF5}
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{figures/inputF5.png}
+		\caption{Before F5.}
+		\label{fig:InputF5}
+    \end{subfigure}
+    ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc. 
+      %(or a blank line to force the subfigure onto a new line)
+    \begin{subfigure}[b]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{figures/outputF5.png}
+		\caption{After F5.}
+		\label{fig:outputF5}
+    \end{subfigure}
+    \caption{Histogram of DCT coefficients}
 \end{figure}
 
 %To estimate the DCT coefficients of the original cover image, we need to crop the suspected image by 4 vertical columns and recompress it using the same quantization table. \ref{Fridrich2003}
@@ -88,17 +92,19 @@ Figure \ref{fig:hiddenAAU} shows a 24 bit BMP image with 2 kb of random data hid
 We can see that there is something hidden in the top half of the image, while the bottom half remains untouched \citep{Westfeld2000}.
 
 \begin{figure}
-	\centering
-	\includegraphics[width=0.4\textwidth]{figures/StegoAAU.png}
-	\caption{24 bit bmp image with a 12 kb image hidden within.}
-	\label{fig:hiddenAAU}
-\end{figure}
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.4\textwidth]{figures/StegoAAULSB.png}
-	\caption{24 bit bmp image LSB enhanced.}
-	\label{fig:LSBenhanced}
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{figures/StegoAAU.png}
+		\caption{24 bit bmp image with a 12 kb image hidden within.}
+		\label{fig:hiddenAAU}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{figures/StegoAAULSB.png}
+		\caption{24 bit bmp image LSB enhanced.}
+		\label{fig:LSBenhanced}
+	\end{subfigure}
+	\caption{AAU logo before and after LSB enhancing}
 \end{figure}
 
 \paragraph*{$\chi^2$ attack or chi-squared attack}

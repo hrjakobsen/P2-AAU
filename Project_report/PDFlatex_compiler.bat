@@ -1,45 +1,60 @@
 @echo -------------------------------------------------
-@echo START 	Compiling PDFLATEX of Document [1/3]
+@echo START 	Compiling PDFLATEX of Document [1/2]
 @echo -------------------------------------------------
+@echo off
 pdflatex DAT2-A423_Project_Report.tex -quiet
 @echo -------------------------------------------------
-@echo END 	Compiling PDFLATEX of Document [1/3]
+@echo END 	Compiling PDFLATEX of Document [1/2]
+@echo -------------------------------------------------
+@echo.
+@echo. 
 @echo -------------------------------------------------
 @echo START	Compiling BibTex
 @echo -------------------------------------------------
-bibtex DAT2-A423_Project_Report -quiet
-makeindex DAT2-A423_Project_Report -quiet
+@echo off
+bibtex DAT2-A423_Project_Report -quiet >nul
 @echo -------------------------------------------------
 @echo END 	Compiling BibTex
 @echo -------------------------------------------------
-@echo START 	Compiling PDFLATEX of Document [2/3]
+@echo. 
+@echo. 
 @echo -------------------------------------------------
-pdflatex DAT2-A423_Project_Report.tex -quiet
-@echo -------------------------------------------------
-@echo END 	Compiling PDFLATEX of Document [2/3]
-@echo -------------------------------------------------
-@echo START 	Compiling PDFLATEX of Document [3/3]
-@echo -------------------------------------------------
-pdflatex DAT2-A423_Project_Report.tex -quiet
-@echo -------------------------------------------------
-@echo END 	Compiling PDFLATEX of Document [3/3]
-@echo -------------------------------------------------
-@echo 		Cleaning up useless files
+@echo START 	Compiling Index
 @echo -------------------------------------------------
 @echo off
-del *.aux /S /Q /F
-del *.toc /S /Q /F
-del *.log /S /Q /F
-del *.bbl /S /Q /F
-del *.blg /S /Q /F
-del *.brf /S /Q /F
-del *.out /S /Q /F
-del *.thm /S /Q /F
-del *.tdo /S /Q /F
-del *.xml /S /Q /F
-del *.cb /S /Q /F
-del *.cb2 /S /Q /F
-del *blx.bib /S /Q /F
+makeindex DAT2-A423_Project_Report -q >nul
+@echo -------------------------------------------------
+@echo END 	Compiling Index
+@echo -------------------------------------------------
+@echo. 
+@echo. 
+@echo -------------------------------------------------
+@echo START 	Compiling PDFLATEX of Document [2/2]
+@echo -------------------------------------------------
+@echo off
+pdflatex DAT2-A423_Project_Report.tex -quiet
+@echo -------------------------------------------------
+@echo END 	Compiling PDFLATEX of Document [2/2]
+@echo -------------------------------------------------
+@echo off
+del *.aux /S /Q /F >nul 2>nul
+del *.toc /S /Q /F >nul 2>nul
+del *.log /S /Q /F >nul 2>nul
+del *.bbl /S /Q /F >nul 2>nul
+del *.blg /S /Q /F >nul 2>nul
+del *.brf /S /Q /F >nul 2>nul
+del *.out /S /Q /F >nul 2>nul
+del *.thm /S /Q /F >nul 2>nul
+del *.tdo /S /Q /F >nul 2>nul
+del *.xml /S /Q /F >nul 2>nul
+del *.cb2 /S /Q /F >nul 2>nul
+del *.idx /S /Q /F >nul 2>nul
+del *.ilg /S /Q /F >nul 2>nul
+del *.ind /S /Q /F >nul 2>nul
+del *.cb /S /Q /F >nul 2>nul
+del *blx.bib /S /Q /F >nul 2>nul
+@echo. 
+@echo. 
 @echo -------------------------------------------------
 @echo 		Cleanup Done!
 @echo -------------------------------------------------

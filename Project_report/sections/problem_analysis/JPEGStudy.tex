@@ -104,7 +104,7 @@ where:
 \subsubsection{Quantization\index{Quantization}}
 \vspace{-2.5mm}
 Quantization tables are what makes JPEG compression lossy. 
-After the DTC process, the quantization progress is performed on the resulting 8x8 block of values.
+After the DCT process, the quantization progress is performed on the resulting 8x8 block of values.
 Quantization is the process of dividing each value in the 8x8 block with a corresponding value in a quantization table. 
 The JPEG specification allows 4 quantization tables to be used, while JFIF limits it even further to 2 tables. 
 This means that two of our three channels have to share quantization tables. 
@@ -307,7 +307,7 @@ Therefore a nibble is used for selecting how many bytes to use.
 
 The JFIF standard allows a JFIF file to use two quantization tables, which means that some channels have to share quantization tables. 
 Because of this, each quantization table gets an ID, so that each component can point to a quantization table. 
-s
+
 While encoding the actual values of the table, they are encoded top to bottom, left to right.
 
 

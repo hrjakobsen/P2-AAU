@@ -5,6 +5,13 @@
         public byte Message { get; }
         public byte Modulo { get; }
 
+        /// <summary>
+        /// Create a vertex from two DCT coefficients, a message and modulo (m) value.
+        /// </summary>
+        /// <param name="sampleValue1"></param>
+        /// <param name="sampleValue2"></param>
+        /// <param name="message">Message must be less than modulo (m)</param>
+        /// <param name="modulo">Value that will be used for the addition operation (m value)</param>
         public Vertex(short sampleValue1, short sampleValue2, byte message, byte modulo) {
             SampleValue1 = sampleValue1;
             SampleValue2 = sampleValue2;
