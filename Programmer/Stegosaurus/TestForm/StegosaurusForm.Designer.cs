@@ -25,8 +25,6 @@
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StegosaurusForm));
-            this.getFileInputLSB = new System.Windows.Forms.OpenFileDialog();
-            this.getFileMessageLSB = new System.Windows.Forms.OpenFileDialog();
             this.getFileStego = new System.Windows.Forms.OpenFileDialog();
             this.line = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -40,8 +38,8 @@
             this.btnLoadMessageFile = new System.Windows.Forms.Button();
             this.btnLoadInput = new System.Windows.Forms.Button();
             this.picResult = new System.Windows.Forms.PictureBox();
+            this.tbarEncodingQuality = new System.Windows.Forms.TrackBar();
             this.tbMessage = new System.Windows.Forms.TextBox();
-            this.cbMessageFile = new System.Windows.Forms.CheckBox();
             this.tbMessageFilePath = new System.Windows.Forms.TextBox();
             this.lblEncodingQuality = new System.Windows.Forms.Label();
             this.lblEncodingQualityValue = new System.Windows.Forms.Label();
@@ -51,12 +49,12 @@
             this.rdioDecode = new System.Windows.Forms.RadioButton();
             this.getFileInput = new System.Windows.Forms.OpenFileDialog();
             this.GetFileMessage = new System.Windows.Forms.OpenFileDialog();
-            this.tbarEncodingQuality = new System.Windows.Forms.TrackBar();
+            this.btnRemoveMsgFile = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picResult)).BeginInit();
-            this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbarEncodingQuality)).BeginInit();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // line
@@ -131,7 +129,7 @@
             // btnLoadMessageFile
             // 
             this.btnLoadMessageFile.Enabled = false;
-            this.btnLoadMessageFile.Location = new System.Drawing.Point(256, 151);
+            this.btnLoadMessageFile.Location = new System.Drawing.Point(251, 151);
             this.btnLoadMessageFile.Name = "btnLoadMessageFile";
             this.btnLoadMessageFile.Size = new System.Drawing.Size(86, 23);
             this.btnLoadMessageFile.TabIndex = 32;
@@ -163,6 +161,17 @@
             this.picResult.TabStop = false;
             this.ttStegosaurus.SetToolTip(this.picResult, "Result-image");
             // 
+            // tbarEncodingQuality
+            // 
+            this.tbarEncodingQuality.Location = new System.Drawing.Point(254, 265);
+            this.tbarEncodingQuality.Maximum = 100;
+            this.tbarEncodingQuality.Name = "tbarEncodingQuality";
+            this.tbarEncodingQuality.Size = new System.Drawing.Size(104, 45);
+            this.tbarEncodingQuality.TabIndex = 36;
+            this.tbarEncodingQuality.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.ttStegosaurus.SetToolTip(this.tbarEncodingQuality, "Set the encoding quality from which\r\nthe amount of data you can hide varries");
+            this.tbarEncodingQuality.ValueChanged += new System.EventHandler(this.tbarEncodingQuality_ValueChanged);
+            // 
             // tbMessage
             // 
             this.tbMessage.Enabled = false;
@@ -177,24 +186,14 @@
             this.tbMessage.Leave += new System.EventHandler(this.tbMessage_Leave);
             this.tbMessage.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.tbMessage_MouseDoubleClick);
             // 
-            // cbMessageFile
-            // 
-            this.cbMessageFile.AutoSize = true;
-            this.cbMessageFile.Enabled = false;
-            this.cbMessageFile.Location = new System.Drawing.Point(349, 156);
-            this.cbMessageFile.Name = "cbMessageFile";
-            this.cbMessageFile.Size = new System.Drawing.Size(15, 14);
-            this.cbMessageFile.TabIndex = 39;
-            this.cbMessageFile.UseVisualStyleBackColor = true;
-            // 
             // tbMessageFilePath
             // 
             this.tbMessageFilePath.Enabled = false;
-            this.tbMessageFilePath.Location = new System.Drawing.Point(257, 125);
+            this.tbMessageFilePath.Location = new System.Drawing.Point(252, 125);
             this.tbMessageFilePath.Name = "tbMessageFilePath";
-            this.tbMessageFilePath.Size = new System.Drawing.Size(102, 20);
+            this.tbMessageFilePath.Size = new System.Drawing.Size(117, 20);
             this.tbMessageFilePath.TabIndex = 38;
-            this.tbMessageFilePath.Text = "Your filepath";
+            this.tbMessageFilePath.Text = "Message file";
             // 
             // lblEncodingQuality
             // 
@@ -266,6 +265,10 @@
             // getFileInput
             // 
             this.getFileInput.FileName = "Select an image to be the Cover";
+            this.getFileInput.Filter = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png, *.PNG, *.BMP, *.DIB, *.RLE, *.G" +
+    "IF, *.TIF, *.TIFF) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png; *.PNG; *.BMP; *.DIB; *" +
+    ".RLE; *.GIF; *.TIF; *.TIFF;";
+            this.getFileInput.Title = "Select an image to be the Cover";
             this.getFileInput.FileOk += new System.ComponentModel.CancelEventHandler(this.getFileInput_FileOk);
             // 
             // GetFileMessage
@@ -273,24 +276,24 @@
             this.GetFileMessage.FileName = "Select a file to be the message";
             this.GetFileMessage.FileOk += new System.ComponentModel.CancelEventHandler(this.GetFileMessage_FileOk);
             // 
-            // tbarEncodingQuality
+            // btnRemoveMsgFile
             // 
-            this.tbarEncodingQuality.Location = new System.Drawing.Point(254, 265);
-            this.tbarEncodingQuality.Maximum = 100;
-            this.tbarEncodingQuality.Name = "tbarEncodingQuality";
-            this.tbarEncodingQuality.Size = new System.Drawing.Size(104, 45);
-            this.tbarEncodingQuality.TabIndex = 36;
-            this.tbarEncodingQuality.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.ttStegosaurus.SetToolTip(this.tbarEncodingQuality, "Set the encoding quality from which\r\nthe amount of data you can hide varries");
-            this.tbarEncodingQuality.ValueChanged += new System.EventHandler(this.tbarEncodingQuality_ValueChanged);
+            this.btnRemoveMsgFile.Location = new System.Drawing.Point(343, 151);
+            this.btnRemoveMsgFile.Name = "btnRemoveMsgFile";
+            this.btnRemoveMsgFile.Size = new System.Drawing.Size(26, 23);
+            this.btnRemoveMsgFile.TabIndex = 41;
+            this.btnRemoveMsgFile.Text = "X";
+            this.ttStegosaurus.SetToolTip(this.btnRemoveMsgFile, "Remove message file");
+            this.btnRemoveMsgFile.UseVisualStyleBackColor = true;
+            this.btnRemoveMsgFile.Click += new System.EventHandler(this.btnRemoveMsgFile_Click);
             // 
             // StegosaurusForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(616, 295);
+            this.Controls.Add(this.btnRemoveMsgFile);
             this.Controls.Add(this.tbMessage);
-            this.Controls.Add(this.cbMessageFile);
             this.Controls.Add(this.line);
             this.Controls.Add(this.tbMessageFilePath);
             this.Controls.Add(this.menuStrip1);
@@ -311,18 +314,15 @@
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picResult)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbarEncodingQuality)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbarEncodingQuality)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.OpenFileDialog getFileInputLSB;
-        private System.Windows.Forms.OpenFileDialog getFileMessageLSB;
         private System.Windows.Forms.OpenFileDialog getFileStego;
         private System.Windows.Forms.Label line;
         private System.Windows.Forms.MenuStrip menuStrip1;
@@ -332,7 +332,6 @@
         private System.Windows.Forms.ToolStripMenuItem showHelpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolTip ttStegosaurus;
-        private System.Windows.Forms.CheckBox cbMessageFile;
         private System.Windows.Forms.TextBox tbMessageFilePath;
         private System.Windows.Forms.Label lblEncodingQuality;
         private System.Windows.Forms.PictureBox picInput;
@@ -348,6 +347,7 @@
         private System.Windows.Forms.OpenFileDialog GetFileMessage;
         private System.Windows.Forms.TextBox tbMessage;
         private System.Windows.Forms.TrackBar tbarEncodingQuality;
+        private System.Windows.Forms.Button btnRemoveMsgFile;
     }
 }
 
