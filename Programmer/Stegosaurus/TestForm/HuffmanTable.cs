@@ -80,19 +80,8 @@ namespace TestForm
             codeWordsBoxes[0].Select();
             VerticalScroll.Value = 0;
 
-            codeWordsBoxes.Add(new TextBox());
-            Controls.Add(codeWordsBoxes[j]);
-            codeWordsBoxes[j].Size = new Size(110, 20);
-            codeWordsBoxes[j].Left = 8;
-            codeWordsBoxes[j].Top = 5 + j * 25;
-            codeWordsBoxes[j].Font = new Font(FontFamily.GenericMonospace.ToString(), 8);
-
-            runSizeBoxes.Add(new TextBox());
-            Controls.Add(runSizeBoxes[j]);
-            runSizeBoxes[j].Size = new Size(76, 20);
-            runSizeBoxes[j].Left = 8 + 116;
-            runSizeBoxes[j].Top = 5 + j * 25;
-            runSizeBoxes[j].Font = new Font(FontFamily.GenericMonospace.ToString(), 8);
+            addCodeWordsBox(j);
+            addRunSizeBox(j);
 
             //Brings focus to the first box in the added box
             codeWordsBoxes[runSizeBoxes.Count() - 1].Select();
