@@ -63,6 +63,7 @@
             this.rdioLSBMethod = new System.Windows.Forms.RadioButton();
             this.rdioGTMethod = new System.Windows.Forms.RadioButton();
             this.lblEncodingMethod = new System.Windows.Forms.Label();
+            this.btnDefault = new System.Windows.Forms.Button();
             this.pnlOptionsHuffman.SuspendLayout();
             this.grpCustomHuffman.SuspendLayout();
             this.pnlOptionsQuality.SuspendLayout();
@@ -363,10 +364,6 @@
             this.pnlQuantization.Size = new System.Drawing.Size(412, 262);
             this.pnlQuantization.TabIndex = 129;
             // 
-            // selectOutputFolder
-            // 
-            this.selectOutputFolder.HelpRequest += new System.EventHandler(this.selectOutputFolder_HelpRequest);
-            // 
             // btnClose
             // 
             this.btnClose.Location = new System.Drawing.Point(554, 342);
@@ -434,10 +431,21 @@
             this.lblEncodingMethod.TabIndex = 17;
             this.lblEncodingMethod.Text = "Select encoding method:";
             // 
+            // btnDefault
+            // 
+            this.btnDefault.Location = new System.Drawing.Point(169, 342);
+            this.btnDefault.Name = "btnDefault";
+            this.btnDefault.Size = new System.Drawing.Size(75, 23);
+            this.btnDefault.TabIndex = 31;
+            this.btnDefault.Text = "Default";
+            this.btnDefault.UseVisualStyleBackColor = true;
+            this.btnDefault.Click += new System.EventHandler(this.btnDefault_Click);
+            // 
             // OptionsForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(623, 377);
+            this.Controls.Add(this.btnDefault);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.line);
             this.Controls.Add(this.btnSave);
@@ -503,5 +511,6 @@
         private System.Windows.Forms.RadioButton rdioLSBMethod;
         private System.Windows.Forms.RadioButton rdioGTMethod;
         private System.Windows.Forms.Label lblEncodingMethod;
+        private System.Windows.Forms.Button btnDefault;
     }
 }
