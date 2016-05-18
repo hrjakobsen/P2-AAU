@@ -104,18 +104,6 @@ namespace TestForm.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string ImagesFilePath {
-            get {
-                return ((string)(this["ImagesFilePath"]));
-            }
-            set {
-                this["ImagesFilePath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         public global::Stegosaurus.HuffmanTable HuffmanTableYAC {
             get {
                 return ((global::Stegosaurus.HuffmanTable)(this["HuffmanTableYAC"]));
