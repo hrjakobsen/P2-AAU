@@ -427,17 +427,25 @@ namespace TestForm{
             {
                 picResult.Image = null;
                 tbMessage.Text = "";
-                if (!LSBMethodSelected)
+
+                try
                 {
-                    _imageDecoder = new JPEGDecoder(decodeFilePath);
+                    if (!LSBMethodSelected)
+                    {
+                        _imageDecoder = new JPEGDecoder(decodeFilePath);
+                    }
+                    else
+                    {
+                        _imageDecoder = new LeastSignificantBitDecoder(decodeFilePath);
+                    }
+                    byte[] message = _imageDecoder.Decode();
+                    tbMessage.Text = new string(message.Select(x => (char)x).ToArray());
+                    File.WriteAllBytes(UserSavePath, message);
                 }
-                else
+                catch (Exception)
                 {
-                    _imageDecoder = new LeastSignificantBitDecoder(decodeFilePath);
+                    MessageBox.Show("Unknown error (Image might not contain a message)");
                 }
-                byte[] message = _imageDecoder.Decode();
-                tbMessage.Text = new string(message.Select(x => (char)x).ToArray());
-                File.WriteAllBytes(UserSavePath, message);
             }
             Cursor.Current = Cursors.Default;
         }
