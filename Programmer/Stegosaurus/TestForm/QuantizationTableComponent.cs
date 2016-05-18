@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Stegosaurus;
 using System.Drawing;
@@ -31,6 +27,7 @@ namespace TestForm
                 QuantizationBoxes[i].Left = 8 + (i % 8) * 47;
                 QuantizationBoxes[i].Top = 5 + (i / 8) * 25;
                 QuantizationBoxes[i].Font = new Font(FontFamily.GenericMonospace.ToString(), 8);
+                QuantizationBoxes[i].MaxLength = 2;
 
                 string s = Convert.ToString(entriesList[i], 0x10);
 

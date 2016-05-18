@@ -9,6 +9,7 @@ namespace TestForm
     {
         private readonly StegosaurusForm _stegosaurusForm = new StegosaurusForm();
         private bool _skipDialog;
+        private bool _qualityLocked;
 
         public static HuffmanTableComponent HuffmanTableComponentYAC,
             HuffmanTableComponentYDC,
@@ -16,32 +17,39 @@ namespace TestForm
             HuffmanTableComponentChrDC;
         public static QuantizationTableComponent QuantizationTableComponentY, QuantizationTableComponentChr;
 
-        public static string ImagesSavePath;
         public static int Quality;
         public static bool SaveEnabled;
         public static bool LSBMethodSelected;
         public static bool ResetToDefault;
+        public static bool SkipSettingsInitialization = false;
 
         public OptionsForm()
         {
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             InitializeComponent();
+            initializeSettings();
+        }
+
+        //Custom components _ created and settings are set.
+        private void initializeSettings()
+        {
             initializeQuantizationTable(out QuantizationTableComponentY, StegosaurusForm.QuantizationTableY, QuantizationTable.JpegDefaultYTable);
             initializeQuantizationTable(out QuantizationTableComponentChr, StegosaurusForm.QuantizationTableChr, QuantizationTable.JpegDefaultChrTable);
             initializeHuffmanTable(out HuffmanTableComponentYAC, StegosaurusForm.HuffmanTableYAC, HuffmanTable.JpegHuffmanTableYAC);
             initializeHuffmanTable(out HuffmanTableComponentYDC, StegosaurusForm.HuffmanTableYDC, HuffmanTable.JpegHuffmanTableYDC);
             initializeHuffmanTable(out HuffmanTableComponentChrAC, StegosaurusForm.HuffmanTableChrAC, HuffmanTable.JpegHuffmanTableChrAC);
             initializeHuffmanTable(out HuffmanTableComponentChrDC, StegosaurusForm.HuffmanTableChrDC, HuffmanTable.JpegHuffmanTableChrDC);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
+            Quality = StegosaurusForm.Quality;
+            _qualityLocked = StegosaurusForm.QualityLocked;
+            LSBMethodSelected = StegosaurusForm.LSBMethodSelected;
 
             OptionsBox.SelectedItem = OptionsBox.Items[0];
-
             rdioQuantizationYChannel.Checked = true;
             rdioHuffmanY_AC.Checked = true;
-            Quality = StegosaurusForm.Quality;
             tbarQualitySlider.Value = Quality;
-            if (StegosaurusForm.QualityLocked)
+            if (_qualityLocked)
             {
                 tbarQualitySlider.Enabled = false;
             }
@@ -49,8 +57,6 @@ namespace TestForm
             {
                 tbarQualitySlider.Enabled = true;
             }
-
-            LSBMethodSelected = StegosaurusForm.LSBMethodSelected;
 
             if (!LSBMethodSelected)
             {
@@ -61,7 +67,6 @@ namespace TestForm
                 rdioLSBMethod.Checked = true;
             }
         }
-
 
         //Adds defaultTable.Length amount of textboxes to a given Huffman panel and saves each in an array (to be looped through), sets
         //the size and position of each textbox and writes the default Quantization values in these.
@@ -175,11 +180,6 @@ namespace TestForm
         private void btnSave_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
-            if (!string.IsNullOrEmpty(ImagesSavePath))
-            {
-               // _stegosaurusForm.ImagesSavePath = ImagesSavePath;
-            }
-
             Quality = tbarQualitySlider.Value;
             _skipDialog = true;
             SaveEnabled = true;

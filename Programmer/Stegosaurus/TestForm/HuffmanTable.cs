@@ -58,6 +58,7 @@ namespace TestForm
             codeWordsBoxes[counter].Size = new Size(110, 20);
             codeWordsBoxes[counter].Left = 8;
             codeWordsBoxes[counter].Top = 5 + counter * 25;
+            codeWordsBoxes[counter].MaxLength = 16;
             codeWordsBoxes[counter].Font = new Font(FontFamily.GenericMonospace.ToString(), 8);
         }
 
@@ -68,7 +69,8 @@ namespace TestForm
             runSizeBoxes[counter].Size = new Size(76, 20);
             runSizeBoxes[counter].Left = 8 + 116;
             runSizeBoxes[counter].Top = 5 + counter * 25;
-            codeWordsBoxes[counter].Font = new Font(FontFamily.GenericMonospace.ToString(), 8);
+            runSizeBoxes[counter].MaxLength = 2;
+            runSizeBoxes[counter].Font = new Font(FontFamily.GenericMonospace.ToString(), 8);
         }
 
         //Adds a row (3 textboxes) to a Huffman-table and focuses on the latest added textbox

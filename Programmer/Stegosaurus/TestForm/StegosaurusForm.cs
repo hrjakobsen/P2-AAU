@@ -43,16 +43,23 @@ namespace TestForm{
         private Bitmap CoverImage { get; set; }
 
         public StegosaurusForm() {
-            InitializeComponent();
-            tbMessage.Text = NoMessageWrittenMessage;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            InitializeComponent();
+            tbMessage.Text = NoMessageWrittenMessage;
         }
 
         private void StegosaurusForm_Load(object sender, EventArgs e)
         {
-            loadSettings();
+            try
+            {
+                loadSettings();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("An error occured while trying to load your settings");
+            }
         }
 
         private void loadSettings()
@@ -71,7 +78,7 @@ namespace TestForm{
             {
                 tbarEncodingQuality.Value = defaultQuality;
                 tbarEncodingQuality.Enabled = false;
-            }
+            } else
             {
                 tbarEncodingQuality.Enabled = true;
             }
@@ -129,28 +136,23 @@ namespace TestForm{
             if (OptionsForm.SaveEnabled)
             {
                 Cursor.Current = Cursors.WaitCursor;
+                try
+                {
+                    loadSettingsFromOptionsForm();
+                    OptionsForm.SkipSettingsInitialization = false;
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("An error occured while trying to save your settings!");
+                    OptionsForm.SkipSettingsInitialization = true;
+                }
 
-                loadSettingsFromOptionsForm();
                 Cursor.Current = Cursors.Default;
             }
         }
 
         private void loadSettingsFromOptionsForm()
         {
-            LSBMethodSelected = OptionsForm.LSBMethodSelected;
-
-            tbarEncodingQuality.Value = OptionsForm.Quality;
-
-            if (LSBMethodSelected)
-            {
-                lblEncodingQualityValue.Text = "-";
-            }
-            else
-            {
-                tbarEncodingQuality.Value = Quality + 1;
-                tbarEncodingQuality.Value = Quality - 1;
-            }
-
             if (OptionsForm.HuffmanTableComponentYAC.SaveTable().Equals(HuffmanTable.JpegHuffmanTableYAC))
             {
                 HuffmanTableYAC = HuffmanTable.JpegHuffmanTableYAC;
@@ -207,6 +209,20 @@ namespace TestForm{
                 tbarEncodingQuality.Value = defaultQuality;
             }
 
+            LSBMethodSelected = OptionsForm.LSBMethodSelected;
+
+            tbarEncodingQuality.Value = OptionsForm.Quality;
+
+            if (LSBMethodSelected)
+            {
+                lblEncodingQualityValue.Text = "-";
+            }
+            else
+            {
+                tbarEncodingQuality.Value = Quality + 1;
+                tbarEncodingQuality.Value = Quality - 1;
+            }
+
             //If changes have been made to a QuantizationTable or LSB is selected, lock the quality-slider to prevent errors.
             if (LSBMethodSelected || !OptionsForm.QuantizationTableComponentY.SaveTable().Equals(QuantizationTable.JpegDefaultYTable) 
                 || !OptionsForm.QuantizationTableComponentChr.SaveTable().Equals(QuantizationTable.JpegDefaultChrTable))
@@ -218,7 +234,7 @@ namespace TestForm{
             {
                 QualityLocked = false;
                 tbarEncodingQuality.Enabled = true;
-            }            
+            }
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -282,6 +298,7 @@ namespace TestForm{
             {
                 _messageTextSet = true;
                 btnLoadMessageFile.Enabled = false;
+                btnRemoveMsgFile.Enabled = false;
                 _messageLength = tbMessage.Text.Length;
                 if (_inputImageSet)
                 {
@@ -295,6 +312,7 @@ namespace TestForm{
                 if (rdioEncode.Checked)
                 {
                     btnLoadMessageFile.Enabled = true;
+                    btnRemoveMsgFile.Enabled = true;
                 }
             }
         }
@@ -365,10 +383,23 @@ namespace TestForm{
         //Handles encoding/decoding using the correct method and settings when the 'Proceed' button is pressed.
         private void btnProceed_Click(object sender, EventArgs e)
         {
-            getFilePath();
+            try
+            {
+                getFilePath();
+            }
+            catch (IOException)
+            {
+                MessageBox.Show("Could not access file!");
+            }
+
             Cursor.Current = Cursors.WaitCursor;
             if (rdioEncode.Checked)
             {
+                if (picResult.Image != null)
+                {
+                    picResult.Image.Dispose();
+                }
+
                 byte[] msg = new byte[_messageLength];
 
                 if (_messageTextSet)
@@ -406,16 +437,8 @@ namespace TestForm{
                 {
                     _imageEncoder.Encode(msg);
 
-                    if (!LSBMethodSelected)
-                    {
                         _imageEncoder.Save(UserSavePath);
                         picResult.Image = Image.FromFile(UserSavePath);
-                    }
-                    else
-                    {
-                        _imageEncoder.Save(UserSavePath);
-                        picResult.Image = Image.FromFile(UserSavePath);
-                    }
                 }
                 catch (ImageCannotContainDataException)
                 {
@@ -481,12 +504,12 @@ namespace TestForm{
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                Stream saveFileStream;
-                if ((saveFileStream = saveFileDialog.OpenFile()) != null)
-                {
-                    UserSavePath = saveFileDialog.FileName;
-                    saveFileStream.Close();
-                }
+                UserSavePath = saveFileDialog.FileName;
+
+                //if ((saveFileStream = saveFileDialog.OpenFile()) != null)
+                //{
+                //    saveFileStream.Close();
+                //}
             }
         }
         #endregion
