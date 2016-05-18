@@ -513,7 +513,7 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void RefactorGraph_Test()
+        public void RefactorGraph_Test() //TODO: fix this test
         {
             PrivateType pt = new PrivateType(typeof(JpegImage));
 
@@ -526,15 +526,63 @@ namespace Stegosaurus.Tests
                 v6 = new Vertex(10, 11, 5, 4);
 
             Graph inputGraph = new Graph();
+            Graph sad = new Graph();
+            sad.Vertices.AddRange(new List<Vertex>() { v1, v2, v3, v4, v5, v6 });
             inputGraph.Vertices.AddRange(new List<Vertex>() { v1, v2, v3, v4, v5, v6 });
 
+            
             int inputThreshold = 5;
 
             pt.InvokeStatic("_addEdge", new object[] { true, false, v1, v2, inputThreshold, inputGraph });    //pass
             pt.InvokeStatic("_addEdge", new object[] { true, true, v3, v4, inputThreshold, inputGraph });     //pass
             pt.InvokeStatic("_addEdge", new object[] { false, true, v5, v6, inputThreshold, inputGraph });    //fail
 
+
+            pt.InvokeStatic("_addEdge", new object[] { true, false, v1, v2, inputThreshold, sad });    //pass
+            pt.InvokeStatic("_addEdge", new object[] { true, true, v3, v4, inputThreshold, sad });     //pass
+            pt.InvokeStatic("_addEdge", new object[] { false, true, v5, v6, inputThreshold, sad });    //fail
+
+
             pt.InvokeStatic("_refactorGraph", inputGraph);
+
+
+            foreach (Vertex vertex in inputGraph.Vertices)
+            {
+                if ((vertex.SampleValue1 + vertex.SampleValue2).Mod(vertex.Modulo) != vertex.Message)
+                {
+                    inputThreshold++;
+                    //_forceSampleChange(vertex);
+                    //forces++;
+                } else
+                {
+                    //good++;
+                }
+            }
+
+
+            
+            //NUnit.Framework.Assert.AreEqual(sad.Vertices, inputGraph.Vertices);
+            NUnit.Framework.Assert.Fail();
+        }
+
+        [Test()]
+        public void SwapVertexData()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+            Vertex
+                inputV1 = new Vertex(0, 1, 0, 4),
+                inputV2 = new Vertex(2, 3, 0, 4),
+                expectedV1 = new Vertex(2, 1, 0, 4),
+                expectedV2 = new Vertex(0, 3, 0, 4);
+
+            Edge
+                e1 = new Edge(inputV1, inputV2, 0, true, true),
+                expectedE1 = new Edge(expectedV1, expectedV2, 0, true, true);
+
+            pt.InvokeStatic("_swapVertexData", e1);
+
+            
+            NUnit.Framework.Assert.AreEqual(expectedE1, e1);
 
         }
     }

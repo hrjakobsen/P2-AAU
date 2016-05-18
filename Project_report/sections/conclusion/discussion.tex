@@ -1,7 +1,7 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
 \section{Discussion}
 We started out by using the relatively simple LSB-method for hiding data in an image.
-Specifically we saved an image inside of another PNG-image.
+Specifically, we saved an image inside of another PNG-image.
 While the differences in the image with and without the message-image were hardly noticeable to the human eye, we did find that comparing colour histograms of the two images revealed that there had in fact been made changes to it.
 In an effort to diminish this problem, the graph-theoretical approach we implemented attempted to move pixels around in the image, rather than change their values.
 This meant that colour histograms of the image before and after the message had been encoded should look very similar, almost identical.
@@ -11,7 +11,7 @@ Using this method, we expected the changes to be small enough so that it would n
 
 \subsection{Changes to the image}
 To find out roughly how many of these forces there were in a given image, we used our programme to save different messages in different images.
-The used five different message lengths: 70, 140, 280, 560 and 1120 bytes.
+The used five different message lengths were: 70, 140, 280, 560 and 1120 bytes.
 Each message consisted of the ASCII characters A-Z repeated to fill out the message.
 Each of these messages were encoded in four images with varying motives, but the same resolution (1920x1080).
 The images can be seen in figure \ref{fig:four_test_images}.
@@ -19,7 +19,7 @@ The images can be seen in figure \ref{fig:four_test_images}.
 We used a cartoon-like drawing of a cat to see how our software would work on an image that was not ideal for the JPEG format.
 The landscape image contained many different colours and very complex patterns, which made it ideal for JPEG compression.
 The same could be said for the tiger, but it contained larger areas of similar colours than the landscape did.
-The image of the snowy forest road contained very few colour nuances, but was almost made up of the luminance channel.
+The image of the snowy forest road contained very few colour nuances, but was almost entirely made up of the luminance channel.
 This led to a total of 20 tests as seen in table \ref{fig:forces_swaps}.
 
 \begin{figure}[H]
@@ -135,20 +135,20 @@ We ended up using an image with a resolution of 120x120 pixels.
     \label{fig:histogramsComparisons}
 \end{figure}
 
-On figure \ref{fig:histogramsComparisons} four histograms are shown.
-Figures \ref{fig:coverHisto} and \ref{fig:gt2Histo} shows the histogram of the original image and for the image encoded as JPEG without a message.
-On figure \ref{fig:lsbHisto} and \ref{fig:gtHisto} the histograms of the images filled with a message using the LSB and GT methods respectively.
+In figure \ref{fig:histogramsComparisons} four histograms are shown.
+Figures \ref{fig:coverHisto} and \ref{fig:gt2Histo} show the histogram of the original image and for the image encoded as JPEG without a message.
+In figure \ref{fig:lsbHisto} and \ref{fig:gtHisto} the histograms of the images filled with a message using the LSB and GT methods respectively.
 From these results it was clear that there was not much difference between the colour histograms of the image saved as JPEG with or without the message.
 The image saved with LSB's histogram, however, clearly showed signs that the image had been tampered with.
 
-The reason the histogram looked like that for the LSB image was because thr bit-patterns of the encoded data became very clear in the histograms.
+The reason the histogram looked like that for the LSB image was because the bit-patterns of the encoded data became very clear in the histograms.
 The bytes encoded in the images were the characters A-Z in ASCII repeated the capacity of the image had been reached.
 A-Z in ASCII ranges from $65-90$, or in base two: $01000001_2-01011010_2$.
-As the range was quite short, a lot of the higher order bits would rarely change, and those patterns became obvious in the histogram, as pixels ending in these patters became more common.
+As the range was quite short, a lot of the higher order bits would rarely change, and those patterns became obvious in the histogram, as pixels ending in these patterns became more common.
 
 The histogram in figure \ref{fig:lsbHisto} also showed how the LSB method changed images where a colour is very common.
 The leftmost bar described pixels whose B-component is 0.
-In the original cover image, this bar was much higher than the others, and therefore much more common in the image, but the LSB has made it so that those components now gets spread out, which again becomes very obvious in the histogram.
+In the original cover image, this bar was much higher than the others, and therefore much more common in the image, but the LSB has made it so that those components now get spread out, which again becomes very obvious in the histogram.
 
 \subsection{Euclidean distance}
 A different way of looking for changes in an image is by looking at their Euclidean distance.
@@ -169,5 +169,5 @@ This change is applied after the quantization step to avoid losing the data agai
 This in turn means that the small change of up to four is multiplied by the quantization table, when the image is shown.
 Bla bla something something green is less than the other
 
-So while the euclidean distance might be bigger in the image where the data is hidden using our GT programme, it is of little use in automated system doing steganalysis on a multitude of images, as it would have nothing to compare the images to. 
+So while the Euclidean distance might be bigger in the image where the data is hidden using our GT programme, it is of little use in automated system doing steganalysis on a multitude of images, as it would have nothing to compare the images to. 
 Such a system could however check the histogram of the image, and discover abnormalities such as those the LSB method produces, as shown in figure \ref{fig:lsbHisto}.
