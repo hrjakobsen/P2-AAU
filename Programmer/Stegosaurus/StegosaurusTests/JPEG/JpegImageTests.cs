@@ -576,14 +576,12 @@ namespace Stegosaurus.Tests
                 expectedV2 = new Vertex(0, 3, 0, 4);
 
             Edge
-                e1 = new Edge(inputV1, inputV2, 0, true, true),
+                inputE1 = new Edge(inputV1, inputV2, 0, true, true),
                 expectedE1 = new Edge(expectedV1, expectedV2, 0, true, true);
 
-            pt.InvokeStatic("_swapVertexData", e1);
+            pt.InvokeStatic("_swapVertexData", inputE1);
 
-            
-            NUnit.Framework.Assert.AreEqual(expectedE1, e1);
-
+            NUnit.Framework.Assert.AreEqual(expectedE1.ToString(), inputE1.ToString());
         }
     }
 }
