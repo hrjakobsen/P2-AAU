@@ -79,29 +79,36 @@ namespace TestForm
             codeWordsBoxes[j].Size = new Size(110, 20);
             codeWordsBoxes[j].Left = 8;
             codeWordsBoxes[j].Top = 5 + j * 25;
+            codeWordsBoxes[j].Font = new Font(FontFamily.GenericMonospace.ToString(), 8);
 
             runSizeBoxes.Add(new TextBox());
             Controls.Add(runSizeBoxes[j]);
             runSizeBoxes[j].Size = new Size(76, 20);
             runSizeBoxes[j].Left = 8 + 116;
             runSizeBoxes[j].Top = 5 + j * 25;
-            codeWordsBoxes[j].Font = new Font(FontFamily.GenericMonospace.ToString(), 8);
-            codeWordsBoxes[j].Font = new Font(FontFamily.GenericMonospace.ToString(), 8);
+            runSizeBoxes[j].Font = new Font(FontFamily.GenericMonospace.ToString(), 8);
 
             //Brings focus to the first box in the added box
             codeWordsBoxes[runSizeBoxes.Count() - 1].Select();
         }
 
+
         public HuffmanTable SaveTable()
         {
             HuffmanTable h = new HuffmanTable();
 
-            //List <TextBox> codeWordsBoxesTemp = codeWordsBoxes.Where(x => !string.IsNullOrEmpty(x.Text));
+            
 
             for (int i = 0; i < codeWordsBoxes.Count; i++)
             {
+                if (string.IsNullOrWhiteSpace(runSizeBoxes[i].Text) || string.IsNullOrWhiteSpace(codeWordsBoxes[i].Text))
+                {
+                    continue;
+                }
+
                 byte runSize = Convert.ToByte(runSizeBoxes[i].Text, 16);
-                h.Elements.Add(runSize, new HuffmanElement(runSize, Convert.ToUInt16(codeWordsBoxes[i].Text, 2), (byte) codeWordsBoxes[i].Text.Length));
+                ushort codeword = Convert.ToUInt16(codeWordsBoxes[i].Text, 2);
+                h.Elements.Add(runSize, new HuffmanElement(runSize, codeword, (byte)codeWordsBoxes[i].Text.Length));
             }
 
             return h;
