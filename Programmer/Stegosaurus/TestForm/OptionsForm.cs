@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Stegosaurus;
-using System.IO;
 
 namespace TestForm
 {
@@ -22,13 +15,6 @@ namespace TestForm
             HuffmanTableComponentChrAC,
             HuffmanTableComponentChrDC;
         public static QuantizationTableComponent QuantizationTableComponentY, QuantizationTableComponentChr;
-
-        //public static readonly HuffmanTableComponent HuffmanTableComponentYAC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableYAC);
-        //public static readonly HuffmanTableComponent HuffmanTableComponentYDC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableYDC);
-        //public static readonly HuffmanTableComponent HuffmanTableComponentChrAC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableChrAC);
-        //public static readonly HuffmanTableComponent HuffmanTableComponentChrDC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableChrDC);
-        //public static readonly QuantizationTableComponent QuantizationTableComponentY = new QuantizationTableComponent(QuantizationTable.JpegDefaultYTable);
-        //public static readonly QuantizationTableComponent QuantizationTableComponentChr = new QuantizationTableComponent(QuantizationTable.JpegDefaultChrTable);
 
         public static string ImagesSavePath;
         public static int Quality;
