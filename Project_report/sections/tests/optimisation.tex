@@ -1,3 +1,4 @@
+% -*- root: ../../DAT2-A423_Project_Report.tex -*-
 \section{Optimisation}
 We have managed to implement several complex algorithms in our programme.
 This was immediately visible if the JPEG-encoder was run with larger images (such as the 4K (3840x2160) resolution images that the camera in many smart phones output) or if long messages of several hundred bytes were embedded in the image.
@@ -344,3 +345,46 @@ This did not seem to have an effect, so it is quite likely that the compiler alr
 \subsection{Final product}
 After having done these steps to optimise our programme, we ended up with a product that performed well enough for us to try testing it with larger message to see what we were able to encode in files.
 We wanted to know if the capacity of the cover image or the time it took to encode the data was going to be the bottleneck.
+
+The application can be seen on figure \ref{fig:formApp}. To test the image quality, we embedded a 4KB message into a 1024x683px image. With a quality of 53\% 4KB was the upper limit of how much data we could encode, while with a quality of 100\%, the image could contain 19KB of data.
+
+On an Intel{\textregistered} Core\textsuperscript{\texttrademark} i5-3317U processor it took around 20 minutes to encode a 4KB message, while a 1KB message took 20 seconds to be encoded in the same image. This tells us that the encoding time plays a much larger role than the capacity of the image.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=.7\textwidth]{figures/formShown.png}
+	\caption{Form}
+	\label{fig:formApp}
+\end{figure}
+
+On figure \ref{fig:ResultEncoding} the results of the encoding are shown. There are no visible changes to the eye from figure \ref{fig:catHighMessage} to figure \ref{fig:catNoMessage}. This tells us that it is difficult for a person to tell the difference from the original image to the image with the encoded message. 
+
+Likewise, there are no visible differences from figure \ref{fig:catJPEGMessage} to figure \ref{fig:catJPEGNoMessage}, which is the cover image encoded as JPEG at 53\% quality. The only differences from figure \ref{fig:catJPEGMessage} to the original cover image, is the overall lower quality from the JPEG compression, and not from the embedding of the message.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{figures/catToTest.jpg}
+		\caption{Cover image with no message encoded}
+		\label{fig:catNoMessage}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{figures/catToTestHighMessage.jpeg}
+		\caption{Encoded as JPEG with message with 100\% quality}
+		\label{fig:catHighMessage}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{figures/catToTestNoMessage.jpeg}
+		\caption{Encoded as JPEG with 53\% quality with no message}
+		\label{fig:catJPEGNoMessage}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{figures/catToTestWithMessage.jpeg}
+		\caption{Encoded as JPEG with 53\% quality with 4KB message}
+		\label{fig:catJPEGMessage}
+    \end{subfigure}
+    \caption{Encoding of the images\citep{FlickrImageCat}}
+    \label{fig:ResultEncoding}
+\end{figure}
+
+Not being able to see the message with the naked eye is of course not enough, but it does tell us that the images are not changed greatly by embedding the message. In the next chapter, we will test the stego images by better means than simply looking at them. 
