@@ -1,16 +1,56 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
 \section{Software Testing}
 During the planning phase of the project we decided to continually test the code that we wrote.
-
 Our strategy for testing revolved around one member of the group creating tests, for each new component, method and logical statement.
 The aim of this continual testing alongside the software development, was to catch errors and bugs as soon as possible, so there would not be problems further down the line.
 This would then in turn minimize time and effort otherwise used on debugging, and therefore also lead to a more stable programme.
 The aforementioned tests would additionally improve the maintainability of the software, allowing future changes and upgrades.
 
+\subsection{Testing Private Methods}
+The goal of unit tests is to make sure that the code works as intended.
+If the unit tests are thorough, they become a way to prove that the class does everything in the specifications, and shows that other people can count on the class as well.
+Now if someone wants to use a class, they should only have access to the public methods and properties, this means that as long as the unit tests show that the public methods and properties of a class work, they do not have to explicitly show that the private methods work as intended.
+
+Of course, if the private methods do not work, there is a big chance that the public methods will not work either.
+But as developers we cannot guarantee that the private methods have any effect, as only the public methods are what we have chosen to let other people use. 
+So to test the private methods, one would have to test the public methods thoroughly enough so that every part of the private methods would be tested as well. 
+
+So while data-hiding makes it much easier to implement other people's work, and makes it clearer what a certain class offers of opportunities, we lose some of the flexibility when testing our code. This is because unit testing is basically an implementation of the class under test, and seeing if that class gives the expected result, given certain criteria. 
+
+Our programme exists of multiple classes, but a lot of the work is done in private methods in the class \lstinline|JPEGImage|, and the only way we would be able to test the output is to check the file, which the public method \lstinline|Save(string)| can provide.
+
+Testing every logical statement in the programme with the aforementioned method, would certainly break one of the principles of unit tests, namely the fact that they should be quick to run.
+
+An optimal scenario would be where at the press of a button, we can quickly know if something has been broken due to a change somewhere in the programme, so having to wait multiple minutes on images being created in full and tested byte-for-byte, to know if we broke something in one private method, would result in the unit tests not being run as often. 
+
+Of course people before us have run into this problem, and solutions are readily available.
+Microsoft offers a library called \lstinline|Microsoft.VisualStudio.TestTools.UnitTesting| which contain the class \lstinline|PrivateObject| and \lstinline|PrivateType|.
+With \lstinline|PrivateObject| we can pry open an object, and access private methods on an instance via reflection. \lstinline|PrivateType| similarly allows us to access private static members. 
+
+The syntax becomes somewhat awkward as we have to rely on strings containing method names to access the private members, but it does offer possibilities to test the private methods much easier than through the public methods as described earlier.
+
+The actual usage is seen in listing \ref{privateObjectTest}, where a \lstinline|PrivateObject| is used to invoke the private method \lstinline|_breakDownMessage|. As it can be seen, the syntax is quite different from how you would invoke a method, but it is still clear what is going on. We first create a new \lstinline|PrivateObject| which contains our object that we want to test.  From there on we can use reflection to invoke the method \lstinline|_breakDownMessage|, and lastly use an assert as we would normally do.
+
+\begin{lstlisting}[firstnumber=23,label=privateObjectTest,caption={Example usage of the \lstinline|PrivateObject| class \textbf{File: }JPEGImageTests.cs}]
+[Test()]
+public void BreakDownMessage_Test()
+{
+PrivateObject po = new PrivateObject(new JpegImage(new Bitmap(200, 100), 100, 4));
+byte[] message = new byte[] {1,1,1};
+
+po.Invoke("_breakDownMessage", message);
+List<byte> messageList = new List<byte>();
+messageList = (List<byte>)po.GetField("_message"); //Get the broken down message from instance of JpegImage class
+
+List<byte> expectedList = new List<byte> {0, 0, 0, 0, 0, 0, 3, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1}; // What {1,1,1} corresponds to when broken down and has length encoded
+NUnit.Framework.Assert.AreEqual(expectedList, messageList);
+}
+\end{lstlisting}
+
+\subsection{Unit Testing Stegosaurus}
 The construction of tests were done using the open source unit testing framework NUnit.
 Using this framework allowed the creation of tests to be streamlined and automated, allowing each group member to frequently test the new components they were creating.
 
-\subsection*{BitList}
 \lstinline|BitList| is a custom implementation based on the \lstinline|BitArray| from the .Net framework, 
 It is often used in our programme, which means that it has to be tested thoroughly.
 First of all, it has to act like a \lstinline|List|, which includes being able to have values inserted at specific indices.
@@ -20,14 +60,14 @@ Another property of the \lstinline|BitList| is that \lstinline|0| should be eval
 This is also tested, and the test passes.
 % Something something CheckedAdd()
 
-\subsection*{Vertex}
+\paragraph*{Vertex}
 \lstinline|Vertex| is compromised of two sample values, a message, and a modulo value.
 It has a single method, \lstinline|ToString()|, which is simply a string containing each sample value.
 All in all, a simple class to test.
 The test, \lstinline|ToStringTest()|, is an assertion that, when creating a \lstinline|Vertex| object from two sample values, a message values, and a modulo value, the string returned from \lstinline|ToString()| is equal to the two sample values concatenated.
 This test passes, making us able to test other classes that make use of \lstinline|Vertex|.
 
-\subsection*{Edge}
+\paragraph*{Edge}
 \lstinline|Edge| is a crucial class in our programme.
 This class has five properties, two of which are the vertices that define the edge, one weight value, and two bools defining the properties of vertex value switching.
 Other than that, the class has no methods that define functionality, it just has to be correctly compared to other edges and be printed.
@@ -40,7 +80,7 @@ This test as well.\\
 The final test, \lstinline|Equal_EdgesWithSameVerticesAndValues_True|, asserts that two edges with the same vertices, message values, and modulo values, are equal.
 This test passes, which means that \lstinline|Edge| behaves as expected.
 
-\subsection*{Graph}
+\paragraph*{Graph}
 The \lstinline|Graph| class has two properties: \lstinline|List<Vertex>| and \lstinline|List<Edge>|.
 As with \lstinline|Vertex| and \lstinline|Edge|, \lstinline|Graph| overrides \lstinline|ToString()|, which means that it will have to be tested.
 \lstinline|Graph|'s \lstinline|ToString()| returns a header as well as a list of vertex sample values.
@@ -52,7 +92,7 @@ This is done by creating a graph with a number of different edges, each with a d
 Then we assert that the \lstinline|List<Edge>| returned by the method is the same as an expected \lstinline|List<Edge>| kept after the method is called.
 This test passes as well.
 
-\subsection*{HuffmanElement}
+\paragraph*{HuffmanElement}
 The \lstinline|HuffmanElement| class has three properties: runsize, length, and codeword.
 Objects of this class must be comparable to other objects of the same class, which means that \lstinline|CompareTo()| is implemented.
 This has to be tested.
@@ -68,7 +108,7 @@ The last test is for \lstinline|ToString()|.
 A Huffman element is created, and it is asserted that a formatted string with expected variables is the same as the call to \lstinline|ToString()|.
 This test passes as well, making \lstinline|HuffmanElement| behave as expected.
 
-\subsection*{HuffmanTable}
+\paragraph*{HuffmanTable}
 This class is fairly comprehensive, as it has a lot of methods that need to be tested.
 It is compromised of a dictionary of Huffman elements.
 First, we need to test that a table has access to an element's codeword.
@@ -89,7 +129,7 @@ Lastly, we need to test \lstinline|GetElementFromRunSize()|, which, as the name 
 A table with a number of \lstinline|HuffmanElement| objects is created, one of which is tested against an expected input to \lstinline|GetElementFromRunSize()|.
 The test passes, making \lstinline|HuffmanTable| behave as expected.
 
-\subsection{QuantizationTable}
+\paragraph*{QuantizationTable}
 \lstinline|QuantizationTable| is yet an important class in our programme, and thus it needs to be tested.
 Since the table entries need to be arranged in a zigzag order, it is tested in \lstinline|QuantizationTableTest_Zig_Zag_Entries()|.
 A default quantization table is created and arranged in a zigzag order in \lstinline|QuantizationTable|'s constructor.
@@ -103,7 +143,7 @@ It is asserted that the method throws \lstinline|OutOfRangeException()| when cal
 These tests pass.\\
 Since we know that \lstinline|QuantizationTable| behaves as expected, we can comfortably use it in \lstinline|JpegImage|.
 
-\subsection*{JpegImage}
+\paragraph*{JpegImage}
 The \lstinline|JpegImage| class is also relatively comprehensivea, making the need for tests large.
 The first test is simple, testing if the modulo value of an instance of the class gets set.
 Since it is a private variable, we need to use \lstinline|PrivateObject| as previously described.
