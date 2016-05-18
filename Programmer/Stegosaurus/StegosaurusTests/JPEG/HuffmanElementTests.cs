@@ -49,7 +49,7 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void ToStringTest()
+        public void HuffmanElementToString_Test()
         {
             byte runSizeInput1 = 0x00;
             ushort codeWordInput1 = 2;
