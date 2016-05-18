@@ -22,6 +22,7 @@ namespace Stegosaurus.Tests
             ushort codeWordInput2 = 3; // 11 in base 2
             byte lengthInput2 = 8; // 1000 in base 2
 
+
             HuffmanElement huffmanTestElement1 = new HuffmanElement(runSizeInput1, codeWordInput1, lengthInput1);
             HuffmanElement huffmanTestElement2 = new HuffmanElement(runSizeInput2, codeWordInput2, lengthInput2);
 
@@ -42,14 +43,18 @@ namespace Stegosaurus.Tests
             ushort codeWordInput2 = 3; // 11 in base 2
             byte lengthInput2 = 8; // 1000 in base 2
 
+            byte runSizeInput3 = 2;
+            ushort codeWordInput3 = 4; // 100 in base 2
+            byte lengthInput3 = 8; // 1000 in base 2
+
             HuffmanElement huffmanTestElement1 = new HuffmanElement(runSizeInput1, codeWordInput1, lengthInput1);
             HuffmanElement huffmanTestElement2 = new HuffmanElement(runSizeInput2, codeWordInput2, lengthInput2);
-
-            HuffmanTable huffTable1 = new HuffmanTable(huffmanTestElement1, huffmanTestElement2);
+            HuffmanElement huffmanTestElement3 = new HuffmanElement(runSizeInput3, codeWordInput3, lengthInput3);
+            HuffmanTable huffTable1 = new HuffmanTable(huffmanTestElement1, huffmanTestElement2, huffmanTestElement3);
 
             byte[] numberOfCodesOutput = huffTable1.Combinations();
 
-            NUnit.Framework.Assert.AreEqual(2, numberOfCodesOutput[7]);
+            NUnit.Framework.Assert.AreEqual(3, numberOfCodesOutput[7]);
         }
 
         [Test()]
