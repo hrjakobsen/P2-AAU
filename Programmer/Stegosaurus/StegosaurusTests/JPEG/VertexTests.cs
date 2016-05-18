@@ -12,7 +12,7 @@ namespace Stegosaurus.Tests
     public class VertexTests
     {
         [Test()]
-        public void ToStringTest()
+        public void VertexToString_Test()
         {
             short SampleInput1 = 5;
             short SampleInput2 = 6;

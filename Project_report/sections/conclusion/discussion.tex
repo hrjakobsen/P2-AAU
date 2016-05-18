@@ -1,7 +1,7 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
 \section{Discussion}
 We started out by using the relatively simple LSB-method for hiding data in an image.
-Specifically we saved an image inside of another PNG-image.
+Specifically, we saved an image inside of another PNG-image.
 While the differences in the image with and without the message-image were hardly noticeable to the human eye, we did find that comparing colour histograms of the two images revealed that there had in fact been made changes to it.
 In an effort to diminish this problem, the graph-theoretical approach we implemented attempted to move pixels around in the image, rather than change their values.
 This meant that colour histograms of the image before and after the message had been encoded should look very similar, almost identical.
@@ -11,7 +11,7 @@ Using this method, we expected the changes to be small enough so that it would n
 
 \subsection{Changes to the image}
 To find out roughly how many of these forces there were in a given image, we used our programme to save different messages in different images.
-The used five different message lengths: 70, 140, 280, 560 and 1120 bytes.
+The used five different message lengths were: 70, 140, 280, 560 and 1120 bytes.
 Each message consisted of the ASCII characters A-Z repeated to fill out the message.
 Each of these messages were encoded in four images with varying motives, but the same resolution (1920x1080).
 The images can be seen in figure \ref{fig:four_test_images}.
@@ -19,26 +19,26 @@ The images can be seen in figure \ref{fig:four_test_images}.
 We used a cartoon-like drawing of a cat to see how our software would work on an image that was not ideal for the JPEG format.
 The landscape image contained many different colours and very complex patterns, which made it ideal for JPEG compression.
 The same could be said for the tiger, but it contained larger areas of similar colours than the landscape did.
-The image of the snowy forest road contained very few colour nuances, but was almost made up of the luminance channel.
+The image of the snowy forest road contained very few colour nuances, but was almost entirely made up of the luminance channel.
 This led to a total of 20 tests as seen in table \ref{fig:forces_swaps}.
 
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.33\textwidth}
         \includegraphics[width=\textwidth]{figures/cat}
-            \caption{Cat image}
+            \caption{Cat image\citep{imgCat}}
     \end{subfigure}
     \begin{subfigure}[b]{0.33\textwidth}
             \includegraphics[width=\textwidth]{figures/landscape}
-            \caption{Landscape image}
+            \caption{Landscape image\citep{imgLandscape}}
     \end{subfigure}
     \begin{subfigure}[b]{0.33\textwidth}
             \includegraphics[width=\textwidth]{figures/tiger}
-            \caption{Tiger image}
+            \caption{Tiger image\citep{imgTiger}}
     \end{subfigure}
     \begin{subfigure}[b]{0.33\textwidth}
             \includegraphics[width=\textwidth]{figures/snow}
-            \caption{Snow image}
+            \caption{Snow image\citep{imgSnow}}
     \end{subfigure}
     \caption{The four images used for the tests in table \ref{fig:forces_swaps}}
     \label{fig:four_test_images}
@@ -135,32 +135,47 @@ We ended up using an image with a resolution of 120x120 pixels.
     \label{fig:histogramsComparisons}
 \end{figure}
 
-On figure \ref{fig:histogramsComparisons} four histograms are shown.
-Figures \ref{fig:coverHisto} and \ref{fig:gt2Histo} shows the histogram of the original image and for the image encoded as JPEG without a message.
-On figure \ref{fig:lsbHisto} and \ref{fig:gtHisto} the histograms of the images filled with a message using the LSB and GT methods respectively.
+In figure \ref{fig:histogramsComparisons} four histograms are shown.
+Figures \ref{fig:coverHisto} and \ref{fig:gt2Histo} show the histogram of the original image and for the image encoded as JPEG without a message.
+In figure \ref{fig:lsbHisto} and \ref{fig:gtHisto} the histograms of the images filled with a message using the LSB and GT methods respectively.
 From these results it was clear that there was not much difference between the colour histograms of the image saved as JPEG with or without the message.
 The image saved with LSB's histogram, however, clearly showed signs that the image had been tampered with.
 
-The reason the histogram looked like that for the LSB image was because thr bit-patterns of the encoded data became very clear in the histograms.
+The reason the histogram looked like that for the LSB image was because the bit-patterns of the encoded data became very clear in the histograms.
 The bytes encoded in the images were the characters A-Z in ASCII repeated the capacity of the image had been reached.
 A-Z in ASCII ranges from $65-90$, or in base two: $01000001_2-01011010_2$.
-As the range was quite short, a lot of the higher order bits would rarely change, and those patterns became obvious in the histogram, as pixels ending in these patters became more common.
+As the range was quite short, a lot of the higher order bits would rarely change, and those patterns became obvious in the histogram, as pixels ending in these patterns became more common.
 
 The histogram in figure \ref{fig:lsbHisto} also showed how the LSB method changed images where a colour is very common.
 The leftmost bar described pixels whose B-component is 0.
-In the original cover image, this bar was much higher than the others, and therefore much more common in the image, but the LSB has made it so that those components now gets spread out, which again becomes very obvious in the histogram.
+In the original cover image, this bar was much higher than the others, and therefore much more common in the image, but the LSB has made it so that those components now get spread out, which again becomes very obvious in the histogram.
 
 \subsection{Euclidean distance}
 A different way of looking for changes in an image is by looking at their Euclidean distance.
 This can be done by calculating the distance between the colour values of each pixel in two equally sized images.
 The sum of all these distances can be used as measure of the change from one image to the other.
 We used this same method for determining what changes were imposed on images of different size and format, when uploaded to various social media and image-sharing websites.
+The images used for the method were the same as those previously used in the colour histogram tests.
 
-Comparing these results directly with the ones obtained from the LSB-method would be folly.
-While the LSB-method would certainly incur a smaller difference in the Euclidean distance it would not necessarily make it any better.
-First of all using this method required that the user was in possession of both the original and the stego image.
-This would indeed be possible if the parties sharing secret messages in the images, were using images they found on the internet and tampered with them.
-They could completely foil this risk of being compromised then, by simply using images that they took themselves.
+Comparing the results of GT directly with the ones obtained from the LSB-method would be folly.
+While the LSB-method might incur a smaller difference in the Euclidean distance it did not necessarily make it any better at hiding the information.
+Comparing those two directly meant that we were looking at an image saved in the lossless PNG format and a file that not only had a message in it, but had also been compressed in a lossy way.
+Therefore a comparison between the original and an image saved with our JPEG encoder, but containing no message, should yield a difference in euclidean distance as well.
+The results of these tests can be seen in table \ref {fig:euclidean_distance}.
+
+\begin{table}[]
+	\centering
+	\begin{tabular}{@{}lllll@{}}
+		\toprule
+		\textbf{Images}            & \textbf{All channels} & \textbf{R} & \textbf{G} & \textbf{B} \\ \midrule
+		\textit{Original and LSB}  & 34671                 & 17098      & 16800      & 16824      \\
+		\textit{Original and GT}   & 130389                & 71112      & 56972      & 71886      \\
+		\textit{Original and JPEG} & 102460                & 56758      & 40707      & 57569      \\
+		\textit{JPEG and GT}       & 79163                 & 42154      & 38833      & 43217     
+	\end{tabular}
+	\caption{Calculated euclidean distances for several combinations of images.}
+	\label{fig:euclidean_distance}
+\end{table}
 
 The other reason for the differences being larger is due to how the JPEG-file format is encoded.
 Using the LSB of every pixel there is only the potential to change the value of each pixel by one.
@@ -169,5 +184,9 @@ This change is applied after the quantization step to avoid losing the data agai
 This in turn means that the small change of up to four is multiplied by the quantization table, when the image is shown.
 Bla bla something something green is less than the other
 
-So while the euclidean distance might be bigger in the image where the data is hidden using our GT programme, it is of little use in automated system doing steganalysis on a multitude of images, as it would have nothing to compare the images to. 
-Such a system could however check the histogram of the image, and discover abnormalities such as those the LSB method produces, as shown in figure \ref{fig:lsbHisto}.
+First of all using this method required that the user was in possession of both the original and the stego image.
+This would indeed be possible if the parties sharing secret messages in the images, were using images they found on the internet and tampered with them.
+Ths meant that they could completely foil any risk of being compromised by an outside party measuring euclidean distance, by simply using images that they took themselves.
+
+So while the Euclidean distance might be bigger in the image where the data is hidden using our GT programme, it is of little use in automated system doing steganalysis on a multitude of images, as it would have nothing to compare the images to. 
+Such a system could, however, check the histogram of the image, and discover abnormalities such as those the LSB method produces, as shown in figure \ref{fig:lsbHisto}.

@@ -12,7 +12,7 @@ namespace Stegosaurus.Tests
     public class GraphTests //TODO: make a setup fixture
     {
         [Test()]
-        public void ToStringTest()
+        public void GraphToString_Test()
         {
             short SampleInput1 = 5;
             short SampleInput2 = 6;
@@ -37,7 +37,7 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void GetSwitchesTest() {
+        public void GetSwitches_Test() {
             Vertex
                 v1 = new Vertex(48, 50, 2, 4),
                 v2 = new Vertex(49, 48, 2, 4),

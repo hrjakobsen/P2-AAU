@@ -61,6 +61,7 @@
     <Compile Include="JPEG\GraphTests.cs" />
     <Compile Include="JPEG\HuffmanElementTests.cs" />
     <Compile Include="JPEG\HuffmanTableTests.cs" />
+    <Compile Include="JPEG\JPEGDecoderTests.cs" />
     <Compile Include="JPEG\JpegImageTests.cs" />
     <Compile Include="JPEG\QuantizationTableTests.cs" />
     <Compile Include="JPEG\VertexTests.cs" />

@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Stegosaurus;
-using System.IO;
 
 namespace TestForm
 {
@@ -16,6 +9,7 @@ namespace TestForm
     {
         private readonly StegosaurusForm _stegosaurusForm = new StegosaurusForm();
         private bool _skipDialog;
+        private bool _qualityLocked;
 
         public static HuffmanTableComponent HuffmanTableComponentYAC,
             HuffmanTableComponentYDC,
@@ -23,38 +17,39 @@ namespace TestForm
             HuffmanTableComponentChrDC;
         public static QuantizationTableComponent QuantizationTableComponentY, QuantizationTableComponentChr;
 
-        //public static readonly HuffmanTableComponent HuffmanTableComponentYAC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableYAC);
-        //public static readonly HuffmanTableComponent HuffmanTableComponentYDC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableYDC);
-        //public static readonly HuffmanTableComponent HuffmanTableComponentChrAC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableChrAC);
-        //public static readonly HuffmanTableComponent HuffmanTableComponentChrDC = new HuffmanTableComponent(HuffmanTable.JpegHuffmanTableChrDC);
-        //public static readonly QuantizationTableComponent QuantizationTableComponentY = new QuantizationTableComponent(QuantizationTable.JpegDefaultYTable);
-        //public static readonly QuantizationTableComponent QuantizationTableComponentChr = new QuantizationTableComponent(QuantizationTable.JpegDefaultChrTable);
-
-        public static string ImagesSavePath;
         public static int Quality;
         public static bool SaveEnabled;
         public static bool LSBMethodSelected;
+        public static bool ResetToDefault;
+        public static bool SkipSettingsInitialization = false;
 
         public OptionsForm()
         {
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             InitializeComponent();
+            initializeSettings();
+        }
+
+        //Custom components _ created and settings are set.
+        private void initializeSettings()
+        {
             initializeQuantizationTable(out QuantizationTableComponentY, StegosaurusForm.QuantizationTableY, QuantizationTable.JpegDefaultYTable);
             initializeQuantizationTable(out QuantizationTableComponentChr, StegosaurusForm.QuantizationTableChr, QuantizationTable.JpegDefaultChrTable);
             initializeHuffmanTable(out HuffmanTableComponentYAC, StegosaurusForm.HuffmanTableYAC, HuffmanTable.JpegHuffmanTableYAC);
             initializeHuffmanTable(out HuffmanTableComponentYDC, StegosaurusForm.HuffmanTableYDC, HuffmanTable.JpegHuffmanTableYDC);
             initializeHuffmanTable(out HuffmanTableComponentChrAC, StegosaurusForm.HuffmanTableChrAC, HuffmanTable.JpegHuffmanTableChrAC);
             initializeHuffmanTable(out HuffmanTableComponentChrDC, StegosaurusForm.HuffmanTableChrDC, HuffmanTable.JpegHuffmanTableChrDC);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
+            Quality = StegosaurusForm.Quality;
+            _qualityLocked = StegosaurusForm.QualityLocked;
+            LSBMethodSelected = StegosaurusForm.LSBMethodSelected;
 
             OptionsBox.SelectedItem = OptionsBox.Items[0];
-
             rdioQuantizationYChannel.Checked = true;
             rdioHuffmanY_AC.Checked = true;
-            Quality = StegosaurusForm.Quality;
             tbarQualitySlider.Value = Quality;
-            if (StegosaurusForm.QualityLocked)
+            if (_qualityLocked)
             {
                 tbarQualitySlider.Enabled = false;
             }
@@ -62,8 +57,6 @@ namespace TestForm
             {
                 tbarQualitySlider.Enabled = true;
             }
-
-            LSBMethodSelected = StegosaurusForm.LSBMethodSelected;
 
             if (!LSBMethodSelected)
             {
@@ -74,7 +67,6 @@ namespace TestForm
                 rdioLSBMethod.Checked = true;
             }
         }
-
 
         //Adds defaultTable.Length amount of textboxes to a given Huffman panel and saves each in an array (to be looped through), sets
         //the size and position of each textbox and writes the default Quantization values in these.
@@ -188,11 +180,6 @@ namespace TestForm
         private void btnSave_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
-            if (!string.IsNullOrEmpty(ImagesSavePath))
-            {
-               // _stegosaurusForm.ImagesSavePath = ImagesSavePath;
-            }
-
             Quality = tbarQualitySlider.Value;
             _skipDialog = true;
             SaveEnabled = true;
@@ -200,6 +187,21 @@ namespace TestForm
 
             this.Close();
         }
+
+        private void btnDefault_Click(object sender, EventArgs e)
+        {
+            switch (MessageBox.Show(this, "Are you sure you want to set all settings to default?", "Resetting to default", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.No:
+                    break;
+                default:
+                    ResetToDefault = true;
+                    _skipDialog = true;
+                    Close();
+                    break;
+            }
+        }
+
 
         private void btnClose_Click(object sender, EventArgs e)
         {
@@ -251,7 +253,7 @@ namespace TestForm
                 HuffmanTableComponentYDC.Enabled = true;
             }
         }
-        
+
         private void deselectHuffmanTables()
         {
             HuffmanTableComponentChrAC.Visible = false;
@@ -286,11 +288,6 @@ namespace TestForm
             {
                 HuffmanTableComponentYDC.AddRow();
             }
-        }
-
-        private void selectOutputFolder_HelpRequest(object sender, EventArgs e)
-        {
-            
         }
 
         private void tbarQualitySlider_ValueChanged(object sender, EventArgs e)

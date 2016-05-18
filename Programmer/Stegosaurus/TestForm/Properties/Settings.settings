@@ -23,9 +23,6 @@
     <Setting Name="QualityLocked" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="ImagesFilePath" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="HuffmanTableYAC" Type="Stegosaurus.HuffmanTable" Scope="User">
       <Value Profile="(Default)" />
     </Setting>

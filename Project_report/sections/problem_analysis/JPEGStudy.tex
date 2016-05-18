@@ -1,5 +1,5 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
-\begin{infobox}{\section[A Study of the JPEG File Format]{A Study of the JPEG file format\footnotenomarker{This section may be omitted without loss of continuity. It will, however, be referenced throughout the report. A C\# programmes capable of encoding bitmaps as JPEGs has been developed in parallel with this section. The source code for this can be found in appendix \ref{app:B}}}\label{sec:jpegStudy}}
+\begin{infobox}{\section[A Study of the JPEG File Format]{A Study of the JPEG file format\footnotenomarker{This section is the result of researching the JPEG file format. The information in the following sections have been combined from multiple sources\citep{RussianDude,Miano1999,JPEGStandard,jfifspecs}.}}\label{sec:jpegStudy}}
 
 \subsection{An Overview of JPEG}
 \vspace{-2.5mm}
@@ -16,7 +16,7 @@ The standard does not define an encoding of images that all JPEG encoders can de
 An example of this is that the standard does not define how colours are represented in the format, which means that one decoder could potentially use an RGB colour space, while another one would use an RBG space.
 Both systems are perfectly valid according to the JPEG standard.
 
-Without a way to ensure that all decoders will read an encoded image the same way, an image file is not worth much. This is why the JPEG File Interchange Format (JFIF) specification was developed by Eric Hamilton \citep{JFIFSpecs}. JFIF\index{JPEG!JFIF} defines a standard which all JPEG files must abide. This standard includes a definition of the colour being encoded in one or three channels. One channel if it is a monochrome image, and three channels if it is a true-colour image. If encoded in three channels, the colour space used is YCbCr, if only one channel is used, only the luminance (Y) channel is used.
+Without a way to ensure that all decoders will read an encoded image the same way, an image file is not worth much. This is why the JPEG File Interchange Format (JFIF) specification was developed by Eric Hamilton \citep{jfifspecs}. JFIF\index{JPEG!JFIF} defines a standard which all JPEG files must abide. This standard includes a definition of the colour being encoded in one or three channels. One channel if it is a monochrome image, and three channels if it is a true-colour image. If encoded in three channels, the colour space used is YCbCr, if only one channel is used, only the luminance (Y) channel is used.
 
 The JFIF specification is what allows JPEG images to be as widespread as they are today.
 JPEG is used by large services like Facebook to store and serve small images of reasonable quality.
@@ -78,7 +78,7 @@ Many other samplings can be used, for example if a 1:1:1 sampling is used, all i
 \includegraphics[width=.4\linewidth]{lenaYchannel.png}
 \includegraphics[width=.2\linewidth]{lenaCbchannel.png}
 \includegraphics[width=.2\linewidth]{lenaCrchannel.png}
-\captionof{figure}{Y, Cb and Cr channels of an image}\label{fig:YCbCrChannels}
+\captionof{figure}{Y, Cb and Cr channels of an image\citep{LennaImage}}\label{fig:YCbCrChannels}
 \end{centering}
 
 \vspace{4mm}

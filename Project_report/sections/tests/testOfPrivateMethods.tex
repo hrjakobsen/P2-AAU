@@ -1,23 +1,23 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
-\section{Testing private methods}
+\subsubsection{Testing Private Methods}
 The goal of unit tests is to make sure that the code works as intended.
 If the unit tests are thorough, they become a way to prove that the class does everything in the specifications, and shows that other people can count on the class as well.
-Now if someone wants to use a class, they should only have access to the public methods and properties, this means that as long as the unit tests show that the public methods and properties of a class works, they do not have to explicitly show that the private methods work as intended.
+Now if someone wants to use a class, they should only have access to the public methods and properties, this means that as long as the unit tests show that the public methods and properties of a class work, they do not have to explicitly show that the private methods work as intended.
 
 Of course, if the private methods do not work, there is a big chance that the public methods will not work either.
-But as a developer we cannot guarantee that the private methods have any effect, as only the public methods are what we have chosen to let other people use. 
+But as developers we cannot guarantee that the private methods have any effect, as only the public methods are what we have chosen to let other people use. 
 So to test the private methods, one would have to test the public methods thoroughly enough so that every part of the private methods would be tested as well. 
 
-So while data-hiding makes it much easier to implement other peoples work, and makes it clearer what a certain class offers of opportunities, we lose some of the flexibility when testing our code. This is because unit testing is basically an implementation of the class under test, and seeing if that class gives the expected result, given certain criteria. 
+So while data-hiding makes it much easier to implement other people's work, and makes it clearer what a certain class offers of opportunities, we lose some of the flexibility when testing our code. This is because unit testing is basically an implementation of the class under test, and seeing if that class gives the expected result, given certain criteria. 
 
 Our programme exists of multiple classes, but a lot of the work is done in private methods in the class \lstinline|JPEGImage|, and the only way we would be able to test the output is to check the file, which the public method \lstinline|Save(string)| can provide.
 
-Testing every logical statement in the programme with the aforementioned method, would certainly break one of the principles of unit tests. The fact that they should be quick to run.
+Testing every logical statement in the programme with the aforementioned method, would certainly break one of the principles of unit tests, namely the fact that they should be quick to run.
 
-We want it so that with the press of a button, we can quickly know if something has been broken due to a change somewhere in the programme, so having to wait multiple minutes on images being created in full and tested byte-for-byte, to know if we broke something in one private method, would result in the unit tests not being run as often. 
+An optimal scenario would be where at the press of a button, we can quickly know if something has been broken due to a change somewhere in the programme, so having to wait multiple minutes on images being created in full and tested byte-for-byte, to know if we broke something in one private method, would result in the unit tests not being run as often. 
 
 Of course people before us have run into this problem, and solutions are readily available.
-Microsoft offers a library called \lstinline|Microsoft.Something.About.Testing| which contain the class \lstinline|PrivateObject| and \lstinline|PrivateType|.
+Microsoft offers a library called \lstinline|Microsoft.VisualStudio.TestTools.UnitTesting| which contain the class \lstinline|PrivateObject| and \lstinline|PrivateType|.
 With \lstinline|PrivateObject| we can pry open an object, and access private methods on an instance via reflection. \lstinline|PrivateType| similarly allows us to access private static members. 
 
 The syntax becomes somewhat awkward as we have to rely on strings containing method names to access the private members, but it does offer possibilities to test the private methods much easier than through the public methods as described earlier.

@@ -89,21 +89,23 @@ namespace Stegosaurus.Tests
         [Test()]
         public void GetCapacity_Test() //TODO: Fix this test/remake it
         {
-            var b = new Bitmap(1, 1);
-            b.SetPixel(0, 0, Color.White);
-            //b.SetPixel(1,0,Color.White);
-            //b.SetPixel(0,1,Color.White);
-            //b.SetPixel(1,1,Color.White);
+            
+            var inputBitmap = new Bitmap(16, 16); //Scale the unit bitmap
 
-            var scaledUnitBitmap = new Bitmap(b, 160, 160); //Scale the unit bitmap
+            for (int i = 0; i < 16; i+=2)
+            {
+                for (int j = 0; j < 16; j+=2)
+                {
+                    inputBitmap.SetPixel(i,j,Color.White);
+                    inputBitmap.SetPixel(i+1,j+1,Color.Black);
+                }
+            }
 
-            //scaledUnitBitmap.Save(@"C:\Users\LeoMohr\Desktop\out.png");
-
-            JpegImage ji = new JpegImage(scaledUnitBitmap, 100, 4);
+            JpegImage ji = new JpegImage(inputBitmap, 100, 4);
 
             int capacity = ji.GetCapacity();
 
-            NUnit.Framework.Assert.AreEqual(34, capacity);
+            NUnit.Framework.Assert.AreEqual(10, capacity);
         }
 
         [Test()]
@@ -121,27 +123,6 @@ namespace Stegosaurus.Tests
             List<byte> expectedList = new List<byte> {0, 0, 0, 0, 0, 0, 3, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1}; // What {1,1,1} corresponds to when broken down and has length encoded
 
             NUnit.Framework.Assert.AreEqual(expectedList, messageList);
-        }
-
-        [Test()]
-        public void SplitMessageIntoSmallerComponents_Test()
-        {
-            //TODO: might need a test for this, but "BreakDownMessage_Test" might have it covered already
-            NUnit.Framework.Assert.Ignore();
-        }
-
-        // Most methods in between here only call jpegWriter or another method which calls it, JpegWriter will be tested on it's own. TODO: ask about this and delete
-
-        [Test()]
-        public void WriteHuffmanSegment_Test_Combined() //TODO: Find out how to access JpegWriter even when it's internal
-        {
-            JpegImage ji = new JpegImage(new Bitmap(200, 100), 100, 4);
-            PrivateObject po = new PrivateObject(ji);
-            
-            var joo = po.GetField("_jw");
-            //po.Invoke("_writeHuffmanSegment", new object[] {ji.YDCHuffman, 0, true});
-
-            NUnit.Framework.Assert.Ignore();
         }
 
         [Test()]
@@ -434,13 +415,6 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void EncodeMessage_Test()
-        {
-            //TODO: Ask if _encodeMessage needs test, because the only logic within is a for loop and a .Where
-            NUnit.Framework.Assert.Ignore();
-        }
-
-        [Test()]
         public void AddVertices_Test()
         {
             PrivateObject po = new PrivateObject(new JpegImage(new Bitmap(200, 100), 100, 4));
@@ -513,7 +487,7 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void RefactorGraph_Test()
+        public void RefactorGraph_Test() //TODO: fix this test
         {
             PrivateType pt = new PrivateType(typeof(JpegImage));
 
@@ -526,15 +500,186 @@ namespace Stegosaurus.Tests
                 v6 = new Vertex(10, 11, 5, 4);
 
             Graph inputGraph = new Graph();
+            Graph sad = new Graph();
+            sad.Vertices.AddRange(new List<Vertex>() { v1, v2, v3, v4, v5, v6 });
             inputGraph.Vertices.AddRange(new List<Vertex>() { v1, v2, v3, v4, v5, v6 });
 
+            
             int inputThreshold = 5;
 
             pt.InvokeStatic("_addEdge", new object[] { true, false, v1, v2, inputThreshold, inputGraph });    //pass
             pt.InvokeStatic("_addEdge", new object[] { true, true, v3, v4, inputThreshold, inputGraph });     //pass
             pt.InvokeStatic("_addEdge", new object[] { false, true, v5, v6, inputThreshold, inputGraph });    //fail
 
+
+            pt.InvokeStatic("_addEdge", new object[] { true, false, v1, v2, inputThreshold, sad });    //pass
+            pt.InvokeStatic("_addEdge", new object[] { true, true, v3, v4, inputThreshold, sad });     //pass
+            pt.InvokeStatic("_addEdge", new object[] { false, true, v5, v6, inputThreshold, sad });    //fail
+
+
             pt.InvokeStatic("_refactorGraph", inputGraph);
+
+
+            foreach (Vertex vertex in inputGraph.Vertices)
+            {
+                if ((vertex.SampleValue1 + vertex.SampleValue2).Mod(vertex.Modulo) != vertex.Message)
+                {
+                    inputThreshold++;
+                    //_forceSampleChange(vertex);
+                    //forces++;
+                } else
+                {
+                    //good++;
+                }
+            }
+
+
+            
+            //NUnit.Framework.Assert.AreEqual(sad.Vertices, inputGraph.Vertices);
+            NUnit.Framework.Assert.Fail();
+        }
+
+        [Test()]
+        public void SwapVertexData()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+            Vertex
+                inputV1 = new Vertex(0, 1, 0, 4),
+                inputV2 = new Vertex(2, 3, 0, 4),
+                expectedV1 = new Vertex(2, 1, 0, 4),
+                expectedV2 = new Vertex(0, 3, 0, 4);
+
+            Edge
+                inputE1 = new Edge(inputV1, inputV2, 0, true, true),
+                expectedE1 = new Edge(expectedV1, expectedV2, 0, true, true);
+
+            pt.InvokeStatic("_swapVertexData", inputE1);
+
+            NUnit.Framework.Assert.AreEqual(expectedE1.ToString(), inputE1.ToString());
+        }
+
+        [Test()]
+        public void ForceSampleChange()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+            Vertex
+                inputVertex = new Vertex(0, 1, 0, 4),
+                expectedVertex = new Vertex(-1, 1, 0, 4);
+
+            pt.InvokeStatic("_forceSampleChange", inputVertex);
+
+            NUnit.Framework.Assert.AreEqual(expectedVertex.ToString(), inputVertex.ToString());
+        }
+
+        [Test()]
+        public void MergeGraphAndQuantizedValues_Test() //TODO: shit's fuck
+        {
+            Bitmap b = new Bitmap(1, 1);
+            b.SetPixel(0,0, Color.White);
+            JpegImage ji = new JpegImage(new Bitmap(b, 200, 100), 100, 4);
+            PrivateObject po = new PrivateObject(ji);
+            byte[] mes = new byte[] {1, 0, 1, 0};
+            ji.Encode(mes);
+
+            Vertex
+                v1 = new Vertex(2, 3, 1, 4);
+
+            Graph inputGraph = new Graph();
+
+            inputGraph.Vertices.AddRange(new List<Vertex>() {v1});
+            short[,] weShorts = new short[8, 8];
+            short e = 1;
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    weShorts[i, j] = e;
+                    e++;
+                }
+            }
+
+            Tuple<short[,], HuffmanTable, HuffmanTable, int> das = new Tuple<short[,], HuffmanTable, HuffmanTable, int>(weShorts, ji.YDCHuffman, ji.YACHuffman, 0);
+            
+            List<Tuple<short[,], HuffmanTable, HuffmanTable, int>> quantizedBlocks = new List<Tuple<short[,], HuffmanTable, HuffmanTable, int>>();
+            List<Tuple<short[,], HuffmanTable, HuffmanTable, int>> sad = new List<Tuple<short[,], HuffmanTable, HuffmanTable, int>>();
+
+            quantizedBlocks.Add(das);
+            //quantizedBlocks.Add(new Tuple<short[,], HuffmanTable, HuffmanTable, int>(weShorts, ji.YDCHuffman, ji.YACHuffman, 1));
+
+            //po.SetField("_quantizedBlocks", quantizedBlocks);
+            sad = quantizedBlocks;
+            po.Invoke("_mergeGraphAndQuantizedValues", inputGraph);
+
+            List<Tuple<short[,], HuffmanTable, HuffmanTable, int>> quan = (List<Tuple<short[,], HuffmanTable, HuffmanTable, int>>)po.GetField("_quantizedBlocks");
+
+            NUnit.Framework.Assert.AreEqual(quantizedBlocks, quan);
+        }
+
+        [Test()]
+        public void HuffmanEncode()
+        {
+            //TODO: Make this
+            NUnit.Framework.Assert.Fail();
+        }
+
+        [Test()]
+        public void Bitcost_Test()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+            short input = 2;
+
+            byte expected = 2;
+
+            byte output = (byte)pt.InvokeStatic("_bitCost", input);
+
+            NUnit.Framework.Assert.AreEqual(expected, output);
+        }
+
+        [Test()]
+        public void UShortToBits_Test()
+        {
+            BitList bitList = new BitList();
+            ushort input = 3;
+            byte inputLen = 2;
+            
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+
+            pt.InvokeStatic("_ushortToBits", new object[] {bitList, input, inputLen});
+
+            BitList expectedBitList = new BitList();
+            expectedBitList.Add(true);
+            expectedBitList.Add(true);
+
+            NUnit.Framework.Assert.AreEqual(expectedBitList, bitList);
+        }
+
+        [Test()]
+        public void NumberEncoder_Test()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+            short input = -1;
+            ushort expected = 65534; // 11111111 11111110
+
+            ushort output = (ushort)pt.InvokeStatic("_numberEncoder", input);
+            
+            NUnit.Framework.Assert.AreEqual(expected, output);
+        }
+
+        [Test()]
+        public void Flush_Test()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+
+            BitList bl = new BitList();
+            bl.Add(true);
+            bl.Add(true);
+            bl.Add(false);
+
+            byte[] output = (byte[]) pt.InvokeStatic("_flush", bl);
+
+            byte[] expected = new byte[1] {192}; // 11000000
+
+            NUnit.Framework.Assert.AreEqual(expected, output);
 
         }
     }
