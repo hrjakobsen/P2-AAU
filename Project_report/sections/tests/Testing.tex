@@ -5,10 +5,49 @@ Our strategy for testing revolved around one member of the group creating tests,
 The aim of this continual testing alongside the software development, was to catch errors and bugs as soon as possible, so there would not be problems further down the line.
 This would then in turn minimize time and effort otherwise used on debugging, and therefore also lead to a more stable programme.
 The aforementioned tests would additionally improve the maintainability of the software, allowing future changes and upgrades.
-\nopagebreak
-\include{sections/tests/testOfPrivateMethods}
 
-\subsubsection{Unit Testing Stegosaurus}
+\subsection{Testing Private Methods}
+The goal of unit tests is to make sure that the code works as intended.
+If the unit tests are thorough, they become a way to prove that the class does everything in the specifications, and shows that other people can count on the class as well.
+Now if someone wants to use a class, they should only have access to the public methods and properties, this means that as long as the unit tests show that the public methods and properties of a class work, they do not have to explicitly show that the private methods work as intended.
+
+Of course, if the private methods do not work, there is a big chance that the public methods will not work either.
+But as developers we cannot guarantee that the private methods have any effect, as only the public methods are what we have chosen to let other people use. 
+So to test the private methods, one would have to test the public methods thoroughly enough so that every part of the private methods would be tested as well. 
+
+So while data-hiding makes it much easier to implement other people's work, and makes it clearer what a certain class offers of opportunities, we lose some of the flexibility when testing our code. This is because unit testing is basically an implementation of the class under test, and seeing if that class gives the expected result, given certain criteria. 
+
+Our programme exists of multiple classes, but a lot of the work is done in private methods in the class \lstinline|JPEGImage|, and the only way we would be able to test the output is to check the file, which the public method \lstinline|Save(string)| can provide.
+
+Testing every logical statement in the programme with the aforementioned method, would certainly break one of the principles of unit tests, namely the fact that they should be quick to run.
+
+An optimal scenario would be where at the press of a button, we can quickly know if something has been broken due to a change somewhere in the programme, so having to wait multiple minutes on images being created in full and tested byte-for-byte, to know if we broke something in one private method, would result in the unit tests not being run as often. 
+
+Of course people before us have run into this problem, and solutions are readily available.
+Microsoft offers a library called \lstinline|Microsoft.VisualStudio.TestTools.UnitTesting| which contain the class \lstinline|PrivateObject| and \lstinline|PrivateType|.
+With \lstinline|PrivateObject| we can pry open an object, and access private methods on an instance via reflection. \lstinline|PrivateType| similarly allows us to access private static members. 
+
+The syntax becomes somewhat awkward as we have to rely on strings containing method names to access the private members, but it does offer possibilities to test the private methods much easier than through the public methods as described earlier.
+
+The actual usage is seen in listing \ref{privateObjectTest}, where a \lstinline|PrivateObject| is used to invoke the private method \lstinline|_breakDownMessage|. As it can be seen, the syntax is quite different from how you would invoke a method, but it is still clear what is going on. We first create a new \lstinline|PrivateObject| which contains our object that we want to test.  From there on we can use reflection to invoke the method \lstinline|_breakDownMessage|, and lastly use an assert as we would normally do.
+
+\begin{lstlisting}[firstnumber=23,label=privateObjectTest,caption={Example usage of the \lstinline|PrivateObject| class \textbf{File: }JPEGImageTests.cs}]
+[Test()]
+public void BreakDownMessage_Test()
+{
+PrivateObject po = new PrivateObject(new JpegImage(new Bitmap(200, 100), 100, 4));
+byte[] message = new byte[] {1,1,1};
+
+po.Invoke("_breakDownMessage", message);
+List<byte> messageList = new List<byte>();
+messageList = (List<byte>)po.GetField("_message"); //Get the broken down message from instance of JpegImage class
+
+List<byte> expectedList = new List<byte> {0, 0, 0, 0, 0, 0, 3, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1}; // What {1,1,1} corresponds to when broken down and has length encoded
+NUnit.Framework.Assert.AreEqual(expectedList, messageList);
+}
+\end{lstlisting}
+
+\subsection{Unit Testing Stegosaurus}
 The construction of tests were done using the open source unit testing framework NUnit.
 Using this framework allowed the creation of tests to be streamlined and automated, allowing each group member to frequently test the new components they were creating.
 
