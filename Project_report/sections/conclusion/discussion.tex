@@ -102,7 +102,7 @@ When using an image of substantial size, a quarter of an image can hold a large 
 A 512x512 image for example can hold 196,604 bytes, when using the two least significant bits.
 Encoding 40,000 bytes using our graph-theoretical (GT) programme was completely out of the question due to the complexity of the algorithm.
 The longest message we tried encoding was just under 8960 bytes and took around half an hour on a decent desktop computer.
-Running several test runs with different message lengths made it clear that the complexity of the programme made it impossible to ever complete an encoding of this much data.
+Running several test runs with different message lengths made it clear that the complexity of the programme made it infeasible to ever complete an encoding of this much data.
 
 This made a direct comparison using realistic real-world images and messages impossible. 
 The only real comparison we could make was between images containing different messages that used up every single available byte in the image.
@@ -177,16 +177,20 @@ The results of these tests can be seen in table \ref {fig:euclidean_distance}.
 	\label{fig:euclidean_distance}
 \end{table}
 
-The other reason for the differences being larger is due to how the JPEG-file format is encoded.
-Using the LSB of every pixel there is only the potential to change the value of each pixel by one.
-Using the graph-theoretical approach with an M value of four, means that each individual value can be changed by four. 
-This change is applied after the quantization step to avoid losing the data again.
-This in turn means that the small change of up to four is multiplied by the quantization table, when the image is shown.
-Bla bla something something green is less than the other
+It was clear that compressing the image with JPEG increased the euclidean distance between the two images.
+But the distance between the JPEG image with a message and the one without it, was still larger than that of the LSB method and the original.
+This was due to the fact that using the LSB of every pixel there was only the potential to change the value of each pixel by four.
+With the GT method and an M value of four, means that each individual quantized value could also be changed by four. 
+So why the big difference? 
+We applied the change after the quantization step of JPEG encoding to avoid losing the data again, since the quantization step was what made JPEG encoding lossy.
+This in turn meant that the small change of up to four was multiplied by the quantization table, when the image was shown and we calculated the distance.
 
-First of all using this method required that the user was in possession of both the original and the stego image.
-This would indeed be possible if the parties sharing secret messages in the images, were using images they found on the internet and tampered with them.
-Ths meant that they could completely foil any risk of being compromised by an outside party measuring euclidean distance, by simply using images that they took themselves.
+But what did this actually mean for using the GT method to hide data?
+Using euclidean distance to see if images had been tampered with, required that the intercepting party be in possession of both the original and the stego image.
+This would indeed be possible if those sharing secret messages in images, were using cover images found on the internet and tampered with them.
+It would not be all the difficult to reverse image search the internet to find what was probably the original cover image and measure the euclidean distance between the two images.
+However, this would mean that any risk of being compromised by an outside party measuring euclidean distance, could be completely negated by simply using cover images that were not available to any intercepting parties.
 
-So while the Euclidean distance might be bigger in the image where the data is hidden using our GT programme, it is of little use in automated system doing steganalysis on a multitude of images, as it would have nothing to compare the images to. 
+
 Such a system could, however, check the histogram of the image, and discover abnormalities such as those the LSB method produces, as shown in figure \ref{fig:lsbHisto}.
+Doing this would lead to very few useful results on images with messages hidden in them, using the GT programme.
