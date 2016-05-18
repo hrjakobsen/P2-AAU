@@ -1,16 +1,17 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
 \section{Software Testing}
 During the planning phase of the project we decided to continually test the code that we wrote.
-
 Our strategy for testing revolved around one member of the group creating tests, for each new component, method and logical statement.
 The aim of this continual testing alongside the software development, was to catch errors and bugs as soon as possible, so there would not be problems further down the line.
 This would then in turn minimize time and effort otherwise used on debugging, and therefore also lead to a more stable programme.
 The aforementioned tests would additionally improve the maintainability of the software, allowing future changes and upgrades.
+\nopagebreak
+\include{sections/tests/testOfPrivateMethods}
 
+\subsubsection{Unit Testing Stegosaurus}
 The construction of tests were done using the open source unit testing framework NUnit.
 Using this framework allowed the creation of tests to be streamlined and automated, allowing each group member to frequently test the new components they were creating.
 
-\subsection*{BitList}
 \lstinline|BitList| is a custom implementation based on the \lstinline|BitArray| from the .Net framework, 
 It is often used in our programme, which means that it has to be tested thoroughly.
 First of all, it has to act like a \lstinline|List|, which includes being able to have values inserted at specific indices.
@@ -20,14 +21,14 @@ Another property of the \lstinline|BitList| is that \lstinline|0| should be eval
 This is also tested, and the test passes.
 % Something something CheckedAdd()
 
-\subsection*{Vertex}
+\paragraph*{Vertex}
 \lstinline|Vertex| is compromised of two sample values, a message, and a modulo value.
 It has a single method, \lstinline|ToString()|, which is simply a string containing each sample value.
 All in all, a simple class to test.
 The test, \lstinline|ToStringTest()|, is an assertion that, when creating a \lstinline|Vertex| object from two sample values, a message values, and a modulo value, the string returned from \lstinline|ToString()| is equal to the two sample values concatenated.
 This test passes, making us able to test other classes that make use of \lstinline|Vertex|.
 
-\subsection*{Edge}
+\paragraph*{Edge}
 \lstinline|Edge| is a crucial class in our programme.
 This class has five properties, two of which are the vertices that define the edge, one weight value, and two bools defining the properties of vertex value switching.
 Other than that, the class has no methods that define functionality, it just has to be correctly compared to other edges and be printed.
@@ -40,7 +41,7 @@ This test as well.\\
 The final test, \lstinline|Equal_EdgesWithSameVerticesAndValues_True|, asserts that two edges with the same vertices, message values, and modulo values, are equal.
 This test passes, which means that \lstinline|Edge| behaves as expected.
 
-\subsection*{Graph}
+\paragraph*{Graph}
 The \lstinline|Graph| class has two properties: \lstinline|List<Vertex>| and \lstinline|List<Edge>|.
 As with \lstinline|Vertex| and \lstinline|Edge|, \lstinline|Graph| overrides \lstinline|ToString()|, which means that it will have to be tested.
 \lstinline|Graph|'s \lstinline|ToString()| returns a header as well as a list of vertex sample values.
@@ -52,7 +53,7 @@ This is done by creating a graph with a number of different edges, each with a d
 Then we assert that the \lstinline|List<Edge>| returned by the method is the same as an expected \lstinline|List<Edge>| kept after the method is called.
 This test passes as well.
 
-\subsection*{HuffmanElement}
+\paragraph*{HuffmanElement}
 The \lstinline|HuffmanElement| class has three properties: runsize, length, and codeword.
 Objects of this class must be comparable to other objects of the same class, which means that \lstinline|CompareTo()| is implemented.
 This has to be tested.
@@ -68,7 +69,7 @@ The last test is for \lstinline|ToString()|.
 A Huffman element is created, and it is asserted that a formatted string with expected variables is the same as the call to \lstinline|ToString()|.
 This test passes as well, making \lstinline|HuffmanElement| behave as expected.
 
-\subsection*{HuffmanTable}
+\paragraph*{HuffmanTable}
 This class is fairly comprehensive, as it has a lot of methods that need to be tested.
 It is compromised of a dictionary of Huffman elements.
 First, we need to test that a table has access to an element's codeword.
@@ -89,7 +90,7 @@ Lastly, we need to test \lstinline|GetElementFromRunSize()|, which, as the name 
 A table with a number of \lstinline|HuffmanElement| objects is created, one of which is tested against an expected input to \lstinline|GetElementFromRunSize()|.
 The test passes, making \lstinline|HuffmanTable| behave as expected.
 
-\subsection{QuantizationTable}
+\paragraph*{QuantizationTable}
 \lstinline|QuantizationTable| is yet an important class in our programme, and thus it needs to be tested.
 Since the table entries need to be arranged in a zigzag order, it is tested in \lstinline|QuantizationTableTest_Zig_Zag_Entries()|.
 A default quantization table is created and arranged in a zigzag order in \lstinline|QuantizationTable|'s constructor.
@@ -103,7 +104,7 @@ It is asserted that the method throws \lstinline|OutOfRangeException()| when cal
 These tests pass.\\
 Since we know that \lstinline|QuantizationTable| behaves as expected, we can comfortably use it in \lstinline|JpegImage|.
 
-\subsection*{JpegImage}
+\paragraph*{JpegImage}
 The \lstinline|JpegImage| class is also relatively comprehensivea, making the need for tests large.
 The first test is simple, testing if the modulo value of an instance of the class gets set.
 Since it is a private variable, we need to use \lstinline|PrivateObject| as previously described.
