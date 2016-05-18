@@ -155,12 +155,26 @@ A different way of looking for changes in an image is by looking at their Euclid
 This can be done by calculating the distance between the colour values of each pixel in two equally sized images.
 The sum of all these distances can be used as measure of the change from one image to the other.
 We used this same method for determining what changes were imposed on images of different size and format, when uploaded to various social media and image-sharing websites.
+The images used for the method were the same as those previously used in the colour histogram tests.
+The results of these tests can be seen in table \ref {fig:euclidean_distance}.
+
+\begin{table}[]
+	\centering
+	\begin{tabular}{@{}lllll@{}}
+		\toprule
+		\textbf{Images}            & \textbf{All channels} & \textbf{R} & \textbf{G} & \textbf{B} \\ \midrule
+		\textit{Original and LSB}  & 34671                 & 17098      & 16800      & 16824      \\
+		\textit{Original and GT}   & 130389                & 71112      & 56972      & 71886      \\
+		\textit{Original and JPEG} & 102460                & 56758      & 40707      & 57569      \\
+		\textit{JPEG and GT}       & 79163                 & 42154      & 38833      & 43217     
+	\end{tabular}
+	\caption{Calculated euclidean distances for several combinations of images.}
+	\label{fig:euclidean_distance}
+\end{table}
+
 
 Comparing these results directly with the ones obtained from the LSB-method would be folly.
-While the LSB-method would certainly incur a smaller difference in the Euclidean distance it would not necessarily make it any better.
-First of all using this method required that the user was in possession of both the original and the stego image.
-This would indeed be possible if the parties sharing secret messages in the images, were using images they found on the internet and tampered with them.
-They could completely foil this risk of being compromised then, by simply using images that they took themselves.
+While the LSB-method might incur a smaller difference in the Euclidean distance it would not necessarily make it any better.
 
 The other reason for the differences being larger is due to how the JPEG-file format is encoded.
 Using the LSB of every pixel there is only the potential to change the value of each pixel by one.
@@ -168,6 +182,10 @@ Using the graph-theoretical approach with an M value of four, means that each in
 This change is applied after the quantization step to avoid losing the data again.
 This in turn means that the small change of up to four is multiplied by the quantization table, when the image is shown.
 Bla bla something something green is less than the other
+
+First of all using this method required that the user was in possession of both the original and the stego image.
+This would indeed be possible if the parties sharing secret messages in the images, were using images they found on the internet and tampered with them.
+Ths meant that they could completely foil any risk of being compromised by an outside party measuring euclidean distance, by simply using images that they took themselves.
 
 So while the Euclidean distance might be bigger in the image where the data is hidden using our GT programme, it is of little use in automated system doing steganalysis on a multitude of images, as it would have nothing to compare the images to. 
 Such a system could however check the histogram of the image, and discover abnormalities such as those the LSB method produces, as shown in figure \ref{fig:lsbHisto}.

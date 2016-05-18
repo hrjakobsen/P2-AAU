@@ -10,7 +10,7 @@ The aforementioned tests would additionally improve the maintainability of the s
 The construction of tests were done using the open source unit testing framework NUnit.
 Using this framework allowed the creation of tests to be streamlined and automated, allowing each group member to frequently test the new components they were creating.
 
-\subsection{BitList}
+\subsection*{BitList}
 \lstinline|BitList| is a custom implementation based on the \lstinline|BitArray| from the .Net framework, 
 It is often used in our programme, which means that it has to be tested thoroughly.
 First of all, it has to act like a \lstinline|List|, which includes being able to have values inserted at specific indices.
@@ -20,14 +20,14 @@ Another property of the \lstinline|BitList| is that \lstinline|0| should be eval
 This is also tested, and the test passes.
 % Something something CheckedAdd()
 
-\subsection{Vertex}
+\subsection*{Vertex}
 \lstinline|Vertex| is compromised of two sample values, a message, and a modulo value.
 It has a single method, \lstinline|ToString()|, which is simply a string containing each sample value.
 All in all, a simple class to test.
 The test, \lstinline|ToStringTest()|, is an assertion that, when creating a \lstinline|Vertex| object from two sample values, a message values, and a modulo value, the string returned from \lstinline|ToString()| is equal to the two sample values concatenated.
 This test passes, making us able to test other classes that make use of \lstinline|Vertex|.
 
-\subsection{Edge}
+\subsection*{Edge}
 \lstinline|Edge| is a crucial class in our programme.
 This class has five properties, two of which are the vertices that define the edge, one weight value, and two bools defining the properties of vertex value switching.
 Other than that, the class has no methods that define functionality, it just has to be correctly compared to other edges and be printed.
@@ -40,19 +40,19 @@ This test as well.\\
 The final test, \lstinline|Equal_EdgesWithSameVerticesAndValues_True|, asserts that two edges with the same vertices, message values, and modulo values, are equal.
 This test passes, which means that \lstinline|Edge| behaves as expected.
 
-\subsection{Graph}
-The \lstinline|Graph| class has two properties: A list of vertices, and a list of edges.
+\subsection*{Graph}
+The \lstinline|Graph| class has two properties: \lstinline|List<Vertex>| and \lstinline|List<Edge>|.
 As with \lstinline|Vertex| and \lstinline|Edge|, \lstinline|Graph| overrides \lstinline|ToString()|, which means that it will have to be tested.
 \lstinline|Graph|'s \lstinline|ToString()| returns a header as well as a list of vertex sample values.
 To test this, we create a number of different vertices and adding them to the graph.
-The \lstinline|ToString()| method is then compared to a string with an expected list of vertices.
+The \lstinline|ToString()| method is then compared to a string with an expected \lstinline|List<Vertex>|.
 This test passes.\\
 Another method to be tested is \lstinline|GetSwitches()|.
 This is done by creating a graph with a number of different edges, each with a different set of vertices.
-Then we assert that the list of edges returned by the method is the same as an expected list of edges kept after the method is called.
+Then we assert that the \lstinline|List<Edge>| returned by the method is the same as an expected \lstinline|List<Edge>| kept after the method is called.
 This test passes as well.
 
-\subsection{HuffmanElement}
+\subsection*{HuffmanElement}
 The \lstinline|HuffmanElement| class has three properties: runsize, length, and codeword.
 Objects of this class must be comparable to other objects of the same class, which means that \lstinline|CompareTo()| is implemented.
 This has to be tested.
@@ -68,7 +68,7 @@ The last test is for \lstinline|ToString()|.
 A Huffman element is created, and it is asserted that a formatted string with expected variables is the same as the call to \lstinline|ToString()|.
 This test passes as well, making \lstinline|HuffmanElement| behave as expected.
 
-\subsection{HuffmanTable}
+\subsection*{HuffmanTable}
 This class is fairly comprehensive, as it has a lot of methods that need to be tested.
 It is compromised of a dictionary of Huffman elements.
 First, we need to test that a table has access to an element's codeword.
@@ -89,7 +89,21 @@ Lastly, we need to test \lstinline|GetElementFromRunSize()|, which, as the name 
 A table with a number of \lstinline|HuffmanElement| objects is created, one of which is tested against an expected input to \lstinline|GetElementFromRunSize()|.
 The test passes, making \lstinline|HuffmanTable| behave as expected.
 
-\subsection{JpegImage}
+\subsection{QuantizationTable}
+\lstinline|QuantizationTable| is yet an important class in our programme, and thus it needs to be tested.
+Since the table entries need to be arranged in a zigzag order, it is tested in \lstinline|QuantizationTableTest_Zig_Zag_Entries()|.
+A default quantization table is created and arranged in a zigzag order in \lstinline|QuantizationTable|'s constructor.
+A manually calculated order is compared to the order in the constructor, and it is asserted that they are equal.
+This test passes.\\
+The \lstinline|Scale()| method scales quantization values using a certain quality as input.
+An expected table is manually calculated, and it is asserted that this is the same as the one returned by \lstinline|Scale|.
+This test passes.\\
+\lstinline|Scale()| should throw exceptions when the quality parameter is above 100 or below 0.
+It is asserted that the method throws \lstinline|OutOfRangeException()| when called with a quality of -4 and 101.
+These tests pass.\\
+Since we know that \lstinline|QuantizationTable| behaves as expected, we can comfortably use it in \lstinline|JpegImage|.
+
+\subsection*{JpegImage}
 The \lstinline|JpegImage| class is also relatively comprehensivea, making the need for tests large.
 The first test is simple, testing if the modulo value of an instance of the class gets set.
 Since it is a private variable, we need to use \lstinline|PrivateObject| as previously described.
@@ -107,7 +121,8 @@ It is asserted that \lstinline|_padCoverImage()| does not do anything to the ima
 However, when the dimensions of an image is not divisible by 16 (e.g. 15x15), it is expected that \lstinline|_padCoverImage()| returns a padded image.
 It is then asserted that the returned image and an expected image with dimensions divisible by 16 are the same.
 This test passes.\\
-Much like the previous test, colour should also be the same in an original image and a padded version. This is tested by picking a pixel from a specific location from the original image, and an equivalent pixel from the padded image, and asserting that the colour is the same.
+Much like the previous test, colour should also be the same in an original image and a padded version.
+This is tested by picking a pixel from a specific location from the original image, and an equivalent pixel from the padded image, and asserting that the colour is the same.
 This test passes.\\
 The \lstinline|_copyBitmap()| method is tested as well.
 It is asserted that a specific pixel from the original image and a copied image are the same.
@@ -125,7 +140,11 @@ The \lstinline|_c| method is tested four times with different inputs.
 The test passes in all four cases, since the expected output is equal to the ones returned from the method.\\
 \lstinline|_quantization()| is under test as well, and this is done by filling an array with 64 manually calculated quantized values and asserting that it is the same as the array returned by \lstinline|_quantization()|.
 This test passes as well.\\
-Tests are also conducted for \lstinline|_addVertices| and \lstinline|_addEdge|, which 
+Tests are also conducted for \lstinline|_addVertices()| and \lstinline|_addEdge()|.
+\lstinline|_addVertices| add vertices to a graph, where \lstinline|sampleValue1| and \lstinline|sampleValue2| are incremented by 2 for each vertex, starting from 0 and 1, respectively.
+We create a number of vertices with the same properties and manually add these to another graph, and assert that this graph contains the same vertices as the one in the method.
+\lstinline|_addEdge()| is tested in much the same way, and both tests pass.\\
+We can now decide, based on the test results of the \lstinline|JpegImage| class, that it works as expected, and can be safely used in our programme.
 
 % Maybe the first paragraph should be in design
 % Plan to maybe add a "case study" with an example from our program

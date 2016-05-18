@@ -59,5 +59,17 @@ namespace Stegosaurus.Tests
 
             NUnit.Framework.Assert.AreEqual("0 = 10, 1000", huffmanTestElement1.ToString());
         }
+
+        [Test]
+        public void EqualsTest()
+        {
+            HuffmanElement ele1 = new HuffmanElement(0x00, 2, 8);
+            HuffmanElement ele2 = new HuffmanElement(0x01, 5, 3);
+            Assert.IsFalse(ele1.Equals(ele2));
+
+            HuffmanElement ele3 = new HuffmanElement(0x00, 2, 8);
+            HuffmanElement ele4 = new HuffmanElement(0x00, 2, 8);
+            Assert.IsTrue(ele3.Equals(ele4));
+        }
     }
 }

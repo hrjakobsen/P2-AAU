@@ -583,5 +583,68 @@ namespace Stegosaurus.Tests
 
             NUnit.Framework.Assert.AreEqual(expectedE1.ToString(), inputE1.ToString());
         }
+
+        [Test()]
+        public void ForceSampleChange()
+        {
+            PrivateType pt = new PrivateType(typeof(JpegImage));
+            Vertex
+                inputVertex = new Vertex(0, 1, 0, 4),
+                expectedVertex = new Vertex(-1, 1, 0, 4);
+
+            pt.InvokeStatic("_forceSampleChange", inputVertex);
+
+            NUnit.Framework.Assert.AreEqual(expectedVertex.ToString(), inputVertex.ToString());
+        }
+
+        [Test()]
+        public void MergeGraphAndQuantizedValues_Test() //TODO: shit's fuck
+        {
+            Bitmap b = new Bitmap(1, 1);
+            b.SetPixel(0,0, Color.White);
+            JpegImage ji = new JpegImage(new Bitmap(b, 200, 100), 100, 4);
+            PrivateObject po = new PrivateObject(ji);
+            byte[] mes = new byte[] {1, 0, 1, 0};
+            ji.Encode(mes);
+
+            Vertex
+                v1 = new Vertex(2, 3, 1, 4);
+
+            Graph inputGraph = new Graph();
+
+            inputGraph.Vertices.AddRange(new List<Vertex>() {v1});
+            short[,] weShorts = new short[8, 8];
+            short e = 1;
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    weShorts[i, j] = e;
+                    e++;
+                }
+            }
+
+            Tuple<short[,], HuffmanTable, HuffmanTable, int> das = new Tuple<short[,], HuffmanTable, HuffmanTable, int>(weShorts, ji.YDCHuffman, ji.YACHuffman, 0);
+            
+            List<Tuple<short[,], HuffmanTable, HuffmanTable, int>> quantizedBlocks = new List<Tuple<short[,], HuffmanTable, HuffmanTable, int>>();
+            List<Tuple<short[,], HuffmanTable, HuffmanTable, int>> sad = new List<Tuple<short[,], HuffmanTable, HuffmanTable, int>>();
+
+            quantizedBlocks.Add(das);
+            //quantizedBlocks.Add(new Tuple<short[,], HuffmanTable, HuffmanTable, int>(weShorts, ji.YDCHuffman, ji.YACHuffman, 1));
+
+            //po.SetField("_quantizedBlocks", quantizedBlocks);
+            sad = quantizedBlocks;
+            po.Invoke("_mergeGraphAndQuantizedValues", inputGraph);
+
+            List<Tuple<short[,], HuffmanTable, HuffmanTable, int>> quan = (List<Tuple<short[,], HuffmanTable, HuffmanTable, int>>)po.GetField("_quantizedBlocks");
+
+            NUnit.Framework.Assert.AreEqual(quantizedBlocks, quan);
+        }
+
+        [Test()]
+        public void HuffmanEncode()
+        {
+            
+        }
     }
 }
