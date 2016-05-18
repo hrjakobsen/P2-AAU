@@ -52,7 +52,7 @@ namespace TestForm
                 runSizeBoxes[i].Top = 5 + i * 25;
                 codeWordsBoxes[i].Font = new Font(FontFamily.GenericMonospace.ToString(), 8);
 
-                runSizeBoxes[i].Text = Convert.ToString(elementList[i].Value.RunSize, 0x10);
+                runSizeBoxes[i].Text = Convert.ToString(elementList[i].Value.RunSize, 0x10).PadLeft(2,'0');
             }
 
             InitializeComponent();

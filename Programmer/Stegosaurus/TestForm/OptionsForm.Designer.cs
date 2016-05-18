@@ -56,11 +56,6 @@
             this.rdioQuantizationChrChannel = new System.Windows.Forms.RadioButton();
             this.rdioQuantizationYChannel = new System.Windows.Forms.RadioButton();
             this.pnlQuantization = new System.Windows.Forms.Panel();
-            this.pnlOptionsGeneral = new System.Windows.Forms.Panel();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.btnSelectOutputFolder = new System.Windows.Forms.Button();
-            this.tbSaveLocation = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.selectOutputFolder = new System.Windows.Forms.FolderBrowserDialog();
             this.btnClose = new System.Windows.Forms.Button();
             this.pnlOptionsEncodingMethod = new System.Windows.Forms.Panel();
@@ -75,8 +70,6 @@
             this.grpQuality.SuspendLayout();
             this.pnlOptionsQuantization.SuspendLayout();
             this.grpQuantization.SuspendLayout();
-            this.pnlOptionsGeneral.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             this.pnlOptionsEncodingMethod.SuspendLayout();
             this.grpEncodingMethod.SuspendLayout();
             this.SuspendLayout();
@@ -106,7 +99,6 @@
             // 
             this.OptionsBox.FormattingEnabled = true;
             this.OptionsBox.Items.AddRange(new object[] {
-            "General",
             "Huffman table (custom)",
             "Quantization table (custom)",
             "Quality setting",
@@ -371,57 +363,6 @@
             this.pnlQuantization.Size = new System.Drawing.Size(412, 262);
             this.pnlQuantization.TabIndex = 129;
             // 
-            // pnlOptionsGeneral
-            // 
-            this.pnlOptionsGeneral.Controls.Add(this.groupBox3);
-            this.pnlOptionsGeneral.Enabled = false;
-            this.pnlOptionsGeneral.Location = new System.Drawing.Point(169, 20);
-            this.pnlOptionsGeneral.Name = "pnlOptionsGeneral";
-            this.pnlOptionsGeneral.Size = new System.Drawing.Size(442, 269);
-            this.pnlOptionsGeneral.TabIndex = 29;
-            this.pnlOptionsGeneral.Visible = false;
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.btnSelectOutputFolder);
-            this.groupBox3.Controls.Add(this.tbSaveLocation);
-            this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Location = new System.Drawing.Point(9, 0);
-            this.groupBox3.Margin = new System.Windows.Forms.Padding(2);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox3.Size = new System.Drawing.Size(413, 256);
-            this.groupBox3.TabIndex = 18;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "General settings";
-            // 
-            // btnSelectOutputFolder
-            // 
-            this.btnSelectOutputFolder.Location = new System.Drawing.Point(354, 43);
-            this.btnSelectOutputFolder.Name = "btnSelectOutputFolder";
-            this.btnSelectOutputFolder.Size = new System.Drawing.Size(53, 21);
-            this.btnSelectOutputFolder.TabIndex = 18;
-            this.btnSelectOutputFolder.Text = "Browse";
-            this.btnSelectOutputFolder.UseVisualStyleBackColor = true;
-            this.btnSelectOutputFolder.Click += new System.EventHandler(this.btnSelectOutputFolder_Click);
-            // 
-            // tbSaveLocation
-            // 
-            this.tbSaveLocation.Location = new System.Drawing.Point(19, 43);
-            this.tbSaveLocation.Name = "tbSaveLocation";
-            this.tbSaveLocation.Size = new System.Drawing.Size(329, 20);
-            this.tbSaveLocation.TabIndex = 17;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 24);
-            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(112, 13);
-            this.label3.TabIndex = 16;
-            this.label3.Text = "Choose save location:";
-            // 
             // selectOutputFolder
             // 
             this.selectOutputFolder.HelpRequest += new System.EventHandler(this.selectOutputFolder_HelpRequest);
@@ -501,11 +442,10 @@
             this.Controls.Add(this.line);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.OptionsBox);
+            this.Controls.Add(this.pnlOptionsQuality);
             this.Controls.Add(this.pnlOptionsEncodingMethod);
             this.Controls.Add(this.pnlOptionsHuffman);
             this.Controls.Add(this.pnlOptionsQuantization);
-            this.Controls.Add(this.pnlOptionsGeneral);
-            this.Controls.Add(this.pnlOptionsQuality);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "OptionsForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
@@ -520,9 +460,6 @@
             this.pnlOptionsQuantization.ResumeLayout(false);
             this.grpQuantization.ResumeLayout(false);
             this.grpQuantization.PerformLayout();
-            this.pnlOptionsGeneral.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.pnlOptionsEncodingMethod.ResumeLayout(false);
             this.grpEncodingMethod.ResumeLayout(false);
             this.grpEncodingMethod.PerformLayout();
@@ -544,13 +481,8 @@
         private System.Windows.Forms.GroupBox grpQuantization;
         private System.Windows.Forms.TrackBar tbarQualitySlider;
         private System.Windows.Forms.Panel pnlQuantization;
-        private System.Windows.Forms.Panel pnlOptionsGeneral;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.RadioButton rdioQuantizationChrChannel;
         private System.Windows.Forms.RadioButton rdioQuantizationYChannel;
-        private System.Windows.Forms.TextBox tbSaveLocation;
-        private System.Windows.Forms.Button btnSelectOutputFolder;
         private System.Windows.Forms.Label lblQuantizationDescription;
         private System.Windows.Forms.Button btnHuffmanAddRow;
         private System.Windows.Forms.GroupBox grpCustomHuffman;

@@ -70,7 +70,7 @@ These might very well have to check several things before being able to return t
 Using the \lstinline|System.Drawing.Graphics| class as show in listing \ref{lst:copyBitmap} we were able to copy portions of \lstinline|Bitmap|s much more efficiently, \citep{MSDNBitmap} as can be seen in by the roughly 8000 \% decrease in time in table \ref{fig:1genoptimised}.
 
 
-\begin{lstlisting}[firstnumber=684,label=lst:copyBitmap,caption={Copying a \lstinline|Bitmap| using the \lstinline|Graphics| class.}]
+\begin{lstlisting}[firstnumber=684,label=lst:copyBitmap,caption={Copying a \lstinline|Bitmap| using the \lstinline|Graphics| class. From first round JPEGImage.cs.}]
 private static Bitmap _copyBitmap(Bitmap bitmapIn, int width, int height) {
     Bitmap bitmapOut = new Bitmap(width, height);
     Graphics g = Graphics.FromImage(bitmapOut);
@@ -91,7 +91,7 @@ This reduced the calls to the Pixel's getter, which had a positive impact on the
 We also managed to get a slight increase in performance on the Huffman-encoding, by changing a loop in the \lstinline|BitList| to only run every eighth time a bit was added to the list.
 This change can be seen in listings \ref{lst:originalCheckedAdd} and \ref{lst:newCheckedAdd}.
 
-\begin{lstlisting}[firstnumber=85,label=lst:originalCheckedAdd, caption={Original \lstinline|CheckedAdd| in \lstinline|BitList|. Note the for-loop on line 93. It always runs.}]
+\begin{lstlisting}[firstnumber=85,label=lst:originalCheckedAdd, caption={Original \lstinline|CheckedAdd| in \lstinline|BitList|. Note the for-loop on line 93. It always runs. From unoptimised BitList.cs.}]
 public void CheckedAdd(int val) {
     if (_addCounter % 8 == 0) {
         _latestEntries.SetAll(false);
@@ -117,7 +117,7 @@ public void CheckedAdd(int val) {
 }
 \end{lstlisting}
 
-\begin{lstlisting}[firstnumber=26,label=lst:newCheckedAdd, caption={Improved \lstinline|CheckedAdd| in \lstinline|BitList|. The for-loop only runs an eighth of the time.}]
+\begin{lstlisting}[firstnumber=26,label=lst:newCheckedAdd, caption={Improved \lstinline|CheckedAdd| in \lstinline|BitList|. The for-loop only runs an eighth of the time. From first round BitList.cs.}]
 public void CheckedAdd(int val) {
     if (_addCounter % 8 == 0) {
         _latestEntries.SetAll(false);
@@ -183,7 +183,7 @@ In fact, it was almost eight times faster than the previously used method, as se
 Several changes to the two nested loops, which added edges to the graph, resulted in an improvement as to the Adding edges step as well as \lstinline|GetSwitches|.
 The original algorithm (as shown in listing \ref{lst:oldEdgeAdding}) had complexity $\mathcal{O}(n^2)$, so longer message lengths could result in much longer running times for it.
 
-\begin{lstlisting}[firstnumber=459,label=lst:oldEdgeAdding, caption={Original algorithm for adding edges to the graph.}]
+\begin{lstlisting}[firstnumber=459,label=lst:oldEdgeAdding, caption={Original algorithm for adding edges to the graph. From first round JPEGImage.cs.}]
 int threshold = 5;
 foreach (Vertex currentVertex in graph.Vertices) {
     foreach (Vertex otherVertex in graph.Vertices.Where(otherVertex => currentVertex != otherVertex)) {
@@ -202,7 +202,7 @@ Before this, we were adding every edge twice, with the start and end vertex flip
 This meant that our list of edges was halved, which effectively reduced the running time of \lstinline|GetSwitches| to a fourth.
 These changes can be seen in listing \ref{lst:newEdgeAdding}.
 
-\begin{lstlisting}[firstnumber=449,label=lst:newEdgeAdding, caption={Improved algorithm for adding edges to the graph.}]
+\begin{lstlisting}[firstnumber=449,label=lst:newEdgeAdding, caption={Improved algorithm for adding edges to the graph. From second round JPEGImage.cs.}]
 List<Vertex> toBeChanged = graph.Vertices.Where(x => (x.SampleValue1 + x.SampleValue2).Mod(x.Modulo) != x.Message).ToList();
 int length = toBeChanged.Count;
 int threshold = 5;
@@ -224,7 +224,7 @@ Furthermore, we added the calculated edge weights to the edges instead of having
 This saved a few operations at a later time, when the edges were ordered by weight.
 The two different versions of \lstinline|_addEdge| can be seen in listings \ref{lst:oldAddEdge} and \ref{lst:newAddEdge}.
 
-\begin{lstlisting}[firstnumber=478,label=lst:oldAddEdge, caption={The original \lstinline|_addEdge| method.}]
+\begin{lstlisting}[firstnumber=478,label=lst:oldAddEdge, caption={The original \lstinline|_addEdge| method. From first round JPEGImage.cs.}]
 private static void _addEdge(bool firstFirst, bool secondFirst, Vertex first, Vertex second, int threshold, Graph g) {
     if (((firstFirst ? first.SampleValue2 : first.SampleValue1) + (secondFirst ? second.SampleValue1 : second.SampleValue2)).Mod(first.Modulo) == first.Message) {
         if (((firstFirst ? first.SampleValue1 : first.SampleValue2) + (secondFirst ? second.SampleValue2 : second.SampleValue1)).Mod(second.Modulo) == second.Message) {
@@ -237,7 +237,7 @@ private static void _addEdge(bool firstFirst, bool secondFirst, Vertex first, Ve
 }
 \end{lstlisting}
 
-\begin{lstlisting}[firstnumber=482,label=lst:newAddEdge, caption={The improved \lstinline|_addEdge| method.}]
+\begin{lstlisting}[firstnumber=482,label=lst:newAddEdge, caption={The improved \lstinline|_addEdge| method. From second round JPEGImage.cs.}]
 private static void _addEdge(bool firstFirst, bool secondFirst, Vertex first, Vertex second, int threshold, Graph g) {
     int weight = Math.Abs((firstFirst ? first.SampleValue1 : first.SampleValue2) - (secondFirst ? second.SampleValue1 : second.SampleValue2));
     if (weight < threshold) {
@@ -291,7 +291,7 @@ Data can potentially be overwritten, since the same parts of memory can be writt
 In a high-level language such as C\#, this would most likely cause a run-time exception instead.
 An example of a parallelised for-loop can be seen in listing \ref{lst:parallelEdgeAdding}.
 
-\begin{lstlisting}[firstnumber=677,label=lst:parallelEdgeAdding, caption={Parallelisation of the algorithm for adding edges to the graph.}]
+\begin{lstlisting}[firstnumber=677,label=lst:parallelEdgeAdding, caption={Parallelisation of the algorithm for adding edges to the graph. From third round JPEGImage.cs.}]
 List<Vertex> toBeChanged = graph.Vertices.Where(x => (x.SampleValue1 + x.SampleValue2).Mod(x.Modulo) != x.Message).ToList();
 int length = toBeChanged.Count;
 int threshold = 5;

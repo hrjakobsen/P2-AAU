@@ -1,3 +1,4 @@
+% -*- root: ../../DAT2-A423_Project_Report.tex -*-
 \section{Discussion}
 We started out by using the relatively simple LSB-method for hiding data in an image.
 Specifically we saved an image inside of another PNG-image.
@@ -8,51 +9,78 @@ Any changes would come from the unmatched pairs: the quantized DCT values used i
 When this happened we were forced to change the individual values, which led to a change in the colour composition of the image.
 Using this method, we expected the changes to be small enough so that it would not immediately draw attention to the image, if it was being subjected to a colour histogram.
 
+\subsection{Changes to the image}
 To find out roughly how many of these forces there were in a given image, we used our programme to save different messages in different images.
 The used five different message lengths: 70, 140, 280, 560 and 1120 bytes.
 Each message consisted of the ASCII characters A-Z repeated to fill out the message.
 Each of these messages were encoded in four images with varying motives, but the same resolution (1920x1080).
 The images can be seen in figure \ref{fig:four_test_images}.
+
 We used a cartoon-like drawing of a cat to see how our software would work on an image that was not ideal for the JPEG format.
 The landscape image contained many different colours and very complex patterns, which made it ideal for JPEG compression.
 The same could be said for the tiger, but it contained larger areas of similar colours than the landscape did.
 The image of the snowy forest road contained very few colour nuances, but was almost made up of the luminance channel.
 This led to a total of 20 tests as seen in table \ref{fig:forces_swaps}.
 
-\vspace{12pt}
-\begin{table}[]
-\centering
-\begin{tabular}{@{}lllll@{}}
-\textbf{Image}                      & \textbf{Message length} & \textbf{Swaps} & \textbf{Forces} & \textbf{Already fit} \\ \midrule
-\multirow{5}{*}{\textit{Cat}}       & 70                      & 56\%           & 19\%            & 26\%                 \\
-                                    & 140                     & 58\%           & 18\%            & 24\%                 \\
-                                    & 280                     & 65\%           & 12\%            & 23\%                 \\
-                                    & 560                     & 65\%           & 11\%            & 24\%                 \\
-                                    & 1120                    & 66\%           & 8\%             & 25\%                 \\ \midrule
-\multirow{5}{*}{\textit{Landscape}} & 70                      & 55\%           & 15\%            & 30\%                 \\
-                                    & 140                     & 63\%           & 11\%            & 27\%                 \\
-                                    & 280                     & 62\%           & 11\%            & 27\%                 \\
-                                    & 560                     & 62\%           & 13\%            & 25\%                 \\
-                                    & 1120                    & 63\%           & 12\%            & 25\%                 \\ \midrule
-\multirow{5}{*}{\textit{Tiger}}     & 70                      & 63\%           & 8\%             & 28\%                 \\
-                                    & 140                     & 64\%           & 8\%             & 27\%                 \\
-                                    & 280                     & 68\%           & 6\%             & 26\%                 \\
-                                    & 560                     & 70\%           & 5\%             & 25\%                 \\
-                                    & 1120                    & 72\%           & 4\%             & 24\%                 \\ \midrule
-\multirow{5}{*}{\textit{Snow}}      & 70                      & 53\%           & 21\%            & 26\%                 \\
-                                    & 140                     & 58\%           & 13\%            & 29\%                 \\
-                                    & 280                     & 66\%           & 8\%             & 26\%                 \\
-                                    & 560                     & 67\%           & 8\%             & 25\%                 \\
-                                    & 1120                    & 69\%           & 7\%             & 24\%                 \\ \bottomrule
-\end{tabular}
-	\caption{The percentages of values which the program swapped or forced. Since this was run with M = 4, about a fourth of the values already fit.}
-	\label{fig:forces_swaps}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\textwidth]{figures/cat}
+            \caption{Cat image}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.33\textwidth}
+            \includegraphics[width=\textwidth]{figures/landscape}
+            \caption{Landscape image}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.33\textwidth}
+            \includegraphics[width=\textwidth]{figures/tiger}
+            \caption{Tiger image}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.33\textwidth}
+            \includegraphics[width=\textwidth]{figures/snow}
+            \caption{Snow image}
+    \end{subfigure}
+    \caption{The four images used for the tests in table \ref{fig:forces_swaps}}
+    \label{fig:four_test_images}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \resizebox{0.7\textwidth}{!}{%
+        \begin{tabular}{@{}lllll@{}}
+            \textbf{Image}                      & \textbf{Message length} & \textbf{Swaps} & \textbf{Forces} & \textbf{Already fit} \\ \midrule
+            \multirow{5}{*}{\textit{Cat}}       & 70                      & 56\%           & 19\%            & 26\%                 \\
+                                                & 140                     & 58\%           & 18\%            & 24\%                 \\
+                                                & 280                     & 65\%           & 12\%            & 23\%                 \\
+                                                & 560                     & 65\%           & 11\%            & 24\%                 \\
+                                                & 1120                    & 66\%           & 8\%             & 25\%                 \\ \midrule
+            \multirow{5}{*}{\textit{Landscape}} & 70                      & 55\%           & 15\%            & 30\%                 \\
+                                                & 140                     & 63\%           & 11\%            & 27\%                 \\
+                                                & 280                     & 62\%           & 11\%            & 27\%                 \\
+                                                & 560                     & 62\%           & 13\%            & 25\%                 \\
+                                                & 1120                    & 63\%           & 12\%            & 25\%                 \\ \midrule
+            \multirow{5}{*}{\textit{Tiger}}     & 70                      & 63\%           & 8\%             & 28\%                 \\
+                                                & 140                     & 64\%           & 8\%             & 27\%                 \\
+                                                & 280                     & 68\%           & 6\%             & 26\%                 \\
+                                                & 560                     & 70\%           & 5\%             & 25\%                 \\
+                                                & 1120                    & 72\%           & 4\%             & 24\%                 \\ \midrule
+            \multirow{5}{*}{\textit{Snow}}      & 70                      & 53\%           & 21\%            & 26\%                 \\
+                                                & 140                     & 58\%           & 13\%            & 29\%                 \\
+                                                & 280                     & 66\%           & 8\%             & 26\%                 \\
+                                                & 560                     & 67\%           & 8\%             & 25\%                 \\
+                                                & 1120                    & 69\%           & 7\%             & 24\%                 \\ \bottomrule
+        \end{tabular}
+    }
+    \caption{The percentages of values which the program swapped or forced. Since this was run with M = 4, about a fourth of the values already fit.}
+    \label{fig:forces_swaps}
 \end{table}
 
+\subsection{Size of the graph}
 It became apparent that a longer message required fewer forces. 
 This made sense, seeing as a longer message meant a larger graph with more edges and therefore possible ways of swapping values.
 During development of the programme we played around with the idea of using more vertices than what was required for the message, as we predicted it would mean fewer forces.
 These predictions would seem to be correct, but we never implemented the idea for two reasons.
+
 One, we were not entirely certain how to do it: should we just use twice as much as was actually needed?
 This would lead to using much more than what was necessary with a longer message, since the improvement quickly diminishes with longer messages.
 Instead it would make more sense to always use a certain minimum of values, so shorter messages could be encoded properly, but longer ones did not take too long to encode.
@@ -67,6 +95,7 @@ The second reason we did not implement it was due to performance concerns.
 Since our programme performed rather poorly during most of the development we considered it a very bad idea to construct a larger graph than we already were constructing.
 Seeing as we managed to optimise the programme quite significantly, we could have properly implemented a solution regardless.
 
+\subsection{Colour histograms}
 Actually comparing colour histograms from the two methods was not as trivial as one could have hoped.
 Using the LSB-method only made immediately visible changes to the colour histograms if about a quarter of the image had data encoded in it.
 When using an image of substantial size, a quarter of an image can hold a large amount of data. 
@@ -78,9 +107,50 @@ Running several test runs with different message lengths made it clear that the 
 This made a direct comparison using realistic real-world images and messages impossible. 
 The only real comparison we could make was between images containing different messages that used up every single available byte in the image.
 Since the GT method became very time consuming with larger messages, we would need to use an image that was small enough that we could embed all bytes possible, without it taking too long to complete.
-We ended up using a 120x120 px
+We ended up using an image with a resolution of 120x120 pixels.
 
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figures/tiger_smallHisto.png}
+            \caption{Cover image}
+            \label{fig:coverHisto}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+            \includegraphics[width=\textwidth]{figures/gtOut2Histo.png}
+            \caption{Cover image as JPEG}
+            \label{fig:gt2Histo}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+            \includegraphics[width=\textwidth]{figures/lsbOutHisto.png}
+            \caption{Stego image with message (LSB)}
+            \label{fig:lsbHisto}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+            \includegraphics[width=\textwidth]{figures/gtOutHisto.png}
+            \caption{Stego image with message (GT)}
+            \label{fig:gtHisto}
+    \end{subfigure}
+    \caption{Histogram of a 120x120 px image}
+    \label{fig:histogramsComparisons}
+\end{figure}
 
+On figure \ref{fig:histogramsComparisons} four histograms are shown.
+Figures \ref{fig:coverHisto} and \ref{fig:gt2Histo} shows the histogram of the original image and for the image encoded as JPEG without a message.
+On figure \ref{fig:lsbHisto} and \ref{fig:gtHisto} the histograms of the images filled with a message using the LSB and GT methods respectively.
+From these results it was clear that there was not much difference between the colour histograms of the image saved as JPEG with or without the message.
+The image saved with LSB's histogram, however, clearly showed signs that the image had been tampered with.
+
+The reason the histogram looked like that for the LSB image was because thr bit-patterns of the encoded data became very clear in the histograms.
+The bytes encoded in the images were the characters A-Z in ASCII repeated the capacity of the image had been reached.
+A-Z in ASCII ranges from $65-90$, or in base two: $01000001_2-01011010_2$.
+As the range was quite short, a lot of the higher order bits would rarely change, and those patterns became obvious in the histogram, as pixels ending in these patters became more common.
+
+The histogram in figure \ref{fig:lsbHisto} also showed how the LSB method changed images where a colour is very common.
+The leftmost bar described pixels whose B-component is 0.
+In the original cover image, this bar was much higher than the others, and therefore much more common in the image, but the LSB has made it so that those components now gets spread out, which again becomes very obvious in the histogram.
+
+\subsection{Euclidean distance}
 A different way of looking for changes in an image is by looking at their Euclidean distance.
 This can be done by calculating the distance between the colour values of each pixel in two equally sized images.
 The sum of all these distances can be used as measure of the change from one image to the other.
@@ -91,9 +161,13 @@ While the LSB-method would certainly incur a smaller difference in the Euclidean
 First of all using this method required that the user was in possession of both the original and the stego image.
 This would indeed be possible if the parties sharing secret messages in the images, were using images they found on the internet and tampered with them.
 They could completely foil this risk of being compromised then, by simply using images that they took themselves.
+
 The other reason for the differences being larger is due to how the JPEG-file format is encoded.
 Using the LSB of every pixel there is only the potential to change the value of each pixel by one.
 Using the graph-theoretical approach with an M value of four, means that each individual value can be changed by four. 
 This change is applied after the quantization step to avoid losing the data again.
 This in turn means that the small change of up to four is multiplied by the quantization table, when the image is shown.
 Bla bla something something green is less than the other
+
+So while the euclidean distance might be bigger in the image where the data is hidden using our GT programme, it is of little use in automated system doing steganalysis on a multitude of images, as it would have nothing to compare the images to. 
+Such a system could however check the histogram of the image, and discover abnormalities such as those the LSB method produces, as shown in figure \ref{fig:lsbHisto}.

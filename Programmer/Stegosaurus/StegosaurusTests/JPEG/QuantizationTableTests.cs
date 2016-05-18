@@ -74,14 +74,14 @@ namespace Stegosaurus.Tests
         public void QuantizationToStringTest()
         {
             QuantizationTable defaultYQuantizationTable = QuantizationTable.JpegDefaultYTable;
-            string expectedString = "16\t11\t10\t16\t24\t40\t51\t61\t\n" +
-                                    "12\t12\t14\t19\t26\t58\t60\t55\t\n" +
-                                    "14\t13\t16\t24\t40\t57\t69\t56\t\n" +
-                                    "14\t17\t22\t29\t51\t87\t80\t62\t\n" +
-                                    "18\t22\t37\t56\t68\t109\t103\t77\t\n" +
-                                    "24\t35\t55\t64\t81\t104\t113\t92\t\n" +
-                                    "49\t64\t78\t87\t103\t121\t120\t101\t\n" +
-                                    "72\t92\t95\t98\t112\t100\t103\t99\t\n";
+            string expectedString = "16;11;10;16;24;40;51;61;" +
+                                    "12;12;14;19;26;58;60;55;" +
+                                    "14;13;16;24;40;57;69;56;" +
+                                    "14;17;22;29;51;87;80;62;" +
+                                    "18;22;37;56;68;109;103;77;" +
+                                    "24;35;55;64;81;104;113;92;" +
+                                    "49;64;78;87;103;121;120;101;" +
+                                    "72;92;95;98;112;100;103;99;";
 
             NUnit.Framework.Assert.AreEqual(expectedString, defaultYQuantizationTable.ToString());
         }

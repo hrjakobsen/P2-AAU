@@ -457,8 +457,6 @@ namespace Stegosaurus {
 
             _s.Restart();
             int threshold = 5;
-            //World's worst loops (O(n^2) shiet)
-            //Find alle the possible switches between vertices and add them as edges
             foreach (Vertex currentVertex in graph.Vertices) {
                 foreach (Vertex otherVertex in graph.Vertices.Where(otherVertex => currentVertex != otherVertex)) {
                     _addEdge(true, true, currentVertex, otherVertex, threshold, graph);

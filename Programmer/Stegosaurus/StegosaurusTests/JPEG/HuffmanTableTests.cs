@@ -106,7 +106,7 @@ namespace Stegosaurus.Tests
 
             HuffmanTable huffTable1 = new HuffmanTable(huffmanTestElement1, huffmanTestElement2);
 
-            NUnit.Framework.Assert.AreEqual("[0, 0 = 10, 1000]\n[1, 1 = 11, 1000]\n", huffTable1.ToString());
+            NUnit.Framework.Assert.AreEqual("0,2,8;1,3,8;", huffTable1.ToString());
         }
 
         [Test()]

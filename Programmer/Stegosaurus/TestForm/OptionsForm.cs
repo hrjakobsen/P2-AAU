@@ -120,25 +120,20 @@ namespace TestForm
             DeselectAllOptionPanels();
             if (OptionsBox.SelectedItem == OptionsBox.Items[0])
             {
-                pnlOptionsGeneral.Visible = true;
-                pnlOptionsGeneral.Enabled = true;
-            }
-            else if (OptionsBox.SelectedItem == OptionsBox.Items[1])
-            {
                 pnlOptionsHuffman.Visible = true;
                 pnlOptionsHuffman.Enabled = true;
             }
-            else if (OptionsBox.SelectedItem == OptionsBox.Items[2])
+            else if (OptionsBox.SelectedItem == OptionsBox.Items[1])
             {
                 pnlOptionsQuantization.Visible = true;
                 pnlOptionsQuantization.Enabled = true;
             }
-            else if (OptionsBox.SelectedItem == OptionsBox.Items[3])
+            else if (OptionsBox.SelectedItem == OptionsBox.Items[2])
             {
                 pnlOptionsQuality.Visible = true;
                 pnlOptionsQuality.Enabled = true;
             }
-            else if (OptionsBox.SelectedItem == OptionsBox.Items[4])
+            else if (OptionsBox.SelectedItem == OptionsBox.Items[3])
             {
                 pnlOptionsEncodingMethod.Visible = true;
                 pnlOptionsEncodingMethod.Enabled = true;
@@ -147,9 +142,6 @@ namespace TestForm
 
         private void DeselectAllOptionPanels()
         {
-            pnlOptionsGeneral.Visible = false;
-            pnlOptionsGeneral.Enabled = false;
-
             pnlOptionsHuffman.Visible = false;
             pnlOptionsHuffman.Enabled = false;
 
@@ -299,17 +291,6 @@ namespace TestForm
         private void selectOutputFolder_HelpRequest(object sender, EventArgs e)
         {
             
-        }
-
-        private void btnSelectOutputFolder_Click(object sender, EventArgs e)
-        {
-            DialogResult result = selectOutputFolder.ShowDialog();
-
-            if (!string.IsNullOrWhiteSpace(selectOutputFolder.SelectedPath))
-            {
-                ImagesSavePath = selectOutputFolder.SelectedPath;
-                tbSaveLocation.Text = ImagesSavePath;
-            }
         }
 
         private void tbarQualitySlider_ValueChanged(object sender, EventArgs e)
