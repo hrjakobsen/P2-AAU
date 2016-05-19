@@ -58,7 +58,9 @@ namespace TestForm{
             }
             catch (Exception)
             {
-                MessageBox.Show("An error occured while trying to load your settings, they seem to be invalid");
+                MessageBox.Show("An error occured while trying to load your settings, they seem to be invalid. " +
+                                "Correct file or reset all settings to default in Options.", "Error loading settings");
+
             }
         }
 
@@ -67,6 +69,8 @@ namespace TestForm{
             LSBMethodSelected = Properties.Settings.Default.LSBMethodSelected;
             tbarEncodingQuality.Value = Properties.Settings.Default.Quality;
             QualityLocked = Properties.Settings.Default.QualityLocked;
+
+            Text = !LSBMethodSelected ? @"Stegosaurus (GT)" : @"Stegosaurus (LSB)";
 
             if (QualityLocked && LSBMethodSelected)
             {
@@ -142,7 +146,7 @@ namespace TestForm{
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("An error occured while trying to save your settings, they seem to be invalid!");
+                    MessageBox.Show("An error occured while trying to save your settings, they seem to be invalid!", "Error saving settings");
                     OptionsForm.SkipSettingsInitialization = true;
                 }
 
@@ -165,63 +169,15 @@ namespace TestForm{
 
         private void loadSettingsFromOptionsForm()
         {
-            if (OptionsForm.HuffmanTableComponentYAC.SaveTable().Equals(HuffmanTable.JpegHuffmanTableYAC))
-            {
-                HuffmanTableYAC = HuffmanTable.JpegHuffmanTableYAC;
-            }
-            else
-            {
-                HuffmanTableYAC = OptionsForm.HuffmanTableComponentYAC.SaveTable();
-            }
-
-            if (OptionsForm.HuffmanTableComponentYDC.SaveTable().Equals(HuffmanTable.JpegHuffmanTableYDC))
-            {
-                HuffmanTableYDC = HuffmanTable.JpegHuffmanTableYDC;
-            }
-            else
-            {
-                HuffmanTableYDC = OptionsForm.HuffmanTableComponentYDC.SaveTable();
-            }
-
-            if (OptionsForm.HuffmanTableComponentChrAC.SaveTable().Equals(HuffmanTable.JpegHuffmanTableChrAC))
-            {
-                HuffmanTableChrAC = HuffmanTable.JpegHuffmanTableChrAC;
-            }
-            else
-            {
-                HuffmanTableChrAC = OptionsForm.HuffmanTableComponentChrAC.SaveTable();
-            }
-
-            if (OptionsForm.HuffmanTableComponentChrDC.SaveTable().Equals(HuffmanTable.JpegHuffmanTableChrDC))
-            {
-                HuffmanTableChrDC = HuffmanTable.JpegHuffmanTableChrDC;
-            }
-            else
-            {
-                HuffmanTableChrDC = OptionsForm.HuffmanTableComponentChrDC.SaveTable();
-            }
-
-            if (OptionsForm.QuantizationTableComponentY.SaveTable().Equals(QuantizationTable.JpegDefaultYTable))
-            {
-                QuantizationTableY = QuantizationTable.JpegDefaultYTable;
-            }
-            else
-            {
-                QuantizationTableY = OptionsForm.QuantizationTableComponentY.SaveTable();
-                tbarEncodingQuality.Value = defaultQuality;
-            }
-
-            if (OptionsForm.QuantizationTableComponentChr.SaveTable().Equals(QuantizationTable.JpegDefaultChrTable))
-            {
-                QuantizationTableChr = QuantizationTable.JpegDefaultChrTable;
-            }
-            else
-            {
-                QuantizationTableChr = OptionsForm.QuantizationTableComponentChr.SaveTable();
-                tbarEncodingQuality.Value = defaultQuality;
-            }
+            HuffmanTableYAC = defaultOrCustomHuffmanTable(OptionsForm.HuffmanTableComponentYAC, HuffmanTable.JpegHuffmanTableYAC);
+            HuffmanTableYDC = defaultOrCustomHuffmanTable(OptionsForm.HuffmanTableComponentYDC, HuffmanTable.JpegHuffmanTableYDC);
+            HuffmanTableChrAC = defaultOrCustomHuffmanTable(OptionsForm.HuffmanTableComponentChrAC, HuffmanTable.JpegHuffmanTableChrAC);
+            HuffmanTableChrAC = defaultOrCustomHuffmanTable(OptionsForm.HuffmanTableComponentChrDC, HuffmanTable.JpegHuffmanTableChrDC);
+            QuantizationTableY = defaultOrCustomQuantizationTable(OptionsForm.QuantizationTableComponentY, QuantizationTable.JpegDefaultYTable);
+            QuantizationTableChr = defaultOrCustomQuantizationTable(OptionsForm.QuantizationTableComponentChr, QuantizationTable.JpegDefaultChrTable);
 
             LSBMethodSelected = OptionsForm.LSBMethodSelected;
+            Text = !LSBMethodSelected ? @"Stegosaurus (GT)" : @"Stegosaurus (LSB)";
 
             tbarEncodingQuality.Value = OptionsForm.Quality;
 
@@ -249,6 +205,42 @@ namespace TestForm{
             }
         }
 
+        //Returns default table if the table made from the tablecomponent is the same as defaultTable, custom table if they are different.
+        //Doing this prevents an error ocuring when changing quality while using a 'default' non-default table
+        private HuffmanTable defaultOrCustomHuffmanTable(HuffmanTableComponent customHuffmanTable, HuffmanTable defaultTable)
+        {
+            HuffmanTable H;
+            if (customHuffmanTable.SaveTable().Equals(defaultTable))
+            {
+                H = defaultTable;
+            }
+            else
+            {
+                H = customHuffmanTable.SaveTable();
+            }
+
+            return H;
+        }
+
+        //Returns default table if the table made from the tablecomponent is the same as defaultTable, custom table if they are different.
+        //Doing this prevents an error ocuring when changing quality while using a 'default' non-default table
+        private QuantizationTable defaultOrCustomQuantizationTable(QuantizationTableComponent customQuantizationTable,
+            QuantizationTable defaultTable)
+        {
+            QuantizationTable Q;
+
+            if (customQuantizationTable.SaveTable().Equals(defaultTable))
+            {
+                Q = defaultTable;
+            }
+            else
+            {
+                Q = customQuantizationTable.SaveTable();
+            }
+
+            return Q;
+        }
+
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AboutForm aboutForm = new AboutForm();
@@ -270,7 +262,7 @@ namespace TestForm{
                 btnLoadMessageFile.Enabled = true;
                 btnRemoveMsgFile.Enabled = true;
                 tbMessage.Enabled = true;
-                btnProceed.Text = @"Encode";
+
                 if (!_messageFileSet)
                 {
                     btnProceed.Enabled = false;
@@ -283,6 +275,7 @@ namespace TestForm{
                 tbMessage.Enabled = false;
                 _messageFileSet = false;
                 btnProceed.Text = @"Decode";
+
                 if (_inputImageSet)
                 {
                     btnProceed.Enabled = true;
