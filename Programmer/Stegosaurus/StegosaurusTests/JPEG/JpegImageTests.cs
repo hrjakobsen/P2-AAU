@@ -29,31 +29,24 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void JpegImage_Test_if_constructor_throws_exception_when_image_is_null() //Test if JpegImage constructor throws exception when cover image is null
+        public void JpegImage_Test_if_constructor_throws_exception_when_image_is_null()
         {
             NUnit.Framework.Assert.Throws<ArgumentNullException>(() => new JpegImage(null, 100, 4));
         }
 
         [Test()]
-        public void Encode_Test_if_throws_Exception_When_Message_Length_Is_Over_Limit() //TODO: Some errors with _addVertices, _encodeMessage, _encodeMCU, _writeScanData, Encode
+        public void Encode_Test_if_throws_Exception_When_Message_Length_Is_Over_Capacity()
         {
-            /*Bitmap b = new Bitmap(3, 3);
-            b.SetPixel(0,0, Color.White);
-            b.SetPixel(1,1,Color.DarkBlue);
-            b.SetPixel(0,1,Color.Red);
-            b.SetPixel(1,0,Color.Green);
-            b.SetPixel(2,2,Color.Purple);
-           
-
-            var result = new Bitmap(b, 2000, 2000);
-            var hello = new JpegImage(result, 100, 4);
-            int das = hello.GetCapacity();
-            int len = 40;
-            byte[] msg = new byte[len];
-            
+            Bitmap inputBitmap = new Bitmap(16, 16);
+            inputBitmap.SetPixel(8,8, Color.White);
             
 
-            hello.Encode(msg);*/
+            Bitmap scaledBitmap = new Bitmap(inputBitmap, 200, 200);
+            JpegImage ji = new JpegImage(scaledBitmap, 100, 4); // Maximum length is 22
+            
+            byte[] msg = new byte[50];
+
+            NUnit.Framework.Assert.Throws<ImageCannotContainDataException>(() => ji.Encode(msg));
         }
 
         [Test()]
@@ -220,10 +213,10 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void EncodeAndQuantizeValues_Test_() //TODO: "_encodeAndQuantizeValues" method can't be found
+        public void EncodeAndQuantizeValues_Test_() 
         {
-            PrivateType pt = new PrivateType(typeof(JpegImage));
-            JpegImage ji = new JpegImage(new Bitmap(200, 100), 100, 4);
+            JpegImage ji = new JpegImage(new Bitmap(16, 16), 100, 4);
+
             PrivateObject po = new PrivateObject(ji);
 
             sbyte[][,] inputValues = {
@@ -231,13 +224,18 @@ namespace Stegosaurus.Tests
                 new sbyte[16, 16],
                 new sbyte[16, 16], 
             };
+            inputValues[0][0, 0] = 1;
+            inputValues[0][0, 1] = 2;
+            inputValues[0][0, 2] = 3;
+            inputValues[0][0, 3] = 4;
 
-            ji.GetCapacity();
-            //pt.InvokeStatic("_encodeAndQuantizeValues", new object[] {inputValues, 200, 100});
-            po.Invoke("_encodeAndQuantizeValues", new object[] {inputValues, 200, 100});
+            po.Invoke("_encodeAndQuantizeValues", new object[] {inputValues, 16, 16});
 
-            List<Tuple<short[,], HuffmanTable, HuffmanTable, int>> quan = (List<Tuple<short[,], HuffmanTable, HuffmanTable, int>>)po.GetField("_quantizedBlocks");
-            List<short> nonzero = (List<short>)po.GetField("_nonZeroValues");
+            List<short> nonZero = (List<short>)po.GetField("_nonZeroValues");
+            
+            List<short> expected = new List<short>(4) {1, 1, 1, 1};
+
+            NUnit.Framework.Assert.AreEqual(expected, nonZero);
         }
 
         [Test()]
