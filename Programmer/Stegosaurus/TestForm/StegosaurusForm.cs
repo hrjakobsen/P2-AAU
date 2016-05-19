@@ -262,7 +262,7 @@ namespace TestForm{
                 btnLoadMessageFile.Enabled = true;
                 btnRemoveMsgFile.Enabled = true;
                 tbMessage.Enabled = true;
-
+                btnProceed.Text = @"Decode";
                 if (!_messageFileSet)
                 {
                     btnProceed.Enabled = false;
