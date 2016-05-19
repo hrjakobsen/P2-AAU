@@ -33,17 +33,18 @@ The actual usage is seen in listing \ref{privateObjectTest}, where a \lstinline|
 
 \begin{lstlisting}[firstnumber=23,label=privateObjectTest,caption={Example usage of the \lstinline|PrivateObject| class \textbf{File: }JPEGImageTests.cs}]
 [Test()]
-public void BreakDownMessage_Test()
-{
-PrivateObject po = new PrivateObject(new JpegImage(new Bitmap(200, 100), 100, 4));
-byte[] message = new byte[] {1,1,1};
+public void BreakDownMessage_Test() {
+	PrivateObject po = new PrivateObject(
+		               new JpegImage(
+		               new Bitmap(200, 100), 100, 4));
+	byte[] message = new byte[] {1,1,1};
 
-po.Invoke("_breakDownMessage", message);
-List<byte> messageList = new List<byte>();
-messageList = (List<byte>)po.GetField("_message"); //Get the broken down message from instance of JpegImage class
+	po.Invoke("_breakDownMessage", message);
+	List<byte> messageList = new List<byte>();
+	messageList = (List<byte>)po.GetField("_message");
 
-List<byte> expectedList = new List<byte> {0, 0, 0, 0, 0, 0, 3, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1}; // What {1,1,1} corresponds to when broken down and has length encoded
-NUnit.Framework.Assert.AreEqual(expectedList, messageList);
+	List<byte> expectedList = new List<byte> {0, 0, 0, 0, 0, 0, 3, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1};
+	NUnit.Framework.Assert.AreEqual(expectedList, messageList);
 }
 \end{lstlisting}
 
@@ -186,6 +187,9 @@ We create a number of vertices with the same properties and manually add these t
 \lstinline|_addEdge()| is tested in much the same way, and both tests pass.\\
 We can now decide, based on the test results of the \lstinline|JpegImage| class, that it works as expected, and can be safely used in our programme.
 
-% Maybe the first paragraph should be in design
-% Plan to maybe add a "case study" with an example from our program
-% Need to make some assumption regarding tests
+\subsection{Conclusion on Testing}
+Testing the programme have definitely helped the programming. By testing we have caught arithmetic errors, such as the method \lstinline|int GetCapacity()| in the \lstinline|JPEGImage| class calculating the amount of available bytes wrongly. This caused the programme to return a much lower capacity than what was actually possible. Another problem we caught while testing was with the method \lstinline|void Scale_MultiplierInRange_ScalesTable()| while testing the \lstinline|QuantizationTable|. The programme calculates a multiplier for the quantization table, based on the quality setting. The original line of code doing this was: \lstinline|double scale = ((100 - quality) / 53 + 0.125);|. From testing we learned that this returned wrong results, due to the fact that integer division is used when doing the division. We then inserted a typecast to a \lstinline|double|, and the test succeeded.
+
+More serious mistakes were caught as well. A mistake in the \lstinline|Graph| class caused that the edges returned by the \lstinline|GetSwitches()| method would not make the vertices perfect pairs. And they would have to be forced after the swaps anyway. This essentially nullified the benefits from the graph theoretic method, as the graph was not being used. The tests made us find this mistake, and the performance of the program improved greatly.
+
+Looking back to the unit testing of this programme, it definitely helped us find mistakes, but there are things that could have done this process much easier. Instead of cramming a lot of the functionality into the \lstinline|JPEGImage| class, we could have split the process into smaller parts. If we have made classes along the line of \lstinline|GraphEncoder| which handled all of the graph theory, such as adding vertices and edges, the \lstinline|JPEGImage| would have been easier to test, and most likely have made it so that we could test purely by using the public methods. 
