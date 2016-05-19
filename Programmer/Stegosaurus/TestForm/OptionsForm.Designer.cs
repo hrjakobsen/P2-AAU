@@ -100,8 +100,8 @@
             // 
             this.OptionsBox.FormattingEnabled = true;
             this.OptionsBox.Items.AddRange(new object[] {
-            "Huffman table (custom)",
-            "Quantization table (custom)",
+            "Huffman table",
+            "Quantization table",
             "Quality setting",
             "Encoding method"});
             this.OptionsBox.Location = new System.Drawing.Point(14, 20);
