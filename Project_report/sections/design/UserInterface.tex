@@ -1,93 +1,81 @@
 \section{User Interface}
 \label{sec:designUI}
+Even though we had an agreement, that the ITC group was to create an Android application implementing our programme, our project still had to be able stand on its own. We therefore decided to create a user interface displaying the programme's capabilities. 
 
-The user interface (UI) for Stegosaurus is going to be created in Visual Studio using C\# and WinForms.
-In one of our previous experiments, we have created a very basic UI.
-The only function of this UI was to show the cover image, the image to be hidden in the cover and the final output.
-In this example, the user had no visual cue on whether the programme had done as it was supposed to and the user was asked for no destiantion path or additional input.
-This is something that we would like to improve on in our final design.
+The user interface (UI) for Stegosaurus is created in Visual Studio using C\# and WinForms.
+In one of our previous experiments, we had created a very basic UI.
+The only functionality of that UI was to show the cover image, the image to be hidden in the cover and the final output.
 
-Something else the experiment lacked was a choice of encoding.
+Something the experiment lacked was a choice of encoding.
 For example, whether they would like to use the least significant bit method or our graph theoretical method.
-Therefore, the final design should also include several different options, so as to customise the encoding of their image to what suits their requirements.
+Therefore, the final design should include several different options, so as to customise the encoding of their image to what suits their requirements.
 
-Another thing lacking in previous designs has been a guide or explanation throughout the programme and description of its joined functionality.
+Another thing lacking in previous designs has been a guide or explanation throughout the programme and description of its joint functionality.
 Previous versions have been less complex and perhaps did not require much explanation.
-However, now as the programme will have a larger set of different settings, we believe that it should be a requirement to have a short explanation of these, what impact they will have on the end result and what the programme will do in general.
+However, now as the programme will have a larger set of settings, we believe that it should be a requirement to have a short explanation of these, what impact they will have on the end result and what the programme will do in general.
 
 All of these things should illustrate to the user how the programme works and what it is doing while running.
 
 \subsection{Design}
 
-The figure as shown in \ref{fig:LSBForm} is what our UI looked like for our LSB experiment.
-We are taking the main ideas from this, where we show the user the images or files they have selected and the final product. This should ensure them, that the corrected files has been selected and functionality is as expected.
+The form as shown in figure \ref{fig:LSBForm} is what our UI looked like for our LSB experiment.
+We are taking the main ideas from this, where we show the user the images or files they have selected and the final product. This should ensure them, that the correct files have been selected and the encoding process has succeeded.
 \begin{figure}
 	\centering
-	\includegraphics[width=1\textwidth]{figures/LSBForm.png}
+	\includegraphics[width=\textwidth]{figures/LSBForm.png}
 	\caption{This is the form for our LSB experiment, which acted as inspiration to our final design.}
 	\label{fig:LSBForm}
 \end{figure}
-We decided, however, that it was confusing to have three seperate load buttons.
+We decided, however, that it was confusing to have three separate load buttons.
 As shown in figure \ref{fig:LSBForm} above, the cover image is uploaded in the left side, the message in the middle and the encoded image on the right.
-When you wanted to decode the image, the encoded image had to be uploaded using the load-button to the right. This resulted in an odd and unnatural-feeling user experience.
+When you wanted to decode the image, the encoded image had to be uploaded using the load-button to the right. This led to a confusing user experience.
 Because of this we have decided to only have two buttons, one for loading an image that is to be either encoded or decoded and another for only getting the hidden message.
 
-We have furthermore decided to include extra features to our overall design making use of the functionality of our programmes encoder/deocer.
-These features include giving the user options to use their own Huffman code and own quantization tables to make their encoded message as precise as possible.
+We have furthermore decided to include extra features to our overall design making use of the functionality of our programme's encoder and decoder.
+These features include giving the user options to use their own Huffman and quantization tables to control the encoding process with precision.
 
 To do this, we decided that creating an options form would be ideal when it comes to guiding the user through this extended functionality.
-The options form would consist of a choice of encoding method, a quality-setting for use when encoding using our GT method, customisation of Huffman tables and customisation of quantization tables.
+The options form would consist of a choice of encoding method, a quality-setting for use when encoding using our graph-theoretic method, customisation of Huffman and quantization tables.
 However, there is also an option to reset all settings to default, if the user in question has no specific preferences or made an error.
 
-All of these options allow the user to encode their message according to their specific needs.
 After their message has been encoded, there is, naturally, a need to be able to decode it after the encoding process.
 This means that the programme should be able to present these options to the user as openly as possible, as these are the key features of the programme.
 
-This, however, is slightly more advanced when it comes to Huffman coding as each table has a different length.
-
 As something more general, we have created a basic help guide to explain to the user how the programme works, and a short description of what each feature entails.
-Within this menu item, there will also be an 'about' that gives a short description of the programme, who it is by and under which circumstances it has been made.
+Within this menu item, there will also be an \textit{About} window that gives a short description of the programme, who it is by and under which circumstances it has been made.
 
 Something that is absolutely fundamental to the programme, is showing the user the images they provide and the image they produce.
-This visual representation gives the user an indication that the programme is doing something and also peace of mind in that they have chosen the correct files.
-
-Another thing in regard to giving the user a visual representation is having some form of status indicator, to show the user that the programme is working on encoding or decoding their image.
+This visual representation gives the user reassurance that they have chosen the correct files.
 
 Likewise, another feature, that we deem to be a rather important visual representation is the quality of encoding.
 Therefore, we have decided to have a slider to show what level of quality the programme will encode with.
 
-Saving of all these custom settings also had to be a fundemental function of the programme as they can be quite time consuming to set and this is now done as soon as the programme is closed.
+Saving of all these custom settings of course needed to be a function of the programme as they can be quite time-consuming to set and this is now done as soon as the programme is closed.
 
 The following list is what the user interface will include:
 
 \begin{description}
 \item[Main form]
-The encode and decode buttons work as they are in the experiment's UI.
-But if we also want to have our buttons to work as an option on whether the image has to be decoded or more importantly encoded, where the selection of a message should be allowed, radio buttons, where encode or decode gets selected, and a single ''proceed'' button that handles both encode and decode is a far better option. Thereby when decode is selected the message image load button, will not be applicable for selection
-
-This is shown in our main form as can be seen on the figure \ref{fig:StegoMainForm}.
-
-Within the main form, when the user decides to encode or decode their image, the user will be asked to choose a save location. This seemed more effective than having the user go into an options form and select a filepath in there.
+We wanted to make the main form as simple as possible. Therefore we have a single button for loading images. Additionally, there is also a single button for both encoding and decoding, this option can be selected by using the radio buttons. Also there is an option for encoding text, or simply encode a file.
 
 \item[LSB or Graph Theory Method]
-The user will be able to switch between the two different methods in an options form. This is an improvement over our initial design that utilised two separate tabs on the main form, one for encoding or decoding using the LSB method and one for the GT method. This result in a simpler interface with almost-identical functionality being less split across the programme. This improvement is made possible by the OOP design of the encoders and decoders, having the various ways of encoding/decoding available from the same interface.
+The user will be able to switch between the two different methods in the options form. This is an improvement over our initial design that utilised two separate tabs on the main form, one for encoding or decoding using the LSB method and one for the GT method. This resulted in a simpler interface with almost identical functionality being less split across the programme. This improvement is made possible by the OOP design of the encoders and decoders, having the various ways of encoding/decoding available from the same interface.
 
 \begin{figure}
 	\centering
 	\includegraphics[width=1\textwidth]{figures/StegoMainForm.png}
-	\caption{This is how the user will meet our graph theoretical method and LSB, where the message to be encoded no longer has to be an image, but can be a text message written directly in the programme or any sort of file freely selected.}
+	\caption{This is how the user will meet our graph theoretical method and LSB, where the message to be encoded no longer has to be an image, but can be a text message written directly in the programme or any sort of file freely selected}
 	\label{fig:StegoMainForm}
 \end{figure}
 
 \item[Quality setting]
-Our initial idea was a slider that would be shown on the main form and in our options form.
-This slider would then tell us what the quality settings were set to, from 0 to 100.
+A slider shows the user what quality setting currently used when encoding JPEG images. 
 This slider was initially planned to only be a part of the main form, but has since been moved to options as well as the main form for the graph theoretical method, as we decided it was as much a custom option as the Huffman and quantization tables.
 
 \item[Quantization Tables]
-A difficulty that arose when deciding on these features were how we were going to make it possible for a user to input their custom quantization and Huffman codes.
+A difficulty that arose when deciding on these features was how we were going to make it possible for a user to input their custom quantization and Huffman codes.
 
-An initial idea included a CSV-file (Comma Separated Values file), but we decided that for quantization tables, it was ideal and no trouble to have the user input their table by typing them in text boxes as the size of each quantization table is always 64 and the same for both the luminance and chromium channels. This can be seen in figure \ref{fig:StegoOptionQuant}.
+An initial idea included a CSV-file (Comma Separated Values file), but we decided that for quantization tables, it was ideal and no trouble to have the user customise their tables by typing them in text boxes, as the size of each quantization table is always 64 for both the luminance and chromium channels. This can be seen in figure \ref{fig:StegoOptionQuant}.
 
 
 \begin{figure}
@@ -99,7 +87,7 @@ An initial idea included a CSV-file (Comma Separated Values file), but we decide
 
 \item[Huffman Tables]
 
-Huffman tables requires a similar design to quantization tables. There are four radio buttons to switch between the four different channels. Text boxes have been set up to be able to take in a string from the user. However, as the sizes of the Huffman tables vary, it is necessary to have a function that allows the user to add rows as needed. Huffman tables options form can be seen in figure \ref{fig:StegoOptionHuff2}.
+Huffman tables requires a similar design to quantization tables. There are four radio buttons to switch between the four different channels. Text boxes have been set up to be able to take in a string from the user. However, as the sizes of the Huffman tables vary, it is necessary to have a button that allows the user to add rows as needed. Huffman table customisation can be seen in figure \ref{fig:StegoOptionHuff2}.
 
 
 \begin{figure}
@@ -109,25 +97,12 @@ Huffman tables requires a similar design to quantization tables. There are four 
 	\label{fig:StegoOptionHuff2}
 \end{figure}
 
-\item[Process Indicator]
-The original idea of showing the user what was happening with the programme by having a pop-up window has been replaced by having default cursor replaced by a waitCursor and a label stating what is happening and using which method.
-This is also a way of showing the viewer that something is happening.
-If the programme often took longer than a couple of minutes, it would be more of a requirement to have an actual progress bar, that show how far in the programme is in it's process. Such functionality could be optained by keeping track of the edges in the encoder and calculating a percentage of the processed edges.
-
 \item[Help form]
 A very general description of what the programme does and descriptions of the different settings in the options form.
 We believe this to be important to the overall understanding of how the programme is to be used; something that our previous experiments have not had.
 \end{description}
 
 There are some things with the UI that can be seen as problematic.
-Although the programme does tell the user that an error occured when they try to save an ilegal set of settings, it does not save any of the settings but reverts to the previous set. That means that the user has to reconfigure everything from at worst a single mistake.
-
-This in of itself is an issue.
-Typing each value in the different text boxes can be quite cumbersome.
+Although the programme does tell the user that an error occurred when they try to save an illegal set of settings, it does not save any of the settings but reverts to the previous set. That means that the user has to reconfigure everything from even a single mistake.
 
 This new interface has advantages over previous interfaces in our experiments throughout our process, but there are still some features that could be included, not to improve the programme, but the overall user experience.
-
-\subsubsection*{Conclusion}
-This concludes the design phase of our project. We have now discussed all of our various considerations and why we went in the direction that we did. In the coming chapter, we will discuss our implementation of the design described in this chapter.
-
-
