@@ -1,5 +1,4 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
-\section{Discussion}
 We started out by using the relatively simple LSB-method for hiding data in an image.
 Specifically, we saved an image inside of another PNG-image.
 While the differences in the image with and without the message-image were hardly noticeable to the human eye, we did find that comparing colour histograms of the two images revealed that there had in fact been made changes to it.
@@ -9,7 +8,7 @@ Any changes would come from the unmatched pairs: the quantized DCT values used i
 When this happened we were forced to change the individual values, which led to a change in the colour composition of the image.
 Using this method, we expected the changes to be small enough so that it would not immediately draw attention to the image, if it was being subjected to a colour histogram.
 
-\subsection{Changes to the image}
+\section{Changes to the Image}
 To find out roughly how many of these forces there were in a given image, we used our programme to save different messages in different images.
 The used five different message lengths were: 70, 140, 280, 560 and 1120 bytes.
 Each message consisted of the ASCII characters A-Z repeated to fill out the message.
@@ -26,19 +25,19 @@ This led to a total of 20 tests as seen in table \ref{fig:forces_swaps}.
     \centering
     \begin{subfigure}[b]{0.33\textwidth}
         \includegraphics[width=\textwidth]{figures/cat}
-            \caption{Cat image\citep{imgCat}}
+            \caption{Cat image \citep{imgCat}}
     \end{subfigure}
     \begin{subfigure}[b]{0.33\textwidth}
             \includegraphics[width=\textwidth]{figures/landscape}
-            \caption{Landscape image\citep{imgLandscape}}
+            \caption{Landscape image \citep{imgLandscape}}
     \end{subfigure}
     \begin{subfigure}[b]{0.33\textwidth}
             \includegraphics[width=\textwidth]{figures/tiger}
-            \caption{Tiger image\citep{imgTiger}}
+            \caption{Tiger image \citep{imgTiger}}
     \end{subfigure}
     \begin{subfigure}[b]{0.33\textwidth}
             \includegraphics[width=\textwidth]{figures/snow}
-            \caption{Snow image\citep{imgSnow}}
+            \caption{Snow image \citep{imgSnow}}
     \end{subfigure}
     \caption{The four images used for the tests in table \ref{fig:forces_swaps}}
     \label{fig:four_test_images}
@@ -46,6 +45,8 @@ This led to a total of 20 tests as seen in table \ref{fig:forces_swaps}.
 
 \begin{table}[H]
     \centering
+	\caption{The percentages of values which the program swapped or forced. Since this was run with M = 4, about a fourth of the values already fit.}
+    \label{fig:forces_swaps}
     \resizebox{0.7\textwidth}{!}{%
         \begin{tabular}{@{}lllll@{}}
             \textbf{Image}                      & \textbf{Message length} & \textbf{Swaps} & \textbf{Forces} & \textbf{Already fit} \\ \midrule
@@ -71,11 +72,15 @@ This led to a total of 20 tests as seen in table \ref{fig:forces_swaps}.
                                                 & 1120                    & 69\%           & 7\%             & 24\%                 \\ \bottomrule
         \end{tabular}
     }
-    \caption{The percentages of values which the program swapped or forced. Since this was run with M = 4, about a fourth of the values already fit.}
-    \label{fig:forces_swaps}
 \end{table}
 
-\subsection{Size of the graph}
+As the table showed, some of the images required much fewer forces than others.
+The main reason for this was that the changes in color within the area in which the message was encoded was different from image to image.
+For example, the tiger performed much better than the other images, because it contained mostly the same colour in the area that contained the message.
+When constructing the graph, we only added edges with a weigth under a certain threshold.
+When the colours of an area were closer together, there would also be a higher concentration of edges with a smaller weight, which would lead to a larger graph.
+
+\section{Size of the Graph}
 It became apparent that a longer message required fewer forces. 
 This made sense, seeing as a longer message meant a larger graph with more edges and therefore possible ways of swapping values.
 During development of the programme we played around with the idea of using more vertices than what was required for the message, as we predicted it would mean fewer forces.
@@ -95,7 +100,7 @@ The second reason we did not implement it was due to performance concerns.
 Since our programme performed rather poorly during most of the development we considered it a very bad idea to construct a larger graph than we already were constructing.
 Seeing as we managed to optimise the programme quite significantly, we could have properly implemented a solution regardless.
 
-\subsection{Colour histograms}
+\section{Colour Histograms}
 Actually comparing colour histograms from the two methods was not as trivial as one could have hoped.
 Using the LSB-method only made immediately visible changes to the colour histograms if about a quarter of the image had data encoded in it.
 When using an image of substantial size, a quarter of an image can hold a large amount of data. 
@@ -150,7 +155,7 @@ The histogram in figure \ref{fig:lsbHisto} also showed how the LSB method change
 The leftmost bar described pixels whose B-component is 0.
 In the original cover image, this bar was much higher than the others, and therefore much more common in the image, but the LSB has made it so that those components now get spread out, which again becomes very obvious in the histogram.
 
-\subsection{Euclidean distance}
+\section{Euclidean Distance}
 A different way of looking for changes in an image is by looking at their Euclidean distance.
 This can be done by calculating the distance between the colour values of each pixel in two equally sized images.
 The sum of all these distances can be used as measure of the change from one image to the other.
