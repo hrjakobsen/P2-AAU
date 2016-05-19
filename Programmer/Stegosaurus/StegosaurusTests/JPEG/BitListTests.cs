@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Assert = NUnit.Framework.Assert;
 
 namespace Stegosaurus.Tests
 {
@@ -17,7 +18,7 @@ namespace Stegosaurus.Tests
         {
             BitList bl = new BitList();
 
-            NUnit.Framework.Assert.AreEqual(0, bl.Count);
+            Assert.AreEqual(0, bl.Count);
         }
 
         [Test()]
@@ -25,7 +26,7 @@ namespace Stegosaurus.Tests
         {
             BitList bl = new BitList(1);
 
-            NUnit.Framework.Assert.AreEqual(1, bl.Count);
+            Assert.AreEqual(1, bl.Count);
         }
 
         [Test()]
@@ -49,7 +50,7 @@ namespace Stegosaurus.Tests
 
             bl.InsertAt(3, true);
             
-            NUnit.Framework.Assert.AreEqual(true, bl[3]);
+            Assert.AreEqual(true, bl[3]);
         }
 
         [Test()]
@@ -59,7 +60,7 @@ namespace Stegosaurus.Tests
             
             bl.Add(true);
 
-            NUnit.Framework.Assert.AreEqual(true, bl[8]);
+            Assert.AreEqual(true, bl[8]);
         }
 
         [Test()]
@@ -69,7 +70,7 @@ namespace Stegosaurus.Tests
 
             bl.Add(1);
 
-            NUnit.Framework.Assert.AreEqual(true, bl[8]);
+            Assert.AreEqual(true, bl[8]);
         }
 
         [Test()]

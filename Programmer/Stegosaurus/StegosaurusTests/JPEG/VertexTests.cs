@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Assert = NUnit.Framework.Assert;
 
 namespace Stegosaurus.Tests
 {
@@ -21,7 +22,7 @@ namespace Stegosaurus.Tests
 
             Vertex vertex1 = new Vertex(SampleInput1, SampleInput2, messageInput, modulo);
 
-            NUnit.Framework.Assert.AreEqual("(5,6)", vertex1.ToString());
+            Assert.AreEqual("(5,6)", vertex1.ToString());
         }
     }
 }

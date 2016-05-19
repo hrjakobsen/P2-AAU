@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Assert = NUnit.Framework.Assert;
 
 namespace Stegosaurus.Tests
 {
@@ -33,7 +34,7 @@ namespace Stegosaurus.Tests
             graph1.Vertices.Add(vertex1);
             graph1.Vertices.Add(vertex2);
 
-            NUnit.Framework.Assert.AreEqual("These are my vertices: \n(5,6)\n(7,8)\n", graph1.ToString());
+            Assert.AreEqual("These are my vertices: \n(5,6)\n(7,8)\n", graph1.ToString());
         }
 
         [Test()]
@@ -64,7 +65,7 @@ namespace Stegosaurus.Tests
                 Edges = {e1, e2, e3, e4, e5, e6, e7, e8}
             };
 
-            NUnit.Framework.Assert.AreEqual(new List<Edge> {e5,e7}.ToString(), g.GetSwitches().ToString() );
+            Assert.AreEqual(new List<Edge> {e5,e7}.ToString(), g.GetSwitches().ToString() );
         }
     }
 }

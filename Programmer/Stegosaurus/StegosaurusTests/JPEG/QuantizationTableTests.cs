@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using Assert = NUnit.Framework.Assert;
 
 namespace Stegosaurus.Tests
 {
@@ -30,7 +31,7 @@ namespace Stegosaurus.Tests
                 121, 112, 100, 120, 92, 101, 103, 99
             };
 
-            NUnit.Framework.Assert.AreEqual(expectedTable, zigZagEntries);
+            Assert.AreEqual(expectedTable, zigZagEntries);
 
         }
 
@@ -51,7 +52,7 @@ namespace Stegosaurus.Tests
                 9,   11,  11,  12,  14,  12,  12,  12
             };
 
-            NUnit.Framework.Assert.AreEqual(expectedTable, scaledDefaultYQuantizationTable.Entries);
+            Assert.AreEqual(expectedTable, scaledDefaultYQuantizationTable.Entries);
         }
 
         [Test()]
@@ -83,7 +84,7 @@ namespace Stegosaurus.Tests
                                     "49;64;78;87;103;121;120;101;" +
                                     "72;92;95;98;112;100;103;99;";
 
-            NUnit.Framework.Assert.AreEqual(expectedString, defaultYQuantizationTable.ToString());
+            Assert.AreEqual(expectedString, defaultYQuantizationTable.ToString());
         }
     }
 }
