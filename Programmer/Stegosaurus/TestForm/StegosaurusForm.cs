@@ -264,6 +264,7 @@ namespace TestForm{
         #region Main Form
         private void rdioEncode_CheckedChanged(object sender, EventArgs e)
         {
+            tbMessage.Text = NoMessageWrittenMessage;
             if (rdioEncode.Checked)
             {
                 btnLoadMessageFile.Enabled = true;
@@ -280,7 +281,6 @@ namespace TestForm{
                 btnLoadMessageFile.Enabled = false;
                 btnRemoveMsgFile.Enabled = false;
                 tbMessage.Enabled = false;
-                tbMessage.Text = NoMessageWrittenMessage;
                 _messageFileSet = false;
                 btnProceed.Text = @"Decode";
                 if (_inputImageSet)
@@ -396,8 +396,6 @@ namespace TestForm{
         //Handles encoding/decoding using the correct method and settings when the 'Proceed' button is pressed.
         private void btnProceed_Click(object sender, EventArgs e)
         {
-            WaitForm waitForm = new WaitForm();
-
             try
             {
                 getFilePath();
@@ -415,28 +413,16 @@ namespace TestForm{
                     picResult.Image.Dispose();
                 }
 
-                byte[] msg = new byte[_messageLength];
+                byte[] msg = getMessageFromTextboxOrFile();
 
-                if (_messageTextSet)
-                {
-                    for (int i = 0; i < _messageLength; i++)
-                    {
-                        msg[i] = (byte)(tbMessage.Text.ToCharArray()[i]);
-                    }
-                }
-                else if (_messageFileSet)
-                {
-                    for (int i = 0; i < _messageLength; i++)
-                    {
-                        msg[i] = _message[i];
-                    }
-                }
-
-                waitForm.Show();
-                
-
+                //Create an _imageEncoder according according to selected method
                 if (!LSBMethodSelected)
                 {
+                    lblProcessing.Text = "Encoding using GT method...";
+                    lblProcessing.Visible = true;
+                    Application.DoEvents();
+
+                    //Use simple constructor if a table is null 
                     if (QuantizationTableY == null || QuantizationTableChr == null || HuffmanTableYAC == null || HuffmanTableYDC == null || HuffmanTableChrAC == null || HuffmanTableChrDC == null)
                     {
                         _imageEncoder = new JpegImage(CoverImage, Quality, 4);
@@ -448,13 +434,16 @@ namespace TestForm{
                 }
                 else
                 {
+                    lblProcessing.Text = "Encoding using LSB method...";
+                    lblProcessing.Visible = true;
+                    Application.DoEvents();
                     _imageEncoder = new LeastSignificantBitImage(CoverImage);
                 }
-
+                
+                //Encode
                 try
                 {
                     _imageEncoder.Encode(msg);
-
                     _imageEncoder.Save(UserSavePath);
                     picResult.Image = Image.FromFile(UserSavePath);
                 }
@@ -472,16 +461,23 @@ namespace TestForm{
                 picResult.Image = null;
                 tbMessage.Text = "";
 
+                if (!LSBMethodSelected)
+                {
+                    lblProcessing.Text = "Decoding using GT method...";
+                    lblProcessing.Visible = true;
+                    Application.DoEvents();
+                    _imageDecoder = new JPEGDecoder(decodeFilePath);
+                }
+                else
+                {
+                    lblProcessing.Text = "Decoding using LSB method...";
+                    lblProcessing.Visible = true;
+                    Application.DoEvents();
+                    _imageDecoder = new LeastSignificantBitDecoder(decodeFilePath);
+                }
+
                 try
                 {
-                    if (!LSBMethodSelected)
-                    {
-                        _imageDecoder = new JPEGDecoder(decodeFilePath);
-                    }
-                    else
-                    {
-                        _imageDecoder = new LeastSignificantBitDecoder(decodeFilePath);
-                    }
                     byte[] message = _imageDecoder.Decode();
                     tbMessage.Text = new string(message.Select(x => (char)x).ToArray());
                     File.WriteAllBytes(UserSavePath, message);
@@ -491,7 +487,9 @@ namespace TestForm{
                     MessageBox.Show("Unknown error (Image might not contain a message)");
                 }
             }
-            waitForm.Close();
+            lblProcessing.Text = "";
+            lblProcessing.Visible = false;
+            Application.DoEvents();
             Cursor.Current = Cursors.Default;
         }
 
@@ -529,6 +527,29 @@ namespace TestForm{
             {
                 UserSavePath = saveFileDialog.FileName;
             }
+        }
+
+        //Checks whether the message is in the TextBox or as a file and returns the message as a byte[]
+        private byte[] getMessageFromTextboxOrFile()
+        {
+            byte[] msg = new byte[_messageLength];
+
+            if (_messageTextSet)
+            {
+                for (int i = 0; i < _messageLength; i++)
+                {
+                    msg[i] = (byte)(tbMessage.Text.ToCharArray()[i]);
+                }
+            }
+            else if (_messageFileSet)
+            {
+                for (int i = 0; i < _messageLength; i++)
+                {
+                    msg[i] = _message[i];
+                }
+            }
+
+            return msg;
         }
         #endregion
 
