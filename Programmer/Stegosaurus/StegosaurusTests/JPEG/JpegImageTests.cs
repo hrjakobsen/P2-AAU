@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NUnit.Framework.Compatibility;
+using Assert = NUnit.Framework.Assert;
 
 namespace Stegosaurus.Tests
 {
@@ -25,13 +26,13 @@ namespace Stegosaurus.Tests
 
             var modField = po.GetField("_m");
 
-            NUnit.Framework.Assert.AreEqual(4, modField);
+            Assert.AreEqual(4, modField);
         }
 
         [Test()]
         public void JpegImage_Test_if_constructor_throws_exception_when_image_is_null()
         {
-            NUnit.Framework.Assert.Throws<ArgumentNullException>(() => new JpegImage(null, 100, 4));
+            Assert.Throws<ArgumentNullException>(() => new JpegImage(null, 100, 4));
         }
 
         [Test()]
@@ -46,14 +47,14 @@ namespace Stegosaurus.Tests
             
             byte[] msg = new byte[50];
 
-            NUnit.Framework.Assert.Throws<ImageCannotContainDataException>(() => ji.Encode(msg));
+            Assert.Throws<ImageCannotContainDataException>(() => ji.Encode(msg));
         }
 
         [Test()]
         public void Save_Test_if_when_jpeg_writer_is_null_throws_exception()
         {
             JpegImage ji = new JpegImage(new Bitmap(200,100), 100, 4);
-            NUnit.Framework.Assert.Throws<Exception>(()=> ji.Save("test"));
+            Assert.Throws<Exception>(()=> ji.Save("test"));
         }
 
         [Test()]
@@ -76,7 +77,7 @@ namespace Stegosaurus.Tests
                 {1f, -0.980785251f, 0.923879504f, -0.831469595f, 0.707106769f, -0.555570245f, 0.382683426f, -0.195090324f},
             };
            
-            NUnit.Framework.Assert.AreEqual(ExpectedCosCoef, CosCoef);
+            Assert.AreEqual(ExpectedCosCoef, CosCoef);
         }
 
         [Test()]
@@ -98,13 +99,14 @@ namespace Stegosaurus.Tests
 
             int capacity = ji.GetCapacity();
 
-            NUnit.Framework.Assert.AreEqual(10, capacity);
+            Assert.AreEqual(10, capacity);
         }
 
         [Test()]
         public void BreakDownMessage_Test() //TODO: check this test. In order to test logic regarding length of message we needed to drill down into "_splitMessageIntoSmallerComponents"
         {
-            PrivateObject po = new PrivateObject(new JpegImage(new Bitmap(200, 100), 100, 4));
+            JpegImage ji = new JpegImage(new Bitmap(200, 100), 100, 4);
+            PrivateObject po = new PrivateObject(ji);
 
             byte[] message = new byte[] {1,1,1};
 
@@ -115,7 +117,7 @@ namespace Stegosaurus.Tests
 
             List<byte> expectedList = new List<byte> {0, 0, 0, 0, 0, 0, 3, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1}; // What {1,1,1} corresponds to when broken down and has length encoded
 
-            NUnit.Framework.Assert.AreEqual(expectedList, messageList);
+            Assert.AreEqual(expectedList, messageList);
         }
 
         [Test()]
@@ -129,7 +131,7 @@ namespace Stegosaurus.Tests
 
             Bitmap returnedCoverImage = ji.CoverImage;
 
-            NUnit.Framework.Assert.AreEqual(coverImage, returnedCoverImage);
+            Assert.AreEqual(coverImage, returnedCoverImage);
         }
 
         [Test()]
@@ -148,7 +150,7 @@ namespace Stegosaurus.Tests
 
             Bitmap expectedCoverImage = new Bitmap(b, 16,16);
 
-            NUnit.Framework.Assert.AreEqual(expectedCoverImage.Size, returnedCoverImage.Size);
+            Assert.AreEqual(expectedCoverImage.Size, returnedCoverImage.Size);
         }
 
         [Test()]
@@ -166,7 +168,7 @@ namespace Stegosaurus.Tests
 
             Bitmap expectedCoverImage = new Bitmap(b, 16, 16);
 
-            NUnit.Framework.Assert.AreEqual(expectedCoverImage.GetPixel(15, 15), returnedCoverImage.GetPixel(15, 15));
+            Assert.AreEqual(expectedCoverImage.GetPixel(15, 15), returnedCoverImage.GetPixel(15, 15));
         } 
         //TODO: maybe make more tests for padCoverImage
         [Test()]
@@ -180,7 +182,7 @@ namespace Stegosaurus.Tests
 
             Bitmap copiedBitmap = (Bitmap)pt.InvokeStatic("_copyBitmap", new object[] {testBitmapIn, 200, 100});
  
-            NUnit.Framework.Assert.AreEqual(testBitmapIn.GetPixel(100, 50), copiedBitmap.GetPixel(100, 50));
+            Assert.AreEqual(testBitmapIn.GetPixel(100, 50), copiedBitmap.GetPixel(100, 50));
         }
 
         [Test()]
@@ -209,7 +211,7 @@ namespace Stegosaurus.Tests
 
             sbyte[][,] expectedChannels = {ch1, ch2, ch3};
 
-            NUnit.Framework.Assert.AreEqual(expectedChannels, returnedChannels);
+            Assert.AreEqual(expectedChannels, returnedChannels);
         }
 
         [Test()]
@@ -235,7 +237,7 @@ namespace Stegosaurus.Tests
             
             List<short> expected = new List<short>(4) {1, 1, 1, 1};
 
-            NUnit.Framework.Assert.AreEqual(expected, nonZero);
+            Assert.AreEqual(expected, nonZero);
         }
 
         [Test()]
@@ -266,7 +268,7 @@ namespace Stegosaurus.Tests
                 {232.5f, 234.5f, 236.5f, 238.5f, 240.5f, 242.5f, 244.5f, 246.5f},
             };
 
-            NUnit.Framework.Assert.AreEqual(expectedDownSampledValues, downSampleValues);
+            Assert.AreEqual(expectedDownSampledValues, downSampleValues);
         }
 
         [Test()]
@@ -299,7 +301,7 @@ namespace Stegosaurus.Tests
                 {240f, 241f, 242f, 243f, 244f, 245f, 246f, 247f},
             };
 
-            NUnit.Framework.Assert.AreEqual(expectedBlock8, returnedBlock8);
+            Assert.AreEqual(expectedBlock8, returnedBlock8);
         }
 
         [Test()]
@@ -334,7 +336,7 @@ namespace Stegosaurus.Tests
             GlobalSettings.DefaultFloatingPointTolerance = 0.00001;
 
             
-            NUnit.Framework.Assert.That(expectedCosineValues, Is.EquivalentTo(returnedCosineValues));
+            Assert.That(expectedCosineValues, Is.EquivalentTo(returnedCosineValues));
         }
 
         [Test()]
@@ -344,7 +346,7 @@ namespace Stegosaurus.Tests
 
             float returnedC = (float) pt.InvokeStatic("_c", new object[] {0, 0});
             
-            NUnit.Framework.Assert.AreEqual(0.125f, returnedC);
+            Assert.AreEqual(0.125f, returnedC);
         }
 
         [Test()]
@@ -354,7 +356,7 @@ namespace Stegosaurus.Tests
 
             float returnedC = (float)pt.InvokeStatic("_c", new object[] { 0, 1 });
 
-            NUnit.Framework.Assert.AreEqual(0.17677f, returnedC);
+            Assert.AreEqual(0.17677f, returnedC);
         }
 
         [Test()]
@@ -364,7 +366,7 @@ namespace Stegosaurus.Tests
 
             float returnedC = (float)pt.InvokeStatic("_c", new object[] { 1, 0 });
 
-            NUnit.Framework.Assert.AreEqual(0.17677f, returnedC);
+            Assert.AreEqual(0.17677f, returnedC);
         }
 
         [Test()]
@@ -374,7 +376,7 @@ namespace Stegosaurus.Tests
 
             float returnedC = (float)pt.InvokeStatic("_c", new object[] { 1, 1 });
 
-            NUnit.Framework.Assert.AreEqual(0.25f, returnedC);
+            Assert.AreEqual(0.25f, returnedC);
         }
 
         [Test()]
@@ -409,7 +411,7 @@ namespace Stegosaurus.Tests
                 {8, 9, 8, 8, 6, 5, 5, 5},
             };
 
-            NUnit.Framework.Assert.AreEqual(expectedQuantizedValues, quantizedValues);
+            Assert.AreEqual(expectedQuantizedValues, quantizedValues);
         }
 
         [Test()]
@@ -451,7 +453,7 @@ namespace Stegosaurus.Tests
 
             po.Invoke("_addVertices", returnedGraph);
 
-            NUnit.Framework.Assert.AreEqual(expectedGraph.ToString(), returnedGraph.ToString());
+            Assert.AreEqual(expectedGraph.ToString(), returnedGraph.ToString());
         }
 
         [Test()]
@@ -481,7 +483,7 @@ namespace Stegosaurus.Tests
             expectedGraph.Edges.Add(new Edge(v1, v2, 3, true, false));
             expectedGraph.Edges.Add(new Edge(v3, v4, 2, true, true));
 
-            NUnit.Framework.Assert.AreEqual(expectedGraph.Edges, inputGraph.Edges);
+            Assert.AreEqual(expectedGraph.Edges, inputGraph.Edges);
         }
 
         [Test()]
@@ -515,7 +517,7 @@ namespace Stegosaurus.Tests
             
             pt.InvokeStatic("_refactorGraph", inputGraph);
             
-            NUnit.Framework.Assert.AreEqual(sad.Vertices, inputGraph.Vertices);
+            Assert.AreEqual(sad.Vertices, inputGraph.Vertices);
         }
 
         [Test()]
@@ -534,7 +536,7 @@ namespace Stegosaurus.Tests
 
             pt.InvokeStatic("_swapVertexData", inputE1);
 
-            NUnit.Framework.Assert.AreEqual(expectedE1.ToString(), inputE1.ToString());
+            Assert.AreEqual(expectedE1.ToString(), inputE1.ToString());
         }
 
         [Test()]
@@ -547,7 +549,7 @@ namespace Stegosaurus.Tests
 
             pt.InvokeStatic("_forceSampleChange", inputVertex);
 
-            NUnit.Framework.Assert.AreEqual(expectedVertex.ToString(), inputVertex.ToString());
+            Assert.AreEqual(expectedVertex.ToString(), inputVertex.ToString());
         }
 
         [Test()]
@@ -577,7 +579,7 @@ namespace Stegosaurus.Tests
 
             var returnedQuantizedBlocks = (List<Tuple<short[,], HuffmanTable, HuffmanTable, int>>)po.GetField("_quantizedBlocks");
 
-            NUnit.Framework.Assert.AreEqual(expectedQuantizedBlocks.ToString(), returnedQuantizedBlocks.ToString());
+            Assert.AreEqual(expectedQuantizedBlocks.ToString(), returnedQuantizedBlocks.ToString());
         }
 
         [Test()]
@@ -788,8 +790,8 @@ namespace Stegosaurus.Tests
             BitList expectedBitList = new BitList();
             expectedBitList.Add(false);
 
-            //NUnit.Framework.Assert.AreEqual(expectedBitList.Count, bl.Count);
-            NUnit.Framework.Assert.Pass();
+            //Assert.AreEqual(expectedBitList.Count, bl.Count);
+            Assert.Pass();
         }
 
         [Test()]
@@ -802,7 +804,7 @@ namespace Stegosaurus.Tests
 
             byte output = (byte)pt.InvokeStatic("_bitCost", input);
 
-            NUnit.Framework.Assert.AreEqual(expected, output);
+            Assert.AreEqual(expected, output);
         }
 
         [Test()]
@@ -820,7 +822,7 @@ namespace Stegosaurus.Tests
             expectedBitList.Add(true);
             expectedBitList.Add(true);
 
-            NUnit.Framework.Assert.AreEqual(expectedBitList, bitList);
+            Assert.AreEqual(expectedBitList, bitList);
         }
 
         [Test()]
@@ -832,7 +834,7 @@ namespace Stegosaurus.Tests
 
             ushort output = (ushort)pt.InvokeStatic("_numberEncoder", input);
             
-            NUnit.Framework.Assert.AreEqual(expected, output);
+            Assert.AreEqual(expected, output);
         }
 
         [Test()]
@@ -849,7 +851,7 @@ namespace Stegosaurus.Tests
 
             byte[] expected = new byte[1] {192}; // 11000000
 
-            NUnit.Framework.Assert.AreEqual(expected, output);
+            Assert.AreEqual(expected, output);
 
         }
     }

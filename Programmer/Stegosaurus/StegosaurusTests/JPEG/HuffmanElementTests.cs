@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Assert = NUnit.Framework.Assert;
 
 namespace Stegosaurus.Tests
 {
@@ -26,7 +27,7 @@ namespace Stegosaurus.Tests
 
             HuffmanElement huffmanTestElement2 = new HuffmanElement(runSizeInput2, codeWordInput2, lengthInput2);
             
-            NUnit.Framework.Assert.AreEqual(-1, huffmanTestElement1.CompareTo(huffmanTestElement2));
+            Assert.AreEqual(-1, huffmanTestElement1.CompareTo(huffmanTestElement2));
         }
 
         [Test()]
@@ -45,7 +46,7 @@ namespace Stegosaurus.Tests
             HuffmanElement huffmanTestElement2 = new HuffmanElement(runSizeInput2, codeWordInput2, lengthInput2);
 
             var check = huffmanTestElement1.CompareTo(huffmanTestElement2);
-            NUnit.Framework.Assert.AreEqual(-1, check);
+            Assert.AreEqual(-1, check);
         }
 
         [Test()]
@@ -57,7 +58,7 @@ namespace Stegosaurus.Tests
 
             HuffmanElement huffmanTestElement1 = new HuffmanElement(runSizeInput1, codeWordInput1, lengthInput1);
 
-            NUnit.Framework.Assert.AreEqual("0 = 10, 1000", huffmanTestElement1.ToString());
+            Assert.AreEqual("0 = 10, 1000", huffmanTestElement1.ToString());
         }
 
         [Test]

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Assert = NUnit.Framework.Assert;
 
 namespace Stegosaurus.Tests
 {
@@ -29,7 +30,7 @@ namespace Stegosaurus.Tests
             HuffmanTable huffTable1 = new HuffmanTable(huffmanTestElement1, huffmanTestElement2);
             
 
-            NUnit.Framework.Assert.AreEqual(2, huffTable1.Elements[0x00].CodeWord);
+            Assert.AreEqual(2, huffTable1.Elements[0x00].CodeWord);
         }
 
         [Test()]
@@ -54,7 +55,7 @@ namespace Stegosaurus.Tests
 
             byte[] numberOfCodesOutput = huffTable1.Combinations();
 
-            NUnit.Framework.Assert.AreEqual(3, numberOfCodesOutput[7]);
+            Assert.AreEqual(3, numberOfCodesOutput[7]);
         }
 
         [Test()]
@@ -73,7 +74,7 @@ namespace Stegosaurus.Tests
 
             HuffmanTable huffTable1 = new HuffmanTable(huffmanTestElement1, huffmanTestElement2);
 
-            NUnit.Framework.Assert.AreEqual(0, huffTable1.HasCode(2, 8).RunSize);
+            Assert.AreEqual(0, huffTable1.HasCode(2, 8).RunSize);
         }
 
         [Test()]
@@ -92,7 +93,7 @@ namespace Stegosaurus.Tests
 
             HuffmanTable huffTable1 = new HuffmanTable(huffmanTestElement1, huffmanTestElement2);
 
-            NUnit.Framework.Assert.AreEqual(null, huffTable1.HasCode(1, 8));
+            Assert.AreEqual(null, huffTable1.HasCode(1, 8));
         }
 
         [Test()]
@@ -111,7 +112,7 @@ namespace Stegosaurus.Tests
 
             HuffmanTable huffTable1 = new HuffmanTable(huffmanTestElement1, huffmanTestElement2);
 
-            NUnit.Framework.Assert.AreEqual("0,2,8;1,3,8;", huffTable1.ToString());
+            Assert.AreEqual("0,2,8;1,3,8;", huffTable1.ToString());
         }
 
         [Test()]
@@ -130,7 +131,7 @@ namespace Stegosaurus.Tests
 
             HuffmanTable huffTable1 = new HuffmanTable(huffmanTestElement1, huffmanTestElement2);
 
-            NUnit.Framework.Assert.AreEqual(huffmanTestElement2, huffTable1.GetElementFromRunSize(0x0, 0x1)); //combines to 0x01
+            Assert.AreEqual(huffmanTestElement2, huffTable1.GetElementFromRunSize(0x0, 0x1)); //combines to 0x01
         }
     }
 }
