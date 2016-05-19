@@ -33,7 +33,7 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void Combinations_Test() //TODO: Maybe use a loop to check every element
+        public void Combinations_Test() 
         {
             byte runSizeInput1 = 00000000;
             ushort codeWordInput1 = 2; // 10 in base 2

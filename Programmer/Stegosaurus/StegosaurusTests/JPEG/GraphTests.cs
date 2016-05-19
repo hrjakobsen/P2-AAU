@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Stegosaurus.Tests
 {
     [TestFixture()]
-    public class GraphTests //TODO: make a setup fixture
+    public class GraphTests
     {
         [Test()]
         public void GraphToString_Test()
