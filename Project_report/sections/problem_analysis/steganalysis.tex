@@ -1,23 +1,22 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
 \section{Steganalysis}
 \label{steganalysis}
-Steganalysis is the study of detecting information hidden with steganography and if possible, recover that information.
+Steganalysis is the disipline of detecting information hidden with steganography and if possible, recover that information.
 Because of the nature of steganography, it is not always obvious if a file has hidden information or not.
-Therefore, steganalysis is often applied on a large set of files, which are suspected of containing hidden data.
 There are many different techniques used in detection of hidden data.
 Some of these techniques are described below.
-%TODO: add more to intro
+
 
 \subsection{Detection}
 \label{Detection}
-Most steganography algorithms are able to hide data without any notable visual impact on images.
+Most steganography algorithms are able to hide data without any notable visual impact on images, an example being LSB where it is not easily visible on the images where changes have been made to the pixels.
 It is therefore hard if not impossible to detect if something is hidden by simply looking at the image.
 
 Detection of hidden data is therefore done with statistical tools like looking at histograms, modified DCT coefficients and signatures of different steganography algorithms.
 
 \paragraph*{Colour Histogram}
 A colour histogram is a representation of the distribution of colours in an image. 
-This can be used to detect unusual distributions of colour, which may occur when using modifying the least significant bit or bits of each colour channel.
+This can be used to detect unusual distributions of colour, which may occur when modifying the least significant bit or bits of each colour channel.
 
 \begin{figure}
 	\centering
@@ -41,7 +40,7 @@ This can be used to detect unusual distributions of colour, which may occur when
 \end{figure}
 
 We have our cover image shown in figure \ref{fig:CoverImage} and its respective colour histogram in figure \ref{fig:HistoWithoutLSB}.
-We then hide another image in our cover image, this produces a new colour histogram shown in figure \ref{fig:HistoWithLSB}.
+We then hide another image in our cover image, using the implementation of LSB in section \ref{sec:lsb-implementation}. This produces a new colour histogram shown in figure \ref{fig:HistoWithLSB}.
 The new stego image has quite an unusual histogram, though unfortunately we cannot be sure there is hidden data only by looking at these histograms.
 
 This unusual histogram might just be a product of a compression algorithm.
@@ -58,7 +57,7 @@ We can clearly see that after data has been hidden using an algorithm which uses
 \begin{figure}
 	\centering
 	\includegraphics[width=0.25\textwidth]{figures/puffin.jpg}
-	\caption{F5 cover image.}
+	\caption{Cover image for algorithm employing shrinkage}
 	\label{fig:puffin}
 \end{figure}
 
@@ -66,21 +65,18 @@ We can clearly see that after data has been hidden using an algorithm which uses
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{figures/inputF5.png}
-		\caption{Before F5.}
+		\caption{Before shrinkage}
 		\label{fig:InputF5}
     \end{subfigure}
     ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc. 
       %(or a blank line to force the subfigure onto a new line)
     \begin{subfigure}[b]{0.45\textwidth}
 		\includegraphics[width=\textwidth]{figures/outputF5.png}
-		\caption{After F5.}
+		\caption{After shrinkage}
 		\label{fig:outputF5}
     \end{subfigure}
     \caption{Histogram of DCT coefficients}
 \end{figure}
-
-%To estimate the DCT coefficients of the original cover image, we need to crop the suspected image by 4 vertical columns and recompress it using the same quantization table. \ref{Fridrich2003}
-%TODO: add F5 to section "State of the art"
 
 \paragraph*{LSB enhancing}
 LSB enhancing works by doing the opposite of what LSB usually does.
@@ -88,14 +84,14 @@ It eliminates all seven high-level bits for each byte.
 The least significant bit will then remain, making all bytes either 0 or 1.
 These are then enhanced by setting each 0 byte to the minimum 0 and 1 to the maximum 255.
 This makes the LSB of the image very visible, allowing for a visual check by simply looking for patterns.
-Figure \ref{fig:hiddenAAU} shows a 24 bit BMP image with 2 kb of random data hidden in it, and figure \ref{fig:LSBenhanced} is the same image LSB enhanced.
-We can see that there is something hidden in the top half of the image, while the bottom half remains untouched \citep{Westfeld2000}.
+Figure \ref{fig:hiddenAAU} shows a 24 bit BMP image with 2KB of random data hidden in it, and figure \ref{fig:LSBenhanced} is the same image LSB enhanced.
+We can see that there is something hidden in the top half of the image, while the bottom half remains untouched \citep{Westfeld2000}. The reason for the logo going from blue to red is that colour of the AAU logo is (33,26,82) in RGB. The only component ending with a 1-bit, is the red component, which then gets enhanced to 255.
 
 \begin{figure}
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
 		\includegraphics[width=\textwidth]{figures/StegoAAU.png}
-		\caption{24 bit bmp image with a 12 kb image hidden within.}
+		\caption{24 bit bmp image with a 12 KB image hidden within.}
 		\label{fig:hiddenAAU}
 	\end{subfigure}
 	~
@@ -107,24 +103,11 @@ We can see that there is something hidden in the top half of the image, while th
 	\caption{AAU logo before and after LSB enhancing}
 \end{figure}
 
-\paragraph*{$\chi^2$ attack or chi-squared attack}
-We could do a statistical test like chi-squared, if a given set of observed data and a set of expected data, we can use chi-square to check how similar they are.
-Chi-square compares pairs of values' observed frequencies with their expected frequencies and calculate the probability of the observed set has embedded data.
-Figure \ref{fig:Chiattack} show a graph of the similarities of the two data sets on figure \ref{fig:hiddenAAU}.
-The steep decline in the graph indicates that there might be data hidden in the observed set.\citep{Westfeld2000}
-
-\begin{figure}
-	\centering
-	\includegraphics[width=1\textwidth]{figures/ChisquareAAU.png}
-	\caption{Graph of chi-squared attack on figure \ref{fig:hiddenAAU}.}
-	\label{fig:Chiattack}
-\end{figure}
-
 \paragraph*{Steganography signatures}
 Unusual patterns in an image are obvious and arise suspicion, for example unused bits in the file headers or even comment headers, these might give us some insight into which algorithm was used.
 
 \subsection{Recovery}
-Recovery of data hidden with steganography is difficult, to recover the data we must know what kind of algorithm was used to hide the data.
+Recovery of data hidden with steganography is difficult. To recover the data we must know what kind of algorithm was used to hide the data.
 Even if we know the algorithm used, we might still only get back meaningless data, because in addition to hiding the data, it might also be encrypted.
 
 So the most common way of recovering hidden data is by using the same algorithm that was used to encode the image to decode the data.

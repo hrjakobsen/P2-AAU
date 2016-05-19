@@ -1,20 +1,20 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
 \section{The Confines of the Problem}
 \label{sec:confines}
-Our initial problem statement specified that we would work with social media and how to share data containing hidden messages, through them.
+Our initial problem statement specified that we would work with social media and how to use them to share data containing hidden messages.
 As previously mentioned our problem has been limited to only include images.
-We soon learned that each social media we tested had a different compression system, as a means of saving server space, due to the vast amounts of images being shared every day.
+We soon learnt that each social media we tested had a different compression system, as a means of saving server space, due to the vast amounts of images being shared every day.
 
 We came to the conclusion that if we worked with social media there was a risk that trying to send images through them could result in the messages being destroyed by their compression systems.
 Even if we managed to find a way around it, the sites could change their algorithms with no warning, thereby rendering our work useless.
 
 Despite not focusing on social media we are still going to use the knowledge acquired in section \ref{sec:whycompression}, about the compression of images.
-As discussed in section \ref{sec:socialmedia}, JPEG is the most commonly used image format on the internet, and therefore garners less attention than other formats.
+As discussed in section \ref{sec:socialmedia}, JPEG is the most commonly used image format on the internet \citep{JPEGMarketShare}, and therefore should garner less attention than other formats.
 Using the JPEG image format also allows the ITC-group from our cluster group to save space in their system, if the files sent back and forth are compressed.
 
 We have also decided to implement a version of the graph-theoretical approach described in section \ref{sec:graphtheory} that will work with the JPEG image format.
 This decision allows us to work closely with the mathematicians from our cluster group, who are developing an algorithm that is efficient at traversing a graph and selecting edges based on certain criteria.
-Working with the same method should ultimately help both groups with understanding it better and thereby forming greater products.
+Working with the same method should ultimately help both groups understand it better and thereby form greater results.
 
 \vspace{5mm}
 \begin{centering}
@@ -26,4 +26,4 @@ How do we modify the graph-theoretic approach for steganography described in sec
 Throughout the entire project we will also be using object-oriented programming to understand algorithms by continuously developing small prototypes and experimental programmes.
 Some of these smaller programmes will be integrated in the final programme.
 
-Choosing this project allows us to work with the two other groups in the cluster. The mathematicians will work on the theoretical definitions and inner workings of the Graph-theoretical Method, while the ITC group will implement a mobile application for sharing steganographic material between users. This means that we hope to receive algorithms from the mathematicians that we can implement in our program, while we hope to deliver a class library with a working image encoder to the ITC group that they can implement in their application.
+Choosing this project allows us to work with the two other groups in the cluster. The mathematicians will work on the theoretical definitions and inner workings of the graph-theoretic method, while the ITC group will implement a mobile application for sharing steganographic material between users. This means that we hope to receive algorithms from the mathematicians that we can implement in our programme, while we hope to deliver a class library with a working image encoder to the ITC group that they can implement in their application.

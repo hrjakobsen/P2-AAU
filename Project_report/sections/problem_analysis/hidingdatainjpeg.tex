@@ -8,8 +8,8 @@ The following are simpler methods of this, where the data is simply ignored by t
 \begin{description}
 	\item[Comments] ---
 	It is possible to store plain text in a JPEG-file in a comment marker (bytes 0xFFFE).
-	Comments are usually used to store copyright information, but it can contain any information in hex bytes.
-	Comments are ignored by decoders, but when the image is decoded, it is very easy to see what information succeeds the comment marker.
+	Comments are usually used to store copyright information, but any information can be placed in the segment.
+	Comments are ignored by decoders, but if the file is inspected, the marker can be clearly seen.
 
 	\item[After EOI] ---
 	The End of Image (EOI) marker (bytes 0xFFD9), and any data following that is ignored by the decoder.
@@ -42,7 +42,7 @@ The following are simpler methods of this, where the data is simply ignored by t
 	\item[LSB on JPEG thumbnail] ---
 	The JPEG standard also defines a thumbnail, which can also act as a cover image for a hidden image, or text, by doing something similar to what we previously did using the LSB method in section \ref{sec:lsb-implementation}.
 	Doing this will give us many more bytes to work on, compared to the two previously mentioned suggestions.
-	Even for a 64x64 thumbnail, we'll be able to encode 1536 characters if only the least significant bit is changed. 1536 characters is significantly more than the 16, which can be hidden within the quantization tables.
+	Even for a 64x64 thumbnail, we will be able to encode 1536 characters if only the least significant bit is changed. 1536 characters is significantly more than the 16, which can be hidden within the quantization tables.
 \end{description}
 
 \noindent Lastly we have two more complicated methods based on two separate articles about steganography in image files.  
@@ -55,11 +55,11 @@ The following are simpler methods of this, where the data is simply ignored by t
 	Because of the way JPEG encoding works, as described in section \ref{sec:jpegStudy}, small changes in the DCT coefficients or the quantization, will 		not lead to visible distortion of the JPEG image.
 	
 	\item[A Graph-Theoretic Approach to Steganography] ---
-	Stefan Hetzl and Petra Mutzel define a method where graph theory is used for embedding data into bitmap images \citep{hetzl_2005}. 
+	Stefan Hetzl and Petra Mutzel define a method where graph theory is used for data into a list of values \citep{hetzl_2005}. 
 	Used on a bitmap image, the algorithm finds which pairs of pixels need to be interchanged, to be able to store data hidden in the image. 
 	This process is in many ways superior to methods such as LSB, due to the fact that very few pixels are actually changed while using this approach, 			pixels are 	merely interchanged.
 	This makes it much more difficult to use statistical analysis on the image, to figure out if an image contains embedded data. 
 	With JPEG images however, pixels are not set separately, and two pixels cannot be interchanged very easily. 
-	Instead, this method can be used on the quantization tables, and have the data embedded into them.
+	Instead, this method can be used on the DCT coefficients, and have the data embedded into them.
 	This approach will be described in-depth in section \ref{sec:graphtheory}.
 \end{description}

@@ -1,11 +1,14 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
-\begin{infobox}{\section[A Study of the JPEG File Format]{A Study of the JPEG file format\footnotenomarker{This section is the result of researching the JPEG file format. The information in the following sections have been combined from multiple sources\citep{RussianDude,Miano1999,JPEGStandard,jfifspecs}.}}\label{sec:jpegStudy}}
+\begin{infobox}{\section[A Study of the JPEG File Format]{A Study of the JPEG file format\footnotenomarker{This section is the result of researching the JPEG file format.
+The information in the following sections have been combined from multiple sources\citep{RussianDude,Miano1999,JPEGStandard,jfifspecs}.}}\label{sec:jpegStudy}}
 
 \subsection{An Overview of JPEG}
 \vspace{-2.5mm}
 JPEG is an image format defined by the Joint Photographic Experts Group. 
-This type of image requires much more computing power to process, both in terms of encoding and decoding, compared to a much more simple format like Windows BMP. This will become more clear in the following sections. 
-A crucial thing to note about JPEG is that the encoding process is lossy, which means that when saving an image to JPEG, you lose information about the individual pixels. This is one of several things that allows the image to be compressed.
+This type of image requires much more computing power to process, both in terms of encoding and decoding, compared to a much more simple format like Windows BMP.
+This will become more clear in the following sections. 
+A crucial thing to note about JPEG is that the encoding process is lossy, which means that when saving an image to JPEG, you lose information about the individual pixels.
+This is one of several things that allows the image to be compressed.
 
 \vspace{4mm}
 \subsection{JPEG as a File Format}
@@ -16,7 +19,12 @@ The standard does not define an encoding of images that all JPEG encoders can de
 An example of this is that the standard does not define how colours are represented in the format, which means that one decoder could potentially use an RGB colour space, while another one would use an RBG space.
 Both systems are perfectly valid according to the JPEG standard.
 
-Without a way to ensure that all decoders will read an encoded image the same way, an image file is not worth much. This is why the JPEG File Interchange Format (JFIF) specification was developed by Eric Hamilton \citep{jfifspecs}. JFIF\index{JPEG!JFIF} defines a standard which all JPEG files must abide. This standard includes a definition of the colour being encoded in one or three channels. One channel if it is a monochrome image, and three channels if it is a true-colour image. If encoded in three channels, the colour space used is YCbCr, if only one channel is used, only the luminance (Y) channel is used.
+Without a way to ensure that all decoders will read an encoded image the same way, an image file is not worth much.
+This is why the JPEG File Interchange Format (JFIF) specification was developed by Eric Hamilton \citep{jfifspecs}.
+JFIF\index{JPEG!JFIF} defines a standard which all JPEG files must abide.
+This standard includes a definition of the colour being encoded in one or three channels.
+One channel if it is a monochrome image, and three channels if it is a true-colour image.
+If encoded in three channels, the colour space used is YCbCr, if only one channel is used, only the luminance (Y) channel is used.
 
 The JFIF specification is what allows JPEG images to be as widespread as they are today.
 JPEG is used by large services like Facebook to store and serve small images of reasonable quality.
@@ -24,7 +32,8 @@ JPEG is used by large services like Facebook to store and serve small images of 
 \vspace{4mm}
 \subsection{The Process of Encoding a JFIF Image}
 \vspace{-2.5mm}
-When encoding a JFIF image, we start off with a Bitmap, that is, a two dimensional array of pixels each consisting of an R, G and B value. The first step is transforming those colour channels into the colour space used in JFIF images. 
+When encoding a JFIF image, we start off with a Bitmap, that is, a two dimensional array of pixels each consisting of an R, G and B value.
+The first step is transforming those colour channels into the colour space used in JFIF images. 
 
 \vspace{4mm}
 \subsubsection{The Colour-space}
@@ -62,10 +71,13 @@ To do this, we simply subtract 128 from each Y, Cb and Cr value.
 \vspace{4mm}
 \subsubsection{Sampling\index{Sampling}}
 \vspace{-2.5mm}
-When looking at an image, the human eye is far more sensitive to small changes in the luminance channels than they are to changes in the chroma channels. We can use this fact to compress our image even further in terms of file size using a technique called sampling. 
+When looking at an image, the human eye is far more sensitive to small changes in the luminance channels than they are to changes in the chroma channels.
+We can use this fact to compress our image even further in terms of file size using a technique called sampling. 
 
 The JPEG standard allows each component to be sampled.
-Before sampling, the image must be split into smaller blocks, called the Minimum Coded Units (MCU)\index{MCU}. The default size of an MCU is 8x8 pixels, but it changes when sampling is used. The most commonly used sampling is 4:2:0 where the chroma channels were downscaled by 50\% in both directions. 
+Before sampling, the image must be split into smaller blocks, called the Minimum Coded Units (MCU)\index{MCU}.
+The default size of an MCU is 8x8 pixels, but it changes when sampling is used.
+The most commonly used sampling is 4:2:0 where the chroma channels were downscaled by 50\% in both directions. 
 
 For a sampling of 4:2:0 we calculate luminance for each pixel in the image, while only calculating the chroma channels for each 2x2 square.
 This gives us a sampling of 2x2 for the luminance component, while the chroma components have a sampling of 1x1.
@@ -85,7 +97,8 @@ Many other samplings can be used, for example if a 1:1:1 sampling is used, all i
 \subsubsection{Discrete Cosine Transform\index{DCT}}
 \vspace{-2.5mm}
 
-For each 8x8 block of pixels in our MCUs we perform DCT. The two-dimensional DCT is given by:
+For each 8x8 block of pixels in our MCUs we perform DCT.
+The two-dimensional DCT is given by:
 
 $$ G_{u,v} = c(u,v)\sum_{x=0}^{7}\sum_{y=0}^{7}g_{x,y}\cos{\left(\frac{(2x+1)u\pi}{16}\right)}\cos{\left(\frac{(2y+1)v\pi}{16}\right)} $$
 
@@ -110,7 +123,8 @@ The JPEG specification allows four quantization tables to be used, while JFIF li
 This means that two of our three channels have to share quantization tables. 
 As the human eye is much more sensitive to changes in the luminance channel, JFIF specifies that the luminance channel gets its own quantization table, while the chroma components must share a quantization table.
 
-Although the JPEG standard does not force you to use default tables, they do provide some tables which have shown good results with their test images. The proposed quantization tables for the image channels are shown below.
+Although the JPEG standard does not force you to use default tables, they do provide some tables which have shown good results with their test images.
+The proposed quantization tables for the image channels are shown below.
 
 \vspace{12pt}
 \begin{centering}
@@ -162,19 +176,29 @@ By reading the block this way, you have a 64 dimensional vector with a lot of co
 \vspace{4mm}
 \subsection{Encoding the Vector}
 \vspace{-2.5mm}
-The first entry in the quantization vector is called the DC\index{DC} coefficient, and will be encoded differently from the other 63. To encode the last 63 entries called the AC coefficients\index{AC}, run-length encoding (RLE\index{RLE}) is used. Each value different from zero in the vector is represented as $(\text{Number of zeros before this entry}; \text{Entry})$. Because of the many consecutive zeros in the data, this allows a very compact encoding of the numbers. If at one point in the vector only zeros remain, we end the block with the EOB\index{EOB} value (0,0). 
+The first entry in the quantization vector is called the DC\index{DC} coefficient, and will be encoded differently from the other 63.
+To encode the last 63 entries called the AC coefficients\index{AC}, run-length encoding (RLE\index{RLE}) is used.
+Each value different from zero in the vector is represented as $(\text{Number of zeros before this entry}; \text{Entry})$.
+Because of the many consecutive zeros in the data, this allows a very compact encoding of the numbers.
+If at one point in the vector only zeros remain, we end the block with the EOB\index{EOB} value (0,0). 
 
-The DC coefficient is often a large number, so it would be a waste of bits to write it in full to the file each time. Instead only the difference from the previous DC coefficient is stored, so that smaller numbers need to be encoded. So when reading a JPEG file, a decoder must keep track of the previous DC coefficient. For the first DC entry in the MCU, the decoder can assume that the last DC coefficient was 0.
+The DC coefficient is often a large number, so it would be a waste of bits to write it in full to the file each time.
+Instead only the difference from the previous DC coefficient is stored, so that smaller numbers need to be encoded.
+So when reading a JPEG file, a decoder must keep track of the previous DC coefficient.
+For the first DC entry in the MCU, the decoder can assume that the last DC coefficient was 0.
 
 There are some restrictions to this encoding, as only a nibble is used to represent the number of preceding zeros, the maximum value we can denote is $F_{16}=15_{10}$.
-If there are more than 15 consecutive zeros, we can encode 16 zeros as (15,0), and by using multiple of these values, denote any number of consecutive zeros. The value (15;0) is known as ZRL\index{ZRL}. 
+If there are more than 15 consecutive zeros, we can encode 16 zeros as (15,0), and by using multiple of these values, denote any number of consecutive zeros.
+The value (15;0) is known as ZRL\index{ZRL}. 
 
 \vspace{4mm}
 \subsection{Huffman Encoding}
 \vspace{-2.5mm}
-After the run-length encoding, the pairs must be written to the file, but before that can happen, the JPEG standard defines even more compression of the data. Instead of storing the actual values from the vector, a category of the number, along with a bit representation is stored. 
+After the run-length encoding, the pairs must be written to the file, but before that can happen, the JPEG standard defines even more compression of the data.
+Instead of storing the actual values from the vector, a category of the number, along with a bit representation is stored. 
 
-The category\index{Category} of a number is the least amount of bits required to represent the number. The category of numbers in the range $[-32767, 32767]$ are shown in the table below \citep{RussianDude}.
+The category\index{Category} of a number is the least amount of bits required to represent the number.
+The category of numbers in the range $[-32767, 32767]$ are shown in the table below \citep{RussianDude}.
 
 \begin{centering}
 \resizebox{\textwidth}{!}{%
@@ -191,19 +215,24 @@ The category\index{Category} of a number is the least amount of bits required to
 	}
 \end{centering}
 
-The vector entry of $(0,6)$ would become $(0,(3,110))$ when encoded as shown above. The last step is to Huffman\index{Huffman Encoding} encode these pairs of numbers.
+The vector entry of $(0,6)$ would become $(0,(3,110))$ when encoded as shown above.
+The last step is to Huffman\index{Huffman Encoding} encode these pairs of numbers.
 In a 8x8 block of pixels, there may be a lot of $(0,6)$, so instead of having to spend two bytes every time this pair appears, we use Huffman Tables. 
 
-A Huffman Table\index{Huffman Encoding!Huffman Table} is a table where you can look up pairs of numbers and get a bit representation which corresponds to the pair of numbers. To complete the example with the entry $(0,6)$ which was encoded to $(0,3,110)$, $(0,3)$ which we call the Run/Size\index{Run/Size} is looked up in the Huffman Table (using the default Luminance AC table providided in the JPEG standard) and it can be seen that it has a category of $3$, and a bit representation of $100$. 
+A Huffman Table\index{Huffman Encoding!Huffman Table} is a table where you can look up pairs of numbers and get a bit representation which corresponds to the pair of numbers.
+To complete the example with the entry $(0,6)$ which was encoded to $(0,3,110)$, $(0,3)$ which we call the Run/Size\index{Run/Size} is looked up in the Huffman Table (using the default Luminance AC table providided in the JPEG standard) and it can be seen that it has a category of $3$, and a bit representation of $100$. 
 
 So instead of having to write $0000 0000 0000 0110$, which is the byte representation of $(0,6)$, it is enough to write the Huffman encoded $100110$.
 
-There are no universal Huffman tables, and JPEG allows an encoder to define its own. They do, however, provide some Huffman tables which have shown good results with a variety of images \citep[p. 153]{JPEGStandard}. 
+There are no universal Huffman tables, and JPEG allows an encoder to define its own.
+They do, however, provide some Huffman tables which have shown good results with a variety of images \citep[p.
+153]{JPEGStandard}. 
 
 \vspace{4mm}
 \subsection{Dissection of a JPEG File}
 \vspace{-2.5mm}
-In this section a JFIF file which is compatible with the JPEG standard will be explained. The explanation is split into the same segments as the file itself is split into.
+In this section a JFIF file which is compatible with the JPEG standard will be explained.
+The explanation is split into the same segments as the file itself is split into.
 \newpage
 \subsubsection{Segments in a JPEG File}
 \begin{wraptable}{r}{5.5cm}
@@ -229,7 +258,8 @@ Knowing the length makes it possible for a decoder to skip segments it does not 
 
 As shown in table \ref{tab:markers}, all markers start with the byte 0xFF.
 A special case exists, where 0xFF does not define a marker, and that case is when the following byte is 0x00.
-More on this later, when it is examined how image data is written to a file. The tables in the following sections describing each marker, are reproduced from the book \textit{Compressed Image File Formats: JPEG, PNG, GIF, XBM, BMP}\citep{Miano1999}.
+More on this later, when it is examined how image data is written to a file.
+The tables in the following sections describing each marker, are reproduced from the book \textit{Compressed Image File Formats: JPEG, PNG, GIF, XBM, BMP}\citep{Miano1999}.
 
 \subsubsection{The SOI and EOI markers}
 \begin{centering}
@@ -263,9 +293,12 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=APP$n$ Segment]{
 		\end{tabular}
 }
 \end{centering}
-The JPEG standard defines the APP segments to be application specific data, which can be placed anywhere in the image file. Applications can then use these segments to store additional information about the image file. JFIF specifies that the APP$_0$ is used for identifying the file as a valid JFIF file, and that the APP$_0$ segment must be placed immediately after the SOI marker.
+The JPEG standard defines the APP segments to be application specific data, which can be placed anywhere in the image file.
+Applications can then use these segments to store additional information about the image file.
+JFIF specifies that the APP$_0$ is used for identifying the file as a valid JFIF file, and that the APP$_0$ segment must be placed immediately after the SOI marker.
 
-By convention the APP$n$ segments use a null terminated string for identifying themselves. The JFIF APP segment as found in almost all JPEG files can be seen in table \ref{JFIFAPP0}.
+By convention the APP$n$ segments use a null terminated string for identifying themselves.
+The JFIF APP segment as found in almost all JPEG files can be seen in table \ref{JFIFAPP0}.
 
 \begin{centering}
 \tcbox[left=0mm,right=0mm,top=0mm,bottom=0mm,boxsep=0mm,
@@ -329,7 +362,8 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Define Huffman Table Segmen
 \end{centering}
 
 The Define Huffman Table segment describes how values are encoded in the image data. 
-The first part of the segment defines whether the table is used for DC or AC components. Next an ID is defined, so that each channel can be linked to a certain Huffman Table.
+The first part of the segment defines whether the table is used for DC or AC components.
+Next an ID is defined, so that each channel can be linked to a certain Huffman Table.
 
 The next 16 bytes define how many codes of a certain length are encoded. 
 The first byte describes how many codes of length one are encoded, the next how many codes of length two are encoded and so on, until all 16 bytes are used. 
@@ -395,7 +429,9 @@ toptitle=0.5mm,center title, bottomtitle=0.5mm,title=Start of Scan Segment]{
 		\end{tabular}
 }
 \end{centering}
-The Scan Segment is where the actual image information is stored. First we have the Start of Scan segment which is a fixed length segment describing what image data will follow. Again the segment describes how many components to encode, then for each component supplies their Scan Component Descriptor which contains an ID for the component, together with the linked Huffman Tables for the DC and AC components.
+The Scan Segment is where the actual image information is stored.
+First we have the Start of Scan segment which is a fixed length segment describing what image data will follow.
+Again the segment describes how many components to encode, then for each component supplies their Scan Component Descriptor which contains an ID for the component, together with the linked Huffman Tables for the DC and AC components.
 
 \begin{centering}
 \tcbox[left=0mm,right=0mm,top=0mm,bottom=0mm,boxsep=0mm,
