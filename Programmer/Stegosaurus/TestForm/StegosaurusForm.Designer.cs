@@ -50,6 +50,7 @@
             this.rdioDecode = new System.Windows.Forms.RadioButton();
             this.getFileInput = new System.Windows.Forms.OpenFileDialog();
             this.GetFileMessage = new System.Windows.Forms.OpenFileDialog();
+            this.lblProcessing = new System.Windows.Forms.Label();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picResult)).BeginInit();
@@ -287,11 +288,20 @@
             this.GetFileMessage.FileName = "Select a file to be the message";
             this.GetFileMessage.FileOk += new System.ComponentModel.CancelEventHandler(this.GetFileMessage_FileOk);
             // 
+            // lblProcessing
+            // 
+            this.lblProcessing.AutoSize = true;
+            this.lblProcessing.Location = new System.Drawing.Point(458, 270);
+            this.lblProcessing.Name = "lblProcessing";
+            this.lblProcessing.Size = new System.Drawing.Size(0, 13);
+            this.lblProcessing.TabIndex = 42;
+            // 
             // StegosaurusForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(616, 295);
+            this.Controls.Add(this.lblProcessing);
             this.Controls.Add(this.btnRemoveMsgFile);
             this.Controls.Add(this.tbMessage);
             this.Controls.Add(this.line);
@@ -348,6 +358,7 @@
         private System.Windows.Forms.TextBox tbMessage;
         private System.Windows.Forms.TrackBar tbarEncodingQuality;
         private System.Windows.Forms.Button btnRemoveMsgFile;
+        private System.Windows.Forms.Label lblProcessing;
     }
 }
 
