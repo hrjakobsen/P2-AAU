@@ -5,12 +5,16 @@ using System.Windows.Forms;
 using Stegosaurus;
 using System.Linq;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace TestForm{
     public partial class StegosaurusForm:Form
     {
         public static HuffmanTable HuffmanTableChrAC, HuffmanTableChrDC, HuffmanTableYAC, HuffmanTableYDC;
         public static QuantizationTable QuantizationTableY, QuantizationTableChr;
+        public static bool QualityLocked { get; private set; }
+        public static bool LSBMethodSelected;
+        public static int Quality { get; set; }
 
         private IImageEncoder _imageEncoder;
         private IImageDecoder _imageDecoder;
@@ -19,10 +23,7 @@ namespace TestForm{
         private const string NoMessageWrittenMessage = "Enter the message you would like to encode into your image.";
         private int _messageLength;
         private int defaultQuality = 53;
-
-        public static bool QualityLocked { get; private set; }
-        public static bool LSBMethodSelected;
-        public static int Quality { get; set; }
+        private Bitmap CoverImage { get; set; }
         private string decodeFilePath;
         private string decodeFileName;
 
@@ -40,7 +41,6 @@ namespace TestForm{
                 _userSavePath = s;
             }
         }
-        private Bitmap CoverImage { get; set; }
 
         public StegosaurusForm() {
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -58,7 +58,7 @@ namespace TestForm{
             }
             catch (Exception)
             {
-                MessageBox.Show("An error occured while trying to load your settings");
+                MessageBox.Show("An error occured while trying to load your settings, they seem to be invalid");
             }
         }
 
@@ -66,7 +66,6 @@ namespace TestForm{
         {
             LSBMethodSelected = Properties.Settings.Default.LSBMethodSelected;
             tbarEncodingQuality.Value = Properties.Settings.Default.Quality;
-            UserSavePath = Properties.Settings.Default.ImagesFilePath;
             QualityLocked = Properties.Settings.Default.QualityLocked;
 
             if (QualityLocked && LSBMethodSelected)
@@ -143,12 +142,26 @@ namespace TestForm{
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("An error occured while trying to save your settings!");
+                    MessageBox.Show("An error occured while trying to save your settings, they seem to be invalid!");
                     OptionsForm.SkipSettingsInitialization = true;
                 }
 
                 Cursor.Current = Cursors.Default;
             }
+        }
+
+        private void resetSettingsToDefault()
+        {
+            UserSavePath = "";
+            Quality = defaultQuality;
+            QualityLocked = false;
+            LSBMethodSelected = false;
+            HuffmanTableYAC = null;
+            HuffmanTableYDC = null;
+            HuffmanTableChrAC = null;
+            HuffmanTableChrDC = null;
+            QuantizationTableY = null;
+            QuantizationTableChr = null;
         }
 
         private void loadSettingsFromOptionsForm()
@@ -437,12 +450,16 @@ namespace TestForm{
                 {
                     _imageEncoder.Encode(msg);
 
-                        _imageEncoder.Save(UserSavePath);
-                        picResult.Image = Image.FromFile(UserSavePath);
+                    _imageEncoder.Save(UserSavePath);
+                    picResult.Image = Image.FromFile(UserSavePath);
                 }
                 catch (ImageCannotContainDataException)
                 {
                     MessageBox.Show("Image cannot contain data!");
+                }
+                catch (ExternalException)
+                {
+                    MessageBox.Show("Failed to load result picture! Your Huffman table may be invalid");
                 }
             }
             else if (rdioDecode.Checked)
@@ -505,11 +522,6 @@ namespace TestForm{
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 UserSavePath = saveFileDialog.FileName;
-
-                //if ((saveFileStream = saveFileDialog.OpenFile()) != null)
-                //{
-                //    saveFileStream.Close();
-                //}
             }
         }
         #endregion
@@ -533,21 +545,6 @@ namespace TestForm{
             saveSettings();
         }
 
-        private void resetSettingsToDefault()
-        {
-            UserSavePath = "";
-            Quality = defaultQuality;
-            QualityLocked = false;
-            LSBMethodSelected = false;
-            HuffmanTableYAC = null;
-            HuffmanTableYDC = null;
-            HuffmanTableChrAC = null;
-            HuffmanTableChrDC = null;
-            QuantizationTableY = null;
-            QuantizationTableChr = null;
-
-        }
-
         private void saveSettings()
         {
             saveHuffmanTableToFile(HuffmanTableYAC, "HuffmanTableYAC.txt");
@@ -557,7 +554,6 @@ namespace TestForm{
             saveQuantizationTableToFile(QuantizationTableY, "QuantizationTableY.txt");
             saveQuantizationTableToFile(QuantizationTableChr, "QuantizationTableChr.txt");
             Properties.Settings.Default.QualityLocked = QualityLocked;
-            Properties.Settings.Default.ImagesFilePath = UserSavePath;
             Properties.Settings.Default.Quality = Quality;
             Properties.Settings.Default.LSBMethodSelected = LSBMethodSelected;
 

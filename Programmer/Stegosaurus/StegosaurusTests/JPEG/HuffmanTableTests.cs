@@ -12,7 +12,7 @@ namespace Stegosaurus.Tests
     public class HuffmanTableTests
     {
         [Test()]
-        public void HuffmanTableTest_Access_to_codeword()
+        public void HuffmanTable_Access_to_codeword_Test()
         {
             byte runSizeInput1 = 0x00;
             ushort codeWordInput1 = 2; // 10 in base 2
@@ -33,7 +33,7 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void CombinationsTest() //TODO: Maybe use a loop to check every element
+        public void Combinations_Test() 
         {
             byte runSizeInput1 = 00000000;
             ushort codeWordInput1 = 2; // 10 in base 2
@@ -58,7 +58,7 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void HasCodeTest1()
+        public void HasCode_Test()
         {
             byte runSizeInput1 = 00000000;
             ushort codeWordInput1 = 2; // 10 in base 2
@@ -96,7 +96,7 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void ToStringTest()
+        public void HuffmanTableToString_Test()
         {
             byte runSizeInput1 = 00000000;
             ushort codeWordInput1 = 2; // 10 in base 2
@@ -115,7 +115,7 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void GetElementFromRunSizeTest()
+        public void GetElementFromRunSize_Test()
         {
             byte runSizeInput1 = 0x00;
             ushort codeWordInput1 = 2; // 10 in base 2

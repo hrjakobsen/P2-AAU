@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 namespace Stegosaurus.Tests
 {
     [TestFixture()]
-    public class GraphTests //TODO: make a setup fixture
+    public class GraphTests
     {
         [Test()]
-        public void ToStringTest()
+        public void GraphToString_Test()
         {
             short SampleInput1 = 5;
             short SampleInput2 = 6;
@@ -37,7 +37,7 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void GetSwitchesTest() {
+        public void GetSwitches_Test() {
             Vertex
                 v1 = new Vertex(48, 50, 2, 4),
                 v2 = new Vertex(49, 48, 2, 4),
@@ -64,7 +64,7 @@ namespace Stegosaurus.Tests
                 Edges = {e1, e2, e3, e4, e5, e6, e7, e8}
             };
 
-            NUnit.Framework.Assert.AreEqual(new List<Edge> {e5,e7}, g.GetSwitches() );
+            NUnit.Framework.Assert.AreEqual(new List<Edge> {e5,e7}.ToString(), g.GetSwitches().ToString() );
         }
     }
 }
