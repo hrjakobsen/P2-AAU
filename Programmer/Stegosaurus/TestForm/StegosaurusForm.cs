@@ -196,6 +196,7 @@ namespace TestForm{
                 || !OptionsForm.QuantizationTableComponentChr.SaveTable().Equals(QuantizationTable.JpegDefaultChrTable))
             {
                 QualityLocked = true;
+                tbarEncodingQuality.Value = defaultQuality;
                 tbarEncodingQuality.Enabled = false;
             }
             else
