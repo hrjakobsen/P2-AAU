@@ -57,7 +57,7 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void CalculateCosineCoefficients_Test() //TODO: Get formula for calc of CosCoef and fill out ExpectedCosCoef with real values
+        public void CalculateCosineCoefficients_Test()
         {
             PrivateType pt = new PrivateType(typeof(JpegImage));
             JpegImage ji = new JpegImage(new Bitmap(200, 100), 100, 4); //Constructor calls calcCosineCoef
@@ -80,7 +80,7 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void GetCapacity_Test() //TODO: Fix this test/remake it
+        public void GetCapacity_Test() 
         {
             
             var inputBitmap = new Bitmap(16, 16); //Scale the unit bitmap
@@ -167,8 +167,8 @@ namespace Stegosaurus.Tests
             Bitmap expectedCoverImage = new Bitmap(b, 16, 16);
 
             NUnit.Framework.Assert.AreEqual(expectedCoverImage.GetPixel(15, 15), returnedCoverImage.GetPixel(15, 15));
-        } //TODO: maybe make more tests for padCoverImage
-
+        } 
+        //TODO: maybe make more tests for padCoverImage
         [Test()]
         public void CopyBitmap_Test()
         {
@@ -270,7 +270,7 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void Block16ToBlock8_Test() //TODO: might want to check this test
+        public void Block16ToBlock8_Test() 
         {
             PrivateType pt = new PrivateType(typeof(JpegImage));
             
