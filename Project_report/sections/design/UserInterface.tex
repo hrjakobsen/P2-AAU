@@ -1,51 +1,51 @@
 \section{User Interface}
 
 The user interface (UI) for Stegosaurus is going to be created in Visual Studio using C\# and WinForms.
-In some of our previous experiments, we have created a very basic UI.
-The only function of this UI was to show the cover image, the hidden image and then the output.
-In this example, the user had no visual cue on whether the programme had done as it was supposed to.
+In one of our previous experiments, we have created a very basic UI.
+The only function of this UI was to show the cover image, the image to be hidden in the cover and the final output.
+In this example, the user had no visual cue on whether the programme had done as it was supposed to and the user was asked for no destiantion path or additional input.
 This is something that we would like to improve on in our final design.
 
 Something else the experiment lacked was a choice of encoding.
 For example, whether they would like to use the least significant bit method or our graph theoretical method.
-Therefore, the final design should also include several different options, so as to customise the encoding of their image to something that suits their requirements.
+Therefore, the final design should also include several different options, so as to customise the encoding of their image to what suits their requirements.
 
-Another thing lacking in previous designs has been a guide through the programme and its functions together with a description of what they do.
+Another thing lacking in previous designs has been a guide or explanation throughout the programme and description of its joined functionality.
 Previous versions have been less complex and perhaps did not require much explanation.
 However, now as the programme will have a larger set of different settings, we believe that it should be a requirement to have a short explanation of these, what impact they will have on the end result and what the programme will do in general.
 
-All of these things should illustrate to the user how the programme works and what it is doing when running.
+All of these things should illustrate to the user how the programme works and what it is doing while running.
 
 \subsection{Design}
 
 The figure as shown in \ref{fig:LSBForm} is what our UI looked like for our LSB experiment.
-We are taking the main ideas from this, where we show the user the images they have selected and the final product.
+We are taking the main ideas from this, where we show the user the images or files they have selected and the final product. This should ensure them, that the corrected files has been selected and functionality is as expected.
 \begin{figure}
 	\centering
 	\includegraphics[width=1\textwidth]{figures/LSBForm.png}
 	\caption{This is the form for our LSB experiment, which acted as inspiration to our final design.}
 	\label{fig:LSBForm}
 \end{figure}
-We decided, however, that it was confusing to have three load buttons.
-As in the figure described before, the cover image is uploaded on one side, the message in the middle and the encoded image on the right.
-And when you wanted to decode the image, the encoded image had to be uploaded on the right.
-Because of this we have therefore decided to only have two buttons, one for loading an image that is to be encoded or decoded and another for only loading the hidden message.
+We decided, however, that it was confusing to have three seperate load buttons.
+As shown in figure \ref{fig:LSBForm} above, the cover image is uploaded in the left side, the message in the middle and the encoded image on the right.
+When you wanted to decode the image, the encoded image had to be uploaded using the load-button to the right. This resulted in an odd and unnatural-feeling user experience.
+Because of this we have decided to only have two buttons, one for loading an image that is to be either encoded or decoded and another for only getting the hidden message.
 
-We have decided to include some extra features to our overall design.
+We have furthermore decided to include extra features to our overall design making use of the functionality of our programmes encoder/deocer.
 These features include giving the user options to use their own Huffman code and own quantization tables to make their encoded message as precise as possible.
 
-To do this, we decided that creating an options form would be best when it comes to guiding the user through our programme.
-The options box would consist of quality settings, choice of encoding method, customisation of Huffman tables and customisation of quantization.
-However, there are also default options, if the user in question has no specific preferences.
+To do this, we decided that creating an options form would be ideal when it comes to guiding the user through this extended functionality.
+The options form would consist of a choice of encoding method, a quality-setting for use when encoding using our GT method, customisation of Huffman tables and customisation of quantization tables.
+However, there is also an option to reset all settings to default, if the user in question has no specific preferences or made an error.
 
 All of these options allow the user to encode their message according to their specific needs.
 After their message has been encoded, there is, naturally, a need to be able to decode it after the encoding process.
 This means that the programme should be able to present these options to the user as openly as possible, as these are the key features of the programme.
 
-This, however, is slightly more advanced when it came to Huffman coding as each channel has a different length.
+This, however, is slightly more advanced when it comes to Huffman coding as each table has a different length.
 
 As something more general, we have created a basic help guide to explain to the user how the programme works, and a short description of what each feature entails.
-Within this section, there will also be an 'about' that gives a description of what the programme is for and who it is by.
+Within this menu item, there will also be an 'about' that gives a short description of the programme, who it is by and under which circumstances it has been made.
 
 Something that is absolutely fundamental to the programme, is showing the user the images they provide and the image they produce.
 This visual representation gives the user an indication that the programme is doing something and also peace of mind in that they have chosen the correct files.

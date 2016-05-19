@@ -152,7 +152,6 @@ namespace TestForm{
 
         private void resetSettingsToDefault()
         {
-            UserSavePath = "";
             Quality = defaultQuality;
             QualityLocked = false;
             LSBMethodSelected = false;
@@ -374,6 +373,7 @@ namespace TestForm{
             tbMessage.Enabled = false;
             tbMessageFilePath.Text = GetFileMessage.SafeFileName;
             _messageFileSet = true;
+            _messageTextSet = false;
             _message = File.ReadAllBytes(GetFileMessage.FileName);
             _messageLength = _message.Length;
 
@@ -396,6 +396,8 @@ namespace TestForm{
         //Handles encoding/decoding using the correct method and settings when the 'Proceed' button is pressed.
         private void btnProceed_Click(object sender, EventArgs e)
         {
+            WaitForm waitForm = new WaitForm();
+
             try
             {
                 getFilePath();
@@ -429,6 +431,9 @@ namespace TestForm{
                         msg[i] = _message[i];
                     }
                 }
+
+                waitForm.Show();
+                
 
                 if (!LSBMethodSelected)
                 {
@@ -486,6 +491,7 @@ namespace TestForm{
                     MessageBox.Show("Unknown error (Image might not contain a message)");
                 }
             }
+            waitForm.Close();
             Cursor.Current = Cursors.Default;
         }
 

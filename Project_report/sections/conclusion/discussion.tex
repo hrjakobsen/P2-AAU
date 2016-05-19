@@ -9,6 +9,8 @@ When this happened we were forced to change the individual values, which led to 
 Using this method, we expected the changes to be small enough so that it would not immediately draw attention to the image, if it was being subjected to a colour histogram.
 
 \section{Changes to the Image}
+\label{sec:changestoimage}
+\subsection{Changes to the image}
 To find out roughly how many of these forces there were in a given image, we used our programme to save different messages in different images.
 The used five different message lengths were: 70, 140, 280, 560 and 1120 bytes.
 Each message consisted of the ASCII characters A-Z repeated to fill out the message.
@@ -100,7 +102,9 @@ The second reason we did not implement it was due to performance concerns.
 Since our programme performed rather poorly during most of the development we considered it a very bad idea to construct a larger graph than we already were constructing.
 Seeing as we managed to optimise the programme quite significantly, we could have properly implemented a solution regardless.
 
+
 \section{Colour Histograms}
+\label{sec:colourhistograms}
 Actually comparing colour histograms from the two methods was not as trivial as one could have hoped.
 Using the LSB-method only made immediately visible changes to the colour histograms if about a quarter of the image had data encoded in it.
 When using an image of substantial size, a quarter of an image can hold a large amount of data. 

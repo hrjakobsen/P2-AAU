@@ -117,10 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label2.Text" xml:space="preserve">
+  <data name="lblDescription.Text" xml:space="preserve">
     <value>Stegosaurus is a steganography tool capable of hiding data
 within an image without it being easily detectable by at least the 
-human eye. The programme can use different methods of enco-
+human eye. It was developed as a study project on AAU, Aalborg 
+in Denmark. The programme can use different methods of enco-
 ding (see help).</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />

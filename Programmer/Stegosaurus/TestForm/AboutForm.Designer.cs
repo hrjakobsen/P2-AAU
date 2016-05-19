@@ -30,8 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutForm));
             this.button1 = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblDescription = new System.Windows.Forms.Label();
+            this.lblMadeBy = new System.Windows.Forms.Label();
             this.lblName = new System.Windows.Forms.Label();
             this.line = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -46,23 +46,23 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // label2
+            // lblDescription
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(28, 146);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(308, 52);
-            this.label2.TabIndex = 8;
-            this.label2.Text = resources.GetString("label2.Text");
+            this.lblDescription.AutoSize = true;
+            this.lblDescription.Location = new System.Drawing.Point(28, 146);
+            this.lblDescription.Name = "lblDescription";
+            this.lblDescription.Size = new System.Drawing.Size(317, 65);
+            this.lblDescription.TabIndex = 8;
+            this.lblDescription.Text = resources.GetString("lblDescription.Text");
             // 
-            // label1
+            // lblMadeBy
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(28, 91);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(241, 39);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "DAT2-A423\r\nVersion 0.1\r\nCopyright © 2016 DAT2-A423. All rights reserved.";
+            this.lblMadeBy.AutoSize = true;
+            this.lblMadeBy.Location = new System.Drawing.Point(28, 91);
+            this.lblMadeBy.Name = "lblMadeBy";
+            this.lblMadeBy.Size = new System.Drawing.Size(241, 39);
+            this.lblMadeBy.TabIndex = 7;
+            this.lblMadeBy.Text = "DAT2-A423\r\nVersion 0.1\r\nCopyright © 2016 DAT2-A423. All rights reserved.";
             // 
             // lblName
             // 
@@ -89,8 +89,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(365, 254);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lblDescription);
+            this.Controls.Add(this.lblMadeBy);
             this.Controls.Add(this.lblName);
             this.Controls.Add(this.line);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -105,8 +105,8 @@
         #endregion
 
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblDescription;
+        private System.Windows.Forms.Label lblMadeBy;
         private System.Windows.Forms.Label lblName;
         private System.Windows.Forms.Label line;
     }

@@ -714,24 +714,15 @@ namespace Stegosaurus {
         private static void _refactorGraph(Graph graph) {
             List<Edge> chosen = graph.GetSwitches();
 
-            int swaps = 0, forces = 0, good = 0;
-
             foreach (Edge edge in chosen) {
                 _swapVertexData(edge);
-                swaps+=2;
             }
 
             foreach (Vertex vertex in graph.Vertices) {
                 if ((vertex.SampleValue1 + vertex.SampleValue2).Mod(vertex.Modulo) != vertex.Message) {
                     _forceSampleChange(vertex);
-                    forces++;
-                } else {
-                    good++;
                 }
             }
-
-            //Console.WriteLine($"Did {swaps} swaps and {forces} forces. ({forces + good}) ({(double)forces / (good + forces) * 100} %)");
-            Console.WriteLine($"The message required {forces+good} values.\n{swaps} values were changed by swapping.\n{forces} values were changed by forcing.\n{good - swaps} values already fit.\n");
         }
 
         private static void _swapVertexData(Edge e) {
