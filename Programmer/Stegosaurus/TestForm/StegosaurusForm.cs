@@ -152,7 +152,6 @@ namespace TestForm{
 
         private void resetSettingsToDefault()
         {
-            UserSavePath = "";
             Quality = defaultQuality;
             QualityLocked = false;
             LSBMethodSelected = false;
