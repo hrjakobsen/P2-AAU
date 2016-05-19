@@ -1,5 +1,5 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
-\section{Implementation of a JPEG image}
+\section{Implementation of a JPEG Image}
 Looking back to section \ref{sec:designJPEG} we can start implementing this into our steganography program \textit{Stegosaurus}.
 We can also refer to figure \ref{fig:JPEGprocess} for the steps the encoder must take.
 
@@ -157,7 +157,7 @@ After the scaling process, we divide each entry in the DC coefficients by the co
     \caption{Plot of $f(q) = \frac{100-x}{53}+0.125$ that shows how the quality of the jpeg image impacts the quantization tables}
 \end{figure}
 
-\subsection{Implementation of the graph theoretical method}
+\subsection{Implementation of the Graph-theoretic Method}
 
 So now we are ready to perform the actual encoding of the data, before saving the image data to a file.
 We use procedure \ref{algJPEG} to find the valid entries from our newly filled \lstinline|_quantizedValues|.
@@ -211,7 +211,7 @@ private static void _removeEdge(List<Edge> list, Edge e) {
 
 After running the \lstinline|List<Edge> GetSwitches| method on the graph, it was simply a matter of switching the values in the vertices appointed by the chosen edges, and then running through all of the vertices in the graph, and for every vertex not containing the right message, forcibly change the sample values so that the right message is contained.
 
-\subsection{Encoding the data to a file}
+\subsection{Encoding the Data to a File}
 
 The only thing needed before saving the image to the file, is the Huffman encoding.
 The process of doing this is relatively trivial.
@@ -267,7 +267,7 @@ if (zeroesCounter != 0) { //EOB
 
 After the Huffman encoding, it is simply a matter of adding the EOI marker to the end of the image, and saving the bytes to a file. 
 
-\subsection{Working with bits}
+\subsection{Working with Bits}
 While working with JPEG images we found that bit-patterns and bit-wise operations often occur.
 Due to hardware limitations, a single bit in the memory cannot be changed individually, and we can only address the individual bytes.
 There are now two ways that we can go about this:

@@ -8,7 +8,7 @@ This type of image requires much more computing power to process, both in terms 
 A crucial thing to note about JPEG is that the encoding process is lossy, which means that when saving an image to JPEG, you lose information about the individual pixels. This is one of several things that allows the image to be compressed.
 
 \vspace{4mm}
-\subsection{JPEG as a file format}
+\subsection{JPEG as a File Format}
 \vspace{-2.5mm}
 JPEG\index{JPEG} is a very comprehensive standard, which defines the inner workings of the JPEG compression. 
 What this standard does not describe however, is an actual file format \citep{Miano1999}. 
@@ -62,17 +62,17 @@ To do this, we simply subtract 128 from each Y, Cb and Cr value.
 \vspace{4mm}
 \subsubsection{Sampling\index{Sampling}}
 \vspace{-2.5mm}
-When looking at an image, the human eye is far more sensitive to small changes in the luminance channels, than they are to changes in the chroma channels. We we can use this fact to compress our image even further in terms of file size using a technique called sampling. 
+When looking at an image, the human eye is far more sensitive to small changes in the luminance channels than they are to changes in the chroma channels. We can use this fact to compress our image even further in terms of file size using a technique called sampling. 
 
 The JPEG standard allows each component to be sampled.
-Before sampling, the image must be split into smaller blocks, called the MCUs\index{MCU} or Minimum Coded Units. The default size of an MCU is 8x8 pixels, but it changes when sampling is used. the most commonly used sampling is 4:2:0 where the chroma channels where downscaled by 50\% in both directions. 
+Before sampling, the image must be split into smaller blocks, called the Minimum Coded Units (MCU)\index{MCU}. The default size of an MCU is 8x8 pixels, but it changes when sampling is used. The most commonly used sampling is 4:2:0 where the chroma channels were downscaled by 50\% in both directions. 
 
 For a sampling of 4:2:0 we calculate luminance for each pixel in the image, while only calculating the chroma channels for each 2x2 square.
 This gives us a sampling of 2x2 for the luminance component, while the chroma components have a sampling of 1x1.
 This means that for every pixel in the $x$ direction we calculate the chroma components, we calculate two luminance components, and the same with the $y$ direction.
 In other words, we have fourfold the information about the luminance component than of the chroma components.
 
-Many other samplings can be used, for example if a 1:1:1 sampling is used, all information about ever pixel is saved.
+Many other samplings can be used, for example if a 1:1:1 sampling is used, all information about every pixel is saved.
 
 \begin{centering}
 \includegraphics[width=.4\linewidth]{lenaYchannel.png}
@@ -106,12 +106,13 @@ where:
 Quantization tables are what makes JPEG compression lossy. 
 After the DCT process, the quantization progress is performed on the resulting 8x8 block of values.
 Quantization is the process of dividing each value in the 8x8 block with a corresponding value in a quantization table. 
-The JPEG specification allows 4 quantization tables to be used, while JFIF limits it even further to 2 tables. 
+The JPEG specification allows four quantization tables to be used, while JFIF limits it even further to two tables. 
 This means that two of our three channels have to share quantization tables. 
 As the human eye is much more sensitive to changes in the luminance channel, JFIF specifies that the luminance channel gets its own quantization table, while the chroma components must share a quantization table.
 
 Although the JPEG standard does not force you to use default tables, they do provide some tables which have shown good results with their test images. The proposed quantization table for the image channels are shown below.
 
+\vspace{12pt}
 \begin{centering}
 \hspace{-3mm}\tcbox[left=0mm,right=0mm,top=0mm,bottom=0mm,boxsep=0mm,
 toptitle=0.5mm,center title, bottomtitle=0.5mm,nobeforeafter,title=Proposed Quantization Table for Luminance Channel]{
@@ -159,7 +160,7 @@ By reading the block this way, you have a 64 dimensional vector with a lot of co
 \end{centering} 
 
 \vspace{4mm}
-\subsection{Encoding the vector}
+\subsection{Encoding the Vector}
 \vspace{-2.5mm}
 The first entry in the quantization vector is called the DC\index{DC} coefficient, and will be encoded differently from the other 63. To encode the last 63 entries called the AC coefficients\index{AC}, run-length encoding (RLE\index{RLE}) is used. Each value different from zero in the vector is represented as $(\text{Number of zeros before this entry}; \text{Entry})$. Because of the many consecutive zeros in the data, this allows a very compact encoding of the numbers. If at one point in the vector only zeros remain, we end the block with the EOB\index{EOB} value (0,0). 
 
@@ -200,11 +201,11 @@ So instead of having to write $0000 0000 0000 0110$, which is the byte represent
 There are no universal Huffman tables, and JPEG allows an encoder to define its own. They do, however, provide some Huffman tables which have shown good results with a variety of images \citep[p. 153]{JPEGStandard}. 
 
 \vspace{4mm}
-\subsection{Dissection of a JPEG file}
+\subsection{Dissection of a JPEG File}
 \vspace{-2.5mm}
 In this section a JFIF file which is compatible with the JPEG standard will be explained. The explanation is split into the same segments as the file itself is split into.
 \newpage
-\subsubsection{Segments in a JPEG file}
+\subsubsection{Segments in a JPEG File}
 \begin{wraptable}{r}{5.5cm}
 \caption{Most commonly used markers in JPEG files}
 \label{tab:markers}
@@ -224,11 +225,11 @@ Marker & Identifier\\ \hline
 The JPEG standard defines that a JPEG file must be ordered in segments.
 These segments are each indicated by a marker\index{JPEG!Marker}, and the most common segment markers are shown in table \ref{tab:markers}.
 Most of the markers are followed by 2 bytes of data describing the length of the following segment.
-Knowing the length makes it possible for a decoder to skip segments it does not know how to understand. 
+Knowing the length makes it possible for a decoder to skip segments it does not know how to decode. 
 
 As shown in table \ref{tab:markers}, all markers start with the byte 0xFF.
 A special case exists, where 0xFF does not define a marker, and that case is if the following byte is 0x00.
-More on this later, when it is examined how image data is written to a file.
+More on this later, when it is examined how image data is written to a file. The tables in the following sections describing each marker, are reproduced from the book \textit{Compressed Image File Formats: JPEG, PNG, GIF, XBM, BMP}\citep{Miano1999}.
 
 \subsubsection{The SOI and EOI markers}
 \begin{centering}

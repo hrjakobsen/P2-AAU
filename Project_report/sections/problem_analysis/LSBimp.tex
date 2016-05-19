@@ -4,16 +4,16 @@
 
 The code for this programme can be seen in Appendix \ref{app:A}, and the algorithm we have implemented can be seen in Procedure \ref{alg1}.
 
-By storing the information we want concealed in the two least significant bits, we can keep all of the message's original information, and changing each pixel of the cover image, by a maximum value of 3 or $00000011_2$, the concealed image will be almost invisible to the naked eye.
+By storing the information we want concealed in the two least significant bits in the cover image's bytes, we can keep all of the message's original information, and changing each pixel of the cover image, by a maximum value of $11_2=3_{10}$, the concealed image will be almost invisible to the naked eye.
 
 To do this, we had to make some restrictions on how big the cover image could be relative to the message image.
-To not cause corruption and to ensure all information got saved, the cover image has to be four times as big as the hidden image, more specifically twice its height, and twice its width.
+To not cause corruption and to ensure all information gets saved, the cover image has to be four times as big as the hidden image, more specifically twice its height, and twice its width.
 Each pixel of the concealed image will be stored within four pixels of the cover image, each masked differently, hence the size requirements.
 We do this to get as much of the concealed image's information stored within the cover as possible.
 
 To make both images easier to work with, we store each pixel's colour in their own array of type \lstinline|Color|.
-To store each pixel within the cover, we first mask the cover to remove the information stored within the least significant bits, using the bitwise operator \&.
-We then mask the concealed image to only keep the information stored in two bits, then right-shift those bits so the result will be a byte where only the least-significant-bits, can be 1, and then, add this information to the cover.
+To store each pixel within the cover, we first mask the cover's colour-bytes to remove the information stored within the least significant bits, using the bitwise operator \&.
+We then split the concealed image's colour-bytes into 2-bit groups, then right-shift those bits so that they occupy the lowest order bits. Lastly we add this information to the cover's colour-bytes.
 The result will be a pixel with its value for the Red, Green and Blue channels slightly changed by a value between 0 and 3.
 The first pixel in the cover will contain the two most significant bits of the concealed image, the next will contain the third and fourth, and so on.
 
@@ -25,7 +25,7 @@ We have the cover image $C$, the message image $M$ and the steganographic image 
 Each pixel in the message image is split up into four parts $M_1, M_2, M_3$ and $M_4$ where each part contains two bits from the R, G and B channels of the original pixel.
 
 For every pixel chosen in $M$, four pixels are chosen from $C$.
-For each of these pixels, we store the 6 most significant bits from the R, G and B channels in $C_1, C_2, C_3$ and $C_4$.
+For each of those four pixels, we store the six most significant bits from the R, G and B channels in $C_1, C_2, C_3$ and $C_4$.
 
 Lastly, four pixels in $S$ are created by making pairs in the form of $C_nM_n$.
 This means that the four pixels in $S$ will be the following combinations: $C_1M_1,C_2M_2,C_3M_3$ and $C_4M_4$.
@@ -33,7 +33,7 @@ This means that the four pixels in $S$ will be the following combinations: $C_1M
 \begin{figure}
 	\centering
 	\includegraphics[width=1\textwidth]{figures/hundikatgrafik.png}
-	\caption{Illustration of how the message is saved within its cover image.}
+	\caption{Illustration of how the message is saved within its cover image \citep{LSBFigureCat,LSBFigureDog}.}
 	\label{fig:hundigrafik}
 \end{figure}
 
