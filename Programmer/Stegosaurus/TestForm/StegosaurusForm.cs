@@ -469,6 +469,7 @@ namespace TestForm{
                     _imageDecoder = new LeastSignificantBitDecoder(decodeFilePath);
                 }
 
+                //Decode
                 try
                 {
                     byte[] message = _imageDecoder.Decode();
@@ -477,7 +478,7 @@ namespace TestForm{
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("Unknown error (Image might not contain a message)");
+                    MessageBox.Show("Unknown error (Cover image might not contain a message)");
                 }
             }
             lblProcessing.Text = "";

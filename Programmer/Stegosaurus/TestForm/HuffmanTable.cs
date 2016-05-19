@@ -28,14 +28,14 @@ namespace TestForm
             {
                 addCodeWordsBox(i);
 
-                string s = Convert.ToString(elementList[i].Value.CodeWord, 2);
+                string codeWord = Convert.ToString(elementList[i].Value.CodeWord, 2);
 
-                if (s.Length != elementList[i].Value.Length)
+                if (codeWord.Length != elementList[i].Value.Length)
                 {
-                    s = s.PadLeft(elementList[i].Value.Length, '0');
+                    codeWord = codeWord.PadLeft(elementList[i].Value.Length, '0');
                 }
 
-                codeWordsBoxes[i].Text = s;
+                codeWordsBoxes[i].Text = codeWord;
 
                 addRunSizeBox(i);
                 runSizeBoxes[i].Text = Convert.ToString(elementList[i].Value.RunSize, 0x10).PadLeft(2,'0');
@@ -93,8 +93,6 @@ namespace TestForm
         public HuffmanTable SaveTable()
         {
             HuffmanTable h = new HuffmanTable();
-
-            
 
             for (int i = 0; i < codeWordsBoxes.Count; i++)
             {

@@ -288,6 +288,10 @@ namespace TestForm
             {
                 HuffmanTableComponentYDC.AddRow();
             }
+            else
+            {
+                MessageBox.Show("Please select a table to which you want to add a row!");
+            }
         }
 
         private void tbarQualitySlider_ValueChanged(object sender, EventArgs e)
@@ -301,7 +305,7 @@ namespace TestForm
             {
                 LSBMethodSelected = false;
             }
-            else if (rdioLSBMethod.Checked)
+            else
             {
                 LSBMethodSelected = true;
             }
