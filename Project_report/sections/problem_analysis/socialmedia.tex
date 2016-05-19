@@ -35,30 +35,28 @@ Combined, this results in a higher euclidean distance, as the image loses more i
 On the other hand, the image sharing site Imgur changed next to nothing in the uploaded JPEG image, and when downloaded again, all of the images reached a euclidean distance of 0, which means that every pixel in the images were equal.
 
 \vspace{12pt}
-\begin{threeparttable}[]
-\centering
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{|p{1.7cm}|p{1.3cm}|p{1.9cm}|p{1.5cm}|p{1.3cm}|p{1.9cm}|p{1.5cm}|p{2cm}|}
-\hline
-              & \multicolumn{3}{c|}{Before compression}      & \multicolumn{3}{c|}{After compression}       &                    \\ \hline
-Social \newline medium & Image format & Image \newline resolution & Image size & Image format & Image \newline resolution & Image size & Euclidean distance \\ \hline
-Facebook       & jpg          & 3648x2432        & 2.33 MB    & jpg          & 2048x1365        & 149 KB     & 4884\tnote{\textdagger}          \\ \hline
-              & jpg          & 1824x1216        & 1.13 MB    & jpg          & 1824x1216        & 126 KB     & 2382\tnote{\textdagger}          \\ \hline
-              & jpg          & 912x608          & 369 KB     & jpg          & 912x608          & 44.5 KB    & 1672          \\ \hline
-Twitter        & jpg          & 3648x2432        & 2.33 MB    & jpg          & 1024x683         & 77.4 KB    & 8731\tnote{\textdagger}          \\ \hline
-              & jpg          & 1824x1216        & 1.13 MB    & jpg          & 1024x683         & 78.2 KB    & 3619\tnote{\textdagger}          \\ \hline
-              & jpg          & 912x608          & 369 KB     & jpg          & 912x608          & 65.4 KB    & 1280          \\ \hline
-Imgur          & jpg          & 3648x2432        & 2.33 MB    & jpg          & 3648x2432        & 2.32 MB    & 0                  \\ \hline
-              & jpg          & 1824x1216        & 1.13 MB    & jpg          & 1824x1216        & 1.12 MB    & 0                  \\ \hline
-              & jpg          & 912x608          & 369 KB     & jpg          & 912x608          & 355 KB     & 0                  \\ \hline
-\end{tabular}
-}
-\begin{tablenotes}
-   \footnotesize{\item[\textdagger] Image has been scaled to the original image size before calculating euclidean distance, which\\ may have skewed the results.}
-   \end{tablenotes}
-\caption{Social media compression on JPEG}
-\label{tab:JPEG-compression}
-\end{threeparttable}
+\begin{table}[]
+	\centering
+	\caption{Social media compression on JPEG}
+	\label{tab:JPEG-compression}
+	\begin{tabular}{@{}llllll@{}}
+		\toprule
+																& \multicolumn{2}{l}{Before compression}                                                                            & \multicolumn{2}{l}{After compression}                                                                             &                                                              \\ \midrule
+		\begin{tabular}[c]{@{}l@{}}Social\\ medium\end{tabular} & \begin{tabular}[c]{@{}l@{}}Image\\ resolution\end{tabular} & \begin{tabular}[c]{@{}l@{}}Image\\ size\end{tabular} & \begin{tabular}[c]{@{}l@{}}Image\\ resolution\end{tabular} & \begin{tabular}[c]{@{}l@{}}Image\\ size\end{tabular} & \begin{tabular}[c]{@{}l@{}}Euclidean\\ distance\end{tabular} \\ \midrule
+		\multirow{3}{*}{Facebook}                               & 3648x2432                                                  & 2.33MB                                               & 2048x1365                                                  & 149KB                                                & 4884\textsuperscript{\textdagger}                            \\
+																& 1824x1216                                                  & 1.13MB                                               & 1824x1216                                                  & 126KB                                                & 2382                                                         \\
+																& 912x608                                                    & 369KB                                                & 912x608                                                    & 44.5KB                                               & 1672                                                         \\ \midrule
+		\multirow{3}{*}{Twitter}                                & 3648x2432                                                  & 2.33MB                                               & 1024x683                                                   & 77.4KB                                               & 8731\textsuperscript{\textdagger}                            \\
+																& 1824x1216                                                  & 1.13MB                                               & 1024x683                                                   & 78.2KB                                               & 3619\textsuperscript{\textdagger}                            \\
+																& 912x608                                                    & 369KB                                                & 912x608                                                    & 65.4KB                                               & 1280                                                         \\ \midrule
+		\multirow{3}{*}{Imgur}                                  & 3648x2432                                                  & 2.33MB                                               & 3648x2432                                                  & 2.32MB                                               & 0                                                            \\
+																& 1824x1216                                                  & 1.13MB                                               & 1824x1216                                                  & 1.12MB                                               & 0                                                            \\
+																& 912x608                                                    & 369KB                                                & 912x608                                                    & 355KB                                                & 0                                                            \\ \bottomrule
+	\end{tabular}
+	\begin{tablenotes}
+		\footnotesize{\item \textdagger Image has been scaled to the original image size before calculating euclidean distance, which\\ may have skewed the results.}
+	\end{tablenotes}
+\end{table}
 \vspace{12pt}
 
 After the initial tests of the compression systems, the same test was run with images saved with PNG encoding.
@@ -71,30 +69,29 @@ Below these thresholds both Twitter and Imgur could be used to send data without
 In the tests conducted, the highest amount transferred was $912\text{ pixels} \cdot 608\text{ pixels} \cdot 3\text{ bytes/pixel} \cdot 2\text{ bits/byte} = 3.327\cdot 10^6\text{ bits}$ which is enough to save $415,872$ characters using their ASCII value.
 
 \vspace{12pt}
-\begin{threeparttable}[]
-\centering
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{|p{1.7cm}|p{1.3cm}|p{1.9cm}|p{1.5cm}|p{1.3cm}|p{1.9cm}|p{1.5cm}|p{2cm}|p{1.3cm}|}
-\hline
-              & \multicolumn{3}{c|}{Before compression}      & \multicolumn{3}{c|}{After compression}       &                    &                            \\ \hline
-Social \newline medium & Image format & Image \newline resolution & Image size & Image format & Image \newline resolution & Image size & Euclidean distance & Extract \newline image? \\ \hline
-Facebook       & png          & 3648x2432        & 18.1 MB    & jpg          & 2048x1365        & 152 KB     & 5936\tnote{\textdagger}          & No                         \\ \hline
-              & png          & 1824x1216        & 5.08 MB    & jpg          & 1824x1216        & 142 KB     & 2774\tnote{\textdagger}          & No                         \\ \hline
-              & png          & 912x608          & 1.35 MB    & jpg          & 912x608          & 49 KB      & 1775          & No                         \\ \hline
-Twitter        & png          & 3648x2432        & 18.1 MB    & png          & 1024x683         & 79.4 KB    & 9373\tnote{\textdagger}          & No                         \\ \hline
-              & png          & 1824x1216        & 5.08 MB    & png          & 1024x683         & 80.9 KB    & 4006\tnote{\textdagger}          & No                         \\ \hline
-              & png          & 912x608          & 1.35 MB    & png          & 912x608          & 1.02 MB    & 0                  & Yes                        \\ \hline
-Imgur          & png          & 3648x2432        & 18.1 MB    & jpg          & 3648x2432        & 419 KB     & 4227          & No                         \\ \hline
-              & png          & 1824x1216        & 5.08 MB    & jpg          & 1824x1216        & 141 KB     & 2762          & No                         \\ \hline
-              & png          & 912x608          & 1.35 MB    & png          & 912x608          & 1.35 MB    & 0                  & Yes                        \\ \hline
-\end{tabular}
-}
-\begin{tablenotes}
-   \footnotesize{\item[\textdagger] Image has been scaled to the original image size before calculating euclidean distance, which\\ may have skewed the results.}
-   \end{tablenotes}
-\caption{Social media compression on PNG}
-\label{tab:PNG-compression}
-\end{threeparttable}
+\begin{table}[]
+	\centering
+	\caption{Social media compression on PNG}
+	\label{tab:PNG-compression}
+	\begin{tabular}{@{}lllllll@{}}
+		\toprule
+																& \multicolumn{2}{l}{Before compression}                                                                            & \multicolumn{2}{l}{After compression}                                                                             &                                                              &                                                            \\ \midrule
+		\begin{tabular}[c]{@{}l@{}}Social\\ medium\end{tabular} & \begin{tabular}[c]{@{}l@{}}Image\\ resolution\end{tabular} & \begin{tabular}[c]{@{}l@{}}Image\\ size\end{tabular} & \begin{tabular}[c]{@{}l@{}}Image\\ resolution\end{tabular} & \begin{tabular}[c]{@{}l@{}}Image\\ size\end{tabular} & \begin{tabular}[c]{@{}l@{}}Euclidean\\ distance\end{tabular} & \begin{tabular}[c]{@{}l@{}}Image\\ extracted?\end{tabular} \\ \midrule
+		\multirow{3}{*}{Facebook}                               & 3648x2432                                                  & 18.1MB                                               & 2048x1365                                                  & 152KB                                                & 5936\textsuperscript{\textdagger}                		       & No                                                         \\
+																& 1824x1216                                                  & 5.08MB                                               & 1824x1216                                                  & 142KB                                                & 2774                                                         & No                                                         \\
+																& 912x608                                                    & 1.35MB                                               & 912x608                                                    & 49KB                                                 & 1775                                                         & No                                                         \\ \midrule
+		\multirow{3}{*}{Twitter}                                & 3648x2432                                                  & 18.1MB                                               & 1024x683                                                   & 79.4KB                                               & 9373\textsuperscript{\textdagger} 		                   & No                                                         \\
+																& 1824x1216                                                  & 5.08MB                                               & 1024x683                                                   & 80.9KB                                               & 4006\textsuperscript{\textdagger}         		           & No                                                         \\
+																& 912x608                                                    & 1.35MB                                               & 912x608                                                    & 1.02MB                                               & 0                                                            & Yes                                                        \\ \midrule
+		\multirow{3}{*}{Imgur}                                  & 3648x2432                                                  & 18.1MB                                               & 3648x2432                                                  & 419KB                                                & 4227                                                         & No                                                         \\
+																& 1824x1216                                                  & 5.08MB                                               & 1824x1216                                                  & 141KB                                                & 2762                                                         & No                                                         \\
+																& 912x608                                                    & 1.35MB                                               & 912x608                                                    & 1.35MB                                               & 0                                                            & Yes                                                        \\ \bottomrule
+	\end{tabular}
+	\begin{tablenotes}
+		\footnotesize{\item \textdagger Image has been scaled to the original image size before calculating euclidean distance, which\\ may have skewed the results.}
+	\end{tablenotes}
+\end{table}
+\vspace{12pt}
 
 From the tests conducted it is clear that when using social media to share information embedded in conventional image files, it is critical to understand how the social medium processes the file, before serving it to the users of the site.
 Otherwise you can very easily end up with your data being scrambled beyond repair, and the secret message lost.\vspace*{12pt}
