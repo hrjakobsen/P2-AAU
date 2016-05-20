@@ -463,10 +463,10 @@
             this.Controls.Add(this.line);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.OptionsBox);
-            this.Controls.Add(this.pnlOptionsQuantization);
             this.Controls.Add(this.pnlOptionsQuality);
             this.Controls.Add(this.pnlOptionsEncodingMethod);
             this.Controls.Add(this.pnlOptionsHuffman);
+            this.Controls.Add(this.pnlOptionsQuantization);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "OptionsForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;

@@ -23,7 +23,7 @@ namespace TestForm{
         private byte[] _message;
         private const string NoMessageWrittenMessage = "Enter the message you would like to encode into your image.";
         private int _messageLength;
-        private readonly int _defaultQuality = 53;
+        public static int DefaultQuality = 53;
         private readonly byte _defaultMValue = 4;
         private Bitmap CoverImage { get; set; }
         private string _decodeFilePath;
@@ -82,7 +82,7 @@ namespace TestForm{
             }
             else if (QualityLocked)
             {
-                tbarEncodingQuality.Value = _defaultQuality;
+                tbarEncodingQuality.Value = DefaultQuality;
                 tbarEncodingQuality.Enabled = false;
             } else
             {
@@ -161,7 +161,7 @@ namespace TestForm{
 
         private void resetSettingsToDefault()
         {
-            Quality = _defaultQuality;
+            Quality = DefaultQuality;
             MValue = _defaultMValue;
             QualityLocked = false;
             LSBMethodSelected = false;
@@ -203,7 +203,7 @@ namespace TestForm{
                 || !OptionsForm.QuantizationTableComponentChr.SaveTable().Equals(QuantizationTable.JpegDefaultChrTable))
             {
                 QualityLocked = true;
-                tbarEncodingQuality.Value = _defaultQuality;
+                tbarEncodingQuality.Value = DefaultQuality;
                 tbarEncodingQuality.Enabled = false;
             }
             else
@@ -348,7 +348,7 @@ namespace TestForm{
             Quality = tbarEncodingQuality.Value;
             lblEncodingQualityValue.Text = Quality.ToString();
 
-            if (Quality != _defaultQuality)
+            if (Quality != DefaultQuality)
             {
                 lblEncodingQualityValue.Text = Quality.ToString();
             }

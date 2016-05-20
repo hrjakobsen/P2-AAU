@@ -52,6 +52,7 @@ namespace TestForm
             rdioHuffmanY_AC.Checked = true;
             tbarQualitySlider.Value = Quality;
             cbMValue.Text = MValue.ToString();
+
             if (_qualityLocked)
             {
                 tbarQualitySlider.Enabled = false;
@@ -302,6 +303,15 @@ namespace TestForm
         private void tbarQualitySlider_ValueChanged(object sender, EventArgs e)
         {
             lblEncodingQualityValue.Text = tbarQualitySlider.Value.ToString();
+
+            if (Quality != StegosaurusForm.DefaultQuality)
+            {
+                lblEncodingQualityValue.Text = Quality.ToString();
+            }
+            else
+            {
+                lblEncodingQualityValue.Text = Quality.ToString() + @"  (default)";
+            }
         }
 
         private void cbMValue_SelectedValueChanged(object sender, EventArgs e)
