@@ -7,7 +7,7 @@
 \subsection{Goal of the Method}
 Methods such as LSB can be used to embed a lot of information in images. 
 With the implementation described in section \ref{sec:lsb-implementation} we were able to embed six bits of information in each pixel in a true-colour bitmap. 
-The downside of this method, as described in section \ref{steganalysis}, is that it is very easy to detect because it forcibly changes a lot pixel in the image. 
+The downside of this method, as described in section \ref{steganalysis}, is that it is very easy to detect because it forcibly changes a lot of pixels in the image. 
 
 The goal of the following method is to change as little as possible in the image, while still being able to embed its message.
 
@@ -24,9 +24,9 @@ The message to be concealed in the image is the binary string $10100110011010$.
 \subsection{Terminology}
 First we define the function $v$ as $ v_m: \mathds{Z} \Rightarrow \{0,1,2,\ldots,m-1\} $ such that $ v_m(s) = s \mod m $. 
 Furthermore we have the message, $e$ a list of $n$ elements, to encode in the image: $e = \{ e_0, e_1, e_2, \ldots, e_n \}$, where $\forall i\left( e_i < m \right)$. 
-Because all entries in the message list to be encoded must be less than $m$, $m$ defines the number of actual bits can be transferred in each pair of pixels. With $m = 2$ the only two possible values are $0$ and $1$, which means that only one bit can be embedded as one entry in the message vector.
+Because all entries in the message list to be encoded must be less than $m$, $m$\index{m} defines the number of actual bits that can be transferred in each pair of pixels. With $m = 2$ the only two possible values are $0$ and $1$, which means that only one bit can be embedded as one entry in the message vector.
 By choosing $m = 4$, the possible values are $0$, $1$, $2$ and $3$, or $00_2$, $01_2$, $10_2$ and $11_2$.
-Practically this means that we can embed two bits in every entry in the message vector. 
+In practice, this means that we can embed two bits in every entry in the message vector. 
 
 The $\oplus_m$ operator is used for computing sums modulo $m$.
 In other words, the operator describes the calculation $x \oplus_m y = v_m(x + y) = (x + y) \mod m$.  
@@ -65,11 +65,11 @@ Needed values & \multicolumn{2}{c|}{\begin{tabular}[c]{@{}c@{}}<104,100>\\ <108,
 
 From the table we can see that switching the following pixels would make more pairs correct $(4 \leftrightarrow 11)$, $(8\leftrightarrow 12)$, $(2\leftrightarrow 13)$ and $(1 \leftrightarrow 13)$.
 
-As a graph, these switches can be represented as on figure \ref{fig:graph}. 
+As a graph, these switches can be represented as seen on figure \ref{fig:graph}. 
 Each vertex represents a pair of pixels, where at least one of the pixels can be changed. The edges describe a switch between two pixels. 
 This graph can then be used to determine which switches to make.
 Every time a switch is made, all other edges touching the two vertices where pixels are changed, are removed.
-This graph can be used to determine which switches are the best, by introducing edge weight, describing how much of a visual change, a switch would result in.
+This graph can be used to determine which switches are the best, by introducing edge weight, describing how much of a visual change a switch would result in.
 
 \begin{figure}[h!]
 \centering
@@ -139,7 +139,7 @@ Needed values & \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{} & \multicolumn{2}{
 \end{table}
 
 
-The image obtained after these switches and changes are the one shown on figure \ref{fig:endingImageComp} next to the original image shown on figure \ref{fig:startingImageComp}.
+The image obtained after these switches and changes is the one shown on figure \ref{fig:endingImageComp} next to the original image shown on figure \ref{fig:startingImageComp}.
 
 
 \begin{figure}[h!]
@@ -159,10 +159,10 @@ The image obtained after these switches and changes are the one shown on figure 
     \caption{Comparison of the image before (\ref{fig:startingImageComp}) and after (\ref{fig:endingImageComp}) the changes have been made.}\label{fig:pixelGrids}
 \end{figure}
 
-By doing these switches, we minimize the need to alter the pixels in the image.
+By doing these switches, we minimise the need to alter the pixels in the image.
 With methods such as LSB it is rarely the case that pixels do not need to be altered.
 This method is much more resistant to statistical analysis, such as the colour histograms described in section \ref{steganalysis}.
 
-When the message is to be extracted from the image, the same method of grouping pixels into pairs are applied.
+When the message is to be extracted from the image, the same method of grouping pixels into pairs is applied.
 Now, instead of trying to find pairs to be switched, the value obtained after using the $\oplus_m$ operation are the values embedded in the image.
 These values can then be grouped into a vector, which is a copy of the original message vector.

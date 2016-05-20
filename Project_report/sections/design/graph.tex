@@ -1,8 +1,8 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
 \section{Representing the Graph}
 There are multiple ways of representing a graph. 
-Firstly, we wanted to use an adjacency list and for each vertex, keep a list of its neighbours. 
-Having the edges implied by the adjacency list instead of having actual Edge objects, not only would the programme use less memory, the process of removing all neighbours of a vertex would become more efficient. This is a process we must often do in the ``graph-theoretic approach to steganography''. 
+To start with, we wanted to use an adjacency list and for each vertex, keep a list of its neighbours. 
+Having the edges implied by the adjacency list instead of having actual edge objects would not only cause the programme to use less memory, it would also make the  process of removing all neighbours of a vertex more efficient. This is a process we must often do in the graph-theoretic method described in section \ref{sec:graphtheory} and \ref{sec:graphJPEG}. 
 As efficient as this would be, there are major problems with doing this. 
 By implying the edges instead of storing them, we cannot save any additional information about what the edge actually describes. 
 In our case, an edge means that there is a switch that would make both vertices contain the given message if the modulo operation is applied with the correct $m$-value. 
@@ -47,14 +47,8 @@ draw , text=black, opacity=0.0 , minimum width =.3 cm}]
 
 Another way to show the representation of a graph, is simply a list of vertices and a list of edges. 
 Each edge then simply stores what vertices it connects. 
-This makes it very easy to loop through all edges, but at the same time makes it computationally expensive to remove certain edges from the graph (ie. 
+This makes it very easy to loop through all edges, but at the same time makes it computationally expensive to remove certain edges from the graph (i.e. 
 to remove all edges between two vertices).
 
 There are always other types of adjacency lists where each vertex keeps a list of the edges connecting them to other vertices. Here we get the advantages of having an actual \lstinline|Edge| object, while still being able to quickly find all neighbours of a vertex.
-
-We have chosen to use the method of simply keeping a list of all vertices, instead of each vertex keeping a list of its neighbour. There are three main reasons for doing this:
-\begin{itemize}
-	\item It is difficult to remove all edges touching vertices
-	\item Only do half the vertex-pairs
-	\item Having to sort all edges by weight
-\end{itemize}
+We have chosen to use the method of simply keeping a list of all vertices, instead of each vertex keeping a list of its neighbours. One of the main reasons for this, is that we need to be able to sort the edges, so that we can choose the edge with the lowest weight. If we did not have a list of the edges, we would have to search through every single edge, in all of the vertices to find the edge with the lowest weight and then after choosing that edge, we would have to search again.
