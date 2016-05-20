@@ -16,13 +16,12 @@ namespace TestForm
             HuffmanTableComponentChrAC,
             HuffmanTableComponentChrDC;
         public static QuantizationTableComponent QuantizationTableComponentY, QuantizationTableComponentChr;
-
-        public static int Quality;
-        public static byte MValue;
-        public static bool SaveEnabled;
-        public static bool LSBMethodSelected;
-        public static bool ResetToDefault;
-        public static bool SkipSettingsInitialization = false;
+        public static int Quality { get; private set; }
+        public static byte MValue { get; private set; }
+        public static bool SaveEnabled { get; private set; }
+        public static bool LSBMethodSelected { get; private set; }
+        public static bool ResetToDefault { get; set; }
+        public static bool SkipSettingsInitialization { get; set; }
 
         public OptionsForm()
         {
