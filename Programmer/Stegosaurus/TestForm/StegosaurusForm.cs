@@ -216,16 +216,13 @@ namespace TestForm{
 
         private void _refreshMainGUI()
         {
-            tbarEncodingQuality.Value = Quality;
+            tbarEncodingQuality.Value = Quality + 1;
+            tbarEncodingQuality.Value = Quality - 1;
             if (LSBMethodSelected)
             {
                 lblEncodingQualityValue.Text = "-";
             }
-            else
-            {
-                tbarEncodingQuality.Value = Quality + 1;
-                tbarEncodingQuality.Value = Quality - 1;
-            }
+
 
             //If changes have been made to a QuantizationTable or LSB is selected, lock the quality-slider to prevent errors.
             if (!QuantizationTableY.Equals(QuantizationTable.JpegDefaultYTable)
@@ -339,13 +336,17 @@ namespace TestForm{
             Quality = tbarEncodingQuality.Value;
             lblEncodingQualityValue.Text = Quality.ToString();
 
-            if (Quality != DefaultQuality)
+            if (Quality == DefaultQuality)
             {
-                lblEncodingQualityValue.Text = Quality.ToString();
+                lblEncodingQualityValue.Text = Quality.ToString() + @"  (default)";
+            }
+            else if (Quality == DefaultQualityWithCustomQTable && QualityLocked)
+            {
+                lblEncodingQualityValue.Text = Quality.ToString() + @"  (CQC)";
             }
             else
             {
-                lblEncodingQualityValue.Text = Quality.ToString() + @"  (default)";
+                lblEncodingQualityValue.Text = Quality.ToString();
             }
         }
 

@@ -120,7 +120,8 @@
   <data name="lblQuality.Text" xml:space="preserve">
     <value>Quality is from 0-100, where 100 is highest quality. These quality settings will 
 set the standard of encoding.
-The default quality setting is set to 53.
+The default quality setting is set to 80, 52 when a custom quantification table
+is selected, marked by "(CQC)".
 
 This setting cannot be used when the LSB method is selected.
 </value>
