@@ -56,12 +56,10 @@ namespace TestForm
             if (_qualityLocked)
             {
                 tbarQualitySlider.Enabled = false;
-                cbMValue.Enabled = false;
             }
             else
             {
                 tbarQualitySlider.Enabled = true;
-                cbMValue.Enabled = true;
             }
 
             if (!LSBMethodSelected)

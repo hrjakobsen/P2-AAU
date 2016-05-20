@@ -164,13 +164,14 @@ namespace TestForm{
             Quality = DefaultQuality;
             MValue = _defaultMValue;
             QualityLocked = false;
+            tbarEncodingQuality.Enabled = true;
             LSBMethodSelected = false;
-            HuffmanTableYAC = null;
-            HuffmanTableYDC = null;
-            HuffmanTableChrAC = null;
-            HuffmanTableChrDC = null;
-            QuantizationTableY = null;
-            QuantizationTableChr = null;
+            HuffmanTableYAC = HuffmanTable.JpegHuffmanTableYAC;
+            HuffmanTableYDC = HuffmanTable.JpegHuffmanTableYDC;
+            HuffmanTableChrAC = HuffmanTable.JpegHuffmanTableChrAC;
+            HuffmanTableChrDC = HuffmanTable.JpegHuffmanTableChrDC;
+            QuantizationTableY = QuantizationTable.JpegDefaultYTable;
+            QuantizationTableChr = QuantizationTable.JpegDefaultChrTable;
         }
 
         private void loadSettingsFromOptionsForm()
@@ -419,6 +420,7 @@ namespace TestForm{
             try
             {
                 getFilePath();
+                Cursor.Current = Cursors.WaitCursor;
                 encodeOrDecodeImage();
             }
             catch (IOException)
@@ -429,12 +431,14 @@ namespace TestForm{
             {
                 MessageBox.Show("No save location was selected!");
             }
-
-            Cursor.Current = Cursors.WaitCursor;
            
             lblProcessing.Text = "";
             lblProcessing.Visible = false;
             Application.DoEvents();
+            if (string.IsNullOrWhiteSpace(tbMessage.Text))
+            {
+                tbMessage.Text = NoMessageWrittenMessage;
+            }
             Cursor.Current = Cursors.Default;
         }
 
@@ -530,6 +534,10 @@ namespace TestForm{
                 {
                     MessageBox.Show("Failed to load result picture! Your Huffman table may be invalid");
                 }
+                catch (Exception)
+                {
+                    MessageBox.Show("An error occured when encoding!");
+                }
             }
             else if (rdioDecode.Checked)
             {
@@ -560,7 +568,7 @@ namespace TestForm{
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("Unknown error (Cover image might not contain a message)");
+                    MessageBox.Show("An Error occured when decoding! Cover image might not contain a message.");
                 }
             }
         }
