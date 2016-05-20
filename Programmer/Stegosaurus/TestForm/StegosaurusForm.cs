@@ -16,14 +16,15 @@ namespace TestForm{
         public static bool LSBMethodSelected { get; private set; }
         public static int Quality { get; private set; }
         public static byte MValue { get; private set; }
-        public static int DefaultQuality = 53;
+        public static int DefaultQuality = 80;
 
         private IImageEncoder _imageEncoder;
         private IImageDecoder _imageDecoder;
         private bool _inputImageSet, _messageFileSet, _messageTextSet;
         private byte[] _message;
         private int _messageLength;
-        private readonly byte _defaultMValue = 4;
+        private const byte DefaultMValue = 4;
+        private const int DefaultQualityWithCustomQTable = 52;
         private Bitmap CoverImage { get; set; }
         private string _decodeFilePath, _decodeFileName;
         private string UserSavePath;
@@ -67,7 +68,7 @@ namespace TestForm{
             }
             else if (QualityLocked)
             {
-                tbarEncodingQuality.Value = DefaultQuality;
+                tbarEncodingQuality.Value = DefaultQualityWithCustomQTable;
                 tbarEncodingQuality.Enabled = false;
             } else
             {
@@ -147,7 +148,7 @@ namespace TestForm{
         private void resetSettingsToDefault()
         {
             Quality = DefaultQuality;
-            MValue = _defaultMValue;
+            MValue = DefaultMValue;
             QualityLocked = false;
             tbarEncodingQuality.Enabled = true;
             LSBMethodSelected = false;
@@ -189,7 +190,7 @@ namespace TestForm{
                 || !OptionsForm.QuantizationTableComponentChr.SaveTable().Equals(QuantizationTable.JpegDefaultChrTable))
             {
                 QualityLocked = true;
-                tbarEncodingQuality.Value = DefaultQuality;
+                tbarEncodingQuality.Value = DefaultQualityWithCustomQTable;
                 tbarEncodingQuality.Enabled = false;
             }
             else

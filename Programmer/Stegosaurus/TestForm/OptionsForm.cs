@@ -299,7 +299,7 @@ namespace TestForm
 
         private void tbarQualitySlider_ValueChanged(object sender, EventArgs e)
         {
-            lblEncodingQualityValue.Text = tbarQualitySlider.Value.ToString();
+            Quality = tbarQualitySlider.Value;
 
             if (Quality != StegosaurusForm.DefaultQuality)
             {

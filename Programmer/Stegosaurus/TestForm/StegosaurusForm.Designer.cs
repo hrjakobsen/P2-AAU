@@ -164,10 +164,10 @@
             // 
             // tbarEncodingQuality
             // 
-            this.tbarEncodingQuality.Location = new System.Drawing.Point(254, 265);
+            this.tbarEncodingQuality.Location = new System.Drawing.Point(249, 265);
             this.tbarEncodingQuality.Maximum = 100;
             this.tbarEncodingQuality.Name = "tbarEncodingQuality";
-            this.tbarEncodingQuality.Size = new System.Drawing.Size(104, 45);
+            this.tbarEncodingQuality.Size = new System.Drawing.Size(114, 45);
             this.tbarEncodingQuality.TabIndex = 36;
             this.tbarEncodingQuality.TickStyle = System.Windows.Forms.TickStyle.None;
             this.ttStegosaurus.SetToolTip(this.tbarEncodingQuality, "Set the encoding quality from which\r\nthe amount of data you can hide varries");
