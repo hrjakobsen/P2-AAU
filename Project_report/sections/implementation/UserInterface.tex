@@ -1,96 +1,76 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
-\section{Implementation of custom tables in the UI}
-Looking back to section \ref{sec:designUI} this section will describe the implementation of one of the most important parts of the described User Interface, custom tables.
+\section{Implementation of Custom Tables in the GUI}
+In section \ref{sec:designUI} the need for custom options was described. One of these options was the possibility to choose custom Huffman and quantization tables. This is implemented into our programme as a custom component for the Forms designer.
 
-For Huffman tables, where we wanted the required amount of Textboxes in which the entries making a huffman table could be written, it was important to not just have a large set of individual Textboxes.
-Instead it was important to have them function as one joined set.
-To do this a class containing the custom component HuffmanTableComponent inheriting from the System.Windows.Forms.Panel class was created. 
+We want the user to be able to define their own Huffman tables. This is done using textboxes, which will be converted into entries of a \lstinline|HuffmanTable|. We want these textboxes to function as a joint set so that we can easily move the textboxes around and have them use them as one component.
 
-This class, taking a HuffmanTable in its constructor, creates a panel and then for each huffmanElement in the given HuffmanTAble adds a Textbox to the List<TextBox> runSizeBoxes and sets its size, position, max length and font and then a Textbox to the List<TextBox> codeWordsBoxes and sets the same properties.
+To do this, a class \lstinline|HuffmanTableComponent| inheriting from the \lstinline|System.Windows.Forms.Panel| class was created. 
 
-\begin{lstlisting}[firstnumber=136,label=JPEGEncode, caption={\lstinline|JPEGImage.Encode| method \textbf{File: }JPEGImage.cs}]
-public HuffmanTableComponent(HuffmanTable huffmanTable)
-	{
-		Table = huffmanTable;
-		var elementList = Table.Elements.ToList();
-		Size = new Size(410, 244);
-		
-		for (int i = 0; i < Table.Elements.Count; i++)
-		{
-			addCodeWordsBox(i);
-			
-			string codeWord = Convert.ToString(elementList[i].Value.CodeWord, 2);
-			
-			if (codeWord.Length != elementList[i].Value.Length)
-			{
-				codeWord = codeWord.PadLeft(elementList[i].Value.Length, '0');
-			}
-			
-			codeWordsBoxes[i].Text = codeWord;
-			
-			addRunSizeBox(i);
-			runSizeBoxes[i].Text = Convert.ToString(elementList[i].Value.RunSize, 0x10).PadLeft(2,'0');
-		}
-		
-		InitializeComponent();
-	}
+This class, taking a \lstinline|HuffmanTable| in its constructor, creates a \lstinline|Panel| and then for each \lstinline|HuffmanElement| in the given \lstinline|HuffmanTable| adds a \lstinline|TextBox| to the \lstinline|List<TextBox>| \lstinline|runSizeBoxes| and sets its size, position, max length and font and then a \lstinline|TextBox| to the \lstinline|List<TextBox>| \lstinline|codeWordsBoxes| and sets the same properties. This can be seen in listing \ref{HuffmanTableComponent}.
 
-private void addCodeWordsBox(int counter)
-	{
-		codeWordsBoxes.Add(new TextBox());
-		Controls.Add(codeWordsBoxes[counter]);
-		codeWordsBoxes[counter].Size = new Size(110, 20);
-		codeWordsBoxes[counter].Left = 8;
-		codeWordsBoxes[counter].Top = 5 + counter * 25;
-		codeWordsBoxes[counter].MaxLength = 16;
-		codeWordsBoxes[counter].Font = new Font(FontFamily.GenericMonospace.ToString(), 8);
-	}
-
+\begin{lstlisting}[firstnumber=18,label=HuffmanTableComponent,caption={\lstinline|HuffmanTableComponent| constructor \textbf{File: }HuffmanTableComponent.cs}]
+public HuffmanTableComponent(HuffmanTable huffmanTable) {
+  Table = huffmanTable;
+  var elementList = Table.Elements.ToList();
+  Size = new Size(410, 244);
+  
+  for (int i = 0; i < Table.Elements.Count; i++) {
+    addCodeWordsBox(i);
+    
+    string codeWord = Convert.ToString(elementList[i].Value.CodeWord, 2);
+    
+    if (codeWord.Length != elementList[i].Value.Length) {
+      codeWord = codeWord.PadLeft(elementList[i].Value.Length, '0');
+    }
+    
+    codeWordsBoxes[i].Text = codeWord;
+    
+    addRunSizeBox(i);
+    runSizeBoxes[i].Text = Convert.ToString(elementList[i].Value.RunSize, 0x10).PadLeft(2,'0');
+  }
+  
+  InitializeComponent(); 
 }
 \end{lstlisting}
 
-The class also implements the AddRow() method that adds one more row, and thereby a ''huffmanElement'', to the component.
+The class also implements \lstinline|AddRow()| which adds one more row as seen in listing \ref{AddRow}.
 
+\begin{lstlisting}[firstnumber=80,label=AddRow, caption={\lstinline|AddRow()| method \textbf{File: }HuffmanTableComponent.cs}]
+public void AddRow() {
+  int j = codeWordsBoxes.Count();
+  
+  codeWordsBoxes[0].Select();
+  VerticalScroll.Value = 0;
+  
+  addCodeWordsBox(j);
+  addRunSizeBox(j);
 
-\begin{lstlisting}[firstnumber=136,label=JPEGEncode, caption={\lstinline|JPEGImage.Encode| method \textbf{File: }JPEGImage.cs}]
-public void AddRow()
-	{
-		int j = codeWordsBoxes.Count();
-		
-		//scrolls to the top to ensure correct placement of the textboxes
-		codeWordsBoxes[0].Select();
-		VerticalScroll.Value = 0;
-		
-		addCodeWordsBox(j);
-		addRunSizeBox(j);
-		
-		//Brings focus to the first box in the added box
-		codeWordsBoxes[runSizeBoxes.Count() - 1].Select();
-	}
+  codeWordsBoxes[runSizeBoxes.Count() - 1].Select();
 }
 \end{lstlisting}
 
-Lastly a SaveTable() method is implemented. This method begins with the initialisation of a new HuffmanTable, H, and then runs a for-loop for the number of rows in the component times. This for-loop checks if both Textboxes in each pair of Textboxex is empty. If they are, they are ignored and the loop is continued. If they are not, the entries in the Textboxes are added as an HuffmanElement in H as the byte runSize and the ushort codeword. 
+Lastly a \lstinline|SaveTable()| method is implemented as seen in listing \ref{HuffmanSaveTable}.
+This method begins with the initialisation of a new \lstinline|HuffmanTable| and then uses a for-loop to run through the number of rows in the component.
+This for-loop checks if each pair of text boxes are empty.
+If they are, we skip the text boxes.
+If they are not, the entries in the text boxes are added as the runSize and the codeword of a  \lstinline|HuffmanElement|. 
 
-\begin{lstlisting}[firstnumber=136,label=JPEGEncode, caption={\lstinline|JPEGImage.Encode| method \textbf{File: }JPEGImage.cs}]
-public HuffmanTable SaveTable()
-	{
-		HuffmanTable h = new HuffmanTable();
-		
-		for (int i = 0; i < codeWordsBoxes.Count; i++)
-		{
-			if (string.IsNullOrWhiteSpace(runSizeBoxes[i].Text) || string.IsNullOrWhiteSpace(codeWordsBoxes[i].Text))
-			{
-				continue;
-			}
-			
-			byte runSize = Convert.ToByte(runSizeBoxes[i].Text, 16);
-			ushort codeword = Convert.ToUInt16(codeWordsBoxes[i].Text, 2);
-			h.Elements.Add(runSize, new HuffmanElement(runSize, codeword, (byte)codeWordsBoxes[i].Text.Length));
-		}
-		return h;
-	}
+\begin{lstlisting}[firstnumber=137,label=HuffmanSaveTable, caption={Save method of the \lstinline|HuffmanTable| method \textbf{File: }HuffmanTableComponent.cs}]
+public HuffmanTable SaveTable() {
+    HuffmanTable h = new HuffmanTable();
+    
+    for (int i = 0; i < codeWordsBoxes.Count; i++) {
+      if (string.IsNullOrWhiteSpace(runSizeBoxes[i].Text) || string.IsNullOrWhiteSpace(codeWordsBoxes[i].Text)) {
+        continue;
+      }
+      
+      byte runSize = Convert.ToByte(runSizeBoxes[i].Text, 16);
+      ushort codeword = Convert.ToUInt16(codeWordsBoxes[i].Text, 2);
+      h.Elements.Add(runSize, new HuffmanElement(runSize, codeword, (byte)codeWordsBoxes[i].Text.Length));
+    }
+    return h;
+  }
 }
 \end{lstlisting}
 
-A custom component QuantizationTableComponent is implemented in an almost identical way, only simpler, as a quantization table is always the same size, 64.
+A custom component \lstinline|QuantizationTableComponent| is implemented in an almost identical way, only simpler, as a \lstinline|QuantizationTable| is always the same size, 64.
