@@ -82,6 +82,10 @@ namespace TestForm
         {
             this.Close();
         }
+
+        private void grpHelpGeneral_Enter(object sender, EventArgs e) {
+
+        }
     }
 
 
