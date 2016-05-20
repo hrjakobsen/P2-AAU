@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Stegosaurus;
 using System.Drawing;
@@ -94,7 +91,7 @@ namespace TestForm
             addCodeWordsBox(j);
             addRunSizeBox(j);
             
-            addNumber(j);
+            addNumberIndicator(j);
 
             //Brings focus to the first box in the added box
             codeWordsBoxes[runSizeBoxes.Count() - 1].Select();
@@ -122,7 +119,7 @@ namespace TestForm
             runSizeBoxes[counter].Font = new Font(FontFamily.GenericMonospace.ToString(), 8);
         }
 
-        private void addNumber(int counter)
+        private void addNumberIndicator(int counter)
         {
             if (counter != 0 && counter % 5 == 0)
             {
