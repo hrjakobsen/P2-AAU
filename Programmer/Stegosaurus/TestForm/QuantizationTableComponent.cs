@@ -51,9 +51,9 @@ namespace TestForm
         public QuantizationTable SaveTable()
         {
             byte[] entries = QuantizationBoxes.Select(x => Convert.ToByte(x.Text, 16)).ToArray();
-            QuantizationTable Q = new QuantizationTable(entries);
+            QuantizationTable q = new QuantizationTable(entries);
 
-            return Q;
+            return q;
         }
     }
 }
