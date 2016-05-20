@@ -38,7 +38,7 @@ namespace Stegosaurus {
             file = new BinaryReader(sr.BaseStream);
             for (int i = 0; i < 4; i++) {
                 byte ClassAndID = 0;
-                HuffmanTable temp = getHuffmanTable(ref ClassAndID);
+                HuffmanTable temp = getHuffmanTable(out ClassAndID);
                 if ((byte)(ClassAndID & 0xf0) == 0) {
                     if ((byte)(ClassAndID & 0x0f) == 0) {
                         YDCHuffman = temp;
@@ -62,7 +62,7 @@ namespace Stegosaurus {
             return decodeScanData(bits);
         }
 
-        private HuffmanTable getHuffmanTable(ref byte ClassAndID) {
+        private HuffmanTable getHuffmanTable(out byte ClassAndID) {
             List<HuffmanElement> huffmanElements = new List<HuffmanElement>();
             /* length of the huffman table also contains the length of the elements, as well as the length itself
                subtracting the offset from the length, ensures we only read all the huffman elements, and not from outside the huffmantable */

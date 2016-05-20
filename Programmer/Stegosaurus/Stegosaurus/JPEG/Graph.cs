@@ -17,6 +17,7 @@ namespace Stegosaurus {
         public List<Edge> GetSwitches() {
             Edges.Sort();
             List<Edge> chosenEdges = new List<Edge>();
+            
             while (Edges.Any()) {
                 chosenEdges.Add(Edges[0]);
                 _removeEdge(Edges, Edges[0]);

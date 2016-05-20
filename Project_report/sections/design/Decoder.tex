@@ -26,7 +26,7 @@ To get the negative values, we have to do some calculations.
 First, we notice how with each category the minimum number is the same as adding one to the $2^n$ negative value, and the higher the bit-value becomes, the higher the actual value becomes as well. 
 Based on this information, we have derived algorithm \ref{algDecodeHuffmanValue} to calculate the number from a category and a bit-string.
 \input{sections/design/decodeHuffmanValue.tex}
-These values, and the preceding zeroes, will have to be read into an array in zig-zag ordering.
+These values, and the preceding zeros, will have to be read into an array in zig-zag ordering.
 
 \subsection{Decoding the Message}
 We will need 16 non-zero values in order to find the length of the encoded message and the $m$-value, which we will need to use in order to decode the message itself.

@@ -1,12 +1,136 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
 \section{Decoding}
-As mentioned in section \ref{sec:DesignHuffman}, a \lstinline|StreamReader| reads from a file from the beginning towards the end.
-Thus, the first thing we did in the decoding process was to read the Huffman tables from the JPEG file. 
-\input{sections/implementation/Huffman.tex}
-We do this four times, since there are four Huffman tables.
+The first thing we do in the decoding process is to read the Huffman tables from the JPEG file. 
 
-If the public method called \lstinline|decode()| is called, the method will call appropriate methods and sub-methods to decode the message hidden in the JPEG image with the Graph-Theoretic-Approach to Steganography.
-The method \lstinline|findScanData()| returns a bitlist, which will be used by the method \lstinline|decodeScanData()|, and then returns the message to the user who called the method.
-\input{sections/implementation/findScanData.tex}
-\input{sections/implementation/decodeScanData.tex}
-The value of the \lstinline|decodeScanData()| method, will be returned to the caller of the \lstinline|decode()| method.
+To do that, we implemented procedure \ref{huffmanAlgo}, which gave us all the information we needed about the Huffman table, including what kind it was, so that we could store it in the appropriate property. 
+
+The Huffman tables are read from a stream from a given filepath.
+This stream gets assigned to a \lstinline|BinaryReader|, because we are reading bytes.
+All of this can be seen in the constructor in listing \ref{code:decoderConstructor}.
+
+\begin{lstlisting}[firstnumber=36, label={code:decoderConstructor}, caption={The Decoder constructor \textbf{File: }JPEGDecoder.cs}]
+public JPEGDecoder(string path) {
+  StreamReader sr = new StreamReader(path);
+  file = new BinaryReader(sr.BaseStream);
+  for (int i = 0; i < 4; i++) {
+    byte ClassAndID = 0;
+    HuffmanTable temp = getHuffmanTable(out ClassAndID);
+    if ((byte)(ClassAndID & 0xf0) == 0) {
+      if ((byte)(ClassAndID & 0x0f) == 0) {
+        YDCHuffman = temp;
+      } else {
+        ChrDCHuffman = temp;
+      }
+    } else if ((byte)(ClassAndID & 0x0f) == 0) {
+      YACHuffman = temp;
+    } else {
+      ChrACHuffman = temp;
+    }
+  }
+}
+\end{lstlisting} 
+
+The listing also shows how we find the \lstinline{HuffmanTable} and store it in the correct property, based on its ID and class.
+
+Once we have read all the lengths of the Huffman encoded values, we read the runsize of the Huffman codes.
+To get the correct code, we bitshift the current value one to the left. 
+Once there are no more Huffman codes of the current length to read, we increment the current length by one, as described in procedure \ref{huffmanAlgo}.
+
+If the public method called \lstinline|Decode()| is called, the method will decode the message hidden in the JPEG image using the graph-theoretic method.
+\lstinline|findScanData()| returns a bitlist, which will be used by \lstinline|decodeScanData()|, and then returns the message.
+
+The method will read through the input until meeting the SOS marker, then skip the next 12 bytes which contain information about the scan data segment.
+
+Once this is done, the method will add every single byte in the scan data segment to a \lstinline|List<byte>| until a marker is found.
+The implemented method can be seen in Listing \ref{code:findScanData}.
+
+\begin{lstlisting}[firstnumber=110, label={code:findScanData}, caption={Read in the ScanData section into a \lstinline|BitList| \textbf{File: }JPEGDecoder.cs}]
+private BitList findScanData() {
+  byte a;
+  findMarker(0xda);
+  for (int i = 0; i < 12; i++) {
+    file.ReadByte();
+  }
+
+  List<byte> scanData = new List<byte>();
+  int length = (int)file.BaseStream.Length;
+
+  while (file.BaseStream.Position < length) {
+    a = file.ReadByte();
+
+    if (a == 0xff) {
+      byte b = file.ReadByte();
+      if (b != 0) {
+        break;
+      }
+    }
+    scanData.Add(a);
+  }
+
+  BitList bits = new BitList();
+  foreach (byte current in scanData) {
+    byte mask = 1;
+    for (int i = 0; i < 8; i++) {
+      bits.Add((current & (mask << (7 - i))) >> (7 - i));
+    }
+  }
+  return bits;
+}
+\end{lstlisting}
+
+Since the decoding process works on a bit-level, we will need to convert this list of bytes into an array of bits instead.
+To do this, we have to get the \lstinline|BitList| class, which suits our needs.
+This is shown in lines 132-138.
+
+This list will then contain all the bits in the scan data segment of the file.
+
+Because we use the \lstinline|BitList| class we can create bitstrings of variable lengths, by reading the bits one at a time.
+After finding a bitstring representing the codeword from the corresponding Huffman table, we do a reverse lookup of the codeword to get the original runsize.
+The runsize tells us how many zeros precedes the current value and the category, which tells us how many bits we need to read to find the value.
+After determining the bitstring we do the calculation from procedure \ref{algDecodeHuffmanValue} to find the actual value.
+
+By repeating this process we can reassemble the original quantization coefficients.
+
+Once we have quantization coefficients 
+
+We can keep decoding MCUs until we have enough MCUs, such that they contain 16 nonzero AC-values.
+These are the same 16 values in which we embedded the message length and the $m$-value used.
+We decode these 16 values by using an $m$-value of $4$.
+
+To get the length, we look at the first 14 values in pairs of two, and use the $\oplus_4$ operator on them.
+
+This value will be added to a \lstinline|ushort| value, which will be bitshifted right twice before adding the value. 
+Doing this seven times, we will end up with the length of the message.
+
+To get the $m$-value, we use the $\oplus_4$ operator on the 15th and 16th values.
+From the result we can determine which $m$-value had been used during embedding.
+
+Once we have the length and the $m$-value, we can keep reading MCUs until the values containing the message have been found. 
+The reason we do not just read all of scan data, is to save time, since there is no reason to decode all of it, when the message might only be hidden within the first few values.
+
+When all the required values have been read and saved in the \lstinline|List<int>| variable, the message is found according to Listing \ref{code:decodeMessage}.
+
+\begin{lstlisting}[firstnumber=158, label={code:decodeMessage}, caption={Decodes the message encoded into the JPEG image using the graph-theoretic method \textbf{File: }JPEGDecoder.cs}]
+byte logOp = (byte)(Math.Log(modulo, 2));
+byte steps = (byte)(8 / logOp);
+int elementsToRead = length * steps * 2;
+
+[...]
+
+for (int i = 0; i + 1 < elementsToRead; i += 2) {
+  messageParts.Add((byte)(validNumbers[i] + validNumbers[i + 1]).Mod(modulo));
+}
+
+List<byte> message = new List<byte>();
+length = messageParts.Count;
+for (int i = 0; i < length; i += steps) {
+  byte toAdd = 0;
+  for (int j = 0; j < steps; j++) {
+    toAdd <<= logOp;
+    toAdd += messageParts[i + j];
+  }
+  message.Add(toAdd);
+}
+\end{lstlisting}
+
+The message found by \lstinline|decodeScanData()| will be returned as \lstinline|byte[]| to the caller of \lstinline|Decode()|.

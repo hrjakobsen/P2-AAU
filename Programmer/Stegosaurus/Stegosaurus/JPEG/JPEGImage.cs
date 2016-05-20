@@ -143,16 +143,14 @@ namespace Stegosaurus {
             //and the logic required to write those to a file
             _jw = new JpegWriter();
 
+            const int fourteenBitMax = 16884;
             int capacity = GetCapacity();
 
-            if (message.Length > 16884) {
-                throw new ImageCannotContainDataException(message.Length, 16884);
+            if (message.Length > fourteenBitMax) {
+                throw new ImageCannotContainDataException(message.Length, fourteenBitMax);
             } else if (message.Length > capacity) {
                 throw new ImageCannotContainDataException(message.Length, capacity);
             }
-
-
-
 
             _breakDownMessage(message);
 
@@ -665,7 +663,7 @@ namespace Stegosaurus {
             //Add vertices for each part of the message
             _addVertices(graph);
 
-            int threshold = 5;
+            const int threshold = 5;
             //Find alle the possible switches between vertices and add them as edges
             List<Vertex> toBeChanged = graph.Vertices.Where(x => (x.SampleValue1 + x.SampleValue2).Mod(x.Modulo) != x.Message).ToList();
             int length = toBeChanged.Count;

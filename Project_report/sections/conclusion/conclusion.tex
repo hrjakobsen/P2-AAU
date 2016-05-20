@@ -1,29 +1,44 @@
-%\section{Conclusion}
-Digital steganography has proved to be a substantial task and working with this topic has given some hurdles. 
-Through the ages people have sent concealed messages to each other, and now with the help of digital steganography it has become a lot easier to get confidential messages to their goal without interception.
-Our problem statement gave us some boundaries and goals to complete. What we wanted to achieve was to modify the graph-theoretic approach for steganography described in section \ref{sec:graphtheory} to work with JPEG images, and we wanted to do it without significant visual changes.
+% -*- root: ../../DAT2-A423_Project_Report.tex -*-
+%Digital steganography has proven to be a substantial task and working with this topic has presented several hurdles. 
+Through the ages people have sent concealed messages to each other, and now with the help of digital steganography it has become more accessible.
+
+Our problem analysis allowed us to establish  boundaries of the topic as well as goals to complete.
+We came to the conclusion that it was not as important to try and get messages across social media, but instead more important to get messages across in the most discrete and undetectable way possible.
+We did learn from social media, that the most common image format online is JPEG. 
+
+We discovered through steganalysis that by using a simple method such as LSB, it was not possible to discretely send messages, as even a simple colour histogram could reveal the existence the message.
+Instead we needed a method more resilient to statistical analysis.
+The graph-theoretic approach to steganography described in section \ref{sec:graphtheory} was the method we needed.
+
+What we wanted to achieve was modifying the method to work with JPEG images.
+We wanted the algorithm to be able to encode the data without incurring visual distortion to the image.
 The product also had to be implemented in an object-oriented programming language.
 
-In our problem analysis, we came to the conclusion that it was not as important to try and get messages across social media, but instead more important to get messages across in the most discrete and undetectable way possible. 
-We discovered that by using an LSB method, this was not possible, so therefore we had to try something more advanced, which we found in graph theory.
+To hide the data in JPEG images, we first had to design and implement a JPEG encoder.
+After having a functional JPEG encoder, we designed and implemented the graph-theoretic method along with a decoder to be able to retrieve the embedded message.
+The programme was tested using the .NET testing framework NUnit. 
 
-A positive with the graph theoretic approach is that our level of encoding was not as visible in the colour histograms, as it was when concealing a message using the LSB method as seen in section \ref{sec:colourhistograms}. This is what we wanted to achieve with our problem statement.
+This resulted in the programme \textit{Stegosaurus}, that can encode messages discretely as well as decode the messages, and this is something that we desired when we chose this method. 
 
-We also hoped that we could contribute to the cluster group's collective project.
-Using an object-oriented programming language, made it easier and less time consuming for us to create a user interface and help benefit another group (ITC) by means of using an interface which they could implement in their own programme. 
-Working with ITC, made us more aware that our programme could be used on other platforms, and this would have been made a great deal more difficult without the use of an object-oriented language.
+Our tests of the programme showed that it was impossible to discover the method by simply looking at colour histograms.
+Looking back to figure \ref{fig:histogramsComparisons} we can see that there were barely any differences between the cover image encoded as JPEG in figure \ref{fig:gt2Histo} and the stego image saved as JPEG in figure \ref{fig:gtHisto}.
+Even though there are some differences, these are negligible.
+The euclidean distance in the colour channels are generally greater using the graph-theoretic method instead of LSB, though looking back on section \ref{fig:ResultEncoding} the changes are not visible to the human eye when encoding the data.
 
-As described in The Confines of the Problem section, the grounds for working with the method implemented, was to help improve our understanding and help both groups with creating better projects. 
-This did not happen quite as planned, due to insufficient communication. Thankfully this was not catastrophic as there had also been made an agreement that the groups should be able to work together individually and this was how the course of the project went.
+This means, that it is possible for us to share images with concealed messages without raising suspicion, which was our goal.
+In conclusion, we accomplished what we intended to do with our problem statement, but there was room for improvement in relation to our teamwork with the cluster group.
 
-It was hard for three groups with completely different curriculum, ideas, and requirements to come together and work on a shared project.
-Given enough time and more in-depth talks with each other, it could have worked, but neither group was prepared or experienced enough for the challenge.
+\section{Conclusion on the cluster work}
+
+With our programme we hoped to contribute to the cluster group's collective project.
+Using an object-oriented programming language, made it easier and less time consuming for us to create a graphical user interface along with helping the ITC group by means of having our programme use interfaces, that were made far in advance. That way they could work alongside us in the development process.
+
+As described in section \ref{sec:confines}, the grounds for working with the method implemented, was to help improve our understanding and help both groups with creating better projects. 
+This did not happen quite as planned, due to insufficient communication.
+Thankfully this was not catastrophic as there had also been made an agreement that the groups should be able to work together individually and this was how the course of the project went.
+
+It was hard for three groups with completely different curricula, ideas, and requirements to come together and work on a shared project.
+Given enough time and more in-depth talks with each other, it could have worked, but none of the groups was prepared or experienced enough for the challenge.
 It seems like this kind of cluster project is well-suited for a corporate setting, where the goal is to develop a complete solution across all teams.
 In a university setting, however, each group was required to learn and possibly develop something based on their respective curriculum, and it makes sense that they first and foremost focus on their own project, and not on cluster work, which can only be considered a ``bonus objective'' that can be skipped.
 
-We have created a programme, that can encode messages discretely, and this is something that we desired when we chose this method. 
-It is not as fast as we had hoped, nor is there an option for encoding a large amount of data, but it is, however, undetectable to the human eye and our tests with colour histograms.
-
-This means, that it is possible for us to share images with concealed messages without raising suspicion, which is what we started out with. 
-In conclusion, we accomplished what we intended to do in our problem confinement, but there is room for improvement in relation to our teamwork with the cluster group.
-With enough time and communication, it is likely that we would have ironed out problems with the entire project.
