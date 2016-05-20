@@ -21,7 +21,7 @@ namespace TestForm
             var elementList = Table.Elements.ToList();
             Size = new Size(410, 244);
 
-            addTopDescription();
+            _addTopDescription();
 
             for (int i = 0; i < Table.Elements.Count; i++)
             {
@@ -49,7 +49,7 @@ namespace TestForm
             InitializeComponent();
         }
 
-        private void addTopDescription()
+        private void _addTopDescription()
         {
             Label codeWord = new Label();
             Controls.Add(codeWord);
@@ -88,16 +88,16 @@ namespace TestForm
             }
             VerticalScroll.Value = 0;
 
-            addCodeWordsBox(j);
-            addRunSizeBox(j);
+            _addCodeWordsBox(j);
+            _addRunSizeBox(j);
             
-            addNumberIndicator(j);
+            _addNumberIndicator(j);
 
             //Brings focus to the first box in the added box
             codeWordsBoxes[runSizeBoxes.Count() - 1].Select();
         }
 
-        private void addCodeWordsBox(int counter)
+        private void _addCodeWordsBox(int counter)
         {
             codeWordsBoxes.Add(new TextBox());
             Controls.Add(codeWordsBoxes[counter]);
@@ -108,7 +108,7 @@ namespace TestForm
             codeWordsBoxes[counter].Font = new Font(FontFamily.GenericMonospace.ToString(), 8);
         }
 
-        private void addRunSizeBox(int counter)
+        private void _addRunSizeBox(int counter)
         {
             runSizeBoxes.Add(new TextBox());
             Controls.Add(runSizeBoxes[counter]);
@@ -119,7 +119,7 @@ namespace TestForm
             runSizeBoxes[counter].Font = new Font(FontFamily.GenericMonospace.ToString(), 8);
         }
 
-        private void addNumberIndicator(int counter)
+        private void _addNumberIndicator(int counter)
         {
             if (counter != 0 && counter % 5 == 0)
             {

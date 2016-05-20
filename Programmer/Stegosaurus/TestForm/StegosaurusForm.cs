@@ -42,7 +42,7 @@ namespace TestForm{
             try
             {
                 tbMessage.Text = NoMessageWrittenMessage;
-                loadSettings();
+                _loadSettings();
             }
             catch (Exception)
             {
@@ -52,7 +52,7 @@ namespace TestForm{
         }
 
         //Loads settings from Properties.Settings for more general settings and from a .CSV-file for custom tables.
-        private void loadSettings()
+        private void _loadSettings()
         {
             LSBMethodSelected = Properties.Settings.Default.LSBMethodSelected;
             tbarEncodingQuality.Value = Properties.Settings.Default.Quality;
@@ -75,16 +75,16 @@ namespace TestForm{
                 tbarEncodingQuality.Enabled = true;
             }
 
-            loadHuffmanTableFromFile(out HuffmanTableYAC, "HuffmanTableYAC.txt");
-            loadHuffmanTableFromFile(out HuffmanTableYAC, "HuffmanTableYAC.txt");
-            loadHuffmanTableFromFile(out HuffmanTableYAC, "HuffmanTableYAC.txt");
-            loadHuffmanTableFromFile(out HuffmanTableYAC, "HuffmanTableYAC.txt");
-            loadQuantizationTableFromFile(out QuantizationTableY, "QuantizationTableY.txt");
-            loadQuantizationTableFromFile(out QuantizationTableChr, "QuantizationTableChr.txt");
+            _loadHuffmanTableFromFile(out HuffmanTableYAC, "HuffmanTableYAC.txt");
+            _loadHuffmanTableFromFile(out HuffmanTableYAC, "HuffmanTableYAC.txt");
+            _loadHuffmanTableFromFile(out HuffmanTableYAC, "HuffmanTableYAC.txt");
+            _loadHuffmanTableFromFile(out HuffmanTableYAC, "HuffmanTableYAC.txt");
+            _loadQuantizationTableFromFile(out QuantizationTableY, "QuantizationTableY.txt");
+            _loadQuantizationTableFromFile(out QuantizationTableChr, "QuantizationTableChr.txt");
         }
 
         //Uses the HuffmanTable.Fromstring() method to create a Huffman table from a string optained from a file.
-        private void loadHuffmanTableFromFile(out HuffmanTable huffmanTable, string filePath)
+        private static void _loadHuffmanTableFromFile(out HuffmanTable huffmanTable, string filePath)
         {
             if (File.Exists(filePath))
             {
@@ -98,7 +98,7 @@ namespace TestForm{
         }
 
         //Uses the QuantizationTable.Fromstring() method to create a quantization table from a string optained from a file.
-        private void loadQuantizationTableFromFile(out QuantizationTable quantizationTable, string filePath)
+        private static void _loadQuantizationTableFromFile(out QuantizationTable quantizationTable, string filePath)
         {
             if (File.Exists(filePath))
             {
@@ -122,7 +122,7 @@ namespace TestForm{
                 Cursor.Current = Cursors.WaitCursor;
                 try
                 {
-                    loadSettingsFromOptionsForm();
+                    _loadSettingsFromOptionsForm();
                     OptionsForm.SkipSettingsInitialization = false;
                 }
                 catch (Exception)
@@ -137,21 +137,21 @@ namespace TestForm{
             if (OptionsForm.ResetToDefault)
             {
                 Cursor.Current = Cursors.WaitCursor;
-                resetSettingsToDefault();
+                _resetSettingsToDefault();
+                _refreshMainGUI();
                 OptionsForm.ResetToDefault = false;
-                OptionsForm optionsForm2 = new OptionsForm();
                 Cursor.Current = Cursors.Default;
-                optionsForm2.ShowDialog();
             }
         }
 
-        private void resetSettingsToDefault()
+        private void _resetSettingsToDefault()
         {
             Quality = DefaultQuality;
             MValue = DefaultMValue;
             QualityLocked = false;
             tbarEncodingQuality.Enabled = true;
             LSBMethodSelected = false;
+            this.Text = !LSBMethodSelected ? @"Stegosaurus (GT)" : @"Stegosaurus (LSB)";
             HuffmanTableYAC = HuffmanTable.JpegHuffmanTableYAC;
             HuffmanTableYDC = HuffmanTable.JpegHuffmanTableYDC;
             HuffmanTableChrAC = HuffmanTable.JpegHuffmanTableChrAC;
@@ -160,14 +160,14 @@ namespace TestForm{
             QuantizationTableChr = QuantizationTable.JpegDefaultChrTable;
         }
 
-        private void loadSettingsFromOptionsForm()
+        private void _loadSettingsFromOptionsForm()
         {
-            HuffmanTableYAC = defaultOrCustomHuffmanTable(OptionsForm.HuffmanTableComponentYAC, HuffmanTable.JpegHuffmanTableYAC);
-            HuffmanTableYDC = defaultOrCustomHuffmanTable(OptionsForm.HuffmanTableComponentYDC, HuffmanTable.JpegHuffmanTableYDC);
-            HuffmanTableChrAC = defaultOrCustomHuffmanTable(OptionsForm.HuffmanTableComponentChrAC, HuffmanTable.JpegHuffmanTableChrAC);
-            HuffmanTableChrAC = defaultOrCustomHuffmanTable(OptionsForm.HuffmanTableComponentChrDC, HuffmanTable.JpegHuffmanTableChrDC);
-            QuantizationTableY = defaultOrCustomQuantizationTable(OptionsForm.QuantizationTableComponentY, QuantizationTable.JpegDefaultYTable);
-            QuantizationTableChr = defaultOrCustomQuantizationTable(OptionsForm.QuantizationTableComponentChr, QuantizationTable.JpegDefaultChrTable);
+            HuffmanTableYAC = _defaultOrCustomHuffmanTable(OptionsForm.HuffmanTableComponentYAC, HuffmanTable.JpegHuffmanTableYAC);
+            HuffmanTableYDC = _defaultOrCustomHuffmanTable(OptionsForm.HuffmanTableComponentYDC, HuffmanTable.JpegHuffmanTableYDC);
+            HuffmanTableChrAC = _defaultOrCustomHuffmanTable(OptionsForm.HuffmanTableComponentChrAC, HuffmanTable.JpegHuffmanTableChrAC);
+            HuffmanTableChrAC = _defaultOrCustomHuffmanTable(OptionsForm.HuffmanTableComponentChrDC, HuffmanTable.JpegHuffmanTableChrDC);
+            QuantizationTableY = _defaultOrCustomQuantizationTable(OptionsForm.QuantizationTableComponentY, QuantizationTable.JpegDefaultYTable);
+            QuantizationTableChr = _defaultOrCustomQuantizationTable(OptionsForm.QuantizationTableComponentChr, QuantizationTable.JpegDefaultChrTable);
 
             LSBMethodSelected = OptionsForm.LSBMethodSelected;
             Text = !LSBMethodSelected ? @"Stegosaurus (GT)" : @"Stegosaurus (LSB)";
@@ -175,34 +175,12 @@ namespace TestForm{
             tbarEncodingQuality.Value = OptionsForm.Quality;
             MValue = OptionsForm.MValue;
 
-            if (LSBMethodSelected)
-            {
-                lblEncodingQualityValue.Text = "-";
-            }
-            else
-            {
-                tbarEncodingQuality.Value = Quality + 1;
-                tbarEncodingQuality.Value = Quality - 1;
-            }
-
-            //If changes have been made to a QuantizationTable or LSB is selected, lock the quality-slider to prevent errors.
-            if (LSBMethodSelected || !OptionsForm.QuantizationTableComponentY.SaveTable().Equals(QuantizationTable.JpegDefaultYTable) 
-                || !OptionsForm.QuantizationTableComponentChr.SaveTable().Equals(QuantizationTable.JpegDefaultChrTable))
-            {
-                QualityLocked = true;
-                tbarEncodingQuality.Value = DefaultQualityWithCustomQTable;
-                tbarEncodingQuality.Enabled = false;
-            }
-            else
-            {
-                QualityLocked = false;
-                tbarEncodingQuality.Enabled = true;
-            }
+            _refreshMainGUI();
         }
 
         //Returns default table if the table made from the tablecomponent is the same as defaultTable, custom table if they are different.
         //Doing this prevents an error from ocuring when changing quality while using a 'default' table manually set.
-        private HuffmanTable defaultOrCustomHuffmanTable(HuffmanTableComponent customHuffmanTable, HuffmanTable defaultTable)
+        private static HuffmanTable _defaultOrCustomHuffmanTable(HuffmanTableComponent customHuffmanTable, HuffmanTable defaultTable)
         {
             HuffmanTable H;
             if (customHuffmanTable.SaveTable().Equals(defaultTable))
@@ -219,21 +197,51 @@ namespace TestForm{
 
         //Returns default table if the table made from the tablecomponent is the same as defaultTable, custom table if they are different.
         //Doing this prevents an error from ocuring when changing quality while using a 'default' non-default table
-        private QuantizationTable defaultOrCustomQuantizationTable(QuantizationTableComponent customQuantizationTable,
+        private static QuantizationTable _defaultOrCustomQuantizationTable(QuantizationTableComponent customQuantizationTable,
             QuantizationTable defaultTable)
         {
-            QuantizationTable Q;
+            QuantizationTable q;
 
             if (customQuantizationTable.SaveTable().Equals(defaultTable))
             {
-                Q = defaultTable;
+                q = defaultTable;
             }
             else
             {
-                Q = customQuantizationTable.SaveTable();
+                q = customQuantizationTable.SaveTable();
             }
 
-            return Q;
+            return q;
+        }
+
+        private void _refreshMainGUI()
+        {
+            tbarEncodingQuality.Value = Quality + 1;
+            tbarEncodingQuality.Value = Quality - 1;
+            if (LSBMethodSelected)
+            {
+                lblEncodingQualityValue.Text = "-";
+            }
+
+
+            //If changes have been made to a QuantizationTable or LSB is selected, lock the quality-slider to prevent errors.
+            if (!QuantizationTableY.Equals(QuantizationTable.JpegDefaultYTable)
+                || !QuantizationTableChr.Equals(QuantizationTable.JpegDefaultChrTable))
+            {
+                tbarEncodingQuality.Value = DefaultQualityWithCustomQTable;
+                QualityLocked = true;
+                tbarEncodingQuality.Enabled = false;
+            } 
+            else if (LSBMethodSelected)
+            {
+                QualityLocked = true;
+                tbarEncodingQuality.Enabled = false;
+            }
+            else
+            {
+                QualityLocked = false;
+                tbarEncodingQuality.Enabled = true;
+            }
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -328,13 +336,17 @@ namespace TestForm{
             Quality = tbarEncodingQuality.Value;
             lblEncodingQualityValue.Text = Quality.ToString();
 
-            if (Quality != DefaultQuality)
+            if (Quality == DefaultQuality)
             {
-                lblEncodingQualityValue.Text = Quality.ToString();
+                lblEncodingQualityValue.Text = Quality.ToString() + @"  (default)";
+            }
+            else if (Quality == DefaultQualityWithCustomQTable && QualityLocked)
+            {
+                lblEncodingQualityValue.Text = Quality.ToString() + @"  (CQC)";
             }
             else
             {
-                lblEncodingQualityValue.Text = Quality.ToString() + @"  (default)";
+                lblEncodingQualityValue.Text = Quality.ToString();
             }
         }
 
@@ -596,18 +608,18 @@ namespace TestForm{
 
         private void StegosaurusForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            saveSettings();
+            _saveSettings();
         }
 
         //Saves settings to Properties.Settings for more general settings and to a .CSV-file for custom tables
-        private void saveSettings()
+        private static void _saveSettings()
         {
-            saveHuffmanTableToFile(HuffmanTableYAC, "HuffmanTableYAC.txt");
-            saveHuffmanTableToFile(HuffmanTableYDC, "HuffmanTableYDC.txt");
-            saveHuffmanTableToFile(HuffmanTableChrAC, "HuffmanTableChrAC.txt");
-            saveHuffmanTableToFile(HuffmanTableChrDC, "HuffmanTableChrDC.txt");
-            saveQuantizationTableToFile(QuantizationTableY, "QuantizationTableY.txt");
-            saveQuantizationTableToFile(QuantizationTableChr, "QuantizationTableChr.txt");
+            _saveHuffmanTableToFile(HuffmanTableYAC, "HuffmanTableYAC.txt");
+            _saveHuffmanTableToFile(HuffmanTableYDC, "HuffmanTableYDC.txt");
+            _saveHuffmanTableToFile(HuffmanTableChrAC, "HuffmanTableChrAC.txt");
+            _saveHuffmanTableToFile(HuffmanTableChrDC, "HuffmanTableChrDC.txt");
+            _saveQuantizationTableToFile(QuantizationTableY, "QuantizationTableY.txt");
+            _saveQuantizationTableToFile(QuantizationTableChr, "QuantizationTableChr.txt");
             Properties.Settings.Default.QualityLocked = QualityLocked;
             Properties.Settings.Default.Quality = Quality;
             Properties.Settings.Default.MValue = MValue;
@@ -616,7 +628,7 @@ namespace TestForm{
             Properties.Settings.Default.Save();
         }
 
-        private void saveHuffmanTableToFile(HuffmanTable huffmanTable, string filePath)
+        private static void _saveHuffmanTableToFile(HuffmanTable huffmanTable, string filePath)
         {
             if (huffmanTable != null)
             {
@@ -624,7 +636,7 @@ namespace TestForm{
             }
         }
 
-        private void saveQuantizationTableToFile(QuantizationTable quantizationTable, string filePath)
+        private static void _saveQuantizationTableToFile(QuantizationTable quantizationTable, string filePath)
         {
             if (quantizationTable != null)
             {

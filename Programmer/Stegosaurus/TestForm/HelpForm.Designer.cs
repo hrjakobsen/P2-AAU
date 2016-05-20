@@ -73,9 +73,9 @@
             // 
             this.grpQuality.Controls.Add(this.lblQuality);
             this.grpQuality.Location = new System.Drawing.Point(9, 0);
-            this.grpQuality.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.grpQuality.Margin = new System.Windows.Forms.Padding(2);
             this.grpQuality.Name = "grpQuality";
-            this.grpQuality.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.grpQuality.Padding = new System.Windows.Forms.Padding(2);
             this.grpQuality.Size = new System.Drawing.Size(413, 269);
             this.grpQuality.TabIndex = 8;
             this.grpQuality.TabStop = false;
@@ -87,7 +87,7 @@
             this.lblQuality.Location = new System.Drawing.Point(14, 24);
             this.lblQuality.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblQuality.Name = "lblQuality";
-            this.lblQuality.Size = new System.Drawing.Size(366, 65);
+            this.lblQuality.Size = new System.Drawing.Size(367, 78);
             this.lblQuality.TabIndex = 0;
             this.lblQuality.Text = resources.GetString("lblQuality.Text");
             // 
@@ -105,9 +105,9 @@
             // 
             this.grpEncoding.Controls.Add(this.label1);
             this.grpEncoding.Location = new System.Drawing.Point(9, 0);
-            this.grpEncoding.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.grpEncoding.Margin = new System.Windows.Forms.Padding(2);
             this.grpEncoding.Name = "grpEncoding";
-            this.grpEncoding.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.grpEncoding.Padding = new System.Windows.Forms.Padding(2);
             this.grpEncoding.Size = new System.Drawing.Size(413, 269);
             this.grpEncoding.TabIndex = 8;
             this.grpEncoding.TabStop = false;
@@ -135,7 +135,7 @@
             // Okay
             // 
             this.Okay.Location = new System.Drawing.Point(554, 315);
-            this.Okay.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Okay.Margin = new System.Windows.Forms.Padding(2);
             this.Okay.Name = "Okay";
             this.Okay.Size = new System.Drawing.Size(58, 24);
             this.Okay.TabIndex = 28;
@@ -147,9 +147,9 @@
             // 
             this.grpHelpGeneral.Controls.Add(this.General);
             this.grpHelpGeneral.Location = new System.Drawing.Point(9, 0);
-            this.grpHelpGeneral.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.grpHelpGeneral.Margin = new System.Windows.Forms.Padding(2);
             this.grpHelpGeneral.Name = "grpHelpGeneral";
-            this.grpHelpGeneral.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.grpHelpGeneral.Padding = new System.Windows.Forms.Padding(2);
             this.grpHelpGeneral.Size = new System.Drawing.Size(413, 269);
             this.grpHelpGeneral.TabIndex = 8;
             this.grpHelpGeneral.TabStop = false;
@@ -180,9 +180,9 @@
             // 
             this.grpHuffman.Controls.Add(this.lblHuffman);
             this.grpHuffman.Location = new System.Drawing.Point(9, 0);
-            this.grpHuffman.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.grpHuffman.Margin = new System.Windows.Forms.Padding(2);
             this.grpHuffman.Name = "grpHuffman";
-            this.grpHuffman.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.grpHuffman.Padding = new System.Windows.Forms.Padding(2);
             this.grpHuffman.Size = new System.Drawing.Size(413, 269);
             this.grpHuffman.TabIndex = 8;
             this.grpHuffman.TabStop = false;
@@ -212,9 +212,9 @@
             // 
             this.grpHelp5.Controls.Add(this.Quantization);
             this.grpHelp5.Location = new System.Drawing.Point(9, 0);
-            this.grpHelp5.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.grpHelp5.Margin = new System.Windows.Forms.Padding(2);
             this.grpHelp5.Name = "grpHelp5";
-            this.grpHelp5.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.grpHelp5.Padding = new System.Windows.Forms.Padding(2);
             this.grpHelp5.Size = new System.Drawing.Size(413, 269);
             this.grpHelp5.TabIndex = 8;
             this.grpHelp5.TabStop = false;
@@ -248,7 +248,7 @@
             "Huffman Tables",
             "Quantization Tables"});
             this.HelpBox.Location = new System.Drawing.Point(14, 20);
-            this.HelpBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.HelpBox.Margin = new System.Windows.Forms.Padding(2);
             this.HelpBox.Name = "HelpBox";
             this.HelpBox.Size = new System.Drawing.Size(144, 277);
             this.HelpBox.TabIndex = 25;
@@ -262,11 +262,11 @@
             this.Controls.Add(this.line);
             this.Controls.Add(this.HelpBox);
             this.Controls.Add(this.Okay);
+            this.Controls.Add(this.pnlHelp2);
+            this.Controls.Add(this.pnlHelpGeneral);
             this.Controls.Add(this.pnlHelp5);
             this.Controls.Add(this.pnlHelp4);
             this.Controls.Add(this.pnlHelp3);
-            this.Controls.Add(this.pnlHelp2);
-            this.Controls.Add(this.pnlHelpGeneral);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "HelpForm";
             this.Text = "Stegosaurus - Help";

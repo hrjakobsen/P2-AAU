@@ -29,18 +29,18 @@ namespace TestForm
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             InitializeComponent();
-            initializeSettings();
+            _initializeSettings();
         }
 
         //Custom components _ created and settings are set.
-        private void initializeSettings()
+        private void _initializeSettings()
         {
-            initializeQuantizationTable(out QuantizationTableComponentY, StegosaurusForm.QuantizationTableY, QuantizationTable.JpegDefaultYTable);
-            initializeQuantizationTable(out QuantizationTableComponentChr, StegosaurusForm.QuantizationTableChr, QuantizationTable.JpegDefaultChrTable);
-            initializeHuffmanTable(out HuffmanTableComponentYAC, StegosaurusForm.HuffmanTableYAC, HuffmanTable.JpegHuffmanTableYAC);
-            initializeHuffmanTable(out HuffmanTableComponentYDC, StegosaurusForm.HuffmanTableYDC, HuffmanTable.JpegHuffmanTableYDC);
-            initializeHuffmanTable(out HuffmanTableComponentChrAC, StegosaurusForm.HuffmanTableChrAC, HuffmanTable.JpegHuffmanTableChrAC);
-            initializeHuffmanTable(out HuffmanTableComponentChrDC, StegosaurusForm.HuffmanTableChrDC, HuffmanTable.JpegHuffmanTableChrDC);
+            _initializeQuantizationTable(out QuantizationTableComponentY, StegosaurusForm.QuantizationTableY, QuantizationTable.JpegDefaultYTable);
+            _initializeQuantizationTable(out QuantizationTableComponentChr, StegosaurusForm.QuantizationTableChr, QuantizationTable.JpegDefaultChrTable);
+            _initializeHuffmanTable(out HuffmanTableComponentYAC, StegosaurusForm.HuffmanTableYAC, HuffmanTable.JpegHuffmanTableYAC);
+            _initializeHuffmanTable(out HuffmanTableComponentYDC, StegosaurusForm.HuffmanTableYDC, HuffmanTable.JpegHuffmanTableYDC);
+            _initializeHuffmanTable(out HuffmanTableComponentChrAC, StegosaurusForm.HuffmanTableChrAC, HuffmanTable.JpegHuffmanTableChrAC);
+            _initializeHuffmanTable(out HuffmanTableComponentChrDC, StegosaurusForm.HuffmanTableChrDC, HuffmanTable.JpegHuffmanTableChrDC);
             Quality = StegosaurusForm.Quality;
             MValue = StegosaurusForm.MValue;
             _qualityLocked = StegosaurusForm.QualityLocked;
@@ -73,7 +73,7 @@ namespace TestForm
 
         //Adds defaultTable.Length amount of textboxes to a given Huffman panel and saves each in an array (to be looped through), sets
         //the size and position of each textbox and writes the default Quantization values in these.
-        private void initializeHuffmanTable(out HuffmanTableComponent huffmanTableComponent, HuffmanTable settingsHuffmanTable, HuffmanTable defaultHuffmanTable)
+        private void _initializeHuffmanTable(out HuffmanTableComponent huffmanTableComponent, HuffmanTable settingsHuffmanTable, HuffmanTable defaultHuffmanTable)
         {
 
             if (settingsHuffmanTable != null)
@@ -90,7 +90,7 @@ namespace TestForm
             huffmanTableComponent.BringToFront();
         }
 
-        private void initializeQuantizationTable(out QuantizationTableComponent quantizationTableComponent, QuantizationTable settingsQuantizationTable, QuantizationTable defaultQuantizationTable)
+        private void _initializeQuantizationTable(out QuantizationTableComponent quantizationTableComponent, QuantizationTable settingsQuantizationTable, QuantizationTable defaultQuantizationTable)
         {
             if (settingsQuantizationTable != null)
             {
@@ -198,6 +198,7 @@ namespace TestForm
                 case DialogResult.No:
                     break;
                 default:
+                    SaveEnabled = false;
                     ResetToDefault = true;
                     _skipDialog = true;
                     Close();
