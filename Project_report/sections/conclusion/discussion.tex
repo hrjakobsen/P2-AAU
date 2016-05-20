@@ -1,6 +1,6 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
-We started out by using the relatively simple LSB-method for hiding data in an image.
-Specifically, we saved an image inside of another PNG-image.
+In the problem analysis we used a simple LSB-method for hiding data in an image.
+Specifically, we hid an image inside of another PNG image.
 While the differences in the image with and without the message-image were hardly noticeable to the human eye, we did find that comparing colour histograms of the two images revealed that there had in fact been made changes to it.
 In an effort to diminish this problem, the graph-theoretical approach we implemented attempted to move pixels around in the image, rather than change their values.
 This meant that colour histograms of the image before and after the message had been encoded should look very similar, almost identical.
@@ -10,9 +10,8 @@ Using this method, we expected the changes to be small enough so that it would n
 
 \section{Changes to the Image}
 \label{sec:changestoimage}
-\subsection{Changes to the image}
 To find out roughly how many of these forces there were in a given image, we used our programme to save different messages in different images.
-The used five different message lengths were: 70, 140, 280, 560 and 1120 bytes.
+The five different message lengths were: 70, 140, 280, 560 and 1120 bytes.
 Each message consisted of the ASCII characters A-Z repeated to fill out the message.
 Each of these messages were encoded in four images with varying motives, but the same resolution (1920x1080).
 The images can be seen in figure \ref{fig:four_test_images}.
@@ -27,11 +26,11 @@ This led to a total of 20 tests as seen in table \ref{fig:forces_swaps}.
     \centering
     \begin{subfigure}[b]{0.33\textwidth}
         \includegraphics[width=\textwidth]{figures/cat}
-            \caption{Cat image \citep{imgCat}}
+            \caption{Cat image \\\citep{imgCat}}
     \end{subfigure}
     \begin{subfigure}[b]{0.33\textwidth}
             \includegraphics[width=\textwidth]{figures/landscape}
-            \caption{Landscape image \citep{imgLandscape}}
+            \caption{Landscape image \\\citep{imgLandscape}}
     \end{subfigure}
     \begin{subfigure}[b]{0.33\textwidth}
             \includegraphics[width=\textwidth]{figures/tiger}
@@ -77,9 +76,9 @@ This led to a total of 20 tests as seen in table \ref{fig:forces_swaps}.
 \end{table}
 
 As the table showed, some of the images required much fewer forces than others.
-The main reason for this was that the changes in color within the area in which the message was encoded was different from image to image.
+The main reason for this was that the changes in colour within the area in which the message was encoded was different from image to image.
 For example, the tiger performed much better than the other images, because it contained mostly the same colour in the area that contained the message.
-When constructing the graph, we only added edges with a weigth under a certain threshold.
+When constructing the graph, we only added edges with a weight under a certain threshold.
 When the colours of an area were closer together, there would also be a higher concentration of edges with a smaller weight, which would lead to a larger graph.
 
 \section{Size of the Graph}

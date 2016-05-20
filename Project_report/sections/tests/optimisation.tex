@@ -364,11 +364,8 @@ This tells us that the encoding time plays a much larger role than the capacity 
 \end{figure}
 
 On figure \ref{fig:ResultEncoding} the results of the encoding are shown.
-There are no visible changes to the eye from figure \ref{fig:catHighMessage} to figure \ref{fig:catNoMessage}.
+There are no obvious visible changes from figure \ref{fig:catHighMessage} to figure \ref{fig:catNoMessage}.
 This tells us that it is difficult for a person to tell the difference from the original image to the image with the encoded message. 
-
-Likewise, there are no visible differences from figure \ref{fig:catJPEGMessage} to figure \ref{fig:catJPEGNoMessage}, which is the cover image encoded as JPEG at 53\% quality.
-The only differences from figure \ref{fig:catJPEGMessage} to the original cover image, is the overall lower quality from the JPEG compression, and not from the embedding of the message.
 
 \begin{figure}[H]
     \centering
@@ -395,6 +392,11 @@ The only differences from figure \ref{fig:catJPEGMessage} to the original cover 
     \caption{Encoding of the images \citep{FlickrImageCat}}
     \label{fig:ResultEncoding}
 \end{figure}
+
+
+There are very slight differences between figures \ref{fig:catJPEGNoMessage} and \ref{fig:catJPEGMessage}. They are only visible if greatly enlarged, and only noticeable because we have both the cover and stego image to compare. The reason for the differences is that the quantization tables used when saving at lower qualities have much higher values, which means any changes are multiplied by a greater number when decoding the image in an image viewer. 
+
+The only noticeable differences from figure \ref{fig:catJPEGMessage} to the original cover image, is the overall lower quality from the JPEG compression, and not from the embedding of the message.
 
 Not being able to see the message with the naked eye is of course not enough, but it does tell us that the images are not changed greatly by embedding the message.
 In the next chapter, we will test the stego images by better means than simply looking at them. 
