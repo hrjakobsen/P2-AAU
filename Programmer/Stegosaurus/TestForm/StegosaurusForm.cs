@@ -13,36 +13,21 @@ namespace TestForm{
         public static HuffmanTable HuffmanTableChrAC, HuffmanTableChrDC, HuffmanTableYAC, HuffmanTableYDC;
         public static QuantizationTable QuantizationTableY, QuantizationTableChr;
         public static bool QualityLocked { get; private set; }
-        public static bool LSBMethodSelected;
+        public static bool LSBMethodSelected { get; private set; }
         public static int Quality { get; private set; }
         public static byte MValue { get; private set; }
+        public static int DefaultQuality = 53;
 
         private IImageEncoder _imageEncoder;
         private IImageDecoder _imageDecoder;
         private bool _inputImageSet, _messageFileSet, _messageTextSet;
         private byte[] _message;
-        private const string NoMessageWrittenMessage = "Enter the message you would like to encode into your image.";
         private int _messageLength;
-        public static int DefaultQuality = 53;
         private readonly byte _defaultMValue = 4;
         private Bitmap CoverImage { get; set; }
-        private string _decodeFilePath;
-        private string _decodeFileName;
-
-        private string _userSavePath;
-
-        private string UserSavePath
-        {
-            get { return _userSavePath; }
-            set
-            {
-                string s = value;
-
-               // s = s.Replace("\\", "/");
-
-                _userSavePath = s;
-            }
-        }
+        private string _decodeFilePath, _decodeFileName;
+        private string UserSavePath;
+        private const string NoMessageWrittenMessage = "Enter the message you would like to encode into your image.";
 
         public StegosaurusForm() {
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -164,13 +149,14 @@ namespace TestForm{
             Quality = DefaultQuality;
             MValue = _defaultMValue;
             QualityLocked = false;
+            tbarEncodingQuality.Enabled = true;
             LSBMethodSelected = false;
-            HuffmanTableYAC = null;
-            HuffmanTableYDC = null;
-            HuffmanTableChrAC = null;
-            HuffmanTableChrDC = null;
-            QuantizationTableY = null;
-            QuantizationTableChr = null;
+            HuffmanTableYAC = HuffmanTable.JpegHuffmanTableYAC;
+            HuffmanTableYDC = HuffmanTable.JpegHuffmanTableYDC;
+            HuffmanTableChrAC = HuffmanTable.JpegHuffmanTableChrAC;
+            HuffmanTableChrDC = HuffmanTable.JpegHuffmanTableChrDC;
+            QuantizationTableY = QuantizationTable.JpegDefaultYTable;
+            QuantizationTableChr = QuantizationTable.JpegDefaultChrTable;
         }
 
         private void loadSettingsFromOptionsForm()
@@ -293,14 +279,7 @@ namespace TestForm{
                 btnRemoveMsgFile.Enabled = false;
                 tbMessage.Enabled = false;
                 btnProceed.Text = @"Decode";
-                if (_inputImageSet)
-                {
-                    btnProceed.Enabled = true;
-                }
-                else
-                {
-                    btnProceed.Enabled = false;
-                }
+                btnProceed.Enabled = _inputImageSet;
             }
         }
 
@@ -419,6 +398,7 @@ namespace TestForm{
             try
             {
                 getFilePath();
+                Cursor.Current = Cursors.WaitCursor;
                 encodeOrDecodeImage();
             }
             catch (IOException)
@@ -429,12 +409,18 @@ namespace TestForm{
             {
                 MessageBox.Show("No save location was selected!");
             }
-
-            Cursor.Current = Cursors.WaitCursor;
+            catch (Exception)
+            {
+                MessageBox.Show("An unknown error occured!");
+            }
            
             lblProcessing.Text = "";
             lblProcessing.Visible = false;
             Application.DoEvents();
+            if (string.IsNullOrWhiteSpace(tbMessage.Text))
+            {
+                tbMessage.Text = NoMessageWrittenMessage;
+            }
             Cursor.Current = Cursors.Default;
         }
 
@@ -530,6 +516,10 @@ namespace TestForm{
                 {
                     MessageBox.Show("Failed to load result picture! Your Huffman table may be invalid");
                 }
+                catch (Exception)
+                {
+                    MessageBox.Show("An error occured when encoding!");
+                }
             }
             else if (rdioDecode.Checked)
             {
@@ -560,7 +550,7 @@ namespace TestForm{
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("Unknown error (Cover image might not contain a message)");
+                    MessageBox.Show("An Error occured when decoding! Cover image might not contain a message.");
                 }
             }
         }
