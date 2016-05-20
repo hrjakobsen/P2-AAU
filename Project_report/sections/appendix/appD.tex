@@ -1,32 +1,33 @@
 \chapter{Stegosaurus - BitList implementation of CheckedAdd}
 \label{app:D}
 \begin{lstlisting}
-public class BitList : IEnumerable{
-    [...]
-    private BitArray latestEntries = new BitArray(8);
-    private int addCounter = 0;
+public class BitList : IEnumerable {
+  [...]
+  private BitArray latestEntries = new BitArray(8);
+  private int addCounter = 0;
 
-    public void CheckedAdd(int val) {
-        if (addCounter % 8 == 0) {
-            latestEntries.SetAll(false);
-        }
-        latestEntries[addCounter % 8] = (val == 1);
-        Add(val == 1);
-        bool allOne = true;
-        for (int i = 0; i < latestEntries.Length; i++) {
-            if (!latestEntries[i]) {
-                allOne = false;
-                break;
-            }
-        }
-
-        if (allOne) {
-            for (int i = 0; i < 8; i++) {
-                Add(false);
-            }
-        }
-        
-        addCounter++;
+  public void CheckedAdd(int val) {
+    if (addCounter % 8 == 0) {
+      latestEntries.SetAll(false);
     }
+  }
+  
+  latestEntries[addCounter % 8] = (val == 1);
+  Add(val == 1);
+  bool allOne = true;
+  for (int i = 0; i < latestEntries.Length; i++) {
+    if (!latestEntries[i]) {
+      allOne = false;
+      break;
+    }
+  }
+
+  if (allOne) {
+    for (int i = 0; i < 8; i++) {
+      Add(false);
+    }
+  }
+
+  addCounter++;
 }
 \end{lstlisting}

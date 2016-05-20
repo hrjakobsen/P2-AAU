@@ -1,0 +1,8 @@
+C:\Users\hhs19\Documents\P2\DAT2A423_2016\LSB_Experiment\LSB_Experiment\bin\Release\LSB_Experiment.exe.config
+C:\Users\hhs19\Documents\P2\DAT2A423_2016\LSB_Experiment\LSB_Experiment\bin\Release\LSB_Experiment.exe
+C:\Users\hhs19\Documents\P2\DAT2A423_2016\LSB_Experiment\LSB_Experiment\bin\Release\LSB_Experiment.pdb
+C:\Users\hhs19\Documents\P2\DAT2A423_2016\LSB_Experiment\LSB_Experiment\obj\Release\WindowsFormsApplication1.Form1.resources
+C:\Users\hhs19\Documents\P2\DAT2A423_2016\LSB_Experiment\LSB_Experiment\obj\Release\WindowsFormsApplication1.Properties.Resources.resources
+C:\Users\hhs19\Documents\P2\DAT2A423_2016\LSB_Experiment\LSB_Experiment\obj\Release\LSB_Experiment.csproj.GenerateResource.Cache
+C:\Users\hhs19\Documents\P2\DAT2A423_2016\LSB_Experiment\LSB_Experiment\obj\Release\LSB_Experiment.exe
+C:\Users\hhs19\Documents\P2\DAT2A423_2016\LSB_Experiment\LSB_Experiment\obj\Release\LSB_Experiment.pdb
