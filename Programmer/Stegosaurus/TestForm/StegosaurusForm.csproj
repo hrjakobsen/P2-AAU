@@ -76,12 +76,13 @@
     <Compile Include="HelpForm.Designer.cs">
       <DependentUpon>HelpForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="HuffmanTable.cs">
+    <Compile Include="HuffmanTableComponent.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="HuffmanTable.Designer.cs">
-      <DependentUpon>HuffmanTable.cs</DependentUpon>
+    <Compile Include="HuffmanTableComponent.Designer.cs">
+      <DependentUpon>HuffmanTableComponent.cs</DependentUpon>
     </Compile>
+    <Compile Include="NoSavePathSelectedException.cs" />
     <Compile Include="OptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>

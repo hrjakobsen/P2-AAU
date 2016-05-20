@@ -413,19 +413,74 @@ namespace TestForm{
             _messageLength = 0;
         }
 
-        //Handles encoding/decoding using the correct method and settings when the 'Proceed' button is pressed.
+        //Starts encoding/decoding using the correct method and settings when the 'Proceed' button is pressed.
         private void btnProceed_Click(object sender, EventArgs e)
         {
             try
             {
                 getFilePath();
+                encodeOrDecodeImage();
             }
             catch (IOException)
             {
                 MessageBox.Show("Could not access file!");
             }
+            catch (NoSavePathSelectedException)
+            {
+                MessageBox.Show("No save location was selected!");
+            }
 
             Cursor.Current = Cursors.WaitCursor;
+           
+            lblProcessing.Text = "";
+            lblProcessing.Visible = false;
+            Application.DoEvents();
+            Cursor.Current = Cursors.Default;
+        }
+
+        //Asks for the correct filetype according to encoding/decoding method selected.
+        private void getFilePath()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+            if (rdioEncode.Checked && !LSBMethodSelected)
+            {
+                saveFileDialog.FileName = _decodeFileName + " (encoded).jpeg";
+                saveFileDialog.Filter = "Image Files (*.jpeg)|*.jpeg";
+                saveFileDialog.FilterIndex = 2;
+                saveFileDialog.RestoreDirectory = true;
+                saveFileDialog.Title = "Save encoded image as";
+            } else if (rdioEncode.Checked && LSBMethodSelected)
+            {
+                saveFileDialog.FileName = _decodeFileName + " (encoded).png";
+                saveFileDialog.Filter = "Image Files (*.png)|*.png";
+                saveFileDialog.FilterIndex = 2;
+                saveFileDialog.RestoreDirectory = true;
+                saveFileDialog.Title = "Save encoded image as";
+            }
+            else if (rdioDecode.Checked)
+            {
+                saveFileDialog.FileName = _decodeFileName + " (decoded)";
+                saveFileDialog.Filter = "No file Extension ()|";
+                saveFileDialog.FilterIndex = 2;
+                saveFileDialog.RestoreDirectory = true;
+                saveFileDialog.Title = "Save decoded message as";
+            }
+            
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(saveFileDialog.FileName))
+            {
+                UserSavePath = saveFileDialog.FileName;
+            }
+            else
+            {
+                throw new NoSavePathSelectedException();
+            }
+        }
+
+        //Handles encoding/decoding using the correct method and settings when the 'Proceed' button is pressed.
+        private void encodeOrDecodeImage()
+        {
             if (rdioEncode.Checked)
             {
                 if (picResult.Image != null)
@@ -459,7 +514,7 @@ namespace TestForm{
                     Application.DoEvents();
                     _imageEncoder = new LeastSignificantBitImage(CoverImage);
                 }
-                
+
                 //Encode
                 try
                 {
@@ -507,46 +562,6 @@ namespace TestForm{
                 {
                     MessageBox.Show("Unknown error (Cover image might not contain a message)");
                 }
-            }
-            lblProcessing.Text = "";
-            lblProcessing.Visible = false;
-            Application.DoEvents();
-            Cursor.Current = Cursors.Default;
-        }
-
-        //Asks for the correct filetype according to encoding/decoding method selected.
-        private void getFilePath()
-        {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-
-            if (rdioEncode.Checked && !LSBMethodSelected)
-            {
-                saveFileDialog.FileName = _decodeFileName + " (encoded).jpeg";
-                saveFileDialog.Filter = "Image Files (*.jpeg)|*.jpeg";
-                saveFileDialog.FilterIndex = 2;
-                saveFileDialog.RestoreDirectory = true;
-                saveFileDialog.Title = "Save encoded image as";
-            } else if (rdioEncode.Checked && LSBMethodSelected)
-            {
-                saveFileDialog.FileName = _decodeFileName + " (encoded).png";
-                saveFileDialog.Filter = "Image Files (*.png)|*.png";
-                saveFileDialog.FilterIndex = 2;
-                saveFileDialog.RestoreDirectory = true;
-                saveFileDialog.Title = "Save encoded image as";
-            }
-            else if (rdioDecode.Checked)
-            {
-                saveFileDialog.FileName = _decodeFileName + " (decoded)";
-                saveFileDialog.Filter = "No file Extension ()|";
-                saveFileDialog.FilterIndex = 2;
-                saveFileDialog.RestoreDirectory = true;
-                saveFileDialog.Title = "Save decoded message as";
-            }
-            
-
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                UserSavePath = saveFileDialog.FileName;
             }
         }
 
