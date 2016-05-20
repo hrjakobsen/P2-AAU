@@ -14,7 +14,8 @@ namespace TestForm{
         public static QuantizationTable QuantizationTableY, QuantizationTableChr;
         public static bool QualityLocked { get; private set; }
         public static bool LSBMethodSelected;
-        public static int Quality { get; set; }
+        public static int Quality { get; private set; }
+        public static byte MValue { get; private set; }
 
         private IImageEncoder _imageEncoder;
         private IImageDecoder _imageDecoder;
@@ -22,10 +23,11 @@ namespace TestForm{
         private byte[] _message;
         private const string NoMessageWrittenMessage = "Enter the message you would like to encode into your image.";
         private int _messageLength;
-        private int defaultQuality = 53;
+        private readonly int _defaultQuality = 53;
+        private readonly byte _defaultMValue = 4;
         private Bitmap CoverImage { get; set; }
-        private string decodeFilePath;
-        private string decodeFileName;
+        private string _decodeFilePath;
+        private string _decodeFileName;
 
         private string _userSavePath;
 
@@ -47,30 +49,31 @@ namespace TestForm{
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             InitializeComponent();
-            tbMessage.Text = NoMessageWrittenMessage;
         }
 
         private void StegosaurusForm_Load(object sender, EventArgs e)
         {
             try
             {
+                tbMessage.Text = NoMessageWrittenMessage;
                 loadSettings();
             }
             catch (Exception)
             {
                 MessageBox.Show("An error occured while trying to load your settings, they seem to be invalid. " +
                                 "Correct file or reset all settings to default in Options.", "Error loading settings");
-
             }
         }
 
+        //Loads settings from Properties.Settings for more general settings and from a .CSV-file for custom tables.
         private void loadSettings()
         {
             LSBMethodSelected = Properties.Settings.Default.LSBMethodSelected;
             tbarEncodingQuality.Value = Properties.Settings.Default.Quality;
             QualityLocked = Properties.Settings.Default.QualityLocked;
+            MValue = Properties.Settings.Default.MValue;
 
-            Text = !LSBMethodSelected ? @"Stegosaurus (GT)" : @"Stegosaurus (LSB)";
+            this.Text = !LSBMethodSelected ? @"Stegosaurus (GT)" : @"Stegosaurus (LSB)";
 
             if (QualityLocked && LSBMethodSelected)
             {
@@ -79,7 +82,7 @@ namespace TestForm{
             }
             else if (QualityLocked)
             {
-                tbarEncodingQuality.Value = defaultQuality;
+                tbarEncodingQuality.Value = _defaultQuality;
                 tbarEncodingQuality.Enabled = false;
             } else
             {
@@ -94,7 +97,7 @@ namespace TestForm{
             loadQuantizationTableFromFile(out QuantizationTableChr, "QuantizationTableChr.txt");
         }
 
-        
+        //Uses the HuffmanTable.Fromstring() method to create a Huffman table from a string optained from a file.
         private void loadHuffmanTableFromFile(out HuffmanTable huffmanTable, string filePath)
         {
             if (File.Exists(filePath))
@@ -108,6 +111,7 @@ namespace TestForm{
             }
         }
 
+        //Uses the QuantizationTable.Fromstring() method to create a quantization table from a string optained from a file.
         private void loadQuantizationTableFromFile(out QuantizationTable quantizationTable, string filePath)
         {
             if (File.Exists(filePath))
@@ -121,20 +125,11 @@ namespace TestForm{
             }
         }
 
+        //Opens a OptionsForm if the MenuItem is clicked and handles the loading of settings from the form and reversing to default settings.
         private void viewOptionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OptionsForm optionsForm = new OptionsForm();
             optionsForm.ShowDialog();
-
-            if (OptionsForm.ResetToDefault)
-            {
-                Cursor.Current = Cursors.WaitCursor;
-                resetSettingsToDefault();
-                OptionsForm.ResetToDefault = false;
-                OptionsForm optionsForm2 = new OptionsForm();
-                Cursor.Current = Cursors.Default;
-                optionsForm2.ShowDialog();
-            }
 
             if (OptionsForm.SaveEnabled)
             {
@@ -152,11 +147,22 @@ namespace TestForm{
 
                 Cursor.Current = Cursors.Default;
             }
+
+            if (OptionsForm.ResetToDefault)
+            {
+                Cursor.Current = Cursors.WaitCursor;
+                resetSettingsToDefault();
+                OptionsForm.ResetToDefault = false;
+                OptionsForm optionsForm2 = new OptionsForm();
+                Cursor.Current = Cursors.Default;
+                optionsForm2.ShowDialog();
+            }
         }
 
         private void resetSettingsToDefault()
         {
-            Quality = defaultQuality;
+            Quality = _defaultQuality;
+            MValue = _defaultMValue;
             QualityLocked = false;
             LSBMethodSelected = false;
             HuffmanTableYAC = null;
@@ -180,6 +186,7 @@ namespace TestForm{
             Text = !LSBMethodSelected ? @"Stegosaurus (GT)" : @"Stegosaurus (LSB)";
 
             tbarEncodingQuality.Value = OptionsForm.Quality;
+            MValue = OptionsForm.MValue;
 
             if (LSBMethodSelected)
             {
@@ -196,7 +203,7 @@ namespace TestForm{
                 || !OptionsForm.QuantizationTableComponentChr.SaveTable().Equals(QuantizationTable.JpegDefaultChrTable))
             {
                 QualityLocked = true;
-                tbarEncodingQuality.Value = defaultQuality;
+                tbarEncodingQuality.Value = _defaultQuality;
                 tbarEncodingQuality.Enabled = false;
             }
             else
@@ -207,7 +214,7 @@ namespace TestForm{
         }
 
         //Returns default table if the table made from the tablecomponent is the same as defaultTable, custom table if they are different.
-        //Doing this prevents an error ocuring when changing quality while using a 'default' non-default table
+        //Doing this prevents an error from ocuring when changing quality while using a 'default' table manually set.
         private HuffmanTable defaultOrCustomHuffmanTable(HuffmanTableComponent customHuffmanTable, HuffmanTable defaultTable)
         {
             HuffmanTable H;
@@ -224,7 +231,7 @@ namespace TestForm{
         }
 
         //Returns default table if the table made from the tablecomponent is the same as defaultTable, custom table if they are different.
-        //Doing this prevents an error ocuring when changing quality while using a 'default' non-default table
+        //Doing this prevents an error from ocuring when changing quality while using a 'default' non-default table
         private QuantizationTable defaultOrCustomQuantizationTable(QuantizationTableComponent customQuantizationTable,
             QuantizationTable defaultTable)
         {
@@ -257,16 +264,27 @@ namespace TestForm{
         #region Main Form
         private void rdioEncode_CheckedChanged(object sender, EventArgs e)
         {
-            tbMessage.Text = NoMessageWrittenMessage;
             if (rdioEncode.Checked)
             {
+                btnProceed.Text = @"Encode";
                 btnLoadMessageFile.Enabled = true;
                 btnRemoveMsgFile.Enabled = true;
-                tbMessage.Enabled = true;
-                btnProceed.Text = @"Encode";
-                if (!_messageFileSet)
+
+                if (_inputImageSet && _messageTextSet)
+                {
+                    btnLoadMessageFile.Enabled = false;
+                    btnRemoveMsgFile.Enabled = false;
+                    btnProceed.Enabled = true;
+                    tbMessage.Enabled = true;                    
+                } else if (_inputImageSet && _messageFileSet)
+                {
+                    btnProceed.Enabled = true;
+                    tbMessage.Enabled = false;
+                }
+                else
                 {
                     btnProceed.Enabled = false;
+                    tbMessage.Enabled = true;
                 }
             }
             else if (rdioDecode.Checked)
@@ -274,12 +292,14 @@ namespace TestForm{
                 btnLoadMessageFile.Enabled = false;
                 btnRemoveMsgFile.Enabled = false;
                 tbMessage.Enabled = false;
-                _messageFileSet = false;
                 btnProceed.Text = @"Decode";
-
                 if (_inputImageSet)
                 {
                     btnProceed.Enabled = true;
+                }
+                else
+                {
+                    btnProceed.Enabled = false;
                 }
             }
         }
@@ -291,7 +311,7 @@ namespace TestForm{
 
         private void tbMessage_Leave(object sender, EventArgs e)
         {
-            if (tbMessage.Text == "")
+            if (string.IsNullOrWhiteSpace(tbMessage.Text ))
             {
                 tbMessage.Text = NoMessageWrittenMessage;
             }
@@ -328,7 +348,7 @@ namespace TestForm{
             Quality = tbarEncodingQuality.Value;
             lblEncodingQualityValue.Text = Quality.ToString();
 
-            if (Quality != defaultQuality)
+            if (Quality != _defaultQuality)
             {
                 lblEncodingQualityValue.Text = Quality.ToString();
             }
@@ -338,16 +358,16 @@ namespace TestForm{
             }
         }
 
-        private void btnLoadInput_Click(object sender, EventArgs e)
+        private void btnLoadInputImage_Click(object sender, EventArgs e)
         {
-            getFileInput.ShowDialog();
+            getFileInputImage.ShowDialog();
         }
 
-        private void getFileInput_FileOk(object sender, CancelEventArgs e)
+        private void getFileInputImage_FileOk(object sender, CancelEventArgs e)
         {
-            CoverImage = new Bitmap(getFileInput.FileName);
-            decodeFilePath = getFileInput.FileName;
-            decodeFileName = Path.GetFileNameWithoutExtension(getFileInput.FileName);
+            CoverImage = new Bitmap(getFileInputImage.FileName);
+            _decodeFilePath = getFileInputImage.FileName;
+            _decodeFileName = Path.GetFileNameWithoutExtension(getFileInputImage.FileName);
             _inputImageSet = true;
             picInput.Image = CoverImage;
 
@@ -371,7 +391,7 @@ namespace TestForm{
             _message = File.ReadAllBytes(GetFileMessage.FileName);
             _messageLength = _message.Length;
 
-            if (_inputImageSet || _messageFileSet)
+            if (_inputImageSet && (_messageFileSet || _messageTextSet))
             {
                 btnProceed.Enabled = true;
             }
@@ -379,8 +399,14 @@ namespace TestForm{
 
         private void btnRemoveMsgFile_Click(object sender, EventArgs e)
         {
+            removeMsgFile();
+        }
+
+        private void removeMsgFile()
+        {
             tbMessage.Enabled = true;
             tbMessageFilePath.Text = "Message file";
+            btnProceed.Enabled = false;
 
             _messageFileSet = false;
             _message = null;
@@ -419,11 +445,11 @@ namespace TestForm{
                     //Use simple constructor if a table is null 
                     if (QuantizationTableY == null || QuantizationTableChr == null || HuffmanTableYAC == null || HuffmanTableYDC == null || HuffmanTableChrAC == null || HuffmanTableChrDC == null)
                     {
-                        _imageEncoder = new JpegImage(CoverImage, Quality, 4);
+                        _imageEncoder = new JpegImage(CoverImage, Quality, MValue);
                     }
                     else
                     {
-                        _imageEncoder = new JpegImage(CoverImage, Quality, 4, QuantizationTableY, QuantizationTableChr, HuffmanTableYDC, HuffmanTableYAC, HuffmanTableChrDC, HuffmanTableChrAC);
+                        _imageEncoder = new JpegImage(CoverImage, Quality, MValue, QuantizationTableY, QuantizationTableChr, HuffmanTableYDC, HuffmanTableYAC, HuffmanTableChrDC, HuffmanTableChrAC);
                     }
                 }
                 else
@@ -460,14 +486,14 @@ namespace TestForm{
                     lblProcessing.Text = "Decoding using GT method...";
                     lblProcessing.Visible = true;
                     Application.DoEvents();
-                    _imageDecoder = new JPEGDecoder(decodeFilePath);
+                    _imageDecoder = new JPEGDecoder(_decodeFilePath);
                 }
                 else
                 {
                     lblProcessing.Text = "Decoding using LSB method...";
                     lblProcessing.Visible = true;
                     Application.DoEvents();
-                    _imageDecoder = new LeastSignificantBitDecoder(decodeFilePath);
+                    _imageDecoder = new LeastSignificantBitDecoder(_decodeFilePath);
                 }
 
                 //Decode
@@ -488,21 +514,21 @@ namespace TestForm{
             Cursor.Current = Cursors.Default;
         }
 
+        //Asks for the correct filetype according to encoding/decoding method selected.
         private void getFilePath()
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.ShowHelp = true;
 
             if (rdioEncode.Checked && !LSBMethodSelected)
             {
-                saveFileDialog.FileName = decodeFileName + " (encoded).jpeg";
+                saveFileDialog.FileName = _decodeFileName + " (encoded).jpeg";
                 saveFileDialog.Filter = "Image Files (*.jpeg)|*.jpeg";
                 saveFileDialog.FilterIndex = 2;
                 saveFileDialog.RestoreDirectory = true;
                 saveFileDialog.Title = "Save encoded image as";
             } else if (rdioEncode.Checked && LSBMethodSelected)
             {
-                saveFileDialog.FileName = decodeFileName + " (encoded).png";
+                saveFileDialog.FileName = _decodeFileName + " (encoded).png";
                 saveFileDialog.Filter = "Image Files (*.png)|*.png";
                 saveFileDialog.FilterIndex = 2;
                 saveFileDialog.RestoreDirectory = true;
@@ -510,7 +536,7 @@ namespace TestForm{
             }
             else if (rdioDecode.Checked)
             {
-                saveFileDialog.FileName = decodeFileName + " (decoded)";
+                saveFileDialog.FileName = _decodeFileName + " (decoded)";
                 saveFileDialog.Filter = "No file Extension ()|";
                 saveFileDialog.FilterIndex = 2;
                 saveFileDialog.RestoreDirectory = true;
@@ -567,6 +593,7 @@ namespace TestForm{
             saveSettings();
         }
 
+        //Saves settings to Properties.Settings for more general settings and to a .CSV-file for custom tables
         private void saveSettings()
         {
             saveHuffmanTableToFile(HuffmanTableYAC, "HuffmanTableYAC.txt");
@@ -577,6 +604,7 @@ namespace TestForm{
             saveQuantizationTableToFile(QuantizationTableChr, "QuantizationTableChr.txt");
             Properties.Settings.Default.QualityLocked = QualityLocked;
             Properties.Settings.Default.Quality = Quality;
+            Properties.Settings.Default.MValue = MValue;
             Properties.Settings.Default.LSBMethodSelected = LSBMethodSelected;
 
             Properties.Settings.Default.Save();

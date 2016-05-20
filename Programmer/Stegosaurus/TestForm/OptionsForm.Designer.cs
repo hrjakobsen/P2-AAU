@@ -45,11 +45,10 @@
             this.pnlHuffmanY_DC = new System.Windows.Forms.Panel();
             this.pnlOptionsQuality = new System.Windows.Forms.Panel();
             this.tbarQualitySlider = new System.Windows.Forms.TrackBar();
-            this.grpQualityDesc = new System.Windows.Forms.GroupBox();
             this.grpQuality = new System.Windows.Forms.GroupBox();
             this.lblEncodingQuality = new System.Windows.Forms.Label();
             this.lblEncodingQualityValue = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblChooseQuality = new System.Windows.Forms.Label();
             this.pnlOptionsQuantization = new System.Windows.Forms.Panel();
             this.grpQuantization = new System.Windows.Forms.GroupBox();
             this.lblQuantizationDescription = new System.Windows.Forms.Label();
@@ -64,6 +63,8 @@
             this.rdioGTMethod = new System.Windows.Forms.RadioButton();
             this.lblEncodingMethod = new System.Windows.Forms.Label();
             this.btnDefault = new System.Windows.Forms.Button();
+            this.lblChooseMValue = new System.Windows.Forms.Label();
+            this.cbMValue = new System.Windows.Forms.ComboBox();
             this.pnlOptionsHuffman.SuspendLayout();
             this.grpCustomHuffman.SuspendLayout();
             this.pnlOptionsQuality.SuspendLayout();
@@ -228,12 +229,11 @@
             // pnlOptionsQuality
             // 
             this.pnlOptionsQuality.Controls.Add(this.tbarQualitySlider);
-            this.pnlOptionsQuality.Controls.Add(this.grpQualityDesc);
             this.pnlOptionsQuality.Controls.Add(this.grpQuality);
             this.pnlOptionsQuality.Enabled = false;
             this.pnlOptionsQuality.Location = new System.Drawing.Point(169, 20);
             this.pnlOptionsQuality.Name = "pnlOptionsQuality";
-            this.pnlOptionsQuality.Size = new System.Drawing.Size(442, 269);
+            this.pnlOptionsQuality.Size = new System.Drawing.Size(442, 311);
             this.pnlOptionsQuality.TabIndex = 28;
             this.pnlOptionsQuality.Visible = false;
             // 
@@ -248,27 +248,18 @@
             this.tbarQualitySlider.TickStyle = System.Windows.Forms.TickStyle.None;
             this.tbarQualitySlider.ValueChanged += new System.EventHandler(this.tbarQualitySlider_ValueChanged);
             // 
-            // grpQualityDesc
-            // 
-            this.grpQualityDesc.Location = new System.Drawing.Point(9, 118);
-            this.grpQualityDesc.Margin = new System.Windows.Forms.Padding(2);
-            this.grpQualityDesc.Name = "grpQualityDesc";
-            this.grpQualityDesc.Padding = new System.Windows.Forms.Padding(2);
-            this.grpQualityDesc.Size = new System.Drawing.Size(413, 138);
-            this.grpQualityDesc.TabIndex = 23;
-            this.grpQualityDesc.TabStop = false;
-            this.grpQualityDesc.Text = "Description";
-            // 
             // grpQuality
             // 
+            this.grpQuality.Controls.Add(this.cbMValue);
+            this.grpQuality.Controls.Add(this.lblChooseMValue);
             this.grpQuality.Controls.Add(this.lblEncodingQuality);
             this.grpQuality.Controls.Add(this.lblEncodingQualityValue);
-            this.grpQuality.Controls.Add(this.label1);
+            this.grpQuality.Controls.Add(this.lblChooseQuality);
             this.grpQuality.Location = new System.Drawing.Point(9, 0);
             this.grpQuality.Margin = new System.Windows.Forms.Padding(2);
             this.grpQuality.Name = "grpQuality";
             this.grpQuality.Padding = new System.Windows.Forms.Padding(2);
-            this.grpQuality.Size = new System.Drawing.Size(413, 109);
+            this.grpQuality.Size = new System.Drawing.Size(413, 305);
             this.grpQuality.TabIndex = 18;
             this.grpQuality.TabStop = false;
             this.grpQuality.Text = "Encoding quality";
@@ -291,15 +282,15 @@
             this.lblEncodingQualityValue.TabIndex = 17;
             this.lblEncodingQualityValue.Text = "0";
             // 
-            // label1
+            // lblChooseQuality
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 24);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(113, 13);
-            this.label1.TabIndex = 16;
-            this.label1.Text = "Choose quality setting:";
+            this.lblChooseQuality.AutoSize = true;
+            this.lblChooseQuality.Location = new System.Drawing.Point(16, 24);
+            this.lblChooseQuality.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblChooseQuality.Name = "lblChooseQuality";
+            this.lblChooseQuality.Size = new System.Drawing.Size(113, 13);
+            this.lblChooseQuality.TabIndex = 16;
+            this.lblChooseQuality.Text = "Choose quality setting:";
             // 
             // pnlOptionsQuantization
             // 
@@ -307,7 +298,7 @@
             this.pnlOptionsQuantization.Enabled = false;
             this.pnlOptionsQuantization.Location = new System.Drawing.Point(169, 20);
             this.pnlOptionsQuantization.Name = "pnlOptionsQuantization";
-            this.pnlOptionsQuantization.Size = new System.Drawing.Size(442, 271);
+            this.pnlOptionsQuantization.Size = new System.Drawing.Size(442, 305);
             this.pnlOptionsQuantization.TabIndex = 26;
             this.pnlOptionsQuantization.Visible = false;
             // 
@@ -321,20 +312,18 @@
             this.grpQuantization.Margin = new System.Windows.Forms.Padding(2);
             this.grpQuantization.Name = "grpQuantization";
             this.grpQuantization.Padding = new System.Windows.Forms.Padding(2);
-            this.grpQuantization.Size = new System.Drawing.Size(421, 275);
+            this.grpQuantization.Size = new System.Drawing.Size(421, 297);
             this.grpQuantization.TabIndex = 8;
             this.grpQuantization.TabStop = false;
             this.grpQuantization.Text = "Custom Quantization";
             // 
             // lblQuantizationDescription
             // 
-            this.lblQuantizationDescription.AutoSize = true;
-            this.lblQuantizationDescription.Location = new System.Drawing.Point(5, 239);
+            this.lblQuantizationDescription.Location = new System.Drawing.Point(5, 238);
             this.lblQuantizationDescription.Name = "lblQuantizationDescription";
-            this.lblQuantizationDescription.Size = new System.Drawing.Size(383, 26);
+            this.lblQuantizationDescription.Size = new System.Drawing.Size(403, 40);
             this.lblQuantizationDescription.TabIndex = 132;
-            this.lblQuantizationDescription.Text = "Changes the quantization-table used when encoding with the Graph Theoretical\r\nmet" +
-    "hod.\r\n";
+            this.lblQuantizationDescription.Text = resources.GetString("lblQuantizationDescription.Text");
             // 
             // rdioQuantizationChrChannel
             // 
@@ -361,7 +350,7 @@
             // 
             this.pnlQuantization.Location = new System.Drawing.Point(1, 15);
             this.pnlQuantization.Name = "pnlQuantization";
-            this.pnlQuantization.Size = new System.Drawing.Size(412, 262);
+            this.pnlQuantization.Size = new System.Drawing.Size(412, 273);
             this.pnlQuantization.TabIndex = 129;
             // 
             // btnClose
@@ -441,6 +430,30 @@
             this.btnDefault.UseVisualStyleBackColor = true;
             this.btnDefault.Click += new System.EventHandler(this.btnDefault_Click);
             // 
+            // lblChooseMValue
+            // 
+            this.lblChooseMValue.AutoSize = true;
+            this.lblChooseMValue.Location = new System.Drawing.Point(16, 116);
+            this.lblChooseMValue.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblChooseMValue.Name = "lblChooseMValue";
+            this.lblChooseMValue.Size = new System.Drawing.Size(87, 13);
+            this.lblChooseMValue.TabIndex = 19;
+            this.lblChooseMValue.Text = "Choose M value:";
+            // 
+            // cbMValue
+            // 
+            this.cbMValue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbMValue.FormatString = "N0";
+            this.cbMValue.Items.AddRange(new object[] {
+            "2",
+            "4",
+            "16"});
+            this.cbMValue.Location = new System.Drawing.Point(19, 138);
+            this.cbMValue.Name = "cbMValue";
+            this.cbMValue.Size = new System.Drawing.Size(121, 21);
+            this.cbMValue.TabIndex = 20;
+            this.cbMValue.SelectedValueChanged += new System.EventHandler(this.cbMValue_SelectedValueChanged);
+            // 
             // OptionsForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -450,10 +463,10 @@
             this.Controls.Add(this.line);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.OptionsBox);
+            this.Controls.Add(this.pnlOptionsQuantization);
             this.Controls.Add(this.pnlOptionsQuality);
             this.Controls.Add(this.pnlOptionsEncodingMethod);
             this.Controls.Add(this.pnlOptionsHuffman);
-            this.Controls.Add(this.pnlOptionsQuantization);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "OptionsForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
@@ -482,9 +495,8 @@
         private System.Windows.Forms.ListBox OptionsBox;
         private System.Windows.Forms.Panel pnlOptionsHuffman;
         private System.Windows.Forms.Panel pnlOptionsQuality;
-        private System.Windows.Forms.GroupBox grpQualityDesc;
         private System.Windows.Forms.GroupBox grpQuality;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblChooseQuality;
         private System.Windows.Forms.Panel pnlOptionsQuantization;
         private System.Windows.Forms.GroupBox grpQuantization;
         private System.Windows.Forms.TrackBar tbarQualitySlider;
@@ -512,5 +524,7 @@
         private System.Windows.Forms.RadioButton rdioGTMethod;
         private System.Windows.Forms.Label lblEncodingMethod;
         private System.Windows.Forms.Button btnDefault;
+        private System.Windows.Forms.Label lblChooseMValue;
+        private System.Windows.Forms.ComboBox cbMValue;
     }
 }
