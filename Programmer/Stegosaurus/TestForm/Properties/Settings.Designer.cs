@@ -124,5 +124,17 @@ namespace TestForm.Properties {
                 this["LSBMethodSelected"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public byte MValue {
+            get {
+                return ((byte)(this["MValue"]));
+            }
+            set {
+                this["MValue"] = value;
+            }
+        }
     }
 }

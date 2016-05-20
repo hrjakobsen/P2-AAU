@@ -8,6 +8,7 @@ namespace TestForm
         public HelpForm()
         {
             InitializeComponent();
+            HelpBox.SelectedItem = HelpBox.Items[0];
         }
 
         private void HelpBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -81,6 +82,10 @@ namespace TestForm
         private void Okay_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void grpHelpGeneral_Enter(object sender, EventArgs e) {
+
         }
     }
 

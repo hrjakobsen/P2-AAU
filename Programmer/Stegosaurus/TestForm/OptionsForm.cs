@@ -18,6 +18,7 @@ namespace TestForm
         public static QuantizationTableComponent QuantizationTableComponentY, QuantizationTableComponentChr;
 
         public static int Quality;
+        public static byte MValue;
         public static bool SaveEnabled;
         public static bool LSBMethodSelected;
         public static bool ResetToDefault;
@@ -42,6 +43,7 @@ namespace TestForm
             initializeHuffmanTable(out HuffmanTableComponentChrAC, StegosaurusForm.HuffmanTableChrAC, HuffmanTable.JpegHuffmanTableChrAC);
             initializeHuffmanTable(out HuffmanTableComponentChrDC, StegosaurusForm.HuffmanTableChrDC, HuffmanTable.JpegHuffmanTableChrDC);
             Quality = StegosaurusForm.Quality;
+            MValue = StegosaurusForm.MValue;
             _qualityLocked = StegosaurusForm.QualityLocked;
             LSBMethodSelected = StegosaurusForm.LSBMethodSelected;
 
@@ -49,13 +51,16 @@ namespace TestForm
             rdioQuantizationYChannel.Checked = true;
             rdioHuffmanY_AC.Checked = true;
             tbarQualitySlider.Value = Quality;
+            cbMValue.Text = MValue.ToString();
             if (_qualityLocked)
             {
                 tbarQualitySlider.Enabled = false;
+                cbMValue.Enabled = false;
             }
             else
             {
                 tbarQualitySlider.Enabled = true;
+                cbMValue.Enabled = true;
             }
 
             if (!LSBMethodSelected)
@@ -297,6 +302,20 @@ namespace TestForm
         private void tbarQualitySlider_ValueChanged(object sender, EventArgs e)
         {
             lblEncodingQualityValue.Text = tbarQualitySlider.Value.ToString();
+        }
+
+        private void cbMValue_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (cbMValue.GetItemText(cbMValue.SelectedItem) == "2")
+            {
+                MValue = 2;
+            } else if (cbMValue.GetItemText(cbMValue.SelectedItem) == "4")
+            {
+                MValue = 4;
+            } else if (cbMValue.GetItemText(cbMValue.SelectedItem) == "16")
+            {
+                MValue = 16;
+            }
         }
 
         private void rdioGT_CheckedChangedSetMethod(object sender, EventArgs e)

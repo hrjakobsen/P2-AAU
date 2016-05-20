@@ -36,7 +36,7 @@
             this.ttStegosaurus = new System.Windows.Forms.ToolTip(this.components);
             this.picInput = new System.Windows.Forms.PictureBox();
             this.btnLoadMessageFile = new System.Windows.Forms.Button();
-            this.btnLoadInput = new System.Windows.Forms.Button();
+            this.btnLoadInputImage = new System.Windows.Forms.Button();
             this.picResult = new System.Windows.Forms.PictureBox();
             this.tbarEncodingQuality = new System.Windows.Forms.TrackBar();
             this.btnRemoveMsgFile = new System.Windows.Forms.Button();
@@ -48,7 +48,7 @@
             this.btnProceed = new System.Windows.Forms.Button();
             this.rdioEncode = new System.Windows.Forms.RadioButton();
             this.rdioDecode = new System.Windows.Forms.RadioButton();
-            this.getFileInput = new System.Windows.Forms.OpenFileDialog();
+            this.getFileInputImage = new System.Windows.Forms.OpenFileDialog();
             this.GetFileMessage = new System.Windows.Forms.OpenFileDialog();
             this.lblProcessing = new System.Windows.Forms.Label();
             this.menuStrip.SuspendLayout();
@@ -89,7 +89,7 @@
             // viewOptions
             // 
             this.viewOptions.Name = "viewOptions";
-            this.viewOptions.Size = new System.Drawing.Size(152, 22);
+            this.viewOptions.Size = new System.Drawing.Size(116, 22);
             this.viewOptions.Text = "Options";
             this.viewOptions.Click += new System.EventHandler(this.viewOptionsToolStripMenuItem_Click);
             // 
@@ -105,14 +105,14 @@
             // showHelpToolStripMenuItem
             // 
             this.showHelpToolStripMenuItem.Name = "showHelpToolStripMenuItem";
-            this.showHelpToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.showHelpToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
             this.showHelpToolStripMenuItem.Text = "Show help";
             this.showHelpToolStripMenuItem.Click += new System.EventHandler(this.showHelpToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -139,17 +139,17 @@
             this.btnLoadMessageFile.UseVisualStyleBackColor = true;
             this.btnLoadMessageFile.Click += new System.EventHandler(this.btnLoadMessageFile_Click);
             // 
-            // btnLoadInput
+            // btnLoadInputImage
             // 
-            this.btnLoadInput.Location = new System.Drawing.Point(77, 255);
-            this.btnLoadInput.Name = "btnLoadInput";
-            this.btnLoadInput.Size = new System.Drawing.Size(86, 23);
-            this.btnLoadInput.TabIndex = 31;
-            this.btnLoadInput.Text = "Load image";
-            this.ttStegosaurus.SetToolTip(this.btnLoadInput, "Choose the image you would like to hide\r\ndata in (cover-image) or retrieve data \r" +
+            this.btnLoadInputImage.Location = new System.Drawing.Point(77, 255);
+            this.btnLoadInputImage.Name = "btnLoadInputImage";
+            this.btnLoadInputImage.Size = new System.Drawing.Size(86, 23);
+            this.btnLoadInputImage.TabIndex = 31;
+            this.btnLoadInputImage.Text = "Load image";
+            this.ttStegosaurus.SetToolTip(this.btnLoadInputImage, "Choose the image you would like to hide\r\ndata in (cover-image) or retrieve data \r" +
         "\nfrom (decode)");
-            this.btnLoadInput.UseVisualStyleBackColor = true;
-            this.btnLoadInput.Click += new System.EventHandler(this.btnLoadInput_Click);
+            this.btnLoadInputImage.UseVisualStyleBackColor = true;
+            this.btnLoadInputImage.Click += new System.EventHandler(this.btnLoadInputImage_Click);
             // 
             // picResult
             // 
@@ -274,14 +274,14 @@
             this.rdioDecode.UseVisualStyleBackColor = true;
             this.rdioDecode.CheckedChanged += new System.EventHandler(this.rdioEncode_CheckedChanged);
             // 
-            // getFileInput
+            // getFileInputImage
             // 
-            this.getFileInput.FileName = "Select an image to be the Cover";
-            this.getFileInput.Filter = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png, *.PNG, *.BMP, *.DIB, *.RLE, *.G" +
+            this.getFileInputImage.FileName = "Select an image to be the Cover";
+            this.getFileInputImage.Filter = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png, *.PNG, *.BMP, *.DIB, *.RLE, *.G" +
     "IF, *.TIF, *.TIFF) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png; *.PNG; *.BMP; *.DIB; *" +
     ".RLE; *.GIF; *.TIF; *.TIFF;";
-            this.getFileInput.Title = "Select an image to be the Cover";
-            this.getFileInput.FileOk += new System.ComponentModel.CancelEventHandler(this.getFileInput_FileOk);
+            this.getFileInputImage.Title = "Select an image to be the Cover";
+            this.getFileInputImage.FileOk += new System.ComponentModel.CancelEventHandler(this.getFileInputImage_FileOk);
             // 
             // GetFileMessage
             // 
@@ -291,7 +291,8 @@
             // lblProcessing
             // 
             this.lblProcessing.AutoSize = true;
-            this.lblProcessing.Location = new System.Drawing.Point(458, 270);
+            this.lblProcessing.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.lblProcessing.Location = new System.Drawing.Point(455, 269);
             this.lblProcessing.Name = "lblProcessing";
             this.lblProcessing.Size = new System.Drawing.Size(0, 13);
             this.lblProcessing.TabIndex = 42;
@@ -313,7 +314,7 @@
             this.Controls.Add(this.lblEncodingQualityValue);
             this.Controls.Add(this.picResult);
             this.Controls.Add(this.btnLoadMessageFile);
-            this.Controls.Add(this.btnLoadInput);
+            this.Controls.Add(this.btnLoadInputImage);
             this.Controls.Add(this.groupBox2);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "StegosaurusForm";
@@ -347,13 +348,13 @@
         private System.Windows.Forms.PictureBox picInput;
         private System.Windows.Forms.Label lblEncodingQualityValue;
         private System.Windows.Forms.Button btnLoadMessageFile;
-        private System.Windows.Forms.Button btnLoadInput;
+        private System.Windows.Forms.Button btnLoadInputImage;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button btnProceed;
         private System.Windows.Forms.RadioButton rdioEncode;
         private System.Windows.Forms.RadioButton rdioDecode;
         private System.Windows.Forms.PictureBox picResult;
-        private System.Windows.Forms.OpenFileDialog getFileInput;
+        private System.Windows.Forms.OpenFileDialog getFileInputImage;
         private System.Windows.Forms.OpenFileDialog GetFileMessage;
         private System.Windows.Forms.TextBox tbMessage;
         private System.Windows.Forms.TrackBar tbarEncodingQuality;
