@@ -46,7 +46,7 @@ This led to a total of 20 tests as seen in table \ref{fig:forces_swaps}.
 
 \begin{table}[H]
     \centering
-	\caption{The percentages of values which the program swapped or forced. Since this was run with M = 4, about a fourth of the values already fit.}
+	\caption{The percentages of values which the program swapped or forced. Since this was run with $m$-value of $4$, about a fourth of the values already fit}
     \label{fig:forces_swaps}
     \resizebox{0.7\textwidth}{!}{%
         \begin{tabular}{@{}lllll@{}}
@@ -99,7 +99,7 @@ Presenting this in a user-friendly way constituted a challenge in itself though.
 
 The second reason we did not implement it was due to performance concerns.
 Since our programme performed rather poorly during most of the development we considered it a very bad idea to construct a larger graph than we already were constructing.
-Seeing as we managed to optimise the programme quite significantly, we could have properly implemented a solution regardless.
+Seeing as we managed to optimise the programme quite significantly, we could have probably implemented a solution regardless.
 
 
 \section{Colour Histograms}
@@ -107,8 +107,9 @@ Seeing as we managed to optimise the programme quite significantly, we could hav
 Actually comparing colour histograms from the two methods was not as trivial as one could have hoped.
 Using the LSB-method only made immediately visible changes to the colour histograms if about a quarter of the image had data encoded in it.
 When using an image of substantial size, a quarter of an image can hold a large amount of data. 
-A 512x512 image for example can hold 196,604 bytes, when using the two least significant bits.
-Encoding 40,000 bytes using our graph-theoretical (GT) programme was completely out of the question due to the complexity of the algorithm.
+A 512x512 image for example can hold 196,604 bytes, when using the two least significant bits, this means that to see the noticeable difference, we would have to encode 50,000 bytes.
+
+Encoding 50,000 bytes using our graph-theoretic (GT) programme was completely out of the question due to the complexity of the algorithm.
 The longest message we tried encoding was just under 8960 bytes and took around half an hour on a decent desktop computer.
 Running several test runs with different message lengths made it clear that the complexity of the programme made it infeasible to ever complete an encoding of this much data.
 
@@ -145,7 +146,7 @@ We ended up using an image with a resolution of 120x120 pixels.
 
 In figure \ref{fig:histogramsComparisons} four histograms are shown.
 Figures \ref{fig:coverHisto} and \ref{fig:gt2Histo} show the histogram of the original image and for the image encoded as JPEG without a message.
-In figure \ref{fig:lsbHisto} and \ref{fig:gtHisto} the histograms of the images filled with a message using the LSB and GT methods respectively.
+Figure \ref{fig:lsbHisto} and \ref{fig:gtHisto} show the histograms of the images filled with a message using the LSB and GT methods respectively.
 From these results it was clear that there was not much difference between the colour histograms of the image saved as JPEG with or without the message.
 The image saved with LSB's histogram, however, clearly showed signs that the image had been tampered with.
 
@@ -155,18 +156,18 @@ A-Z in ASCII ranges from $65-90$, or in base two: $01000001_2-01011010_2$.
 As the range was quite short, a lot of the higher order bits would rarely change, and those patterns became obvious in the histogram, as pixels ending in these patterns became more common.
 
 The histogram in figure \ref{fig:lsbHisto} also showed how the LSB method changed images where a colour is very common.
-The leftmost bar described pixels whose B-component is 0.
+The leftmost bar describes pixels whose B-component is 0.
 In the original cover image, this bar was much higher than the others, and therefore much more common in the image, but the LSB has made it so that those components now get spread out, which again becomes very obvious in the histogram.
 
 \section{Euclidean Distance}
-A different way of looking for changes in an image is by looking at their Euclidean distance.
+A different way of looking for changes in an image is by looking at their euclidean distance to the original image.
 This can be done by calculating the distance between the colour values of each pixel in two equally sized images.
-The sum of all these distances can be used as measure of the change from one image to the other.
-We used this same method for determining what changes were imposed on images of different size and format, when uploaded to various social media and image-sharing websites.
+The sum of all these distances can be used as a measure of the change from one image to the other.
+We used this same method for determining what changes were imposed on images of different sizes and formats, when uploaded to various social media and image-sharing websites.
 The images used for the method were the same as those previously used in the colour histogram tests.
 
 Comparing the results of GT directly with the ones obtained from the LSB-method would be folly.
-While the LSB-method might incur a smaller difference in the Euclidean distance it did not necessarily make it any better at hiding the information.
+While the LSB-method might incur a smaller difference in the euclidean distance, it did not necessarily make it any better at hiding the information.
 Comparing those two directly meant that we were looking at an image saved in the lossless PNG format and a file that not only had a message in it, but had also been compressed in a lossy way.
 Therefore a comparison between the original and an image saved with our JPEG encoder, but containing no message, should yield a difference in euclidean distance as well.
 The results of these tests can be seen in table \ref {fig:euclidean_distance}.
@@ -188,15 +189,15 @@ The results of these tests can be seen in table \ref {fig:euclidean_distance}.
 It was clear that compressing the image with JPEG increased the euclidean distance between the two images.
 But the distance between the JPEG image with a message and the one without it, was still larger than that of the LSB method and the original.
 This was due to the fact that using the LSB of every pixel there was only the potential to change the value of each pixel by four.
-With the GT method and an M value of four, means that each individual quantized value could also be changed by four. 
+With the GT method and an $m$-value of four, means that each individual quantized value could also be changed by four. 
 So why the big difference? 
-We applied the change after the quantization step of JPEG encoding to avoid losing the data again, since the quantization step was what made JPEG encoding lossy.
+We applied the change after the quantization step of JPEG encoding to avoid losing the data again, since the quantization step is what makes JPEG encoding lossy.
 This in turn meant that the small change of up to four was multiplied by the quantization table, when the image was shown and we calculated the distance.
 
 But what did this actually mean for using the GT method to hide data?
 Using euclidean distance to see if images had been tampered with, required that the intercepting party be in possession of both the original and the stego image.
 This would indeed be possible if those sharing secret messages in images, were using cover images found on the internet and tampered with them.
-It would not be all the difficult to reverse image search the internet to find what was probably the original cover image and measure the euclidean distance between the two images.
+It would not be all that difficult to reverse image search the internet to find what was probably the original cover image and measure the euclidean distance between the two images.
 However, this would mean that any risk of being compromised by an outside party measuring euclidean distance, could be completely negated by simply using cover images that were not available to any intercepting parties.
 
 
