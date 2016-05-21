@@ -1,33 +1,14 @@
-\chapter{Stegosaurus - BitList implementation of CheckedAdd}
+\chapter{Stegosaurus - Four different levels of optimisation}
 \label{app:D}
-\begin{lstlisting}
-public class BitList : IEnumerable {
-  [...]
-  private BitArray latestEntries = new BitArray(8);
-  private int addCounter = 0;
+Each folder contains the same OptimisationTester.exe and a compiled version of Stegosaurus in dll format.
+Furthermore, the files which have been changed in each generation can be found within the \textit{CS} folders.
 
-  public void CheckedAdd(int val) {
-    if (addCounter % 8 == 0) {
-      latestEntries.SetAll(false);
-    }
-  }
-  
-  latestEntries[addCounter % 8] = (val == 1);
-  Add(val == 1);
-  bool allOne = true;
-  for (int i = 0; i < latestEntries.Length; i++) {
-    if (!latestEntries[i]) {
-      allOne = false;
-      break;
-    }
-  }
+\setlength{\parindent}{0pt} {
+\path{Programmer\Optimeringer\Stegosaurus\unoptimized}
 
-  if (allOne) {
-    for (int i = 0; i < 8; i++) {
-      Add(false);
-    }
-  }
+\path{Programmer\Optimeringer\Stegosaurus\first_round}
 
-  addCounter++;
+\path{Programmer\Optimeringer\Stegosaurus\second_round}
+
+\path{Programmer\Optimeringer\Stegosaurus\third_round}
 }
-\end{lstlisting}

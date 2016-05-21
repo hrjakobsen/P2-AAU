@@ -1,21 +1,103 @@
-\chapter{Stegosaurus - JPEG Encoder}
+\chapter{Stegosaurus - BitList implementation}
 \label{app:B}
-This is a digital appendix containing source code for a C\# programme. It is too large to fit into the report itself.
-Instead the relevant files can be found at the following locations:
+\begin{lstlisting}
+public class BitList : IEnumerable<bool> {
+  private BitArray _bits;
 
-Programmer/Stegosaurus/Stegosaurus/JPEG/QuantizationTable.cs
+  public int Count { get; private set; }
 
-Programmer/Stegosaurus/Stegosaurus/JPEG/HuffmanTable.cs
+  public BitList(int length) {
+    _bits = new BitArray(length);
+    Count = length;
+  }
 
-Programmer/Stegosaurus/Stegosaurus/JPEG/JPEGImage.cs
+  public BitList() {
+    _bits = new BitArray(1);
+    Count = 0;
+  }
 
-Programmer/Stegosaurus/Stegosaurus/JPEG/JPEGWriter.cs
+  public bool this[int i] {
+    get {
+      return _bits[i];
+    }
+    set {
+      _bits[i] = value;
+    }
+  }
 
-%\section*{DefaultTables}
-%\lstinputlisting[label={code:DefaultTables}, caption={File contains both the Huffman elements and the Quantization tables}]{../Programmer/JpegFromBook/JpegFromBook/DefaultTables.cs}
-%\section*{HuffmanTable}
-%\lstinputlisting[label={code:HuffmanTable}, caption={HuffmanTable class. Creates the Huffman table from the Huffman elements.}]{../Programmer/JpegFromBook/JpegFromBook/HuffmanTable.cs}
-%\section*{JPEG}
-%\lstinputlisting[label={code:Jpeg}, caption={JPEG Class. The Class which creates the jpeg image.}]{../Programmer/JpegFromBook/JpegFromBook/JPEG.cs}
-%\section*{Program}
-%\lstinputlisting[label={code:Program}, caption={Where the program starts. It creates a new jpeg object, then encodes it and saves the file to the desktop.}]{../Programmer/JpegFromBook/JpegFromBook/Program.cs}
+  public IEnumerator<bool> GetEnumerator() {
+    for (int i = 0; i < Count; i++) {
+      yield return _bits[i];
+    }
+  }
+ 
+  public void InsertAt(int index, bool value) {
+    BitArray newArr = new BitArray(Count + 1);
+    for (int i = 0; i < index; i++) {
+      newArr[i] = this[i];
+    }
+    newArr[index] = value;
+    for (int i = index; i < Count; i++) {
+      newArr[i + 1] = this[i];
+    }
+
+    Count++;
+    _bits = newArr;
+  }
+
+  public void Add(int val) {
+    switch (val) {
+      case 1:
+        Add(true);
+        break;
+      case 0:
+        Add(false);
+        break;
+      default:
+        throw new ArgumentOutOfRangeException();
+    }
+  }
+
+  public void Add(bool val) {
+    if (Count == _bits.Length) {
+      _bits.Length *= 2;
+    }
+    _bits[Count] = val;
+    Count++;
+  }
+  
+  private readonly BitArray _latestEntries = new BitArray(8);
+  private int _addCounter;
+
+  public void CheckedAdd(int val) {
+    if (_addCounter % 8 == 0) {
+      _latestEntries.SetAll(false);
+    }
+    _latestEntries[_addCounter % 8] = (val == 1);
+    Add(val == 1);
+    bool allOne = false;
+
+    if (_addCounter % 8 == 7) {
+      allOne = true;
+      for (int i = 0; i < 8; i++) {
+        if (!_latestEntries[i]) {
+          allOne = false;
+          break;
+        }
+      }
+    }
+
+    if (allOne) {
+      for (int i = 0; i < 8; i++) {
+        Add(false);
+      }
+    }
+
+    _addCounter++;
+  }
+
+  IEnumerator IEnumerable.GetEnumerator() {
+    return GetEnumerator();
+  }
+}
+\end{lstlisting}

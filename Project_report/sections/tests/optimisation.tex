@@ -28,7 +28,7 @@ It is quite possible that this was caused by the garbage collector, since it cha
 Therefore, running the programme once without saving the data allowed it to learn the memory allocation patterns of the code and react in the same way the next ten times it was run.
 The warm-up run also allowed us to run the decoder to make sure that the message was being encoded properly in the image and that our optimisations had not changed the programme's output.
 We completed a total of three rounds of optimisations, each further improving the performance of the programme.
-The four different versions of the programme can be found in appendix \ref{app:E}.
+The four different versions of the programme can be found in appendix \ref{app:D}.
 The first runs and the control for our further tests are shown in table \ref{fig:0genoptimised}.
 
 \vspace{12pt}
@@ -347,6 +347,7 @@ Memory optimisations and multi-threading of several methods.}
 
 \subsection{Final product}
 After having done these steps to optimise our programme, we ended up with a product that performed well enough for us to try testing it with larger messages to see what we were able to encode in files.
+The final implementation can be seen in appendix \ref{app:E}.
 We wanted to know if the capacity of the cover image or the time it took to encode the data was going to be the bottleneck.
 
 The application can be seen on figure \ref{fig:formApp}.

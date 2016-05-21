@@ -298,7 +298,7 @@ Either we use bytes to represent bits, and effectively waste seven bits of memor
 What this class does, is that it handles the packing of the bits into bytes, and makes it possible to address the individual bits.
 
 The \lstinline|BitArray| seemed like the way to go, and we therefore implemented a class \lstinline|BitList| which offered \lstinline|List|-like features such as \lstinline|Add| and \lstinline|Insert| while using the \lstinline|BitArray| to store the data.
-The implementation can be seen in appendix \ref{app:C}. 
+The implementation can be seen in appendix \ref{app:B}. 
 
 The \lstinline|BitArray| class offers the functionality of modifying the length of the array, so that more values can be added.
 This means that every time the \lstinline|BitList| runs out of space in the underlying \lstinline|BitArray|, we simply multiply the length of the array by 2, so that more values can be added.
@@ -318,4 +318,4 @@ Another way to solve the problem, and what we ended up doing, was to eliminate t
 We realised that the only time we need to insert values into the \lstinline|BitList| was when there were eight consecutive ones in the scan data. 
 So what we did was to create the method \lstinline|CheckedAdd| which we would use while writing scan data to the list. 
 This method would then keep track of the last inserted values, and insert the zeros on-the-fly instead of after the whole process. 
-The method \lstinline|CheckedAdd| can also be seen in appendix \ref{app:C}.
+The method \lstinline|CheckedAdd| can also be seen in appendix \ref{app:B}.
