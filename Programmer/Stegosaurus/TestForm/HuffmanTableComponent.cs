@@ -13,17 +13,15 @@ namespace TestForm
         List<TextBox> codeWordsBoxes = new List<TextBox>();
         List<TextBox> runSizeBoxes = new List<TextBox>();
 
-        public HuffmanTable Table { get; set; }
-
         public HuffmanTableComponent(HuffmanTable huffmanTable)
         {
-            Table = huffmanTable;
-            var elementList = Table.Elements.ToList();
+            HuffmanTable table = huffmanTable;
+            var elementList = table.Elements.ToList();
             Size = new Size(410, 244);
 
             _addTopDescription();
 
-            for (int i = 0; i < Table.Elements.Count; i++)
+            for (int i = 0; i < table.Elements.Count; i++)
             {
                 AddRow();
 

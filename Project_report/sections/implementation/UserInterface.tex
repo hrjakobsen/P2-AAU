@@ -6,16 +6,18 @@ We want the user to be able to define their own Huffman tables. This is done usi
 
 To do this, a class \lstinline|HuffmanTableComponent| inheriting from the \lstinline|System.Windows.Forms.Panel| class was created. 
 
-This class, taking a \lstinline|HuffmanTable| in its constructor, creates a \lstinline|Panel| and then for each \lstinline|HuffmanElement| in the given \lstinline|HuffmanTable| adds a \lstinline|TextBox| to the \lstinline|List<TextBox>| \lstinline|runSizeBoxes| and sets its size, position, max length and font and then a \lstinline|TextBox| to the \lstinline|List<TextBox>| \lstinline|codeWordsBoxes| and sets the same properties. This can be seen in listing \ref{HuffmanTableComponent}.
+This class, taking a \lstinline|HuffmanTable| in its constructor, calls the \lstinline|AddRow()| method to create a \lstinline|Panel| and then for each \lstinline|HuffmanElement| in the given \lstinline|HuffmanTable| adds a \lstinline|TextBox| to the \lstinline|List<TextBox>| \lstinline|runSizeBoxes| and sets its size, position, max length and font and then a \lstinline|TextBox| to the \lstinline|List<TextBox>| \lstinline|codeWordsBoxes| and sets the same properties. This can be seen in listing \ref{HuffmanTableComponent}. The corresponding data from the \lstinline|HuffmanTable| the component is made from is then assigned as the boxes \lstinline|.Text| property.
 
-\begin{lstlisting}[firstnumber=18,label=HuffmanTableComponent,caption={\lstinline|HuffmanTableComponent| constructor \textbf{File: }HuffmanTableComponent.cs}]
+\begin{lstlisting}[firstnumber=16,label=HuffmanTableComponent,caption={\lstinline|HuffmanTableComponent| constructor \textbf{File: }HuffmanTableComponent.cs}]
 public HuffmanTableComponent(HuffmanTable huffmanTable) {
-  Table = huffmanTable;
+  HuffmanTable table = huffmanTable;
   var elementList = Table.Elements.ToList();
   Size = new Size(410, 244);
   
+  _addTopDescription();
+  
   for (int i = 0; i < Table.Elements.Count; i++) {
-    addCodeWordsBox(i);
+    AddRow();
     
     string codeWord = Convert.ToString(elementList[i].Value.CodeWord, 2);
     
@@ -25,7 +27,6 @@ public HuffmanTableComponent(HuffmanTable huffmanTable) {
     
     codeWordsBoxes[i].Text = codeWord;
     
-    addRunSizeBox(i);
     runSizeBoxes[i].Text = Convert.ToString(elementList[i].Value.RunSize, 0x10).PadLeft(2,'0');
   }
   
@@ -33,9 +34,9 @@ public HuffmanTableComponent(HuffmanTable huffmanTable) {
 }
 \end{lstlisting}
 
-The class also implements \lstinline|AddRow()| which adds one more row as seen in listing \ref{AddRow}.
+As mentioned, the class implements the \lstinline|AddRow()| which adds one more row as seen in listing \ref{AddRow}.
 
-\begin{lstlisting}[firstnumber=80,label=AddRow, caption={\lstinline|AddRow()| method \textbf{File: }HuffmanTableComponent.cs}]
+\begin{lstlisting}[firstnumber=78,label=AddRow, caption={\lstinline|AddRow()| method \textbf{File: }HuffmanTableComponent.cs}]
 public void AddRow() {
   int j = codeWordsBoxes.Count();
   
@@ -44,6 +45,8 @@ public void AddRow() {
   
   addCodeWordsBox(j);
   addRunSizeBox(j);
+
+  _addNumberIndicator(j);
 
   codeWordsBoxes[runSizeBoxes.Count() - 1].Select();
 }
@@ -55,7 +58,7 @@ This for-loop checks if each pair of text boxes are empty.
 If they are, we skip the text boxes.
 If they are not, the entries in the text boxes are added as the runSize and the codeword of a  \lstinline|HuffmanElement|. 
 
-\begin{lstlisting}[firstnumber=137,label=HuffmanSaveTable, caption={Save method of the \lstinline|HuffmanTable| method \textbf{File: }HuffmanTableComponent.cs}]
+\begin{lstlisting}[firstnumber=135,label=HuffmanSaveTable, caption={Save method of the \lstinline|HuffmanTable| method \textbf{File: }HuffmanTableComponent.cs}]
 public HuffmanTable SaveTable() {
     HuffmanTable h = new HuffmanTable();
     

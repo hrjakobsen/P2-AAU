@@ -29,45 +29,45 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HelpForm));
-            this.pnlHelp2 = new System.Windows.Forms.Panel();
+            this.pnlQuality = new System.Windows.Forms.Panel();
             this.grpQuality = new System.Windows.Forms.GroupBox();
             this.lblQuality = new System.Windows.Forms.Label();
-            this.pnlHelp3 = new System.Windows.Forms.Panel();
-            this.grpEncoding = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.pnlHelpEncodingMethod = new System.Windows.Forms.Panel();
+            this.grpEncodingMethod = new System.Windows.Forms.GroupBox();
+            this.lblEncodingMethod = new System.Windows.Forms.Label();
             this.line = new System.Windows.Forms.Label();
             this.Okay = new System.Windows.Forms.Button();
             this.grpHelpGeneral = new System.Windows.Forms.GroupBox();
             this.General = new System.Windows.Forms.Label();
-            this.pnlHelp4 = new System.Windows.Forms.Panel();
+            this.pnlHelpHuffman = new System.Windows.Forms.Panel();
             this.grpHuffman = new System.Windows.Forms.GroupBox();
             this.lblHuffman = new System.Windows.Forms.Label();
-            this.pnlHelp5 = new System.Windows.Forms.Panel();
-            this.grpHelp5 = new System.Windows.Forms.GroupBox();
-            this.Quantization = new System.Windows.Forms.Label();
+            this.pnlHelpQuantization = new System.Windows.Forms.Panel();
+            this.grpHelpQuantization = new System.Windows.Forms.GroupBox();
+            this.lblQuantization = new System.Windows.Forms.Label();
             this.pnlHelpGeneral = new System.Windows.Forms.Panel();
             this.HelpBox = new System.Windows.Forms.ListBox();
-            this.pnlHelp2.SuspendLayout();
+            this.pnlQuality.SuspendLayout();
             this.grpQuality.SuspendLayout();
-            this.pnlHelp3.SuspendLayout();
-            this.grpEncoding.SuspendLayout();
+            this.pnlHelpEncodingMethod.SuspendLayout();
+            this.grpEncodingMethod.SuspendLayout();
             this.grpHelpGeneral.SuspendLayout();
-            this.pnlHelp4.SuspendLayout();
+            this.pnlHelpHuffman.SuspendLayout();
             this.grpHuffman.SuspendLayout();
-            this.pnlHelp5.SuspendLayout();
-            this.grpHelp5.SuspendLayout();
+            this.pnlHelpQuantization.SuspendLayout();
+            this.grpHelpQuantization.SuspendLayout();
             this.pnlHelpGeneral.SuspendLayout();
             this.SuspendLayout();
             // 
-            // pnlHelp2
+            // pnlQuality
             // 
-            this.pnlHelp2.Controls.Add(this.grpQuality);
-            this.pnlHelp2.Enabled = false;
-            this.pnlHelp2.Location = new System.Drawing.Point(169, 20);
-            this.pnlHelp2.Name = "pnlHelp2";
-            this.pnlHelp2.Size = new System.Drawing.Size(442, 271);
-            this.pnlHelp2.TabIndex = 28;
-            this.pnlHelp2.Visible = false;
+            this.pnlQuality.Controls.Add(this.grpQuality);
+            this.pnlQuality.Enabled = false;
+            this.pnlQuality.Location = new System.Drawing.Point(169, 20);
+            this.pnlQuality.Name = "pnlQuality";
+            this.pnlQuality.Size = new System.Drawing.Size(442, 271);
+            this.pnlQuality.TabIndex = 28;
+            this.pnlQuality.Visible = false;
             // 
             // grpQuality
             // 
@@ -84,44 +84,44 @@
             // lblQuality
             // 
             this.lblQuality.AutoSize = true;
-            this.lblQuality.Location = new System.Drawing.Point(14, 24);
+            this.lblQuality.Location = new System.Drawing.Point(14, 22);
             this.lblQuality.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblQuality.Name = "lblQuality";
-            this.lblQuality.Size = new System.Drawing.Size(367, 78);
+            this.lblQuality.Size = new System.Drawing.Size(378, 234);
             this.lblQuality.TabIndex = 0;
             this.lblQuality.Text = resources.GetString("lblQuality.Text");
             // 
-            // pnlHelp3
+            // pnlHelpEncodingMethod
             // 
-            this.pnlHelp3.Controls.Add(this.grpEncoding);
-            this.pnlHelp3.Enabled = false;
-            this.pnlHelp3.Location = new System.Drawing.Point(169, 20);
-            this.pnlHelp3.Name = "pnlHelp3";
-            this.pnlHelp3.Size = new System.Drawing.Size(442, 271);
-            this.pnlHelp3.TabIndex = 29;
-            this.pnlHelp3.Visible = false;
+            this.pnlHelpEncodingMethod.Controls.Add(this.grpEncodingMethod);
+            this.pnlHelpEncodingMethod.Enabled = false;
+            this.pnlHelpEncodingMethod.Location = new System.Drawing.Point(169, 20);
+            this.pnlHelpEncodingMethod.Name = "pnlHelpEncodingMethod";
+            this.pnlHelpEncodingMethod.Size = new System.Drawing.Size(442, 271);
+            this.pnlHelpEncodingMethod.TabIndex = 29;
+            this.pnlHelpEncodingMethod.Visible = false;
             // 
-            // grpEncoding
+            // grpEncodingMethod
             // 
-            this.grpEncoding.Controls.Add(this.label1);
-            this.grpEncoding.Location = new System.Drawing.Point(9, 0);
-            this.grpEncoding.Margin = new System.Windows.Forms.Padding(2);
-            this.grpEncoding.Name = "grpEncoding";
-            this.grpEncoding.Padding = new System.Windows.Forms.Padding(2);
-            this.grpEncoding.Size = new System.Drawing.Size(413, 269);
-            this.grpEncoding.TabIndex = 8;
-            this.grpEncoding.TabStop = false;
-            this.grpEncoding.Text = "Encoding Method";
+            this.grpEncodingMethod.Controls.Add(this.lblEncodingMethod);
+            this.grpEncodingMethod.Location = new System.Drawing.Point(9, 0);
+            this.grpEncodingMethod.Margin = new System.Windows.Forms.Padding(2);
+            this.grpEncodingMethod.Name = "grpEncodingMethod";
+            this.grpEncodingMethod.Padding = new System.Windows.Forms.Padding(2);
+            this.grpEncodingMethod.Size = new System.Drawing.Size(413, 269);
+            this.grpEncodingMethod.TabIndex = 8;
+            this.grpEncodingMethod.TabStop = false;
+            this.grpEncodingMethod.Text = "Encoding Method";
             // 
-            // label1
+            // lblEncodingMethod
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 24);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(397, 130);
-            this.label1.TabIndex = 0;
-            this.label1.Text = resources.GetString("label1.Text");
+            this.lblEncodingMethod.AutoSize = true;
+            this.lblEncodingMethod.Location = new System.Drawing.Point(8, 24);
+            this.lblEncodingMethod.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblEncodingMethod.Name = "lblEncodingMethod";
+            this.lblEncodingMethod.Size = new System.Drawing.Size(409, 104);
+            this.lblEncodingMethod.TabIndex = 0;
+            this.lblEncodingMethod.Text = resources.GetString("lblEncodingMethod.Text");
             // 
             // line
             // 
@@ -162,19 +162,19 @@
             this.General.Location = new System.Drawing.Point(15, 24);
             this.General.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.General.Name = "General";
-            this.General.Size = new System.Drawing.Size(371, 143);
+            this.General.Size = new System.Drawing.Size(371, 182);
             this.General.TabIndex = 32;
             this.General.Text = resources.GetString("General.Text");
             // 
-            // pnlHelp4
+            // pnlHelpHuffman
             // 
-            this.pnlHelp4.Controls.Add(this.grpHuffman);
-            this.pnlHelp4.Enabled = false;
-            this.pnlHelp4.Location = new System.Drawing.Point(169, 20);
-            this.pnlHelp4.Name = "pnlHelp4";
-            this.pnlHelp4.Size = new System.Drawing.Size(442, 271);
-            this.pnlHelp4.TabIndex = 30;
-            this.pnlHelp4.Visible = false;
+            this.pnlHelpHuffman.Controls.Add(this.grpHuffman);
+            this.pnlHelpHuffman.Enabled = false;
+            this.pnlHelpHuffman.Location = new System.Drawing.Point(169, 20);
+            this.pnlHelpHuffman.Name = "pnlHelpHuffman";
+            this.pnlHelpHuffman.Size = new System.Drawing.Size(442, 271);
+            this.pnlHelpHuffman.TabIndex = 30;
+            this.pnlHelpHuffman.Visible = false;
             // 
             // grpHuffman
             // 
@@ -194,41 +194,42 @@
             this.lblHuffman.Location = new System.Drawing.Point(14, 24);
             this.lblHuffman.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblHuffman.Name = "lblHuffman";
-            this.lblHuffman.Size = new System.Drawing.Size(375, 104);
+            this.lblHuffman.Size = new System.Drawing.Size(377, 117);
             this.lblHuffman.TabIndex = 0;
             this.lblHuffman.Text = resources.GetString("lblHuffman.Text");
             // 
-            // pnlHelp5
+            // pnlHelpQuantization
             // 
-            this.pnlHelp5.Controls.Add(this.grpHelp5);
-            this.pnlHelp5.Enabled = false;
-            this.pnlHelp5.Location = new System.Drawing.Point(169, 20);
-            this.pnlHelp5.Name = "pnlHelp5";
-            this.pnlHelp5.Size = new System.Drawing.Size(442, 271);
-            this.pnlHelp5.TabIndex = 31;
-            this.pnlHelp5.Visible = false;
+            this.pnlHelpQuantization.Controls.Add(this.grpHelpQuantization);
+            this.pnlHelpQuantization.Enabled = false;
+            this.pnlHelpQuantization.Location = new System.Drawing.Point(169, 20);
+            this.pnlHelpQuantization.Name = "pnlHelpQuantization";
+            this.pnlHelpQuantization.Size = new System.Drawing.Size(442, 271);
+            this.pnlHelpQuantization.TabIndex = 31;
+            this.pnlHelpQuantization.Visible = false;
             // 
-            // grpHelp5
+            // grpHelpQuantization
             // 
-            this.grpHelp5.Controls.Add(this.Quantization);
-            this.grpHelp5.Location = new System.Drawing.Point(9, 0);
-            this.grpHelp5.Margin = new System.Windows.Forms.Padding(2);
-            this.grpHelp5.Name = "grpHelp5";
-            this.grpHelp5.Padding = new System.Windows.Forms.Padding(2);
-            this.grpHelp5.Size = new System.Drawing.Size(413, 269);
-            this.grpHelp5.TabIndex = 8;
-            this.grpHelp5.TabStop = false;
-            this.grpHelp5.Text = "Custom Quantization";
+            this.grpHelpQuantization.Controls.Add(this.lblQuantization);
+            this.grpHelpQuantization.Location = new System.Drawing.Point(9, 0);
+            this.grpHelpQuantization.Margin = new System.Windows.Forms.Padding(2);
+            this.grpHelpQuantization.Name = "grpHelpQuantization";
+            this.grpHelpQuantization.Padding = new System.Windows.Forms.Padding(2);
+            this.grpHelpQuantization.Size = new System.Drawing.Size(413, 269);
+            this.grpHelpQuantization.TabIndex = 8;
+            this.grpHelpQuantization.TabStop = false;
+            this.grpHelpQuantization.Text = "Custom Quantization";
+            this.grpHelpQuantization.Enter += new System.EventHandler(this.grpHelp5_Enter);
             // 
-            // Quantization
+            // lblQuantization
             // 
-            this.Quantization.AutoSize = true;
-            this.Quantization.Location = new System.Drawing.Point(14, 24);
-            this.Quantization.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.Quantization.Name = "Quantization";
-            this.Quantization.Size = new System.Drawing.Size(375, 117);
-            this.Quantization.TabIndex = 32;
-            this.Quantization.Text = resources.GetString("Quantization.Text");
+            this.lblQuantization.AutoSize = true;
+            this.lblQuantization.Location = new System.Drawing.Point(14, 24);
+            this.lblQuantization.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblQuantization.Name = "lblQuantization";
+            this.lblQuantization.Size = new System.Drawing.Size(374, 117);
+            this.lblQuantization.TabIndex = 32;
+            this.lblQuantization.Text = resources.GetString("lblQuantization.Text");
             // 
             // pnlHelpGeneral
             // 
@@ -262,51 +263,51 @@
             this.Controls.Add(this.line);
             this.Controls.Add(this.HelpBox);
             this.Controls.Add(this.Okay);
-            this.Controls.Add(this.pnlHelp2);
+            this.Controls.Add(this.pnlQuality);
             this.Controls.Add(this.pnlHelpGeneral);
-            this.Controls.Add(this.pnlHelp5);
-            this.Controls.Add(this.pnlHelp4);
-            this.Controls.Add(this.pnlHelp3);
+            this.Controls.Add(this.pnlHelpQuantization);
+            this.Controls.Add(this.pnlHelpHuffman);
+            this.Controls.Add(this.pnlHelpEncodingMethod);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "HelpForm";
             this.Text = "Stegosaurus - Help";
-            this.pnlHelp2.ResumeLayout(false);
+            this.pnlQuality.ResumeLayout(false);
             this.grpQuality.ResumeLayout(false);
             this.grpQuality.PerformLayout();
-            this.pnlHelp3.ResumeLayout(false);
-            this.grpEncoding.ResumeLayout(false);
-            this.grpEncoding.PerformLayout();
+            this.pnlHelpEncodingMethod.ResumeLayout(false);
+            this.grpEncodingMethod.ResumeLayout(false);
+            this.grpEncodingMethod.PerformLayout();
             this.grpHelpGeneral.ResumeLayout(false);
             this.grpHelpGeneral.PerformLayout();
-            this.pnlHelp4.ResumeLayout(false);
+            this.pnlHelpHuffman.ResumeLayout(false);
             this.grpHuffman.ResumeLayout(false);
             this.grpHuffman.PerformLayout();
-            this.pnlHelp5.ResumeLayout(false);
-            this.grpHelp5.ResumeLayout(false);
-            this.grpHelp5.PerformLayout();
+            this.pnlHelpQuantization.ResumeLayout(false);
+            this.grpHelpQuantization.ResumeLayout(false);
+            this.grpHelpQuantization.PerformLayout();
             this.pnlHelpGeneral.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
-        private System.Windows.Forms.Panel pnlHelp2;
-        private System.Windows.Forms.Panel pnlHelp3;
-        private System.Windows.Forms.GroupBox grpEncoding;
+        private System.Windows.Forms.Panel pnlQuality;
+        private System.Windows.Forms.Panel pnlHelpEncodingMethod;
+        private System.Windows.Forms.GroupBox grpEncodingMethod;
         private System.Windows.Forms.GroupBox grpQuality;
         private System.Windows.Forms.Label line;
         private System.Windows.Forms.Button Okay;
         private System.Windows.Forms.GroupBox grpHelpGeneral;
-        private System.Windows.Forms.Panel pnlHelp4;
+        private System.Windows.Forms.Panel pnlHelpHuffman;
         private System.Windows.Forms.GroupBox grpHuffman;
-        private System.Windows.Forms.Panel pnlHelp5;
-        private System.Windows.Forms.GroupBox grpHelp5;
+        private System.Windows.Forms.Panel pnlHelpQuantization;
+        private System.Windows.Forms.GroupBox grpHelpQuantization;
         private System.Windows.Forms.Panel pnlHelpGeneral;
         private System.Windows.Forms.ListBox HelpBox;
         private System.Windows.Forms.Label General;
-        private System.Windows.Forms.Label Quantization;
+        private System.Windows.Forms.Label lblQuantization;
         private System.Windows.Forms.Label lblHuffman;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblEncodingMethod;
         private System.Windows.Forms.Label lblQuality;
     }
 }

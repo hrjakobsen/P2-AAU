@@ -24,29 +24,29 @@ namespace TestForm
             {
                 deselectAllOptionPanels();
 
-                pnlHelp2.Visible = true;
-                pnlHelp2.Enabled = true;
+                pnlQuality.Visible = true;
+                pnlQuality.Enabled = true;
             }
             else if (HelpBox.SelectedItem == HelpBox.Items[2])
             {
                 deselectAllOptionPanels();
 
-                pnlHelp3.Visible = true;
-                pnlHelp3.Enabled = true;
+                pnlHelpEncodingMethod.Visible = true;
+                pnlHelpEncodingMethod.Enabled = true;
             }
             else if (HelpBox.SelectedItem == HelpBox.Items[3])
             {
                 deselectAllOptionPanels();
 
-                pnlHelp4.Visible = true;
-                pnlHelp4.Enabled = true;
+                pnlHelpHuffman.Visible = true;
+                pnlHelpHuffman.Enabled = true;
             }
             else if (HelpBox.SelectedItem == HelpBox.Items[4])
             {
                 deselectAllOptionPanels();
 
-                pnlHelp5.Visible = true;
-                pnlHelp5.Enabled = true;
+                pnlHelpQuantization.Visible = true;
+                pnlHelpQuantization.Enabled = true;
             }
         }
 
@@ -55,17 +55,17 @@ namespace TestForm
             pnlHelpGeneral.Visible = false;
             pnlHelpGeneral.Enabled = false;
 
-            pnlHelp2.Visible = false;
-            pnlHelp2.Enabled = false;
+            pnlQuality.Visible = false;
+            pnlQuality.Enabled = false;
 
-            pnlHelp3.Visible = false;
-            pnlHelp3.Enabled = false;
+            pnlHelpEncodingMethod.Visible = false;
+            pnlHelpEncodingMethod.Enabled = false;
 
-            pnlHelp4.Visible = false;
-            pnlHelp4.Enabled = false;
+            pnlHelpHuffman.Visible = false;
+            pnlHelpHuffman.Enabled = false;
 
-            pnlHelp5.Visible = false;
-            pnlHelp5.Enabled = false;
+            pnlHelpQuantization.Visible = false;
+            pnlHelpQuantization.Enabled = false;
         }
 
         //'Escape' closes form
@@ -85,6 +85,11 @@ namespace TestForm
         }
 
         private void grpHelpGeneral_Enter(object sender, EventArgs e) {
+
+        }
+
+        private void grpHelp5_Enter(object sender, EventArgs e)
+        {
 
         }
     }
