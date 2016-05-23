@@ -30,9 +30,9 @@ namespace TestForm {
         private const string NoMessageWrittenMessage = "Enter the message you would like to encode into your image.";
 
         public StegosaurusForm() {
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
+            MinimizeBox = false;
             InitializeComponent();
         }
 
@@ -54,7 +54,7 @@ namespace TestForm {
             QualityLocked = Properties.Settings.Default.QualityLocked;
             MValue = Properties.Settings.Default.MValue;
 
-            this.Text = !LSBMethodSelected ? @"Stegosaurus (GT)" : @"Stegosaurus (LSB)";
+            Text = !LSBMethodSelected ? @"Stegosaurus (GT)" : @"Stegosaurus (LSB)";
 
             if (QualityLocked && LSBMethodSelected) {
                 tbarEncodingQuality.Enabled = false;

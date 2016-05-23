@@ -5,7 +5,6 @@ using Stegosaurus;
 
 namespace TestForm {
     public partial class OptionsForm : Form {
-        private readonly StegosaurusForm _stegosaurusForm = new StegosaurusForm();
         private bool _skipDialog;
         private bool _qualityLocked;
 
@@ -22,9 +21,9 @@ namespace TestForm {
         public static bool SkipSettingsInitialization { get; set; }
 
         public OptionsForm() {
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
+            MinimizeBox = false;
             InitializeComponent();
             _initializeSettings();
         }
@@ -126,7 +125,7 @@ namespace TestForm {
         //'Escape' closes form 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
             if (keyData == Keys.Escape) {
-                this.Close();
+                Close();
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);
@@ -154,7 +153,7 @@ namespace TestForm {
             SaveEnabled = true;
             Cursor.Current = Cursors.Default;
 
-            this.Close();
+            Close();
         }
 
         private void btnDefault_Click(object sender, EventArgs e) {
@@ -172,7 +171,7 @@ namespace TestForm {
 
 
         private void btnClose_Click(object sender, EventArgs e) {
-            this.Close();
+            Close();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e) {
@@ -185,8 +184,6 @@ namespace TestForm {
                 switch (MessageBox.Show(this, "Are you sure you want to close without saving?", "Closing", MessageBoxButtons.YesNo)) {
                     case DialogResult.No:
                         e.Cancel = true;
-                        break;
-                    default:
                         break;
                 }
             }

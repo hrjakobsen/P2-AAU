@@ -57,14 +57,14 @@ namespace TestForm {
         //'Escape' closes form
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
             if (keyData == Keys.Escape) {
-                this.Close();
+                Close();
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void Okay_Click(object sender, EventArgs e) {
-            this.Close();
+            Close();
         }
 
         private void grpHelpGeneral_Enter(object sender, EventArgs e) {

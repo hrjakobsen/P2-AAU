@@ -12,7 +12,7 @@ namespace TestForm {
         public QuantizationTableComponent(QuantizationTable quantizationTable) {
             QuantizationTable table = quantizationTable;
             var entriesList = table.Entries.ToList();
-            this.Size = new Size(410, 244);
+            Size = new Size(410, 244);
 
             for (int i = 0; i < table.Entries.Count(); i++) {
                 QuantizationBoxes[i] = new TextBox();
