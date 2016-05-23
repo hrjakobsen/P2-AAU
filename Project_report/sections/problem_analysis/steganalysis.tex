@@ -85,7 +85,7 @@ The least significant bit will then remain, making all bytes either 0 or 1.
 These are then enhanced by setting each 0 byte to the minimum 0 and 1 to the maximum 255.
 This makes the LSB of the image very visible, allowing for a visual check by simply looking for patterns.
 Figure \ref{fig:hiddenAAU} shows a 24 bit BMP image with 2KB of random data hidden in it, and figure \ref{fig:LSBenhanced} is the same image LSB enhanced.
-We can see that there is something hidden in the top half of the image, while the bottom half remains untouched \citep{Westfeld2000}. The reason for the logo going from blue to red is that colour of the AAU logo is (33,26,82) in RGB. The only component ending with a 1-bit, is the red component, which then gets enhanced to 255.
+We can see that there is something hidden in the top half of the image, while the bottom half remains untouched \citep{Westfeld2000}. The reason for the cat's body going from brown to red is that colour of the brown is (255,192,128) in RGB. The only component ending with a 1-bit, is the red component, which then gets enhanced to 255.
 
 \begin{figure}
     \centering
