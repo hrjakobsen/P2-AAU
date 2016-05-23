@@ -119,7 +119,7 @@
             this.lblEncodingMethod.Location = new System.Drawing.Point(8, 24);
             this.lblEncodingMethod.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblEncodingMethod.Name = "lblEncodingMethod";
-            this.lblEncodingMethod.Size = new System.Drawing.Size(409, 104);
+            this.lblEncodingMethod.Size = new System.Drawing.Size(394, 104);
             this.lblEncodingMethod.TabIndex = 0;
             this.lblEncodingMethod.Text = resources.GetString("lblEncodingMethod.Text");
             // 
@@ -154,7 +154,6 @@
             this.grpHelpGeneral.TabIndex = 8;
             this.grpHelpGeneral.TabStop = false;
             this.grpHelpGeneral.Text = "General help";
-            this.grpHelpGeneral.Enter += new System.EventHandler(this.grpHelpGeneral_Enter);
             // 
             // General
             // 
@@ -219,7 +218,6 @@
             this.grpHelpQuantization.TabIndex = 8;
             this.grpHelpQuantization.TabStop = false;
             this.grpHelpQuantization.Text = "Custom Quantization";
-            this.grpHelpQuantization.Enter += new System.EventHandler(this.grpHelp5_Enter);
             // 
             // lblQuantization
             // 
@@ -263,11 +261,11 @@
             this.Controls.Add(this.line);
             this.Controls.Add(this.HelpBox);
             this.Controls.Add(this.Okay);
+            this.Controls.Add(this.pnlHelpQuantization);
+            this.Controls.Add(this.pnlHelpHuffman);
             this.Controls.Add(this.pnlHelpEncodingMethod);
             this.Controls.Add(this.pnlQuality);
             this.Controls.Add(this.pnlHelpGeneral);
-            this.Controls.Add(this.pnlHelpQuantization);
-            this.Controls.Add(this.pnlHelpHuffman);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "HelpForm";
             this.Text = "Stegosaurus - Help";
