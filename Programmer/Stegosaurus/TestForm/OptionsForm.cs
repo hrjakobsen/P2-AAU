@@ -9,9 +9,9 @@ namespace TestForm {
         private bool _qualityLocked;
 
         public static HuffmanTableComponent HuffmanTableComponentYAC,
-            HuffmanTableComponentYDC,
-            HuffmanTableComponentChrAC,
-            HuffmanTableComponentChrDC;
+                                            HuffmanTableComponentYDC,
+                                            HuffmanTableComponentChrAC,
+                                            HuffmanTableComponentChrDC;
         public static QuantizationTableComponent QuantizationTableComponentY, QuantizationTableComponentChr;
         public static int Quality { get; private set; }
         public static byte MValue { get; private set; }
@@ -86,9 +86,6 @@ namespace TestForm {
             quantizationTableComponent.Location = new Point(4, 18);
             quantizationTableComponent.BringToFront();
         }
-
-        //Adds 64 (defaultTable length amount) textboxes to a quantization panel and saves each in an array (to be looped through), sets
-        //the size and position of each textbox and writes the default Quantization values in these.
 
         //The selected Options-panel is enabled and made visible, the opposite is done to the rest.
         private void OptionsBox_SelectedIndexChanged(object sender, EventArgs e) {
@@ -242,7 +239,7 @@ namespace TestForm {
             if (Quality != StegosaurusForm.DefaultQuality) {
                 lblEncodingQualityValue.Text = Quality.ToString();
             } else {
-                lblEncodingQualityValue.Text = Quality.ToString() + @"  (default)";
+                lblEncodingQualityValue.Text = Quality.ToString() + "  (default)";
             }
         }
 
