@@ -122,7 +122,7 @@
 set the standard of encoding when using the GT method.
 
 The default quality setting is set to 80, but 52 when a custom quantification 
-table is selected. If such a table is selected, it will be marked by "(CQC)" on the
+table is selected. If such a table is selected, it will be marked by "(CQT)" on the
 front page of the programme.
 
 This setting cannot be altered when a custom quantization table is selected.
@@ -132,8 +132,8 @@ lected.
 The m-value also alters the result quite a bit when using the GT method. Most
 testing has been done with the value "4" and is therefore recomended. 
 
-If a setting of "2" is selected, the quality of the result may be low and if
-a setting of "16" is selected, the encoding will take longer and you are advised
+If a setting of "16" is selected, the quality of the result may be low and if
+a setting of "2" is selected, the encoding will take longer and you are advised
 to be patient.</value>
   </data>
   <data name="lblEncodingMethod.Text" xml:space="preserve">
@@ -142,8 +142,8 @@ to be patient.</value>
 Least Significant Bit Method (LSB) - this method of steganography places the infor-
 mation in the two least signifcant bits of each pixels.
 
-Graph Theoretic Method (GT) - this method of steganography is more advanced than 
-LSB and is more discrete in terms of encoding than LSB.
+Graph Theoretic Method (GT) - this method of steganography is more advanced
+than LSB and is more discrete in terms of encoding than LSB.
 
 </value>
   </data>
@@ -172,7 +172,7 @@ If more rows are needed to complete your table, these can be added. Boxes
 left empty will be ignored.
 
 Be aware, if you save something incorrectly in this setting, you will have to start
-over.The responsibility of using an otherwise valid table lies with the user.
+over. The responsibility of using an otherwise valid table lies with the user.
 
 </value>
   </data>
@@ -180,8 +180,8 @@ over.The responsibility of using an otherwise valid table lies with the user.
     <value>To use a custom quantization table, type in your table in the corresponding
 box. If not using a custom quantization table, the default tables will be used.
 
-The size of each quantization table is always 64 for both the luminance and
-chromium channels.
+The number of elements in each quantization table is always 64 for both the lu-
+minance and chromium channels.
 
 Be aware, if you save something incorrectly in this setting, you will have to start
 over. The responsibility of using an otherwise valid table lies with the user.
