@@ -3,9 +3,9 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Stegosaurus;
-using TestForm.Properties;
+using SteGUI.Properties;
 
-namespace TestForm {
+namespace SteGUI {
     public partial class OptionsForm : Form {
         private bool _skipDialog;
         private const byte DefaultMValue = 4;

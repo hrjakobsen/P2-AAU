@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using Stegosaurus;
 using System.Drawing;
 
-namespace TestForm {
+namespace SteGUI {
     public partial class HuffmanTableComponent : Panel {
         List<TextBox> codeWordsBoxes = new List<TextBox>();
         List<TextBox> runSizeBoxes = new List<TextBox>();
