@@ -49,6 +49,9 @@ namespace TestForm {
             HuffmannChannelCheckedChanged_DisplayCorrectTable(null, null);
 
             rdioQuantizationYChannel.Checked = true;
+            yQuantizationChannelChecked_DisplayYOrChrTable(null, null);
+
+            rdioQuantizationYChannel.Checked = true;
             rdioHuffmanY_AC.Checked = true;
             tbarQualitySlider.Value = Quality;
             cbMValue.Text = MValue.ToString();
