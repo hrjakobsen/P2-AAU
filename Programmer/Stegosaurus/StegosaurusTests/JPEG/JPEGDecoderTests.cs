@@ -15,12 +15,17 @@ namespace Stegosaurus.Tests
     [TestFixture()]
     public class JPEGDecoderTests
     {
+        [SetUp()]
+        public void setUp() {
+            JpegImage ji = new JpegImage(StegosaurusTests.Properties.Resources._out, 100, 4);
+            ji.Encode(new byte[] { 1, 2, 3, 4, 5 });
+            ji.Save("out.jpg");
+        }
+
         [Test()]
         public void JPEGDecoder_Test_private_field_file()
         {
-            string filePath = @"out.jpg"; // has message byte[] {1, 2, 3, 4, 5} encoded
-            string folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace(@"file:\", string.Empty);
-            string fullPath = Path.Combine(folderPath, filePath);
+            string fullPath = @"out.jpg"; // has message byte[] {1, 2, 3, 4, 5} encoded
 
             StreamReader sr = new StreamReader(fullPath);
             BinaryReader expected = new BinaryReader(sr.BaseStream);
@@ -37,10 +42,8 @@ namespace Stegosaurus.Tests
         public void JPEGDecoder_Test_YDCHuffman()
         {
             string filePath = @"out.jpg"; // has message byte[] {1, 2, 3, 4, 5} encoded
-            string folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace(@"file:\", string.Empty);
-            string fullPath = Path.Combine(folderPath, filePath);
 
-            JPEGDecoder jd = new JPEGDecoder(fullPath);
+            JPEGDecoder jd = new JPEGDecoder(filePath);
 
             HuffmanTable outputHuffmandTable = jd.YDCHuffman;
             
@@ -68,10 +71,8 @@ namespace Stegosaurus.Tests
         public void JPEGDecoder_Test_YAChuffman()
         {
             string filePath = @"out.jpg"; // has message byte[] {1, 2, 3, 4, 5} encoded
-            string folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace(@"file:\", string.Empty);
-            string fullPath = Path.Combine(folderPath, filePath);
 
-            JPEGDecoder jd = new JPEGDecoder(fullPath);
+            JPEGDecoder jd = new JPEGDecoder(filePath);
 
             HuffmanTable outputHuffmanTable = jd.YACHuffman;
 
@@ -249,10 +250,8 @@ namespace Stegosaurus.Tests
         public void JPEGDecoder_Test_ChrDCHuffman()
         {
             string filePath = @"out.jpg"; // has message byte[] {1, 2, 3, 4, 5} encoded
-            string folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace(@"file:\", string.Empty);
-            string fullPath = Path.Combine(folderPath, filePath);
 
-            JPEGDecoder jd = new JPEGDecoder(fullPath);
+            JPEGDecoder jd = new JPEGDecoder(filePath);
 
             HuffmanTable outputHuffmanTable = jd.ChrDCHuffman;
 
@@ -280,10 +279,8 @@ namespace Stegosaurus.Tests
         public void JPEGDecoder_Test_ChrACHuffman()
         {
             string filePath = @"out.jpg"; // has message byte[] {1, 2, 3, 4, 5} encoded
-            string folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace(@"file:\", string.Empty);
-            string fullPath = Path.Combine(folderPath, filePath);
 
-            JPEGDecoder jd = new JPEGDecoder(fullPath);
+            JPEGDecoder jd = new JPEGDecoder(filePath);
 
             HuffmanTable outputHuffmanTable = jd.ChrACHuffman;
 
@@ -458,11 +455,10 @@ namespace Stegosaurus.Tests
         }
 
         [Test()]
-        public void Decode_Test() // pitch-black box test
+        public void Decode_Test() 
         {
-            string filePath = @"out.jpg"; // has message byte[] {1, 2, 3, 4, 5} encoded
-            string folderPath =  Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace(@"file:\", string.Empty);
-            string fullPath = Path.Combine(folderPath, filePath);
+
+            string fullPath = "out.jpg";
 
             JPEGDecoder jd = new JPEGDecoder(fullPath);
 
