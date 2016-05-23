@@ -1,0 +1,13 @@
+<Dictionary>
+      <Acronyms>
+         <CasingExceptions>
+            <Acronym>RGB</Acronym>		<!-- Red, Green, Blue -->
+            <Acronym>LSB</Acronym>		<!-- Least significant bit -->
+            <Acronym>MCU</Acronym>	<!-- Minimum Coded Units -->
+            <Acronym>DCT</Acronym>		<!-- Discrete Cosine Transform -->
+            <Acronym>DC</Acronym>		<!-- Lad mig nu være i fred. :( -->
+            <Acronym>YDC</Acronym> 	<!-- Y component of DC -->
+			
+         </CasingExceptions>
+      </Acronyms>
+</Dictionary>
