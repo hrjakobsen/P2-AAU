@@ -62,7 +62,7 @@
             this.lblMadeBy.Name = "lblMadeBy";
             this.lblMadeBy.Size = new System.Drawing.Size(241, 39);
             this.lblMadeBy.TabIndex = 7;
-            this.lblMadeBy.Text = "DAT2-A423\r\nVersion 0.1\r\nCopyright © 2016 DAT2-A423. All rights reserved.";
+            this.lblMadeBy.Text = "DAT2-A423\r\nVersion 1.0\r\nCopyright © 2016 DAT2-A423. All rights reserved.";
             // 
             // lblName
             // 
