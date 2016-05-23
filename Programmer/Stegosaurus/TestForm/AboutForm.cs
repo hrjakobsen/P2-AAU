@@ -5,13 +5,13 @@ namespace TestForm {
     public partial class AboutForm : Form {
         public AboutForm() {
             InitializeComponent();
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
+            MinimizeBox = false;
         }
 
-        private void button1_Click(object sender, EventArgs e) {
-            this.Close();
+        private void btnOK_Click(object sender, EventArgs e) {
+            Close();
         }
 
         private void AboutForm_Load(object sender, EventArgs e) {
@@ -21,7 +21,7 @@ namespace TestForm {
         //'Escape' closes form
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
             if (keyData == Keys.Escape || keyData == Keys.Enter) {
-                this.Close();
+                Close();
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);

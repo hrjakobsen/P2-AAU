@@ -29,22 +29,22 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutForm));
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnOK = new System.Windows.Forms.Button();
             this.lblDescription = new System.Windows.Forms.Label();
             this.lblMadeBy = new System.Windows.Forms.Label();
             this.lblName = new System.Windows.Forms.Label();
             this.line = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // button1
+            // btnOK
             // 
-            this.button1.Location = new System.Drawing.Point(278, 219);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 9;
-            this.button1.Text = "OK";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnOK.Location = new System.Drawing.Point(278, 219);
+            this.btnOK.Name = "btnOK";
+            this.btnOK.Size = new System.Drawing.Size(75, 23);
+            this.btnOK.TabIndex = 9;
+            this.btnOK.Text = "OK";
+            this.btnOK.UseVisualStyleBackColor = true;
+            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
             // lblDescription
             // 
@@ -88,7 +88,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(365, 254);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnOK);
             this.Controls.Add(this.lblDescription);
             this.Controls.Add(this.lblMadeBy);
             this.Controls.Add(this.lblName);
@@ -104,7 +104,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Label lblDescription;
         private System.Windows.Forms.Label lblMadeBy;
         private System.Windows.Forms.Label lblName;
