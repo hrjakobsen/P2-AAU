@@ -19,9 +19,7 @@ namespace SteGUI {
             HuffmanTableComponentChrDC;
         public static QuantizationTableComponent QuantizationTableComponentY, QuantizationTableComponentChr;
         public static bool QualityLocked;
-        public static bool SaveEnabled { get; private set; }
         public static bool LSBMethodSelected { get; set; }
-        public static bool ResetToDefault { get; set; }
         public static int Quality { get; set; }
         public static int DefaultQualityWithCustomQTable = 52;
         public static int DefaultQuality = 80;
@@ -249,13 +247,13 @@ namespace SteGUI {
                 case DialogResult.No:
                     break;
                 default:
-                    _resetSettingsToDefault();
+                    ResetSettingsToDefault();
                     _refreshSettings();
                     break;
             }
         }
 
-        private void _resetSettingsToDefault() {
+        public static void ResetSettingsToDefault() {
             Quality = DefaultQuality;
             MValue = DefaultMValue;
             QualityLocked = false;

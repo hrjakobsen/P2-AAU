@@ -31,11 +31,14 @@ namespace SteGUI {
                 tbMessage.Text = NoMessageWrittenMessage;
                 tbMessage.MaxLength = Int32.MaxValue;
                 OptionsForm.LoadSettingsFromFile();
+
                 _refreshMainGUI();
             }
             catch (Exception) {
-                MessageBox.Show("An error occured while trying to load your settings, they seem to be invalid. " +
-                                "Correct files or reset all settings to default in Options.", "Error loading settings");
+                MessageBox.Show("An error occured while trying to load your settings, they are either invalid or this " +
+                                "is the first time running. All settings will be set to default.", "Error loading settings");
+                OptionsForm.ResetSettingsToDefault();
+                _refreshMainGUI();
             }
         }
 
