@@ -66,14 +66,6 @@ namespace TestForm {
         private void Okay_Click(object sender, EventArgs e) {
             Close();
         }
-
-        private void grpHelpGeneral_Enter(object sender, EventArgs e) {
-
-        }
-
-        private void grpHelp5_Enter(object sender, EventArgs e) {
-
-        }
     }
 
 
