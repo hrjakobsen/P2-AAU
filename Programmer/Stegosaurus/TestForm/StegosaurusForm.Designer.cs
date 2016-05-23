@@ -319,7 +319,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "StegosaurusForm";
             this.Text = "Stegosaurus";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.StegosaurusForm_FormClosing);
             this.Load += new System.EventHandler(this.StegosaurusForm_Load);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
