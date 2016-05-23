@@ -26,12 +26,20 @@ Even though there are some differences, these are negligible.
 The euclidean distance in the colour channels are generally greater using the graph-theoretic method instead of LSB, though looking back on section \ref{fig:ResultEncoding} the changes are not visible to the human eye when encoding the data.
 
 This means, that it is possible for us to share images with concealed messages without raising suspicion, which was our goal.
-In conclusion, we accomplished what we intended to do with our problem statement, but there was room for improvement in relation to our teamwork with the cluster group.
+We have succeeded in creating a programme which fulfils the problem statement and we have shown that the graph-theoretic method works with JPEG images. 
+The programme has been tested and we have found the testability of it to be low. 
+This is partly due to the amount of private methods instead of splitting the functionality up into several more, smaller classes. 
+Each class would then handle a subset of the problem, making it easier to test the parts individually. 
+Additionally, the modularity of the programme would have been higher with the introduction of more classes.
+An example of such a class could be \lstinline|GraphEncoder| class that would accept a list of numbers, and use the graph-theoretic method on them. 
+That would move a lot of the functionality out of the \lstinline|JPEGImage| class and make our implementation of the method much more versatile. 
+In conclusion, we accomplished what we intended to do with our problem statement, but there was room for improvement in relation to our teamwork with the cluster group. 
 
 \section{Conclusion on the cluster work}
 
 With our programme we hoped to contribute to the cluster group's collective project.
-Using an object-oriented programming language, made it easier and less time consuming for us to create a graphical user interface along with helping the ITC group by means of having our programme use interfaces, that were made far in advance. That way they could work alongside us in the development process.
+Using an object-oriented programming language allowed us to define interfaces. This made it easier and less time-consuming for us to create a graphical user interface and to help the ITC group.
+These interfaces were made far in advance, so both groups could them in their development without being dependant on each other.
 
 As described in section \ref{sec:confines}, the grounds for working with the method implemented, was to help improve our understanding and help both groups with creating better projects. 
 This did not happen quite as planned, due to insufficient communication.
