@@ -39,6 +39,7 @@ namespace TestForm {
         private void StegosaurusForm_Load(object sender, EventArgs e) {
             try {
                 tbMessage.Text = NoMessageWrittenMessage;
+                tbMessage.MaxLength = Int32.MaxValue;
                 _loadSettings();
             }
             catch (Exception) {
@@ -341,7 +342,7 @@ namespace TestForm {
         //Starts encoding/decoding using the correct method and settings when the 'Proceed' button is pressed.
         private void btnProceed_Click(object sender, EventArgs e) {
             try {
-                _getFilePath();
+                _userSavePath = _getFilePath();
                 Cursor.Current = Cursors.WaitCursor;
                 _encodeOrDecodeImage();
             }
@@ -365,7 +366,7 @@ namespace TestForm {
         }
 
         //Asks for the correct filetype according to encoding/decoding method selected.
-        private void _getFilePath() {
+        private string _getFilePath() {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
 
             if (rdioEncode.Checked && !LSBMethodSelected) {
@@ -390,7 +391,8 @@ namespace TestForm {
 
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(saveFileDialog.FileName)) {
-                _userSavePath = saveFileDialog.FileName;
+                string savePath = saveFileDialog.FileName;
+                return savePath;
             } else {
                 throw new NoSavePathSelectedException();
             }
