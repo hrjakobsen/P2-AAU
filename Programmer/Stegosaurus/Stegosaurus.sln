@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stegosaurus", "Stegosaurus\Stegosaurus.csproj", "{4E8F1406-A210-4935-9D84-FE824EC16C6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteGUI", "TestForm\SteGUI.csproj", "{4F532235-1957-4DAA-B284-D50BD132DE9D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteGUI", "SteGUI\SteGUI.csproj", "{4F532235-1957-4DAA-B284-D50BD132DE9D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StegosaurusTests", "StegosaurusTests\StegosaurusTests.csproj", "{53E237EC-B880-44A8-9F46-DA3377FDA9F0}"
 EndProject
