@@ -3,11 +3,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using Stegosaurus;
 
-namespace TestForm
-{
-    public partial class OptionsForm : Form
-    {
-        private readonly StegosaurusForm _stegosaurusForm = new StegosaurusForm();
+namespace TestForm {
+    public partial class OptionsForm : Form {
         private bool _skipDialog;
         private bool _qualityLocked;
 
@@ -23,18 +20,16 @@ namespace TestForm
         public static bool ResetToDefault { get; set; }
         public static bool SkipSettingsInitialization { get; set; }
 
-        public OptionsForm()
-        {
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
+        public OptionsForm() {
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
+            MinimizeBox = false;
             InitializeComponent();
             _initializeSettings();
         }
 
         //Custom components _ created and settings are set.
-        private void _initializeSettings()
-        {
+        private void _initializeSettings() {
             _initializeQuantizationTable(out QuantizationTableComponentY, StegosaurusForm.QuantizationTableY, QuantizationTable.JpegDefaultYTable);
             _initializeQuantizationTable(out QuantizationTableComponentChr, StegosaurusForm.QuantizationTableChr, QuantizationTable.JpegDefaultChrTable);
             _initializeHuffmanTable(out HuffmanTableComponentYAC, StegosaurusForm.HuffmanTableYAC, HuffmanTable.JpegHuffmanTableYAC);
@@ -52,36 +47,26 @@ namespace TestForm
             tbarQualitySlider.Value = Quality;
             cbMValue.Text = MValue.ToString();
 
-            if (_qualityLocked)
-            {
+            if (_qualityLocked) {
                 tbarQualitySlider.Enabled = false;
-            }
-            else
-            {
+            } else {
                 tbarQualitySlider.Enabled = true;
             }
 
-            if (!LSBMethodSelected)
-            {
+            if (!LSBMethodSelected) {
                 rdioGTMethod.Checked = true;
-            }
-            else
-            {
+            } else {
                 rdioLSBMethod.Checked = true;
             }
         }
 
         //Adds defaultTable.Length amount of textboxes to a given Huffman panel and saves each in an array (to be looped through), sets
         //the size and position of each textbox and writes the default Quantization values in these.
-        private void _initializeHuffmanTable(out HuffmanTableComponent huffmanTableComponent, HuffmanTable settingsHuffmanTable, HuffmanTable defaultHuffmanTable)
-        {
+        private void _initializeHuffmanTable(out HuffmanTableComponent huffmanTableComponent, HuffmanTable settingsHuffmanTable, HuffmanTable defaultHuffmanTable) {
 
-            if (settingsHuffmanTable != null)
-            {
+            if (settingsHuffmanTable != null) {
                 huffmanTableComponent = new HuffmanTableComponent(settingsHuffmanTable);
-            }
-            else
-            {
+            } else {
                 huffmanTableComponent = new HuffmanTableComponent(defaultHuffmanTable);
             }
             grpCustomHuffman.Controls.Add(huffmanTableComponent);
@@ -90,14 +75,10 @@ namespace TestForm
             huffmanTableComponent.BringToFront();
         }
 
-        private void _initializeQuantizationTable(out QuantizationTableComponent quantizationTableComponent, QuantizationTable settingsQuantizationTable, QuantizationTable defaultQuantizationTable)
-        {
-            if (settingsQuantizationTable != null)
-            {
+        private void _initializeQuantizationTable(out QuantizationTableComponent quantizationTableComponent, QuantizationTable settingsQuantizationTable, QuantizationTable defaultQuantizationTable) {
+            if (settingsQuantizationTable != null) {
                 quantizationTableComponent = new QuantizationTableComponent(settingsQuantizationTable);
-            }
-            else
-            {
+            } else {
                 quantizationTableComponent = new QuantizationTableComponent(defaultQuantizationTable);
             }
 
@@ -110,33 +91,24 @@ namespace TestForm
         //the size and position of each textbox and writes the default Quantization values in these.
 
         //The selected Options-panel is enabled and made visible, the opposite is done to the rest.
-        private void OptionsBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
+        private void OptionsBox_SelectedIndexChanged(object sender, EventArgs e) {
             DeselectAllOptionPanels();
-            if (OptionsBox.SelectedItem == OptionsBox.Items[0])
-            {
+            if (OptionsBox.SelectedItem == OptionsBox.Items[0]) {
                 pnlOptionsHuffman.Visible = true;
                 pnlOptionsHuffman.Enabled = true;
-            }
-            else if (OptionsBox.SelectedItem == OptionsBox.Items[1])
-            {
+            } else if (OptionsBox.SelectedItem == OptionsBox.Items[1]) {
                 pnlOptionsQuantization.Visible = true;
                 pnlOptionsQuantization.Enabled = true;
-            }
-            else if (OptionsBox.SelectedItem == OptionsBox.Items[2])
-            {
+            } else if (OptionsBox.SelectedItem == OptionsBox.Items[2]) {
                 pnlOptionsQuality.Visible = true;
                 pnlOptionsQuality.Enabled = true;
-            }
-            else if (OptionsBox.SelectedItem == OptionsBox.Items[3])
-            {
+            } else if (OptionsBox.SelectedItem == OptionsBox.Items[3]) {
                 pnlOptionsEncodingMethod.Visible = true;
                 pnlOptionsEncodingMethod.Enabled = true;
             }
         }
 
-        private void DeselectAllOptionPanels()
-        {
+        private void DeselectAllOptionPanels() {
             pnlOptionsHuffman.Visible = false;
             pnlOptionsHuffman.Enabled = false;
 
@@ -151,28 +123,22 @@ namespace TestForm
         }
 
         //'Escape' closes form 
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.Escape)
-            {
-                this.Close();
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
+            if (keyData == Keys.Escape) {
+                Close();
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
         //The selected Quantization-table is enabled and made visible, the opposite is done to the other.
-        private void yQuantizationChannelChecked_DisplayYOrChrTable(object sender, EventArgs e)
-        {
-            if (rdioQuantizationYChannel.Checked)
-            {
+        private void yQuantizationChannelChecked_DisplayYOrChrTable(object sender, EventArgs e) {
+            if (rdioQuantizationYChannel.Checked) {
                 QuantizationTableComponentChr.Visible = false;
                 QuantizationTableComponentChr.Enabled = false;
                 QuantizationTableComponentY.Visible = true;
                 QuantizationTableComponentY.Enabled = true;
-            }
-            else if (rdioQuantizationChrChannel.Checked)
-            {
+            } else if (rdioQuantizationChrChannel.Checked) {
                 QuantizationTableComponentY.Visible = false;
                 QuantizationTableComponentY.Enabled = false;
                 QuantizationTableComponentChr.Visible = true;
@@ -180,21 +146,18 @@ namespace TestForm
             }
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
-        {
+        private void btnSave_Click(object sender, EventArgs e) {
             Cursor.Current = Cursors.WaitCursor;
             Quality = tbarQualitySlider.Value;
             _skipDialog = true;
             SaveEnabled = true;
             Cursor.Current = Cursors.Default;
 
-            this.Close();
+            Close();
         }
 
-        private void btnDefault_Click(object sender, EventArgs e)
-        {
-            switch (MessageBox.Show(this, "Are you sure you want to set all settings to default?", "Resetting to default", MessageBoxButtons.YesNo))
-            {
+        private void btnDefault_Click(object sender, EventArgs e) {
+            switch (MessageBox.Show(this, "Are you sure you want to set all settings to default?", "Resetting to default", MessageBoxButtons.YesNo)) {
                 case DialogResult.No:
                     break;
                 default:
@@ -207,59 +170,44 @@ namespace TestForm
         }
 
 
-        private void btnClose_Click(object sender, EventArgs e)
-        {
-            this.Close();
+        private void btnClose_Click(object sender, EventArgs e) {
+            Close();
         }
 
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
+        protected override void OnFormClosing(FormClosingEventArgs e) {
             base.OnFormClosing(e);
 
-            if (!_skipDialog)
-            {
+            if (!_skipDialog) {
                 if (e.CloseReason == CloseReason.WindowsShutDown) return;
 
                 // Confirm user wants to close
-                switch (MessageBox.Show(this, "Are you sure you want to close without saving?", "Closing", MessageBoxButtons.YesNo))
-                {
+                switch (MessageBox.Show(this, "Are you sure you want to close without saving?", "Closing", MessageBoxButtons.YesNo)) {
                     case DialogResult.No:
                         e.Cancel = true;
-                        break;
-                    default:
                         break;
                 }
             }
         }
 
-        private void HuffmannChannelCheckedChanged_DisplayCorrectTable(object sender, EventArgs e)
-        {
+        private void HuffmannChannelCheckedChanged_DisplayCorrectTable(object sender, EventArgs e) {
             deselectHuffmanTables();
 
-            if (rdioHuffmanChr_AC.Checked)
-            {
+            if (rdioHuffmanChr_AC.Checked) {
                 HuffmanTableComponentChrAC.Visible = true;
                 HuffmanTableComponentChrAC.Enabled = true;
-            }
-            else if (rdioHuffmanChr_DC.Checked)
-            {
+            } else if (rdioHuffmanChr_DC.Checked) {
                 HuffmanTableComponentChrDC.Visible = true;
                 HuffmanTableComponentChrDC.Enabled = true;
-            }
-            else if (rdioHuffmanY_AC.Checked)
-            {
+            } else if (rdioHuffmanY_AC.Checked) {
                 HuffmanTableComponentYAC.Visible = true;
                 HuffmanTableComponentYAC.Enabled = true;
-            }
-            else if (rdioHuffmanY_DC.Checked)
-            {
+            } else if (rdioHuffmanY_DC.Checked) {
                 HuffmanTableComponentYDC.Visible = true;
                 HuffmanTableComponentYDC.Enabled = true;
             }
         }
 
-        private void deselectHuffmanTables()
-        {
+        private void deselectHuffmanTables() {
             HuffmanTableComponentChrAC.Visible = false;
             HuffmanTableComponentChrAC.Enabled = false;
 
@@ -274,66 +222,44 @@ namespace TestForm
         }
 
         //Adds a row to the selected Huffman-table when btnHuffmanAddRow is clicked
-        private void btnHuffmanAddRow_Click(object sender, EventArgs e)
-        {
-            if (rdioHuffmanChr_AC.Checked)
-            {
+        private void btnHuffmanAddRow_Click(object sender, EventArgs e) {
+            if (rdioHuffmanChr_AC.Checked) {
                 HuffmanTableComponentChrAC.AddRow();
-            }
-            else if (rdioHuffmanChr_DC.Checked)
-            {
+            } else if (rdioHuffmanChr_DC.Checked) {
                 HuffmanTableComponentChrDC.AddRow();
-            }
-            else if (rdioHuffmanY_AC.Checked)
-            {
+            } else if (rdioHuffmanY_AC.Checked) {
                 HuffmanTableComponentYAC.AddRow();
-            }
-            else if (rdioHuffmanY_DC.Checked)
-            {
+            } else if (rdioHuffmanY_DC.Checked) {
                 HuffmanTableComponentYDC.AddRow();
-            }
-            else
-            {
+            } else {
                 MessageBox.Show("Please select a table to which you want to add a row!");
             }
         }
 
-        private void tbarQualitySlider_ValueChanged(object sender, EventArgs e)
-        {
+        private void tbarQualitySlider_ValueChanged(object sender, EventArgs e) {
             Quality = tbarQualitySlider.Value;
 
-            if (Quality != StegosaurusForm.DefaultQuality)
-            {
+            if (Quality != StegosaurusForm.DefaultQuality) {
                 lblEncodingQualityValue.Text = Quality.ToString();
-            }
-            else
-            {
+            } else {
                 lblEncodingQualityValue.Text = Quality.ToString() + @"  (default)";
             }
         }
 
-        private void cbMValue_SelectedValueChanged(object sender, EventArgs e)
-        {
-            if (cbMValue.GetItemText(cbMValue.SelectedItem) == "2")
-            {
+        private void cbMValue_SelectedValueChanged(object sender, EventArgs e) {
+            if (cbMValue.GetItemText(cbMValue.SelectedItem) == "2") {
                 MValue = 2;
-            } else if (cbMValue.GetItemText(cbMValue.SelectedItem) == "4")
-            {
+            } else if (cbMValue.GetItemText(cbMValue.SelectedItem) == "4") {
                 MValue = 4;
-            } else if (cbMValue.GetItemText(cbMValue.SelectedItem) == "16")
-            {
+            } else if (cbMValue.GetItemText(cbMValue.SelectedItem) == "16") {
                 MValue = 16;
             }
         }
 
-        private void rdioGT_CheckedChangedSetMethod(object sender, EventArgs e)
-        {
-            if (rdioGTMethod.Checked)
-            {
+        private void rdioGT_CheckedChangedSetMethod(object sender, EventArgs e) {
+            if (rdioGTMethod.Checked) {
                 LSBMethodSelected = false;
-            }
-            else
-            {
+            } else {
                 LSBMethodSelected = true;
             }
         }

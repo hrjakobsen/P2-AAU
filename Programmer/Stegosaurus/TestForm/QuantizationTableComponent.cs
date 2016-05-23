@@ -5,22 +5,16 @@ using System.Windows.Forms;
 using Stegosaurus;
 using System.Drawing;
 
-namespace TestForm
-{
-    public partial class QuantizationTableComponent : Panel
-    {
+namespace TestForm {
+    public partial class QuantizationTableComponent : Panel {
         TextBox[] QuantizationBoxes = new TextBox[64];
 
-        public QuantizationTable Table { get; set; }
+        public QuantizationTableComponent(QuantizationTable quantizationTable) {
+            QuantizationTable table = quantizationTable;
+            var entriesList = table.Entries.ToList();
+            Size = new Size(410, 244);
 
-        public QuantizationTableComponent(QuantizationTable quantizationTable)
-        {
-            Table = quantizationTable;
-            var entriesList = Table.Entries.ToList();
-            this.Size = new Size(410, 244);
-
-            for (int i = 0; i < Table.Entries.Count(); i++)
-            {
+            for (int i = 0; i < table.Entries.Count(); i++) {
                 QuantizationBoxes[i] = new TextBox();
                 Controls.Add(QuantizationBoxes[i]);
                 QuantizationBoxes[i].Size = new Size(38, 20);
@@ -31,8 +25,7 @@ namespace TestForm
 
                 string s = Convert.ToString(entriesList[i], 0x10);
 
-                if (s.Length != 2)
-                {
+                if (s.Length != 2) {
                     s = s.PadLeft(2, '0');
                 }
 
@@ -41,15 +34,13 @@ namespace TestForm
 
         }
 
-        public QuantizationTableComponent(IContainer container)
-        {
+        public QuantizationTableComponent(IContainer container) {
             container.Add(this);
 
             InitializeComponent();
         }
-        
-        public QuantizationTable SaveTable()
-        {
+
+        public QuantizationTable SaveTable() {
             byte[] entries = QuantizationBoxes.Select(x => Convert.ToByte(x.Text, 16)).ToArray();
             QuantizationTable q = new QuantizationTable(entries);
 

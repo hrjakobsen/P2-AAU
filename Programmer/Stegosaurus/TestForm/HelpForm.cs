@@ -1,57 +1,43 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace TestForm
-{
-    public partial class HelpForm : Form
-    {
-        public HelpForm()
-        {
+namespace TestForm {
+    public partial class HelpForm : Form {
+        public HelpForm() {
             InitializeComponent();
             HelpBox.SelectedItem = HelpBox.Items[0];
         }
 
-        private void HelpBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (HelpBox.SelectedItem == HelpBox.Items[0])
-            {
-                deselectAllOptionPanels();
+        private void HelpBox_SelectedIndexChanged(object sender, EventArgs e) {
+            if (HelpBox.SelectedItem == HelpBox.Items[0]) {
+                _deselectAllOptionPanels();
 
                 pnlHelpGeneral.Visible = true;
                 pnlHelpGeneral.Enabled = true;
-            }
-            else if (HelpBox.SelectedItem == HelpBox.Items[1])
-            {
-                deselectAllOptionPanels();
+            } else if (HelpBox.SelectedItem == HelpBox.Items[1]) {
+                _deselectAllOptionPanels();
 
                 pnlQuality.Visible = true;
                 pnlQuality.Enabled = true;
-            }
-            else if (HelpBox.SelectedItem == HelpBox.Items[2])
-            {
-                deselectAllOptionPanels();
+            } else if (HelpBox.SelectedItem == HelpBox.Items[2]) {
+                _deselectAllOptionPanels();
 
                 pnlHelpEncodingMethod.Visible = true;
                 pnlHelpEncodingMethod.Enabled = true;
-            }
-            else if (HelpBox.SelectedItem == HelpBox.Items[3])
-            {
-                deselectAllOptionPanels();
+            } else if (HelpBox.SelectedItem == HelpBox.Items[3]) {
+                _deselectAllOptionPanels();
 
                 pnlHelpHuffman.Visible = true;
                 pnlHelpHuffman.Enabled = true;
-            }
-            else if (HelpBox.SelectedItem == HelpBox.Items[4])
-            {
-                deselectAllOptionPanels();
+            } else if (HelpBox.SelectedItem == HelpBox.Items[4]) {
+                _deselectAllOptionPanels();
 
                 pnlHelpQuantization.Visible = true;
                 pnlHelpQuantization.Enabled = true;
             }
         }
 
-        private void deselectAllOptionPanels()
-        {
+        private void _deselectAllOptionPanels() {
             pnlHelpGeneral.Visible = false;
             pnlHelpGeneral.Enabled = false;
 
@@ -69,27 +55,23 @@ namespace TestForm
         }
 
         //'Escape' closes form
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.Escape)
-            {
-                this.Close();
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
+            if (keyData == Keys.Escape) {
+                Close();
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        private void Okay_Click(object sender, EventArgs e)
-        {
-            this.Close();
+        private void Okay_Click(object sender, EventArgs e) {
+            Close();
         }
 
         private void grpHelpGeneral_Enter(object sender, EventArgs e) {
 
         }
 
-        private void grpHelp5_Enter(object sender, EventArgs e)
-        {
+        private void grpHelp5_Enter(object sender, EventArgs e) {
 
         }
     }
