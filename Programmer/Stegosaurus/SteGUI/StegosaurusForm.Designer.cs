@@ -1,4 +1,4 @@
-﻿namespace TestForm {
+﻿namespace SteGUI {
     partial class StegosaurusForm {
         /// <summary>
         /// Required designer variable.

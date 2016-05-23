@@ -1,6 +1,6 @@
-﻿namespace TestForm
+﻿namespace SteGUI
 {
-    partial class QuantizationTableComponent
+    partial class HuffmanTableComponent
     {
         /// <summary>
         /// Required designer variable.

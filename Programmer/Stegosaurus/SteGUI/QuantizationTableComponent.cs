@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using Stegosaurus;
 using System.Drawing;
 
-namespace TestForm {
+namespace SteGUI {
     public partial class QuantizationTableComponent : Panel {
         TextBox[] QuantizationBoxes = new TextBox[64];
 
