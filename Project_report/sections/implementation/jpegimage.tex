@@ -7,10 +7,10 @@ There are multiple constructors for the \lstinline|JPEGImage| class, as a user c
 This is done by not providing any tables in the constructor.
 The default tables in the respective classes are both found in the JPEG specification \citep[Annex k]{JPEGStandard}.
 
-The \lstinline|void Encode(byte[])| is where the actual JPEG encoding and message embedding takes place.
+The \lstinline|Encode(byte[])| is where the actual JPEG encoding and message embedding takes place.
 The method can be seen in listing \ref{JPEGEncode}.
 The most significant part of the JPEG file is the scan data, but before it can be written to the file, we have to encode most of the headers first.
-We do that by calling \lstinline|void _writeHeaders()|.
+We do that by calling \lstinline|_writeHeaders()|.
 All information needed in these headers is already known, as both the bitmap image and tables provided in the constructor.
 
 \begin{lstlisting}[firstnumber=141,label=JPEGEncode, caption={\lstinline|JPEGImage.Encode| method \textbf{File: }JPEGImage.cs}]
@@ -35,13 +35,13 @@ public void Encode(byte[] message) {
 \end{lstlisting}
 
 From here on, we need to perform all of the regular steps from JPEG encoding up until the Huffman encoding.
-We start by converting the \lstinline|Bitmap|'s RGB channels into Y, Cb and Cr channels. Then in the method \lstinline|void _encodeAndQuantizeValues(sbyte[][,], int, int)| we have the loop which can be seen in listing \ref{JPEGEncodeAndQuantize}.
+We start by converting the \lstinline|Bitmap|'s RGB channels into Y, Cb and Cr channels. Then in the method \lstinline|_encodeAndQuantizeValues(sbyte[][,], int, int)| we have the loop which can be seen in listing \ref{JPEGEncodeAndQuantize}.
 While these nested loops may seem very computationally heavy, what they actually do is that they loop through the three channels of every pixel in the image.
 So while we have five nested for-loops, we run through every pixel 3 times, and split the image into 16x16 MCUs.
 After every 16x16 MCU has been filled with values, the MCU must be encoded.
 As the name Minimum Encoded Unit implies, we can encode one MCU without depending on the other.
 That means that after we fill one MCU, we can encode that directly.
-We do that by invoking the method \lstinline|void _encodeBlocks(float[][,])|.
+We do that by invoking the method \lstinline|_encodeBlocks(float[][,])|.
 
 \begin{lstlisting}[firstnumber=540, label=JPEGEncodeAndQuantize, caption={Shows how the image is divided into MCUs \textbf{File: }JPEGImage.cs}]
 for (int MCUY = 0; MCUY < imageHeight; MCUY += 16) {
@@ -58,7 +58,7 @@ for (int MCUY = 0; MCUY < imageHeight; MCUY += 16) {
 }
 \end{lstlisting}
 
-In \lstinline|void _encodeBlocks(float[][,])|, we split the MCU into 8x8 blocks.
+In \lstinline|_encodeBlocks(float[][,])|, we split the MCU into 8x8 blocks.
 As we have a fixed sampling of 4:2:0, we split the Y channel into four 8x8 blocks and effectively save all information about the luminance channel. The chroma channels are downsampled from 16x16 blocks to 8x8 blocks.
 As we implemented this, we had two ways of doing so.
 One way is taking every fourth value in the block as seen on figure \ref{fig:downsampling4th}, and the other is taking an average of each 2x2 block in the 16x16 MCU as seen on figure \ref{fig:downsamplingAverage}.
@@ -177,7 +177,7 @@ Then we keep on adding vertices, until we are certain that there are enough vert
 We use the \lstinline|Graph| class to handle the vertices and edges.
 We simply add vertices for each pair of numbers in the valid entries, until we have enough vertices to contain our message \lstinline|byte[]|.
 
-After adding the vertices, we use the private method \lstinline|void _addEdge(bool, bool, Vertex, Vertex, int, Graph)| in the \lstinline|JPEGImage| class to determine whether an switch between the two specified vertices would result in a perfect pair.
+After adding the vertices, we use the private method \lstinline|_addEdge(bool, bool, Vertex, Vertex, int, Graph)| in the \lstinline|JPEGImage| class to determine whether an switch between the two specified vertices would result in a perfect pair.
 If the switch would result in a perfect pair, an edge is added to the graph.
 
 We run this method four times for every distinct pair of vertices in the graph, for each of the possible switches shown earlier in figure \ref{fig:graphSwitches}.
@@ -229,7 +229,7 @@ private static void _removeEdge(List<Edge> list, Edge e) {
 }
 \end{lstlisting}
 
-After running the \lstinline|List<Edge> GetSwitches()| method on the graph, it is simply a matter of switching the values in the vertices appointed by the chosen edges, and then running through all vertices in the graph, and for every vertex not containing the right message, forcibly change the sample values so that the right message is contained.
+After running the \lstinline|GetSwitches()| method on the graph, it is simply a matter of switching the values in the vertices appointed by the chosen edges, and then running through all vertices in the graph, and for every vertex not containing the right message, forcibly change the sample values so that the right message is contained.
 
 \subsection{Encoding the Data to a File}
 
