@@ -5,7 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 using Stegosaurus;
 
-namespace TestForm
+namespace SteGUI
 {
     partial class OptionsForm
     {

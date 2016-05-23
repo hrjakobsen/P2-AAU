@@ -7,14 +7,13 @@ using System.Linq;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace TestForm {
+namespace SteGUI {
     public partial class StegosaurusForm : Form {
         private IImageEncoder _imageEncoder;
         private IImageDecoder _imageDecoder;
         private bool _inputImageSet, _messageFileSet, _messageTextSet;
         private byte[] _message;
         private int _messageLength;
-        private const int DefaultQualityWithCustomQTable = 52;
         private Bitmap CoverImage { get; set; }
         private string _decodeFilePath, _decodeFileName;
         private string _userSavePath;
@@ -32,11 +31,14 @@ namespace TestForm {
                 tbMessage.Text = NoMessageWrittenMessage;
                 tbMessage.MaxLength = Int32.MaxValue;
                 OptionsForm.LoadSettingsFromFile();
+
                 _refreshMainGUI();
             }
             catch (Exception) {
-                MessageBox.Show("An error occured while trying to load your settings, they seem to be invalid. " +
-                                "Correct files or reset all settings to default in Options.", "Error loading settings");
+                MessageBox.Show("An error occured while trying to load your settings, they are either invalid or this " +
+                                "is the first time running. All settings will be set to default.", "Error loading settings");
+                OptionsForm.ResetSettingsToDefault();
+                _refreshMainGUI();
             }
         }
 

@@ -18,7 +18,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="Quality" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">53</Value>
+      <Value Profile="(Default)">80</Value>
     </Setting>
     <Setting Name="QualityLocked" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

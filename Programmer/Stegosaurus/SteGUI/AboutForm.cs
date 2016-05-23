@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace TestForm {
+namespace SteGUI {
     public partial class AboutForm : Form {
         public AboutForm() {
             InitializeComponent();
