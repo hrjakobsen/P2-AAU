@@ -1,6 +1,6 @@
 % -*- root: ../../DAT2-A423_Project_Report.tex -*-
 \begin{infobox}{\section[A Study of the JPEG File Format]{A Study of the JPEG file format\footnotenomarker{This section is the result of researching the JPEG file format.
-The information in the following sections have been combined from multiple sources\citep{RussianDude,Miano1999,JPEGStandard,jfifspecs}.}}\label{sec:jpegStudy}}
+The information in the following sections have been combined from multiple sources \citep{RussianDude,Miano1999,JPEGStandard,jfifspecs}.}}\label{sec:jpegStudy}}
 
 \subsection{An Overview of JPEG}
 \vspace{-2.5mm}
@@ -90,7 +90,7 @@ Many other samplings can be used, for example if a 1:1:1 sampling is used, all i
 \includegraphics[width=.4\linewidth]{lenaYchannel.png}
 \includegraphics[width=.2\linewidth]{lenaCbchannel.png}
 \includegraphics[width=.2\linewidth]{lenaCrchannel.png}
-\captionof{figure}{Y, Cb and Cr channels of an image\citep{LennaImage}}\label{fig:YCbCrChannels}
+\captionof{figure}{Y, Cb and Cr channels of an image \citep{LennaImage}}\label{fig:YCbCrChannels}
 \end{centering}
 
 \vspace{4mm}
@@ -259,7 +259,7 @@ Knowing the length makes it possible for a decoder to skip segments it does not 
 As shown in table \ref{tab:markers}, all markers start with the byte 0xFF.
 A special case exists, where 0xFF does not define a marker, and that case is when the following byte is 0x00.
 More on this later, when it is examined how image data is written to a file.
-The tables in the following sections describing each marker, are reproduced from the book \textit{Compressed Image File Formats: JPEG, PNG, GIF, XBM, BMP}\citep{Miano1999}.
+The tables in the following sections describing each marker, are reproduced from the book \textit{Compressed Image File Formats: JPEG, PNG, GIF, XBM, BMP} \citep{Miano1999}.
 
 \subsubsection{The SOI and EOI markers}
 \begin{centering}
