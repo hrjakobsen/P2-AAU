@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestForm
+namespace SteGUI
 {
     class NoSavePathSelectedException: Exception
     {
