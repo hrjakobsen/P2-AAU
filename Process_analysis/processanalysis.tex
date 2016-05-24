@@ -1,9 +1,4 @@
-\documentclass{article}
-\usepackage{graphicx}
-\usepackage{subcaption}
-\usepackage{caption}
-\usepackage[utf8]{inputenc}
-
+\input{preamble.tex}
 \begin{document}
 \title{Process Analysis}
 \author{\textbf{DAT2-A423}\\  
@@ -99,17 +94,31 @@ It is unknown whether it was our attendance taking that did this, or whether it 
 We have discussed that even if a group member came down to 65\% it was necessary to discuss further, as not every member of the group feels as though they could do it, and would rather see why attendance had become so poor instead of drawing the line at 65\%, with no exceptions.
 
 \begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.6\textwidth}
+        \includegraphics[width=1\textwidth]{figures/GraphImage.png}
+		\caption{An oversight of the group's absence}
+		\label{fig:GraphImage}
+    \end{subfigure}
+    ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc. 
+      %(or a blank line to force the subfigure onto a new line)
+    \begin{subfigure}[b]{0.35\textwidth}
+        \includegraphics[width=1\textwidth]{figures/soerenfravaer.png}
+		\caption{A specific group member's attendance sheet}
+		\label{fig:soerenfravaer}
+    \end{subfigure}
+    \caption{Attendance programme}\label{fig:attendance}
+\end{figure}
+
+
+\begin{figure}
 	\centering
-	\includegraphics[width=1\textwidth]{figures/GraphImage.png}
-	\caption{An oversight of the group's absence}
-	\label{fig:GraphImage}
+	
 \end{figure}
 
 \begin{figure}
 	\centering
-	\includegraphics[width=1\textwidth]{figures/soerenfravaer.png}
-	\caption{A specific group member's attendance sheet}
-	\label{fig:soerenfravaer}
+	
 \end{figure}
 
 \section{Learning Process}
