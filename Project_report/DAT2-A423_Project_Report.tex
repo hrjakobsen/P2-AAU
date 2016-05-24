@@ -17,7 +17,7 @@
 \input{setup/preamble.tex}% package inclusion and set up of the document
 \input{setup/hyphenations.tex}% 
 \input{setup/macros.tex}% my new macros
-
+\usepackage{pdfpages}
 \begin{document}
 \sloppy
 
@@ -32,7 +32,12 @@
 \pagestyle{fancy} %enable headers and footers again
 \tableofcontents
 %\listoftodos
-\input{sections/formal_stuff/preface.tex}
+%\input{sections/formal_stuff/preface.tex}
+
+\newpage\null\thispagestyle{empty}\newpage
+\includepdf{signatures.pdf}
+\newpage\null\thispagestyle{empty}\newpage
+
 \cleardoublepage
 %mainmatter
 \pagenumbering{arabic} %use arabic page numbering in the mainmatter
