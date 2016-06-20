@@ -58,7 +58,7 @@
     <Compile Include="JPEG\HuffmanTable.cs" />
     <Compile Include="IImageDecode.cs" />
     <Compile Include="IImageEncoder.cs" />
-    <Compile Include="JPEG\Decoder.cs" />
+    <Compile Include="JPEG\JPEGDecoder.cs" />
     <Compile Include="JPEG\JPEGImage.cs" />
     <Compile Include="JPEG\JPEGWriter.cs" />
     <Compile Include="JPEG\QuantizationTable.cs" />
