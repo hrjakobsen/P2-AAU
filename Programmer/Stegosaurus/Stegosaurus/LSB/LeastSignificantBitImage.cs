@@ -96,5 +96,9 @@ namespace Stegosaurus {
         public void Save(string path) {
             StegoImage.Save(path);
         }
+
+        public string getTimings() {
+            throw new NotImplementedException();
+        }
     }
 }

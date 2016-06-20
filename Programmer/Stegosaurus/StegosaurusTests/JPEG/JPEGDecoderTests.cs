@@ -30,7 +30,7 @@ namespace Stegosaurus.Tests
             StreamReader sr = new StreamReader(fullPath);
             BinaryReader expected = new BinaryReader(sr.BaseStream);
 
-            JPEGDecoder jd = new JPEGDecoder(fullPath);
+            JpegDecoder jd = new JpegDecoder(fullPath);
 
             PrivateObject po = new PrivateObject(jd);
             BinaryReader output = (BinaryReader) po.GetField("file");
@@ -43,7 +43,7 @@ namespace Stegosaurus.Tests
         {
             string filePath = @"out.jpg"; // has message byte[] {1, 2, 3, 4, 5} encoded
 
-            JPEGDecoder jd = new JPEGDecoder(filePath);
+            JpegDecoder jd = new JpegDecoder(filePath);
 
             HuffmanTable outputHuffmandTable = jd.YDCHuffman;
             
@@ -72,7 +72,7 @@ namespace Stegosaurus.Tests
         {
             string filePath = @"out.jpg"; // has message byte[] {1, 2, 3, 4, 5} encoded
 
-            JPEGDecoder jd = new JPEGDecoder(filePath);
+            JpegDecoder jd = new JpegDecoder(filePath);
 
             HuffmanTable outputHuffmanTable = jd.YACHuffman;
 
@@ -251,7 +251,7 @@ namespace Stegosaurus.Tests
         {
             string filePath = @"out.jpg"; // has message byte[] {1, 2, 3, 4, 5} encoded
 
-            JPEGDecoder jd = new JPEGDecoder(filePath);
+            JpegDecoder jd = new JpegDecoder(filePath);
 
             HuffmanTable outputHuffmanTable = jd.ChrDCHuffman;
 
@@ -280,7 +280,7 @@ namespace Stegosaurus.Tests
         {
             string filePath = @"out.jpg"; // has message byte[] {1, 2, 3, 4, 5} encoded
 
-            JPEGDecoder jd = new JPEGDecoder(filePath);
+            JpegDecoder jd = new JpegDecoder(filePath);
 
             HuffmanTable outputHuffmanTable = jd.ChrACHuffman;
 
@@ -460,7 +460,7 @@ namespace Stegosaurus.Tests
 
             string fullPath = "out.jpg";
 
-            JPEGDecoder jd = new JPEGDecoder(fullPath);
+            JpegDecoder jd = new JpegDecoder(fullPath);
 
             var output = jd.Decode();
 

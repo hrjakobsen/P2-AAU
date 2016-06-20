@@ -40,6 +40,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,10 +54,11 @@
     <Compile Include="JPEG\Edge.cs" />
     <Compile Include="JPEG\ExtensionMethods.cs" />
     <Compile Include="JPEG\Graph.cs" />
+    <Compile Include="JPEG\GraphEncoder.cs" />
     <Compile Include="JPEG\HuffmanTable.cs" />
     <Compile Include="IImageDecode.cs" />
     <Compile Include="IImageEncoder.cs" />
-    <Compile Include="JPEG\JPEGDecoder.cs" />
+    <Compile Include="JPEG\Decoder.cs" />
     <Compile Include="JPEG\JPEGImage.cs" />
     <Compile Include="JPEG\JPEGWriter.cs" />
     <Compile Include="JPEG\QuantizationTable.cs" />

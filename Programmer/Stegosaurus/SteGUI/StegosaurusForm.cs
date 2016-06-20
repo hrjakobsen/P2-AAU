@@ -225,9 +225,6 @@ namespace SteGUI {
             catch (NoSavePathSelectedException) {
                 MessageBox.Show("No save location was selected!");
             }
-            catch (Exception) {
-                MessageBox.Show("An unknown error occured!");
-            }
 
             lblProcessing.Text = "";
             lblProcessing.Visible = false;
@@ -311,9 +308,6 @@ namespace SteGUI {
                 catch (ExternalException) {
                     MessageBox.Show("Failed to load result picture! Your Huffman table may be invalid");
                 }
-                catch (Exception) {
-                    MessageBox.Show("An error occured when encoding!");
-                }
             } else if (rdioDecode.Checked) {
                 picResult.Image = null;
                 tbMessage.Text = "";
@@ -322,7 +316,7 @@ namespace SteGUI {
                     lblProcessing.Text = "Decoding using GT method...";
                     lblProcessing.Visible = true;
                     Application.DoEvents();
-                    _imageDecoder = new JPEGDecoder(_decodeFilePath);
+                    _imageDecoder = new JpegDecoder(_decodeFilePath);
                 } else {
                     lblProcessing.Text = "Decoding using LSB method...";
                     lblProcessing.Visible = true;
