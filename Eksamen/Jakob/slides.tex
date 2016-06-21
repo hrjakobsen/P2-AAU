@@ -1,0 +1,53 @@
+% SOTA, Image compression 
+\section{State of the Art} 
+\begin{frame}{State of the Art}{} 
+	\begin{itemize} 
+		\item \textbf{EZStego} 
+			\begin{itemize} 
+				\item Pairing of similar colors 
+				\item Minor colour changes 
+				\item Manipulation of LSB
+			\end{itemize}
+			
+		\item \textbf{MP3stego}
+			\begin{itemize}
+				\item Data hiding using quantization
+				\item Somewhat similar to JPEG
+				\item Makes sure that output sounds MP3 similar to original MP3
+			\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{State of the Art}{}
+	\begin{itemize}
+		\item \textbf{Jsteg-Jpeg}
+			\begin{itemize}
+				\item JPEG's lossy (DCT \& quantization) and lossless (Huffman) compression steps
+				\item Hides information between steps (before lossless compression)
+			\end{itemize}
+			
+		\item \textbf{OpenPuff}
+			\begin{itemize}
+				\item Multiple carrier files
+				\item Only correct order of carrier files will unhide
+				\item Cryptography inside carrier files
+			\end{itemize}
+		\item \textbf{Steghide} - Graph-theoretic approach 
+	\end{itemize} 
+\end{frame} 
+
+\section{Image compression} 
+\begin{frame}{Image compression}{} 
+	\begin{itemize} 
+		\item Lossy
+			\begin{itemize}
+				\item Can be perfectly reconstructed
+				\item Example: Run-length encoding
+			\end{itemize}
+		\item Lossless
+			\begin{itemize}
+				\item Typically more data saving
+				\item Good for users with limited amount of data
+			\end{itemize}
+	\end{itemize} 
+\end{frame}
