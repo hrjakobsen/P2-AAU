@@ -5,7 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 namespace Stegosaurus {
-    public class JPEGDecoder:IImageDecoder {
+    public class JpegDecoder:IImageDecoder {
 
         /// <summary>
         /// Huffman table used for the DC coefficient of the Y component of the image.
@@ -33,7 +33,7 @@ namespace Stegosaurus {
         /// Takes a filepath to a JPEG file.
         /// </summary>
         /// <param name="path">Path to the jpeg file</param>
-        public JPEGDecoder(string path) {
+        public JpegDecoder(string path) {
             StreamReader sr = new StreamReader(path);
             file = new BinaryReader(sr.BaseStream);
             for (int i = 0; i < 4; i++) {

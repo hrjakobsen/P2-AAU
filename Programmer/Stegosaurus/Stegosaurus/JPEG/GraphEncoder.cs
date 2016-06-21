@@ -166,7 +166,11 @@ namespace Stegosaurus {
 
             public void Choose(Edge e) {
                 Vertex otherVertex = e.VStart == this ? e.VEnd : e.VStart;
-                otherVertex.Neighbours.RemoveAll(x => x.VStart == this || x.VEnd == this);
+                otherVertex.Neighbours.Clear();
+                foreach (Edge edge in Neighbours) {
+                    Vertex other = edge.VStart == this ? edge.VEnd : edge.VStart;
+                    other.Neighbours.RemoveAll(x => x.VStart == this || x.VEnd == this);
+                }
                 Neighbours.Clear();
                 Neighbours.Add(e);
             }
