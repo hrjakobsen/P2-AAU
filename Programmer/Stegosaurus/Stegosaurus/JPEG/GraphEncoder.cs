@@ -101,24 +101,18 @@ namespace Stegosaurus {
             }
 
             public void DoSwitches() {
-                int swaps = 0;
                 foreach (Vertex vertex in Vertices) {
                     if (vertex.Neighbours.Any()) {
-                        swaps += 2;
                         _swapVertexData(vertex.Neighbours[0]);
                     }
                 }
-                MessageBox.Show($"Swaps: {swaps}");
             }
 
             public void ForceChanges() {
-                int forces = 0;
                 List<Vertex> toBeChanged = Vertices.Where(v => (v.SampleValue1 + v.SampleValue2).Mod(v.Modulo) != v.Message).ToList();
                 foreach (Vertex vertex in toBeChanged) {
                     _forceSampleChange(vertex);
-                    forces++;
                 }
-                MessageBox.Show($"Forces: {forces}");
             }
 
             private static void _swapVertexData(Edge e) {
