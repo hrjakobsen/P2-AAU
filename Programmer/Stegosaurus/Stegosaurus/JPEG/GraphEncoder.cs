@@ -56,11 +56,15 @@ namespace Stegosaurus {
                 List<Vertex> toBeChanged = Vertices.Where(v => (v.SampleValue1 + v.SampleValue2).Mod(v.Modulo) != v.Message).ToList();
                 int length = toBeChanged.Count;
                 Parallel.For(0, length, i => {
+                    int added = 0;
                     for (int j = i + 1; j < length; j++) {
-                        _addEdge(true, true, toBeChanged[i], toBeChanged[j], 4);
-                        _addEdge(true, false, toBeChanged[i], toBeChanged[j], 4);
-                        _addEdge(false, true, toBeChanged[i], toBeChanged[j], 4);
-                        _addEdge(false, false, toBeChanged[i], toBeChanged[j], 4);
+                        _addEdge(true, true, toBeChanged[i], toBeChanged[j], 4, ref added);
+                        _addEdge(true, false, toBeChanged[i], toBeChanged[j], 4, ref added);
+                        _addEdge(false, true, toBeChanged[i], toBeChanged[j], 4, ref added);
+                        _addEdge(false, false, toBeChanged[i], toBeChanged[j], 4, ref added);
+                        if (added >= 100) {
+                            break;
+                        }
                     }
                 });
             }
@@ -78,7 +82,7 @@ namespace Stegosaurus {
                 }
             }
 
-            private void _addEdge(bool startFirst, bool endFirst, Vertex first, Vertex second, int threshold) {
+            private void _addEdge(bool startFirst, bool endFirst, Vertex first, Vertex second, int threshold, ref int added) {
 
                 short weight = (short)Math.Abs((startFirst ? first.SampleValue1 : first.SampleValue2) - (endFirst ? second.SampleValue1 : second.SampleValue2));
                 if (weight < threshold) {
@@ -90,24 +94,31 @@ namespace Stegosaurus {
                                 second.Neighbours.Add(e);
                                 _allEdges.Add(e);
                             }
+                            added++;
                         }
                     }
                 }
             }
 
             public void DoSwitches() {
+                int swaps = 0;
                 foreach (Vertex vertex in Vertices) {
                     if (vertex.Neighbours.Any()) {
+                        swaps += 2;
                         _swapVertexData(vertex.Neighbours[0]);
                     }
                 }
+                MessageBox.Show($"Swaps: {swaps}");
             }
 
             public void ForceChanges() {
+                int forces = 0;
                 List<Vertex> toBeChanged = Vertices.Where(v => (v.SampleValue1 + v.SampleValue2).Mod(v.Modulo) != v.Message).ToList();
                 foreach (Vertex vertex in toBeChanged) {
                     _forceSampleChange(vertex);
+                    forces++;
                 }
+                MessageBox.Show($"Forces: {forces}");
             }
 
             private static void _swapVertexData(Edge e) {
@@ -166,11 +177,16 @@ namespace Stegosaurus {
 
             public void Choose(Edge e) {
                 Vertex otherVertex = e.VStart == this ? e.VEnd : e.VStart;
-                otherVertex.Neighbours.Clear();
                 foreach (Edge edge in Neighbours) {
                     Vertex other = edge.VStart == this ? edge.VEnd : edge.VStart;
                     other.Neighbours.RemoveAll(x => x.VStart == this || x.VEnd == this);
                 }
+                foreach (Edge edge in otherVertex.Neighbours) {
+                    Vertex other = edge.VStart == otherVertex ? edge.VEnd : edge.VStart;
+                    other.Neighbours.RemoveAll(x => x.VStart == otherVertex || x.VEnd == otherVertex);
+                }
+
+                otherVertex.Neighbours.Clear();
                 Neighbours.Clear();
                 Neighbours.Add(e);
             }
