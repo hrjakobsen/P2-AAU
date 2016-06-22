@@ -5,8 +5,6 @@
 \usepackage{amsmath}
 \usepackage{tikz}
 \usepackage{pgfpages}
-%\setbeameroption{show notes}
-%\setbeameroption{show notes on second screen=bottom}
 \usetikzlibrary{positioning}
 \usetheme[
 %%% options passed to the outer theme
@@ -41,18 +39,19 @@
 % Or whatever. Note that the encoding and the font should match. If T1
 % does not look nice, try deleting the line with the fontenc.
 \usepackage{helvet}
+\usepackage{listings}
 
 % colored hyperlinks
 \newcommand{\chref}[2]{%
   \href{#1}{{\usebeamercolor[bg]{AAUsidebar}#2}}%
 }
 
-\title[Steganografi]% optional, use only with long paper titles
-{Steganografi}
+\title[Hiding in Plain Sight]% optional, use only with long paper titles
+{Hiding in Plain Sight}
 
-\subtitle{Eksamen P2}  % could also be a conference name
+\subtitle{Using Graph Theory to Hide Data in JPEG Images}  % could also be a conference name
 
-\date{30. Juni 2016}
+\date{30 Juni 2016}
 
 \author[DAT2-A423] % optional, use only with lots of authors
 {
@@ -90,24 +89,29 @@
 
 \begin{document}
 % the titlepage
-
+{\aauwavesbg%
+\begin{frame}[plain,noframenumbering] % the plain option removes the sidebar and header from the title page
+  \titlepage
+\end{frame}}
 %%%%%%%%%%%%%%%%
 
 % TOC
-\begin{frame}{Disposition}{}
+\begin{frame}{Agenda}{}
 \tableofcontents
 \end{frame}
-%%%%%%%%%%%%%%%%
 
-\input{Tessa/slides.tex}    % Intro, problemanalyse (sociale medier & problemformulering)
-\input{Soeren/slides.tex}   % Løsningsfase (JPEG encoder og Grafteori)
-\input{Jacob/slides.tex}    % Udvikling af encode/decode på samme tid, forklaring af encode/decode, optimering
+%\input{Tessa/slides.tex}    % Intro, problemanalyse (sociale medier & problemformulering)
+%\input{Soeren/slides.tex}   % Løsningsfase (JPEG encoder og Grafteori)
+%\input{Jacob/slides.tex}    % Udvikling af encode/decode på samme tid, forklaring af encode/decode, optimering
 \input{Mathias/slides.tex}  % programdemo, forbedring af graf, status af program
-\input{Leo/slides.tex}      % Steganalysis
-\input{Jakob/slides.tex}    % Diskussion (+ testabilitet), konklusion
-\input{Henrik/slides.tex}   % Procesanalyse
+%\input{Leo/slides.tex}      % Steganalysis
+%\input{Jakob/slides.tex}    % Diskussion (+ testabilitet), konklusion
+%\input{Henrik/slides.tex}   % Procesanalyse
 
-
+{\aauwavesbg
+\begin{frame}[plain,noframenumbering]
+  \finalpage{DAT2-423}
+\end{frame}}
 %%%%%%%%%%%%%%%%
 
 \end{document}
