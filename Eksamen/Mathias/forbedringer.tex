@@ -36,6 +36,9 @@
 \begin{frame}{Fordel ved naboliste}{}
 \includegraphics[width=\textwidth]{figures/graphLists.png}
 \end{frame}
+
+
+
 \begin{frame}[fragile]{Svaret er...}{}
 \lstinline|GraphEncoder|
 \begin{itemize}
@@ -46,6 +49,22 @@
 
 \begin{lstlisting}[breaklines=true,basicstyle=\tiny,frame=single]
 GraphEncoder ge = 
+    new GraphEncoder(_nonZeroValues.Select(x => (int) x).ToArray(), M);
+
+short[] newNonZeroes = 
+    ge.Encode(_message.ToArray()).Select(x => (short) x).ToArray();
+\end{lstlisting}
+\end{frame}
+\begin{frame}[fragile]{Svaret er...}{}
+\lstinline|GraphEncoder|
+\begin{itemize}
+	\item Håndterer alt graf-enkodning
+	\item En generel løsning fremfor specialsyet til JPEG
+	\item Maksimerer data-hiding og testabilitet
+\end{itemize}
+
+\begin{lstlisting}[breaklines=true,basicstyle=\tiny,frame=single]
+IDataEncoder ge = 
     new GraphEncoder(_nonZeroValues.Select(x => (int) x).ToArray(), M);
 
 short[] newNonZeroes = 
