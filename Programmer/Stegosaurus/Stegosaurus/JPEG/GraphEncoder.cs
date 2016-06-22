@@ -9,14 +9,16 @@ namespace Stegosaurus {
     public class GraphEncoder {
         private int[] _sampleValues;
         private ushort _mvalue;
+        private int _limit;
 
-        public GraphEncoder(int[] sampleValues, ushort mvalue) {
+        public GraphEncoder(int[] sampleValues, ushort mvalue, int limit) {
             _sampleValues = sampleValues;
             _mvalue = mvalue;
+            _limit = limit;
         }
 
         public int[] Encode(byte[] message) {
-            Graph g = Graph.GraphFromSampleValuesAndMessage(_sampleValues, message, _mvalue);
+            Graph g = Graph.GraphFromSampleValuesAndMessage(_sampleValues, message, _mvalue, _limit);
             g.FindSwitches();
             g.PickEdges();
             g.DoSwitches();
@@ -32,10 +34,15 @@ namespace Stegosaurus {
 
         private class Graph {
             public List<Vertex> Vertices { get; set; } = new List<Vertex>();
-            private List<Edge> _allEdges = new List<Edge>(); 
+            private List<Edge> _allEdges = new List<Edge>();
+            private int _limit;
 
-            public static Graph GraphFromSampleValuesAndMessage(int[] SampleValues, byte[] Message, int modulo) {
-                Graph g = new Graph();
+            public Graph(int limit) {
+                _limit = limit;
+            }
+
+            public static Graph GraphFromSampleValuesAndMessage(int[] SampleValues, byte[] Message, int modulo, int limit) {
+                Graph g = new Graph(limit);
                 int currentSampleValue = 0;
 
                 for (int i = 0; i < 8; i++) {
@@ -62,7 +69,7 @@ namespace Stegosaurus {
                         _addEdge(true, false, toBeChanged[i], toBeChanged[j], 4, ref added);
                         _addEdge(false, true, toBeChanged[i], toBeChanged[j], 4, ref added);
                         _addEdge(false, false, toBeChanged[i], toBeChanged[j], 4, ref added);
-                        if (added >= 100) {
+                        if (added >= _limit) {
                             break;
                         }
                     }
@@ -110,6 +117,7 @@ namespace Stegosaurus {
 
             public void ForceChanges() {
                 List<Vertex> toBeChanged = Vertices.Where(v => (v.SampleValue1 + v.SampleValue2).Mod(v.Modulo) != v.Message).ToList();
+                Console.Write($"{Math.Round((double)toBeChanged.Count * 100/ Vertices.Count, 2)}");
                 foreach (Vertex vertex in toBeChanged) {
                     _forceSampleChange(vertex);
                 }

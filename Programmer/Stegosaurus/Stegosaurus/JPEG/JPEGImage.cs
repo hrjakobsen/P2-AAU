@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -13,6 +14,8 @@ namespace Stegosaurus {
 
         private int _originalCoverWidth;
         private int _originalCoverHeight;
+        private int _limit = 1;
+        private bool _oldEncoder = false;
 
         public Bitmap CoverImage { get; set; }
         private readonly List<byte> _message = new List<byte>();
@@ -77,7 +80,19 @@ namespace Stegosaurus {
         /// <param name="coverImage"></param>
         /// <param name="quality"></param>
         /// <param name="m"></param>
-        public JpegImage(Bitmap coverImage, int quality, int m) : this(coverImage, quality, (byte)m, QuantizationTable.JpegDefaultYTable, QuantizationTable.JpegDefaultChrTable) { }
+        public JpegImage(Bitmap coverImage, int quality, int m, int limit, bool oldEncoder)
+            : this(
+                coverImage, quality, (byte) m, QuantizationTable.JpegDefaultYTable,
+                QuantizationTable.JpegDefaultChrTable) {
+            _limit = limit;
+            this._oldEncoder = oldEncoder;
+        }
+
+        public JpegImage(Bitmap coverImage, int quality, int m)
+            : this(
+                coverImage, quality, (byte)m, QuantizationTable.JpegDefaultYTable,
+                QuantizationTable.JpegDefaultChrTable) {
+        }
 
         /// <summary>
         /// 
@@ -658,24 +673,164 @@ namespace Stegosaurus {
         }
 
         private void _encodeMessage() {
-            GraphEncoder ge = new GraphEncoder(_nonZeroValues.Select(x => (int)x).ToArray(), M);
-            short[] newNonZeroes = ge.Encode(_message.ToArray()).Select(x => (short)x).ToArray();
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            if (_oldEncoder) {
+                Graph graph = new Graph();
 
-            int j = 0;
+                //Add vertices for each part of the message
+                _addVertices(graph);
 
+                const int threshold = 5;
+                int numberofedges = 0;
+                //Find alle the possible switches between vertices and add them as edges
+                List<Vertex> toBeChanged =
+                    graph.Vertices.Where(x => (x.SampleValue1 + x.SampleValue2).Mod(x.Modulo) != x.Message).ToList();
+                int length = toBeChanged.Count;
+                Parallel.For(0, length, i => {
+                    for (int j = i + 1; j < length; j++) {
+                        _addEdge(true, true, toBeChanged[i], toBeChanged[j], threshold, graph, ref numberofedges);
+                        _addEdge(true, false, toBeChanged[i], toBeChanged[j], threshold, graph, ref numberofedges);
+                        _addEdge(false, true, toBeChanged[i], toBeChanged[j], threshold, graph, ref numberofedges);
+                        _addEdge(false, false, toBeChanged[i], toBeChanged[j], threshold, graph, ref numberofedges);
+                        if (numberofedges >= _limit) break;
+                    }
+                });
+
+                //Swap values and force the rest
+                _refactorGraph(graph);
+
+                //Put the changed values back into the QuantizedValues
+                _mergeGraphAndQuantizedValues(graph);
+            } else {
+                GraphEncoder ge = new GraphEncoder(_nonZeroValues.Select(x => (int) x).ToArray(), M, _limit);
+                short[] newNonZeroes = ge.Encode(_message.ToArray()).Select(x => (short) x).ToArray();
+
+                int j = 0;
+
+                int len = _quantizedBlocks.Count*64;
+                for (int i = 0; i < len; i++) {
+                    int array = i/64;
+                    int xpos = i%8;
+                    int ypos = (i%64)/8;
+
+                    if (xpos + ypos != 0 && _quantizedBlocks[array].Item1[xpos, ypos] != 0) {
+                        _quantizedBlocks[array].Item1[xpos, ypos] = newNonZeroes[j++];
+                    }
+                }
+            }
+            stopwatch.Stop();
+            //Console.Write($"{stopwatch.Elapsed}");
+        }
+
+        private void _addVertices(Graph g) {
+            for (int i = 0; i < 15; i += 2) {
+                g.Vertices.Add(new Vertex(_nonZeroValues[i], _nonZeroValues[i + 1], _message[0], 4));
+                _message.RemoveAt(0);
+            }
+            int j;
+            for (j = 16; _message.Any(); j += 2) {
+                g.Vertices.Add(new Vertex(_nonZeroValues[j], _nonZeroValues[j + 1], _message[0], M));
+                _message.RemoveAt(0);
+            }
+        }
+
+        private static void _addEdge(bool startFirst, bool endFirst, Vertex first, Vertex second, int threshold, Graph g, ref int number) {
+
+            short weight = (short)Math.Abs((startFirst ? first.SampleValue1 : first.SampleValue2) - (endFirst ? second.SampleValue1 : second.SampleValue2));
+            if (weight < threshold) {
+                if (((startFirst ? first.SampleValue2 : first.SampleValue1) + (endFirst ? second.SampleValue1 : second.SampleValue2)).Mod(first.Modulo) == first.Message) {
+                    if (((startFirst ? first.SampleValue1 : first.SampleValue2) + (endFirst ? second.SampleValue2 : second.SampleValue1)).Mod(second.Modulo) == second.Message) {
+                        lock (g) {
+                            g.Edges.Add(new Edge(first, second, weight, startFirst, endFirst));
+                        }
+                        number++;
+                    }
+                }
+            }
+        }
+
+        private static void _refactorGraph(Graph graph) {
+            List<Edge> chosen = graph.GetSwitches();
+            int forces = 0;
+            foreach (Edge edge in chosen) {
+                _swapVertexData(edge);
+            }
+
+            foreach (Vertex vertex in graph.Vertices) {
+                if ((vertex.SampleValue1 + vertex.SampleValue2).Mod(vertex.Modulo) != vertex.Message) {
+                    _forceSampleChange(vertex);
+                    forces++;
+                }
+            }
+            Console.Write($"{Math.Round((double)forces * 100 / graph.Vertices.Count, 2).ToString().Replace(',','.')}");
+        }
+
+        private static void _swapVertexData(Edge e) {
+            short temp;
+            if (e.VStartFirst) {
+                if (e.VEndFirst) {
+                    temp = e.VStart.SampleValue1;
+                    e.VStart.SampleValue1 = e.VEnd.SampleValue1;
+                    e.VEnd.SampleValue1 = temp;
+                } else {
+                    temp = e.VStart.SampleValue1;
+                    e.VStart.SampleValue1 = e.VEnd.SampleValue2;
+                    e.VEnd.SampleValue2 = temp;
+                }
+            } else {
+                if (e.VEndFirst) {
+                    temp = e.VStart.SampleValue2;
+                    e.VStart.SampleValue2 = e.VEnd.SampleValue1;
+                    e.VEnd.SampleValue1 = temp;
+                } else {
+                    temp = e.VStart.SampleValue2;
+                    e.VStart.SampleValue2 = e.VEnd.SampleValue2;
+                    e.VEnd.SampleValue2 = temp;
+                }
+            }
+        }
+
+        private static void _forceSampleChange(Vertex vertex) {
+            short error = (short)((vertex.SampleValue1 + vertex.SampleValue2).Mod(vertex.Modulo) - vertex.Message);
+
+            if (vertex.SampleValue1 - error <= 127 && vertex.SampleValue1 - error >= -128 &&
+                vertex.SampleValue1 - error != 0) {
+                vertex.SampleValue1 -= error;
+            } else if (vertex.SampleValue2 - error <= 127 && vertex.SampleValue2 - error >= -128 &&
+                       vertex.SampleValue2 - error != 0) {
+                vertex.SampleValue2 -= error;
+            } else {
+                vertex.SampleValue1 += (short)(vertex.Modulo - error);
+            }
+        }
+
+        private void _mergeGraphAndQuantizedValues(Graph graph) {
+            int vertexPos = 0;
+            bool firstValue = true;
+            int numberOfVertices = graph.Vertices.Count;
             int len = _quantizedBlocks.Count * 64;
             for (int i = 0; i < len; i++) {
+                if (vertexPos >= numberOfVertices) {
+                    break;
+                }
                 int array = i / 64;
                 int xpos = i % 8;
                 int ypos = (i % 64) / 8;
 
                 if (xpos + ypos != 0 && _quantizedBlocks[array].Item1[xpos, ypos] != 0) {
-                    _quantizedBlocks[array].Item1[xpos, ypos] = newNonZeroes[j++];
+                    if (firstValue) {
+                        _quantizedBlocks[array].Item1[xpos, ypos] = graph.Vertices[vertexPos].SampleValue1;
+                        firstValue = false;
+                    } else {
+                        _quantizedBlocks[array].Item1[xpos, ypos] = graph.Vertices[vertexPos].SampleValue2;
+                        firstValue = true;
+                        vertexPos++;
+                    }
                 }
             }
         }
 
-        
         private void HuffmanEncode(BitList bits, short[,] block8, HuffmanTable huffmanDC, HuffmanTable huffmanAC, int DCIndex) {
             short diff = (short)(block8[0, 0] - _lastDc[DCIndex]);
             _lastDc[DCIndex] += diff;
