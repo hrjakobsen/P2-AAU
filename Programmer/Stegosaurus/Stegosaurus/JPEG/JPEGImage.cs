@@ -720,7 +720,7 @@ namespace Stegosaurus {
                 }
             }
             stopwatch.Stop();
-            //Console.Write($"{stopwatch.Elapsed}");
+            Console.Write($"{stopwatch.Elapsed.TotalMilliseconds}");
         }
 
         private void _addVertices(Graph g) {
@@ -763,7 +763,7 @@ namespace Stegosaurus {
                     forces++;
                 }
             }
-            Console.Write($"{Math.Round((double)forces * 100 / graph.Vertices.Count, 2).ToString().Replace(',','.')}");
+            //Console.Write($"{Math.Round((double)forces * 100 / graph.Vertices.Count, 2).ToString().Replace(',','.')}");
         }
 
         private static void _swapVertexData(Edge e) {

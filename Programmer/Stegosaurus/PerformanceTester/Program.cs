@@ -77,16 +77,16 @@ Encoder & Message Length & Limit & Forces & Time \\ \midrule");
             int[] limits = {int.MaxValue};
 
 
-            for (int i = 0; i < 1; i+= 10) {
-                JpegImage ji = new JpegImage(image, 100, 4, limits[i], true);
+            for (int i = 0; i < 1000; i+= 10) {
+                JpegImage ji = new JpegImage(image, 100, 4, i, true);
                 Console.Write(i + "\t");
                 ji.Encode(message);
                 Console.WriteLine();
                 
             }
             Console.WriteLine("\n\n");
-            for (int i = 0; i < 1; i += 10) {
-                JpegImage ji = new JpegImage(image, 100, 4, limits[i], false);
+            for (int i = 0; i < 1000; i += 10) {
+                JpegImage ji = new JpegImage(image, 100, 4, i, false);
                 Console.Write(i + "\t");
                 ji.Encode(message);
                 Console.WriteLine();

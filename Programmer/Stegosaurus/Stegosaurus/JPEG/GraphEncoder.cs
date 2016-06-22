@@ -117,7 +117,7 @@ namespace Stegosaurus {
 
             public void ForceChanges() {
                 List<Vertex> toBeChanged = Vertices.Where(v => (v.SampleValue1 + v.SampleValue2).Mod(v.Modulo) != v.Message).ToList();
-                Console.Write($"{Math.Round((double)toBeChanged.Count * 100/ Vertices.Count, 2)}");
+                //Console.Write($"{Math.Round((double)toBeChanged.Count * 100/ Vertices.Count, 2)}");
                 foreach (Vertex vertex in toBeChanged) {
                     _forceSampleChange(vertex);
                 }
