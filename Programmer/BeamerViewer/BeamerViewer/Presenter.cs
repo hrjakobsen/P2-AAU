@@ -42,7 +42,7 @@ namespace BeamerViewer {
             Location = GetSecondaryScreen().WorkingArea.Location;
             Height = primaryMonitorRes.Height; 
             Width = primaryMonitorRes.Width;
-            fv = new FullscreenView((int)(screenRes.Height * 1.3333), screenRes.Height);
+            fv = new FullscreenView((int)(screenRes.Height * 1.3333), screenRes.Height, this);
             fv.Location = Screen.AllScreens[1].WorkingArea.Location;
             fv.Show();
 

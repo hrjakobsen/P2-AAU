@@ -48,6 +48,7 @@
             this.Name = "FullscreenView";
             this.Text = "FullscreenView";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Activated += new System.EventHandler(this.FullscreenView_Activated);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 

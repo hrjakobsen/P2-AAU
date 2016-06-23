@@ -45,12 +45,13 @@
 \usepackage{caption}
 \usepackage{subfigure}
 \usepackage{graphicx}
+\setbeameroption{show notes}
+\setbeameroption{show notes on second screen=bottom}
 \usetikzlibrary{matrix,backgrounds}
 % colored hyperlinks
 \newcommand{\chref}[2]{%
   \href{#1}{{\usebeamercolor[bg]{AAUsidebar}#2}}%
 }
-\setbeameroption{show notes on second screen=left}
 \newenvironment{proenv}{\only{\setbeamercolor{local structure}{fg=green}}}{}
 \newenvironment{conenv}{\only{\setbeamercolor{local structure}{fg=red}}}{}
 

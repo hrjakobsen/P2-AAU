@@ -12,11 +12,13 @@ using PdfiumViewer;
 
 namespace BeamerViewer {
     public partial class FullscreenView : Form {
-        public FullscreenView(int width, int height) {
+        private Presenter pres;
+        public FullscreenView(int width, int height, Presenter presenter) {
             InitializeComponent();
             pictureBox1.Location = new Point(Width / 2 - width / 2, 0);
             pictureBox1.Width = (int)(Screen.PrimaryScreen.Bounds.Height * 1.33);
             pictureBox1.Height = Screen.PrimaryScreen.Bounds.Height;
+            pres = presenter;
         }
 
         public void UpdateImage(Image newImage) {
@@ -24,6 +26,9 @@ namespace BeamerViewer {
             pictureBox1.Image = newImage;
         }
 
+        private void FullscreenView_Activated(object sender, EventArgs e) {
+            pres.Focus();
+        }
     }
 
 
