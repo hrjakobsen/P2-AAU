@@ -56,14 +56,14 @@ namespace BeamerViewer {
         }
 
         void updateSlide() {
-            System.GC.Collect();
-            fv.UpdateImage(pdf.GetSlide(currentPage));
-            notes.Image = pdf.GetNotes(currentPage);
-            nextslide.Image = pdf.GetSlide(currentPage + 1);
+            fv.UpdateImage(pdf.slides[currentPage]);
+            notes.Image = pdf.notes[currentPage];
+            if (currentPage < maxPages - 1) nextslide.Image = pdf.slides[currentPage + 1];
         }
 
         private void Presenter_KeyUp(object sender, KeyEventArgs e) {
             switch (e.KeyCode) {
+                case Keys.Next:
                 case Keys.Right:
                 case Keys.Space:
                     if (currentPage != maxPages) {
@@ -71,6 +71,7 @@ namespace BeamerViewer {
                         updateSlide();
                     }
                     break;
+                case Keys.PageUp:
                 case Keys.Left:
                 case Keys.Back:
                     if (currentPage != 0) {
@@ -81,6 +82,9 @@ namespace BeamerViewer {
                     break;
                 case Keys.Escape:
                     Close();
+                    break;
+                case Keys.OemPeriod:
+                    timer1.Enabled = !timer1.Enabled;
                     break;
             }
         }
