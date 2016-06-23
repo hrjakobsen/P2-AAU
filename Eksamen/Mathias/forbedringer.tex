@@ -1,0 +1,73 @@
+% -*- root: ../Presentation.tex -*-
+\section{Forbedringer}
+\begin{frame}{Forbedringer til programmet}{}
+	Problemer vi ville løse:
+	\begin{itemize}
+		\item Primitiv tilgang til \lstinline|Graph| klassens opbygning
+		\item Megen funktionalitet gemt i \lstinline|JPEGImage| klassen
+	\end{itemize}
+\end{frame}
+
+\subsection{Ændringer til \lstinline|Graph|}
+\begin{frame}{Ændringer til \lstinline|Graph|}{}
+	3 forskellige måder at opbygge en graf:
+	\begin{enumerate}
+		\item Liste af Vertices og Edges
+		\item Naboliste (Adjacency List)
+		\item Nabomatrix (Adjacency Matrix)
+	\end{enumerate}
+\end{frame}
+\begin{frame}[noframenumbering]{Ændringer til \lstinline|Graph|}{}
+	3 forskellige måder at opbygge en graf:
+	\begin{enumerate}
+		\item Liste af Vertices og Edges\textcolor{red}{$\leftarrow$}
+		\item Naboliste (Adjacency List)
+		\item Nabomatrix (Adjacency Matrix)
+	\end{enumerate}
+\end{frame}
+\begin{frame}[noframenumbering]{Ændringer til \lstinline|Graph|}{}
+	3 forskellige måder at opbygge en graf:
+	\begin{enumerate}
+		\item Liste af Vertices og Edges
+		\item Naboliste (Adjacency List)\textcolor{red}{$\leftarrow$}
+		\item Nabomatrix (Adjacency Matrix)
+	\end{enumerate}
+\end{frame}
+\begin{frame}{Fordel ved naboliste}{}
+\includegraphics[width=\textwidth]{figures/graphLists.png}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Svaret er...}{}
+\lstinline|GraphEncoder|
+\begin{itemize}
+	\item Håndterer alt graf-enkodning
+	\item En generel løsning fremfor specialsyet til JPEG
+	\item Maksimerer data-hiding og testabilitet
+\end{itemize}
+
+\begin{lstlisting}[breaklines=true,basicstyle=\tiny,frame=single]
+GraphEncoder ge = 
+    new GraphEncoder(_nonZeroValues.Select(x => (int) x).ToArray(), M);
+
+short[] newNonZeroes = 
+    ge.Encode(_message.ToArray()).Select(x => (short) x).ToArray();
+\end{lstlisting}
+\end{frame}
+\begin{frame}[fragile]{Svaret er...}{}
+\lstinline|GraphEncoder|
+\begin{itemize}
+	\item Håndterer alt graf-enkodning
+	\item En generel løsning fremfor specialsyet til JPEG
+	\item Maksimerer data-hiding og testabilitet
+\end{itemize}
+
+\begin{lstlisting}[breaklines=true,basicstyle=\tiny,frame=single]
+IDataEncoder ge = 
+    new GraphEncoder(_nonZeroValues.Select(x => (int) x).ToArray(), M);
+
+short[] newNonZeroes = 
+    ge.Encode(_message.ToArray()).Select(x => (short) x).ToArray();
+\end{lstlisting}
+\end{frame}
