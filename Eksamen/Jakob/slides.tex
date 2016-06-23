@@ -1,53 +1,33 @@
-% SOTA, Image compression 
-\section{State of the Art} 
-\begin{frame}{State of the Art}{} 
-	\begin{itemize} 
-		\item \textbf{EZStego} 
-			\begin{itemize} 
-				\item Pairing of similar colors 
-				\item Minor colour changes 
-				\item Manipulation of LSB
-			\end{itemize}
-			
-		\item \textbf{MP3stego}
-			\begin{itemize}
-				\item Data hiding using quantization
-				\item Somewhat similar to JPEG
-				\item Makes sure that output sounds MP3 similar to original MP3
-			\end{itemize}
+\section{Diskussion} 
+\begin{frame}{Ændringer i billedet}
+
+	\begin{itemize}
+		\setlength\itemsep{1em}
+		\item Minimere antal ændringer i pixels
+		\item For let at se i histogram
+		\begin{itemize}
+			\vspace*{1em}
+			\setlength\itemsep{1em}
+			\item<con@1->[$\times$] Ændring i pixelfarve
+			\item<pro@1->[\checkmark] Pixelombytninger
+		\end{itemize}
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{State of the Art}{}
-	\begin{itemize}
-		\item \textbf{Jsteg-Jpeg}
-			\begin{itemize}
-				\item JPEG's lossy (DCT \& quantization) and lossless (Huffman) compression steps
-				\item Hides information between steps (before lossless compression)
-			\end{itemize}
-			
-		\item \textbf{OpenPuff}
-			\begin{itemize}
-				\item Multiple carrier files
-				\item Only correct order of carrier files will unhide
-				\item Cryptography inside carrier files
-			\end{itemize}
-		\item \textbf{Steghide} - Graph-theoretic approach 
-	\end{itemize} 
-\end{frame} 
-
-\section{Image compression} 
-\begin{frame}{Image compression}{} 
-	\begin{itemize} 
-		\item Lossy
-			\begin{itemize}
-				\item Can be perfectly reconstructed
-				\item Example: Run-length encoding
-			\end{itemize}
-		\item Lossless
-			\begin{itemize}
-				\item Typically more data saving
-				\item Good for users with limited amount of data
-			\end{itemize}
-	\end{itemize} 
+% Grunden til cover og GT er lidt forskellige
+% er pga. de få forces, der er.
+% Hvis GT udelukkende havde brugt switches,
+% havde histogrammerne været ens.
+\begin{frame}{Ændringer i billedet}
+	\begin{figure}
+		\centering
+		\begin{center}
+		\subfigure[JPEG u. besked]{\label{fig:a}\includegraphics[width=.4\textwidth]{figures/gtOut2Histo.png}}
+		\end{center}
+		~
+		\subfigure[LSB m. besked]{\label{fig:a}\includegraphics[width=.4\textwidth]{figures/lsbOutHisto.png}}
+		~
+		\subfigure[GT m. besked]{\label{fig:b}\includegraphics[width=.4\textwidth]{figures/gtOutHisto.png}}
+		\caption{Samme besked, forskellige metoder}
+	\end{figure}
 \end{frame}
