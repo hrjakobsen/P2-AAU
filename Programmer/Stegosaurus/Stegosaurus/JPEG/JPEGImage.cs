@@ -688,6 +688,7 @@ namespace Stegosaurus {
                     graph.Vertices.Where(x => (x.SampleValue1 + x.SampleValue2).Mod(x.Modulo) != x.Message).ToList();
                 int length = toBeChanged.Count;
                 Parallel.For(0, length, i => {
+                    numberofedges = 0;
                     for (int j = i + 1; j < length; j++) {
                         _addEdge(true, true, toBeChanged[i], toBeChanged[j], threshold, graph, ref numberofedges);
                         _addEdge(true, false, toBeChanged[i], toBeChanged[j], threshold, graph, ref numberofedges);
@@ -720,7 +721,7 @@ namespace Stegosaurus {
                 }
             }
             stopwatch.Stop();
-            Console.Write($"{stopwatch.Elapsed.TotalMilliseconds}");
+            Console.Write($"\t{stopwatch.Elapsed.TotalMilliseconds.ToString().Replace(',','.')}");
         }
 
         private void _addVertices(Graph g) {
@@ -763,7 +764,7 @@ namespace Stegosaurus {
                     forces++;
                 }
             }
-            //Console.Write($"{Math.Round((double)forces * 100 / graph.Vertices.Count, 2).ToString().Replace(',','.')}");
+            Console.Write($"{Math.Round((double)forces * 100 / graph.Vertices.Count, 2).ToString().Replace(',','.')}");
         }
 
         private static void _swapVertexData(Edge e) {

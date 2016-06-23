@@ -82,16 +82,15 @@ Encoder & Message Length & Limit & Forces & Time \\ \midrule");
                 Console.Write(i + "\t");
                 ji.Encode(message);
                 Console.WriteLine();
-                
             }
-            Console.WriteLine("\n\n");
-            for (int i = 0; i < 1000; i += 10) {
-                JpegImage ji = new JpegImage(image, 100, 4, i, false);
-                Console.Write(i + "\t");
-                ji.Encode(message);
-                Console.WriteLine();
+            //Console.WriteLine("\n\n");
+            //for (int i = 0; i < 1000; i += 10) {
+            //    JpegImage ji = new JpegImage(image, 100, 4, i, false);
+            //    Console.Write(i + "\t");
+            //    ji.Encode(message);
+            //    Console.WriteLine();
 
-            }
+            //}
 
         }
     }
