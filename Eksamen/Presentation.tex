@@ -3,6 +3,7 @@
 \usepackage[export]{adjustbox}
 \usepackage[absolute,overlay]{textpos}
 \usepackage{amsmath}
+\usepackage{amsfonts}
 \usepackage{tikz}
 \usepackage{pgfpages}
 \usetikzlibrary{positioning}
@@ -50,6 +51,8 @@
   \href{#1}{{\usebeamercolor[bg]{AAUsidebar}#2}}%
 }
 
+\newenvironment{proenv}{\only{\setbeamercolor{local structure}{fg=green}}}{}
+\newenvironment{conenv}{\only{\setbeamercolor{local structure}{fg=red}}}{}
 
 \title[Hiding in Plain Sight]% optional, use only with long paper titles
 {Hiding in Plain Sight}
