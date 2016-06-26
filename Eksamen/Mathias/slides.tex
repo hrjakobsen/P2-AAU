@@ -1,4 +1,29 @@
 % -*- root: ../Presentation.tex -*-
+\section{Optimeringer}
+\begin{frame}{Optimeringer}{}
+		\begin{figure}[!H]
+			\centering
+			\includegraphics[width=1\textwidth]{Jacob/Selection_744.png}
+	\end{figure}
+\note{
+	1:
+	\begin{itemize}
+		\item Loop logic conditions beregning flyttet ud af loop
+		\item padcover image kører kun når det er nødvendigt
+		\item padcoverimage bruger ikke getpixel/setpixel
+	\end{itemize}
+
+	2:
+	\begin{itemize}
+		\item splitToChannels bruger ikke getPixel
+	\end{itemize}
+
+	3:
+	\begin{itemize}
+		\item Multithreading
+	\end{itemize}
+}
+\end{frame}
 \input{Mathias/demo.tex}
 \input{Mathias/forbedringer.tex}
 \input{Mathias/status.tex}
