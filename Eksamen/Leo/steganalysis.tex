@@ -5,73 +5,67 @@
 	\begin{itemize}
 		\item Colour histogram
 		\item LSB enhancing
-		\item Comparing image with original image
+		\item Sammenligning med original bilede
 		\item DCT coefficients histogram
 		\item Steganographic signatures/patterns
 	\end{itemize}
 \end{frame}
 
-\subsection{Colour histogram}
+\subsection{Colour histogram} %%% TODO: Add info about how many forces were made
 \begin{frame}{Colour histogram}{}
 \begin{figure}
 \centering     %%% not \center
-\subfigure[Room]{\label{fig:Room}\includegraphics[width=.4\textwidth]{figures/roomOriginal.jpg}}
+\subfigure[Original]{\label{fig:Room}\includegraphics[width=.4\textwidth]{figures/roomOriginal.jpg}}
 \end{figure}
 \begin{figure}
 \centering
-\subfigure[Room1char]{\label{fig:Room1char}\includegraphics[width=.4\textwidth]{figures/room1char.png}}
-\subfigure[RoomIntro]{\label{fig:RoomIntro}\includegraphics[width=.4\textwidth]{figures/roomEncodedIntroToSteg.png}}
+\subfigure[Original 1 char]{\label{fig:Room1char}\includegraphics[width=.4\textwidth]{figures/room1char.png}}
+\subfigure[Stego Intro 2896 chars]{\label{fig:RoomIntro}\includegraphics[width=.4\textwidth]{figures/roomEncodedIntroToSteg.png}}
 \caption{Sammenligning af colour histogram}
 \end{figure}
+\note{Stego intro is 2896 bytes or 2.896 kilobyte}
 \end{frame}
 
 \subsection{LSB enhancing}
 \begin{frame}{LSB enhancing}
 	LSB enhancing
 	\begin{itemize}
-		\item eliminate all 7 high-level bits
-		\item all bytes are now 0 or 1
-		\item 0 stays 0 while 1 becomes 256
+		\item fjerne alle 7 højtstående bits
+		\item Alle bytes har nu værdien 0 eller 1
+		\item Alle 0 bytes forbliver 0, imens alle 1 bytes bilver 255
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Room LSB enhanced}
+\begin{frame}{LSB enhancing}
 \begin{figure}
 \centering
-\subfigure[Room]{\label{fig:Room}\includegraphics[width=.45\textwidth]{figures/roomOriginal.jpg}}
-\subfigure[RoomLSB]{\label{fig:Room}\includegraphics[width=.45\textwidth]{figures/roomOriLSB.jpg}}
+\subfigure[Original]{\label{fig:Room}\includegraphics[width=.45\textwidth]{figures/roomOriginal.jpg}}
+\subfigure[Original LSB enhanced]{\label{fig:Room}\includegraphics[width=.45\textwidth]{figures/roomOriLSB.jpg}}
 \end{figure}
 \end{frame}
 
-\begin{frame}{Room LSB enhanced}
+\begin{frame}{LSB enhancing}
 \begin{figure}
 \centering
-\subfigure[Room]{\label{fig:Room}\includegraphics[width=.8\textwidth]{figures/roomOriginal.jpg}}
+\subfigure[Original LSB enhanced]{\label{fig:Room}\includegraphics[width=.45\textwidth]{figures/roomOriLSB.jpg}}
+\subfigure[Stego Intro LSB enhanced]{\label{fig:Room}\includegraphics[width=.45\textwidth]{figures/roomIntroLSB.jpg}}
 \end{figure}
+\note{Stego intro is 2896 bytes or 2.896 kilobyte}
 \end{frame}
 
-\begin{frame}{Room LSB enhanced}
+\subsection{Sammenligning med original bilede}
+\begin{frame}{Sammenligning med original bilede}
 \begin{figure}
 \centering
-\subfigure[RoomLSB]{\label{fig:Room}\includegraphics[width=.8\textwidth]{figures/roomOriLSB.jpg}}
+\subfigure[Original]{\label{fig:a}\includegraphics[width=.3\textwidth]{figures/roomOriginal.jpg}}
 \end{figure}
-\end{frame}
-
-\begin{frame}{Room encoded LSB enhanced}
 \begin{figure}
 \centering
-\subfigure[RoomLSB]{\label{fig:Room}\includegraphics[width=.45\textwidth]{figures/roomOriLSB.jpg}}
-\subfigure[RoomIntroLSB]{\label{fig:Room}\includegraphics[width=.45\textwidth]{figures/roomIntroLSB.jpg}}
-\end{figure}
-\end{frame}
-
-\subsection{Comparing image with original image}
-\begin{frame}{looking at how images differ from original}
-\begin{figure}
-\centering
-\subfigure[Room]{\label{fig:a}\includegraphics[width=.4\textwidth]{figures/roomOriginal.jpg}}
-\subfigure[RoomIntro]{\label{fig:b}\includegraphics[width=.4\textwidth]{figures/introToStegovs1chardiff.jpg}}
-\subfigure[RoomLoremIpsum]{\label{fig:a}\includegraphics[width=.4\textwidth]{figures/loremIpsum1paragraphvs1chardiff.png}}
+\subfigure[Stego Intro vs original]{\label{fig:b}\includegraphics[width=.4\textwidth]{figures/introToStegovs1chardiff.jpg}}
+\subfigure[Lorem Ipsum 1. paragraph vs original]{\label{fig:a}\includegraphics[width=.4\textwidth]{figures/loremIpsum1paragraphvs1chardiff.png}}
 \caption{Sammenlligning af bileder}
 \end{figure}
+\note{
+Lorem Ipsum 1. paragraph is 500 bytes 
+Stego intro is 2896 bytes}
 \end{frame}
