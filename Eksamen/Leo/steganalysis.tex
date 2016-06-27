@@ -4,8 +4,8 @@
 	Steganalysis techniques used:
 	\begin{itemize}
 		\item Colour histogram
-		\item LSB enhancing
 		\item Sammenligning med original bilede
+		\item LSB enhancing
 		\item DCT coefficients histogram
 		\item Steganographic signatures/patterns
 	\end{itemize}
@@ -19,11 +19,28 @@
 \end{figure}
 \begin{figure}
 \centering
-\subfigure[Original 1 char]{\label{fig:Room1char}\includegraphics[width=.4\textwidth]{figures/room1char.png}}
+\subfigure[Original]{\label{fig:Room1char}\includegraphics[width=.4\textwidth]{figures/room1char.png}}
 \subfigure[Stego Intro 2896 chars]{\label{fig:RoomIntro}\includegraphics[width=.4\textwidth]{figures/roomEncodedIntroToSteg.png}}
 \caption{Sammenligning af colour histogram}
 \end{figure}
 \note{Stego intro is 2896 bytes or 2.896 kilobyte}
+\end{frame}
+
+\subsection{Sammenligning med original bilede}
+\begin{frame}{Sammenligning med original bilede}
+\begin{figure}
+\centering
+\subfigure[Original]{\label{fig:a}\includegraphics[width=.3\textwidth]{figures/roomOriginal.jpg}}
+\end{figure}
+\begin{figure}
+\centering
+\subfigure[2896 bytes vs original]{\label{fig:b}\includegraphics[width=.4\textwidth]{figures/introToStegovs1chardiff.jpg}}
+\subfigure[500 bytes vs original]{\label{fig:a}\includegraphics[width=.4\textwidth]{figures/loremIpsum1paragraphvs1chardiff.png}}
+\caption{Sammenlligning af bileder}
+\end{figure}
+\note{
+Lorem Ipsum 1. paragraph is 500 bytes 
+Stego intro is 2896 bytes}
 \end{frame}
 
 \subsection{LSB enhancing}
@@ -53,19 +70,19 @@
 \note{Stego intro is 2896 bytes or 2.896 kilobyte}
 \end{frame}
 
-\subsection{Sammenligning med original bilede}
-\begin{frame}{Sammenligning med original bilede}
-\begin{figure}
-\centering
-\subfigure[Original]{\label{fig:a}\includegraphics[width=.3\textwidth]{figures/roomOriginal.jpg}}
-\end{figure}
-\begin{figure}
-\centering
-\subfigure[Stego Intro vs original]{\label{fig:b}\includegraphics[width=.4\textwidth]{figures/introToStegovs1chardiff.jpg}}
-\subfigure[Lorem Ipsum 1. paragraph vs original]{\label{fig:a}\includegraphics[width=.4\textwidth]{figures/loremIpsum1paragraphvs1chardiff.png}}
-\caption{Sammenlligning af bileder}
-\end{figure}
-\note{
-Lorem Ipsum 1. paragraph is 500 bytes 
-Stego intro is 2896 bytes}
+\begin{frame}{If all else fails}
+	Brute-decoding
+		\begin{itemize}
+		\item Decode biledet uden at vide lengde eller modulo
+		\item Prøv alle modulo
+		\end{itemize}
+\end{frame}
+
+\begin{frame}{Knowing is half the battle}
+	signiture of our method
+		\begin{itemize}
+		\item først 16 bytes af scan data
+		\item altid encoded med modulo 4
+		\item 
+		\end{itemize}
 \end{frame}
