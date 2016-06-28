@@ -4,7 +4,7 @@
 	Steganalysis techniques used:
 	\begin{itemize}
 		\item Colour histogram
-		\item Sammenligning med original bilede
+		\item Sammenligning med original billede
 		\item LSB enhancing
 		\item Brute-decoding
 		\item Steganographic signatur
@@ -12,7 +12,6 @@
 	\end{itemize}
 \end{frame}
 
-%%%\subsection{Colour histogram} %%% TODO: Add info about how many forces were made
 \begin{frame}{Colour histogram}{}
 \begin{figure}
 \centering     %%% not \center
@@ -27,24 +26,22 @@
 \note{Stego intro is 2896 bytes or 2.896 kilobyte}
 \end{frame}
 
-%%%\subsection{Sammenligning med original bilede}
-\begin{frame}{Sammenligning med original bilede}
+\begin{frame}{Sammenligning med original billede}
 \begin{figure}
 \centering
 \subfigure[Original]{\label{fig:a}\includegraphics[width=.3\textwidth]{figures/roomOriginal.jpg}}
 \end{figure}
 \begin{figure}
 \centering
-\subfigure[2896 bytes vs original]{\label{fig:b}\includegraphics[width=.4\textwidth]{figures/introToStegovs1chardiff.jpg}}
-\subfigure[500 bytes vs original]{\label{fig:a}\includegraphics[width=.4\textwidth]{figures/loremIpsum1paragraphvs1chardiff.png}}
-\caption{Sammenlligning af bileder}
+\subfigure[2896 bytes vs original]{\label{fig:b}\includegraphics[width=.35\textwidth]{figures/introToStegovs1chardiff.jpg}}
+\subfigure[500 bytes vs original]{\label{fig:a}\includegraphics[width=.35\textwidth]{figures/loremIpsum1paragraphvs1chardiff.png}}
+\caption{Sammenlligning af billeder}
 \end{figure}
 \note{
 Lorem Ipsum 1. paragraph is 500 bytes 
 Stego intro is 2896 bytes}
 \end{frame}
 
-%%%\subsection{LSB enhancing}
 \begin{frame}{LSB enhancing}
 	LSB enhancing
 	\begin{itemize}
@@ -75,6 +72,7 @@ Stego intro is 2896 bytes}
 \subfigure[Original LSB enhanced]{\label{fig:Room}\includegraphics[width=.45\textwidth]{figures/room1charLSBEnhanced.png}}
 \subfigure[2896 bytes LSB enhanced]{\label{fig:Room}\includegraphics[width=.45\textwidth]{figures/roomIntroLSB.jpg}}
 \end{figure}
+\caption{Begge billede}
 \note{Stego intro is 2896 bytes or 2.896 kilobyte
 Looks ugly because of our JPEG encoder}
 \end{frame}
@@ -82,7 +80,7 @@ Looks ugly because of our JPEG encoder}
 \begin{frame}{Brute-decoding}
 	Brute-decoding
 		\begin{itemize}
-		\item Decode biledet uden at vide lengde eller modulo
+		\item Decode billedet uden at vide lengde eller modulo
 		\item Prøv alle modulo
 		\end{itemize}
 \end{frame}
