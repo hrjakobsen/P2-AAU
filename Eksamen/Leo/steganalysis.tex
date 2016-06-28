@@ -6,9 +6,8 @@
 		\item Farvehistogram
 		\item Sammenligning med original billede
 		\item LSB forstærkning
-		\item Brute-decoding
 		\item Steganografisk signatur
-		\item DCT coefficients histogram TODO: maybe delete...
+		\item Brute-decoding
 	\end{itemize}
 \end{frame}
 
@@ -23,7 +22,8 @@
 \subfigure[2896 bytes data gemt]{\label{fig:RoomIntro}\includegraphics[width=.4\textwidth]{figures/roomEncodedIntroToSteg.png}}
 \caption{Sammenligning af farvehistogram}
 \end{figure}
-\note{Stego intro is 2896 bytes or 2.896 kilobyte}
+\note{Small or no changes to histogram
+Not able to detect our program}
 \end{frame}
 
 \begin{frame}{Sammenligning med original billede}
@@ -37,9 +37,8 @@
 \subfigure[500 bytes vs. original]{\label{fig:a}\includegraphics[width=.35\textwidth]{figures/loremIpsum1paragraphvs1chardiff.png}}
 \caption{Sammenlligning af billeder}
 \end{figure}
-\note{
-Lorem Ipsum 1. paragraph is 500 bytes 
-Stego intro is 2896 bytes}
+\note{Changes might just be due to compression
+only changes in the top of the image is suspicious}
 \end{frame}
 	
 \begin{frame}{LSB forstærkning}
@@ -49,6 +48,7 @@ Stego intro is 2896 bytes}
 		\item Alle bytes har nu værdien 0 eller 1
 		\item Alle bytes ganges med 255
 	\end{itemize}
+\note{**Lead into next slide with ``Dette er en god måde at opdage om LSB er blevet brugt''**}
 \end{frame}
 
 \begin{frame}{LSB forstærkning}
@@ -56,6 +56,7 @@ Stego intro is 2896 bytes}
 \centering
 \subfigure[Grid LSB encoded 20kb]{\label{gridLSBencode}\includegraphics[width=.4\textwidth]{figures/20kbLSBencoded_LSB.png}}
 \end{figure}
+\note{Distortion at the top indicates something hidden in image}
 \end{frame}
 
 \begin{frame}{LSB forstærkning}
@@ -64,6 +65,7 @@ Stego intro is 2896 bytes}
 \subfigure[Original]{\label{fig:Room}\includegraphics[width=.45\textwidth]{figures/roomOriginal.jpg}}
 \subfigure[Original LSB enhanced]{\label{fig:Room}\includegraphics[width=.45\textwidth]{figures/roomOriLSB.jpg}}
 \end{figure}
+\note{When used on nature images, the image is giberish}
 \end{frame}
 
 \begin{frame}{LSB forstærkning}
@@ -73,20 +75,8 @@ Stego intro is 2896 bytes}
 \subfigure[2896 bytes LSB forstærket]{\label{fig:Room}\includegraphics[width=.45\textwidth]{figures/roomIntroLSB.jpg}}
 \caption{Begge billeder}
 \end{figure}
-\note{Stego intro is 2896 bytes or 2.896 kilobyte
-Looks ugly because of our JPEG encoder}
-\end{frame}
-
-\begin{frame}{Brute-decoding}
-	Brute-decoding
-		\begin{itemize}
-		\item Decode billedet uden at vide længde eller modulo
-		\item Prøv alle modulo-værdier
-		\end{itemize}
-\end{frame}
-
-\begin{frame}{Brute-decoding}
-TODO: Insert picture of brute-decoding tests
+\note{Looks ugly because of our JPEG encoder
+While LSB enhancing works for LSB, it cannot detect our program}
 \end{frame}
 
 \begin{frame}{Signatur}
@@ -95,8 +85,22 @@ TODO: Insert picture of brute-decoding tests
 		\item Første 16 bits af scan datas ikke-nul værdier
 		\item Altid indkodet med modulo 4
 		\end{itemize}
+\note{skip 12 bytes after scan data marker, skip zero values and skip markers. Then read the 16 bits}
 \end{frame}
 
-\begin{frame}
-TODO: Insert pictures of decoding of first 16bits
-\end{frame}o
+\begin{frame}{Brute-decoding}
+	Brute-decoding
+		\begin{itemize}
+		\item Decode billedet uden at vide længde eller modulo
+		\item Prøv alle modulo-værdier
+		\end{itemize}
+\note{Last ditch effort, can be somewhat automated, but is foiled by encrypting}
+\end{frame}
+
+\begin{frame}{Brute-decoding}
+\begin{figure}
+\centering
+\subfigure[Decoded message]{\label{fig:text}\includegraphics[width=.8\textwidth]{figures/giberish.png}}
+\end{figure}
+\note{First 2 chars are our metaData bytes in ASCII}
+\end{frame}
