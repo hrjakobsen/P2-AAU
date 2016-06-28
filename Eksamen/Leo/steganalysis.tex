@@ -56,6 +56,13 @@ Stego intro is 2896 bytes}
 \begin{frame}{LSB enhancing}
 \begin{figure}
 \centering
+\subfigure[Grid LSB encoded 20kb]{\label{gridLSBencode}\includegraphics[width=.4\textwidth]{figures/20kbLSBencoded_LSB.png}}
+\end{figure}
+\end{frame}
+
+\begin{frame}{LSB enhancing}
+\begin{figure}
+\centering
 \subfigure[Original]{\label{fig:Room}\includegraphics[width=.45\textwidth]{figures/roomOriginal.jpg}}
 \subfigure[Original LSB enhanced]{\label{fig:Room}\includegraphics[width=.45\textwidth]{figures/roomOriLSB.jpg}}
 \end{figure}
@@ -64,10 +71,11 @@ Stego intro is 2896 bytes}
 \begin{frame}{LSB enhancing}
 \begin{figure}
 \centering
-\subfigure[Original LSB enhanced]{\label{fig:Room}\includegraphics[width=.45\textwidth]{figures/roomOriLSB.jpg}}
-\subfigure[Stego Intro LSB enhanced]{\label{fig:Room}\includegraphics[width=.45\textwidth]{figures/roomIntroLSB.jpg}}
+\subfigure[Original LSB enhanced]{\label{fig:Room}\includegraphics[width=.45\textwidth]{figures/room1charLSBEnhanced.png}}
+\subfigure[2896 bytes LSB enhanced]{\label{fig:Room}\includegraphics[width=.45\textwidth]{figures/roomIntroLSB.jpg}}
 \end{figure}
-\note{Stego intro is 2896 bytes or 2.896 kilobyte}
+\note{Stego intro is 2896 bytes or 2.896 kilobyte
+Looks ugly because of our JPEG encoder}
 \end{frame}
 
 \begin{frame}{If all else fails}
@@ -78,11 +86,10 @@ Stego intro is 2896 bytes}
 		\end{itemize}
 \end{frame}
 
-\begin{frame}{Knowing is half the battle}
-	signiture of our method
+\begin{frame}{Signatur}
+	signituren af vores method
 		\begin{itemize}
 		\item først 16 bytes af scan data
 		\item altid encoded med modulo 4
-		\item 
 		\end{itemize}
 \end{frame}
