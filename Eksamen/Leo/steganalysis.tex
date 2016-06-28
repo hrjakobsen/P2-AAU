@@ -6,12 +6,13 @@
 		\item Colour histogram
 		\item Sammenligning med original bilede
 		\item LSB enhancing
-		\item DCT coefficients histogram
-		\item Steganographic signatures/patterns
+		\item Brute-decoding
+		\item Steganographic signatur
+		\item DCT coefficients histogram TODO: maybe delete...
 	\end{itemize}
 \end{frame}
 
-\subsection{Colour histogram} %%% TODO: Add info about how many forces were made
+%%%\subsection{Colour histogram} %%% TODO: Add info about how many forces were made
 \begin{frame}{Colour histogram}{}
 \begin{figure}
 \centering     %%% not \center
@@ -26,7 +27,7 @@
 \note{Stego intro is 2896 bytes or 2.896 kilobyte}
 \end{frame}
 
-\subsection{Sammenligning med original bilede}
+%%%\subsection{Sammenligning med original bilede}
 \begin{frame}{Sammenligning med original bilede}
 \begin{figure}
 \centering
@@ -43,13 +44,13 @@ Lorem Ipsum 1. paragraph is 500 bytes
 Stego intro is 2896 bytes}
 \end{frame}
 
-\subsection{LSB enhancing}
+%%%\subsection{LSB enhancing}
 \begin{frame}{LSB enhancing}
 	LSB enhancing
 	\begin{itemize}
 		\item fjerne alle 7 højtstående bits
 		\item Alle bytes har nu værdien 0 eller 1
-		\item Alle 0 bytes forbliver 0, imens alle 1 bytes bilver 255
+		\item Alle bytes bliver ganget med 255
 	\end{itemize}
 \end{frame}
 
@@ -78,7 +79,7 @@ Stego intro is 2896 bytes}
 Looks ugly because of our JPEG encoder}
 \end{frame}
 
-\begin{frame}{If all else fails}
+\begin{frame}{Brute-decoding}
 	Brute-decoding
 		\begin{itemize}
 		\item Decode biledet uden at vide lengde eller modulo
@@ -86,10 +87,18 @@ Looks ugly because of our JPEG encoder}
 		\end{itemize}
 \end{frame}
 
+\begin{frame}{Brute-decoding}
+TODO: Insert picture of brute-decoding tests
+\end{frame}
+
 \begin{frame}{Signatur}
-	signituren af vores method
+	Signatur af vores program
 		\begin{itemize}
-		\item først 16 bytes af scan data
+		\item først 16 bits af scan data
 		\item altid encoded med modulo 4
 		\end{itemize}
+\end{frame}
+
+\begin{frame}
+TODO: Insert pictures of decoding of first 16bits
 \end{frame}
