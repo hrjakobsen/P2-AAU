@@ -34,7 +34,7 @@ namespace BeamerViewer {
             Rectangle primaryMonitorRes = GetSecondaryScreen().WorkingArea;
 
             notes.SizeMode = PictureBoxSizeMode.StretchImage;
-            notes.Size = new Size((int)(primaryMonitorRes.Height * 1.33) / 2, primaryMonitorRes.Height / 2);
+            notes.Size = new Size((int)(primaryMonitorRes.Height * 1.33 * 0.75), (int)(primaryMonitorRes.Height * 0.75));
             nextslide.SizeMode = PictureBoxSizeMode.StretchImage;
             nextslide.Size = new Size((int)(primaryMonitorRes.Height * 1.33) / 4, primaryMonitorRes.Height / 4);
             nextslide.Location = new Point(nextslide.Location.X - nextslide.Width + 30, 0);
