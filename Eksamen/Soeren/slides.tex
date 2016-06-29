@@ -12,13 +12,12 @@ post/.style={->,shorten >=1pt,>=stealth',semithick},
 ]
 %Nodes
 \node[processnode]        (huffmanencoding)  {Huffman encode quantized values to file};
-\node[encodenode]         (encode)           [right=of huffmanencoding] {Encode message into quantized values};
-\node[processnode]        (quantization)     [right=of encode] {Quantize the 8x8 blocks};
+\node[processnode]        (quantization)     [right=of huffmanencoding] {Quantize the 8x8 blocks};
 \node[processnode]        (dct)              [right=of quantization] {Perform DCT on 8x8 blocks from MCU};
 \node[processnode]        (sampling)         [above=of dct] {Downsam
 ple MCU's};
 \node[processnode]        (split)            [left=of sampling] {Split image into MCU's};
-\node[processnode]        (convert)          [left=of split] {Convert from YCbCr to RGB};
+\node[processnode]        (convert)          [left=of split] {Convert from RGB to YCbCr};
 \node[processnode]        (bitmapimage)      [left=of convert] {\lstinline|Bitmap| \\image};
  
 %Lines
@@ -27,10 +26,9 @@ ple MCU's};
 \draw[->] (split.east) -- (sampling.west);
 \draw[->] (sampling.south) -- (dct.north);
 \draw[->] (dct.west) -- (quantization.east);
-\draw[->] (quantization.west) -- (encode.east);
-\draw[->] (encode.west) -- (huffmanencoding.east);
+\draw[->] (quantization.west) -- (huffmanencoding.east);
 \end{tikzpicture}
-\caption{Process of encoding a JPEG image with embedding of data}
+\caption{JPEG indkodning}
 \label{fig:JPEGprocess}
 \end{figure}
 \end{frame}
@@ -72,7 +70,7 @@ ple MCU's};
 		\begin{itemize}
 			\item Meget matematisk billedeformat
 			\item Ingen adgang til de enkelte pixels, da de regnes som en fælles block
-			\item Starter med en 16x16 block, da vi bruger 4:2:2 sampling $\rightarrow$ 6 8x8 blocks (4 Y, 1 Cb, 1 Cr) $\rightarrow$ DCT $\rightarrow$ quantization $\rightarrow$ huffman encoding $\rightarrow$ skrives til filen (Zero-length entropy).
+			\item Starter med en 16x16 block, da vi bruger 4:2:0 sampling $\rightarrow$ 6 8x8 blocks (4 Y, 1 Cb, 1 Cr) $\rightarrow$ DCT $\rightarrow$ quantization $\rightarrow$ huffman encoding $\rightarrow$ skrives til filen (Zero-length entropy).
 			\item JPEG encoder lavet til formålet
 		\end{itemize}
 	}
@@ -90,7 +88,7 @@ ple MCU's};
 	\end{align*}
 	$$ e = \{2,2,1,2,1,2,2\} = \{10,10,01,10,01,10,10\}_2$$
 	
-	``Hvordan indlejres beskeden $e$ i billedet $p$ med mindst mulig ændring i billedet?''
+
 \end{frame}
 
 \begin{frame}{Grafteoretisk tilgang til steganografi}{}
@@ -177,7 +175,10 @@ ple MCU's};
 			\end{tabular}%
 		}
 	\end{table}
-	\begin{center}
-		\includegraphics[width=.4\textwidth, frame]{figures/pixelgrid2.png}
-	\end{center}
+	\begin{figure}
+\centering     %%% not \center
+\subfigure[]{\includegraphics[width=.4\textwidth,frame]{figures/pixelgrid.png}}
+\subfigure[]{\includegraphics[width=.4\textwidth,frame]{figures/pixelgrid2.png}}
+\caption{Billede før og efter GT}
+\end{figure}
 \end{frame}
