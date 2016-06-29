@@ -18,7 +18,7 @@ namespace Stegosaurus {
         }
 
         public int[] Encode(byte[] message) {
-            Graph g = Graph.GraphFromSampleValuesAndMessage(_sampleValues, message, _mvalue, _limit);
+            Graph g = new Graph(_sampleValues, message, _mvalue, _limit);
             g.FindSwitches();
             g.PickEdges();
             g.DoSwitches();
@@ -36,27 +36,21 @@ namespace Stegosaurus {
             public List<Vertex> Vertices { get; set; } = new List<Vertex>();
             private List<Edge> _allEdges = new List<Edge>();
             private int _limit;
-
-            public Graph(int limit) {
-                _limit = limit;
-            }
-
-            public static Graph GraphFromSampleValuesAndMessage(int[] SampleValues, byte[] Message, int modulo, int limit) {
-                Graph g = new Graph(limit);
+            
+            public Graph(int[] sampleValues, byte[] message, int modulo, int limit) {
                 int currentSampleValue = 0;
-
+                _limit = limit;
                 for (int i = 0; i < 8; i++) {
-                    Vertex v = new Vertex(SampleValues[currentSampleValue++], SampleValues[currentSampleValue++], Message[i], 4);
-                    g.Vertices.Add(v);
+                    Vertex v = new Vertex(sampleValues[currentSampleValue++], sampleValues[currentSampleValue++], message[i], 4);
+                    Vertices.Add(v);
                 }
 
-                for (int i = 8; i < Message.Length; i++) {
-                    Vertex v = new Vertex(SampleValues[currentSampleValue++], SampleValues[currentSampleValue++], Message[i], modulo);
-                    g.Vertices.Add(v);
+                for (int i = 8; i < message.Length; i++) {
+                    Vertex v = new Vertex(sampleValues[currentSampleValue++], sampleValues[currentSampleValue++], message[i], modulo);
+                    Vertices.Add(v);
                 }
-
-                return g;
             }
+            
 
             public void FindSwitches() {
 
@@ -78,14 +72,13 @@ namespace Stegosaurus {
 
             public void PickEdges() {
                 _allEdges = _allEdges.OrderBy(x => x.Weight).ToList();
+                
                 foreach (Edge currentEdge in _allEdges) {
                     Vertex startVertex = currentEdge.VStart;
-                    Vertex endVertex = currentEdge.VEnd;
 
                     if (!startVertex.Neighbours.Contains(currentEdge)) continue;
 
                     startVertex.Choose(currentEdge);
-                    endVertex.Choose(currentEdge);
                 }
             }
 
