@@ -1,0 +1,99 @@
+%  A simple AAU report template.
+%  2015-05-08 v. 1.2.0
+%  Copyright 2010-2015 by Jesper Kjær Nielsen <jkn@es.aau.dk>
+%
+%  This is free software: you can redistribute it and/or modify
+%  it under the terms of the GNU General Public License as published by
+%  the Free Software Foundation, either version 3 of the License, or
+%  (at your option) any later version.
+%
+%  This is distributed in the hope that it will be useful,
+%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%  GNU General Public License for more details.
+%
+%  You can find the GNU General Public License at <http://www.gnu.org/licenses/>.
+%
+\input{setup/preamble.tex}% package inclusion and set up of the document
+\input{setup/hyphenations.tex}% 
+\input{setup/macros.tex}% my new macros
+\usepackage{pdfpages}
+\begin{document}
+\title{Errata - Hiding in Plain Sight}
+\author{DAT2-A423}
+\date{30th of June}
+\maketitle
+\begin{itemize}
+\item On page 21 in table 2.2, the DQT marker is wrongly stated to be 0xFFD8. The correct DQT marker is 0xFFDB.
+
+\item On page 22-23 it is stated the encoding of the quantization table values are done top to bottom, left to right. They are however, encoded in a zigzag pattern. 
+
+\item On page 40, figure \ref{fig:WrongJPEGprocess} is shown. The conversion of colour model is from RGB to YCbCr, not from YCbCr to RGB as wrongly stated by the figure. The corrected image can be seen on figure \ref{fig:JPEGprocess}.
+\end{itemize}
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[
+processnode/.style={rectangle, draw=gray!60, fill=gray!5, very thick, minimum size=5mm,text width=2.2cm, minimum height=2.5cm},
+encodenode/.style={rectangle, dashed,draw=red!60, fill=red!5, very thick, minimum size=5mm,text width=2.2cm, minimum height=2.5cm},
+pre/.style={=stealth',semithick},
+post/.style={->,shorten >=1pt,>=stealth',semithick},
+]
+%Nodes
+\node[processnode]        (huffmanencoding)  {Huffman encode quantized values to file};
+\node[encodenode]         (encode)           [right=of huffmanencoding] {Encode message into quantized values};
+\node[processnode]        (quantization)     [right=of encode] {Quantize the 8x8 blocks};
+\node[processnode]        (dct)              [right=of quantization] {Perform DCT on 8x8 blocks from MCU};
+\node[processnode]        (sampling)         [above=of dct] {Downsample MCU's};
+\node[processnode]        (split)            [left=of sampling] {Split image into MCU's};
+\node[processnode]        (convert)          [left=of split] {Convert from YCbCr to RGB};
+\node[processnode]        (bitmapimage)      [left=of convert] {\lstinline|Bitmap| \\image};
+ 
+%Lines
+\draw[->] (bitmapimage.east) -- (convert.west);
+\draw[->] (convert.east) -- (split.west);
+\draw[->] (split.east) -- (sampling.west);
+\draw[->] (sampling.south) -- (dct.north);
+\draw[->] (dct.west) -- (quantization.east);
+\draw[->] (quantization.west) -- (encode.east);
+\draw[->] (encode.west) -- (huffmanencoding.east);
+\end{tikzpicture}
+\caption{Process of encoding a JPEG image with embedding of data}
+\label{fig:WrongJPEGprocess}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[
+processnode/.style={rectangle, draw=gray!60, fill=gray!5, very thick, minimum size=5mm,text width=2.2cm, minimum height=2.5cm},
+encodenode/.style={rectangle, dashed,draw=red!60, fill=red!5, very thick, minimum size=5mm,text width=2.2cm, minimum height=2.5cm},
+pre/.style={=stealth',semithick},
+post/.style={->,shorten >=1pt,>=stealth',semithick},
+]
+%Nodes
+\node[processnode]        (huffmanencoding)  {Huffman encode quantized values to file};
+\node[encodenode]         (encode)           [right=of huffmanencoding] {Encode message into quantized values};
+\node[processnode]        (quantization)     [right=of encode] {Quantize the 8x8 blocks};
+\node[processnode]        (dct)              [right=of quantization] {Perform DCT on 8x8 blocks from MCU};
+\node[processnode]        (sampling)         [above=of dct] {Downsample MCU's};
+\node[processnode]        (split)            [left=of sampling] {Split image into MCU's};
+\node[processnode]        (convert)          [left=of split] {Convert from RGB to YCbCr};
+\node[processnode]        (bitmapimage)      [left=of convert] {\lstinline|Bitmap| \\image};
+ 
+%Lines
+\draw[->] (bitmapimage.east) -- (convert.west);
+\draw[->] (convert.east) -- (split.west);
+\draw[->] (split.east) -- (sampling.west);
+\draw[->] (sampling.south) -- (dct.north);
+\draw[->] (dct.west) -- (quantization.east);
+\draw[->] (quantization.west) -- (encode.east);
+\draw[->] (encode.west) -- (huffmanencoding.east);
+\end{tikzpicture}
+\caption{Process of encoding a JPEG image with embedding of data}
+\label{fig:JPEGprocess}
+\end{figure}
+
+
+
+\end{document}
