@@ -82,7 +82,9 @@ While LSB enhancing works for LSB, it cannot detect our program}
 \begin{frame}{Signatur}
 	Signatur af vores program
 		\begin{itemize}
-		\item Altid indkodet med modulo 4
+		\item Metadata om lengde af beskeden og modulo brugt til indkodning
+		\item Første 16 ikke-nul AC værdier i scan data
+		\item Metadata er altid indkodet med modulo 4
 		\end{itemize}
 \note{skip 12 bytes after scan data marker, skip zero values and skip markers. Then read the 16 bits}
 \end{frame}
