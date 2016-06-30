@@ -54,7 +54,7 @@ only changes in the top of the image is suspicious}
 \begin{frame}{LSB forstærkning}
 \begin{figure}
 \centering
-\subfigure[Grid LSB encoded 20kb]{\label{gridLSBencode}\includegraphics[width=.4\textwidth]{figures/20kbLSBencoded_LSB.png}}
+\subfigure[20kB data gemt med LSB]{\label{gridLSBencode}\includegraphics[width=.4\textwidth]{figures/20kbLSBencoded_LSB.png}}
 \end{figure}
 \note{Distortion at the top indicates something hidden in image}
 \end{frame}
@@ -92,7 +92,7 @@ While LSB enhancing works for LSB, it cannot detect our program}
 \begin{frame}{Brute-decoding}
 	Brute-decoding
 		\begin{itemize}
-		\item Decode billedet uden at vide længde eller modulo
+		\item Afkod scan-data uden at vide længde eller modulo
 		\item Prøv alle modulo-værdier
 		\end{itemize}
 \note{Last ditch effort, can be somewhat automated, but is foiled by encrypting}
