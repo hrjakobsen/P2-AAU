@@ -82,7 +82,6 @@ While LSB enhancing works for LSB, it cannot detect our program}
 \begin{frame}{Signatur}
 	Signatur af vores program
 		\begin{itemize}
-		\item Første 16 bits af scan datas ikke-nul værdier
 		\item Altid indkodet med modulo 4
 		\end{itemize}
 \note{skip 12 bytes after scan data marker, skip zero values and skip markers. Then read the 16 bits}
